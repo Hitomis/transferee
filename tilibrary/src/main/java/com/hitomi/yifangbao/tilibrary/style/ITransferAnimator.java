@@ -1,6 +1,6 @@
 package com.hitomi.yifangbao.tilibrary.style;
 
-import android.view.View;
+import com.hitomi.yifangbao.tilibrary.TransferLayout;
 
 /**
  * Created by hitomi on 2017/1/19.
@@ -8,8 +8,8 @@ import android.view.View;
 
 public interface ITransferAnimator {
 
-    void showAnimator(View sharedView, Location originViewLocation);
+    void showAnimator(TransferLayout transferLayout);
 
-    void dismissAnimator(View sharedView);
+    void dismissAnimator(TransferLayout transferLayout);
 
 }

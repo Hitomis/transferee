@@ -3,7 +3,6 @@ package com.hitomi.yifangbao.tilibrary;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -48,7 +47,7 @@ public class TransferLayout extends FrameLayout {
     }
 
     private void initLayout() {
-        setBackgroundColor(Color.BLACK);
+        setBackgroundColor(attr.getBackgroundColor());
         initViewPager();
     }
 
@@ -58,7 +57,6 @@ public class TransferLayout extends FrameLayout {
             @Override
             public int getCount() {
                 return attr.getImageSize();
-
             }
 
             @Override
@@ -113,14 +111,7 @@ public class TransferLayout extends FrameLayout {
     }
 
     public void dismiss() {
-        removeView();
-    }
-
-    private void removeView() {
-        ViewGroup vg = (ViewGroup) this.getParent();
-        if (vg != null) {
-            vg.removeView(this);
-        }
+        attr.getTransferAnima().dismissAnimator(this);
     }
 
     private void addToWindow() {
@@ -133,6 +124,18 @@ public class TransferLayout extends FrameLayout {
     }
 
     private void transferAnima() {
+        attr.getTransferAnima().showAnimator(this);
+    }
+
+    public View getSharedView() {
+        return sharedImage;
+    }
+
+    public View getOriginView() {
+        return attr.getOriginImage();
+    }
+
+    public Location getOriginLocation() {
         int[] location = new int[2];
         attr.getOriginImage().getLocationInWindow(location);
         Location oLocation =  new Location();
@@ -140,7 +143,7 @@ public class TransferLayout extends FrameLayout {
         oLocation.setY(location[1]);
         oLocation.setWidth(attr.getOriginImage().getWidth());
         oLocation.setHeight(attr.getOriginImage().getHeight());
-        attr.getTransferAnima().showAnimator(sharedImage, oLocation);
+        return oLocation;
     }
 
     /**
@@ -233,7 +236,6 @@ public class TransferLayout extends FrameLayout {
             attr.setOriginIndex(originIndex);
 
             TransferLayout transferLayout = new TransferLayout(context, attr);
-
             return transferLayout;
         }
 

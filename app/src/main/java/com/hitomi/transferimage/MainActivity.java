@@ -1,11 +1,13 @@
 package com.hitomi.transferimage;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.hitomi.yifangbao.tilibrary.TransferLayout;
+import com.hitomi.yifangbao.tilibrary.style.anim.TransitionAnimator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +31,12 @@ public class MainActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TransferLayout transferLayout = new TransferLayout(MainActivity.this);
-                transferLayout.setImageUrlList(imageResList);
-                transferLayout.setDisplayIndex(0);
-                transferLayout.setOriginImage(imageView);
+                TransferLayout transferLayout = new TransferLayout.Builder(MainActivity.this)
+                        .setTransferAnima(new TransitionAnimator(MainActivity.this))
+                        .setBackgroundColor(Color.BLUE)
+                        .setImageResLsit(imageResList)
+                        .setOriginImage(imageView)
+                        .create();
                 transferLayout.show();
             }
         });

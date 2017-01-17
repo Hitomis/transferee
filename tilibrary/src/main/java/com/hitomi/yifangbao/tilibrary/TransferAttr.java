@@ -1,8 +1,10 @@
 package com.hitomi.yifangbao.tilibrary;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.widget.ImageView;
 
-import com.hitomi.yifangbao.tilibrary.anim.ITransferAnimator;
+import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
 
 import java.util.List;
 
@@ -12,20 +14,22 @@ import java.util.List;
 
 public class TransferAttr {
 
+    private ImageView originImage;
+    private int originIndex;
     private int backgroundColor;
 
     private List<Bitmap> bitmapList;
     private List<String> imageStrList;
-    private List<Integer> imageResLsit;
+    private List<Integer> imageResList;
 
     private ITransferAnimator transferAnima;
 
-    public ITransferAnimator getTransferAnima() {
-        return transferAnima;
+    public ImageView getOriginImage() {
+        return originImage;
     }
 
-    public void setTransferAnima(ITransferAnimator transferAnima) {
-        this.transferAnima = transferAnima;
+    public void setOriginImage(ImageView originImage) {
+        this.originImage = originImage;
     }
 
     public int getBackgroundColor() {
@@ -33,7 +37,11 @@ public class TransferAttr {
     }
 
     public void setBackgroundColor(int backgroundColor) {
-        this.backgroundColor = backgroundColor;
+        if (backgroundColor == 0) {
+            this.backgroundColor = Color.BLACK;
+        } else {
+            this.backgroundColor = backgroundColor;
+        }
     }
 
     public List<Bitmap> getBitmapList() {
@@ -52,11 +60,31 @@ public class TransferAttr {
         this.imageStrList = imageStrList;
     }
 
-    public List<Integer> getImageResLsit() {
-        return imageResLsit;
+    public List<Integer> getImageResList() {
+        return imageResList;
     }
 
-    public void setImageResLsit(List<Integer> imageResLsit) {
-        this.imageResLsit = imageResLsit;
+    public void setImageResList(List<Integer> imageResList) {
+        this.imageResList = imageResList;
+    }
+
+    public ITransferAnimator getTransferAnima() {
+        return transferAnima;
+    }
+
+    public void setTransferAnima(ITransferAnimator transferAnima) {
+        this.transferAnima = transferAnima;
+    }
+
+    public int getImageSize() {
+        return 1;
+    }
+
+    public int getOriginIndex() {
+        return originIndex;
+    }
+
+    public void setOriginIndex(int originIndex) {
+        this.originIndex = originIndex;
     }
 }

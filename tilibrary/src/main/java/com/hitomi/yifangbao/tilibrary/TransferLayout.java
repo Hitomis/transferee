@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -14,8 +13,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.hitomi.yifangbao.tilibrary.anim.ITransferAnimator;
-import com.hitomi.yifangbao.tilibrary.anim.Location;
+import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
+import com.hitomi.yifangbao.tilibrary.style.Location;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -29,14 +28,10 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 public class TransferLayout extends FrameLayout {
 
     private Context context;
+    private TransferAttr attr;
+
     private ViewPager viewPager;
-    private ImageView smallImage;
-    private ImageView originImage;
-
-    private int displayIndex;
-    private List<Integer> imageUrlList;
-
-    private ITransferAnimator transferAnima;
+    private ImageView sharedImage;
 
     private OnViewPagerInstantiateListener onInstantiateListener = new OnViewPagerInstantiateListener() {
         @Override
@@ -44,19 +39,11 @@ public class TransferLayout extends FrameLayout {
             transferAnima();
         }
     };
-    private TransferAttr attribute;
 
-    public TransferLayout(Context context) {
-        this(context, null);
-    }
-
-    public TransferLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public TransferLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    private TransferLayout(Context context, TransferAttr attr) {
+        super(context);
         this.context = context;
+        this.attr = attr;
         initLayout();
     }
 
@@ -70,7 +57,8 @@ public class TransferLayout extends FrameLayout {
         viewPager.setAdapter(new PagerAdapter() {
             @Override
             public int getCount() {
-                return 1;
+                return attr.getImageSize();
+
             }
 
             @Override
@@ -84,19 +72,19 @@ public class TransferLayout extends FrameLayout {
                 LinearLayout.LayoutParams linlp = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
                 parentLayout.setLayoutParams(linlp);
 
-                smallImage = new ImageView(context);
-                smallImage.setImageDrawable(originImage.getDrawable());
+                sharedImage = new ImageView(context);
+                sharedImage.setImageDrawable(attr.getOriginImage().getDrawable());
 
                 LinearLayout.LayoutParams sImageVlp = new LinearLayout.LayoutParams(
-                        originImage.getWidth(), originImage.getHeight());
-                smallImage.setLayoutParams(sImageVlp);
+                        attr.getOriginImage().getWidth(), attr.getOriginImage().getHeight());
+                sharedImage.setLayoutParams(sImageVlp);
 
                 final int[] location = new int[2];
-                originImage.getLocationInWindow(location);
-                smallImage.setX(location[0]);
-                smallImage.setY(location[1] - getStatusBarHeight());
+                attr.getOriginImage().getLocationInWindow(location);
+                sharedImage.setX(location[0]);
+                sharedImage.setY(location[1] - getStatusBarHeight());
 
-                parentLayout.addView(smallImage);
+                parentLayout.addView(sharedImage);
                 container.addView(parentLayout);
                 onInstantiateListener.onInstantiate();
                 parentLayout.setOnClickListener(new OnClickListener() {
@@ -115,7 +103,7 @@ public class TransferLayout extends FrameLayout {
         });
         LayoutParams vpLp = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
         viewPager.setLayoutParams(vpLp);
-        viewPager.setCurrentItem(displayIndex);
+        viewPager.setCurrentItem(attr.getOriginIndex());
         viewPager.setOffscreenPageLimit(2);
         addView(viewPager);
     }
@@ -146,25 +134,13 @@ public class TransferLayout extends FrameLayout {
 
     private void transferAnima() {
         int[] location = new int[2];
-        originImage.getLocationInWindow(location);
+        attr.getOriginImage().getLocationInWindow(location);
         Location oLocation =  new Location();
         oLocation.setX(location[0]);
-        oLocation.setY(location[0]);
-        oLocation.setWidth(originImage.getWidth());
-        oLocation.setHeight(originImage.getHeight());
-        transferAnima.showAnimator(smallImage, oLocation);
-    }
-
-    public void setOriginImage(ImageView originImage) {
-        this.originImage = originImage;
-    }
-
-    public void setDisplayIndex(int displayIndex) {
-        this.displayIndex = displayIndex;
-    }
-
-    public void setImageUrlList(List<Integer> imageUrlList) {
-        this.imageUrlList = imageUrlList;
+        oLocation.setY(location[1]);
+        oLocation.setWidth(attr.getOriginImage().getWidth());
+        oLocation.setHeight(attr.getOriginImage().getHeight());
+        attr.getTransferAnima().showAnimator(sharedImage, oLocation);
     }
 
     /**
@@ -185,15 +161,20 @@ public class TransferLayout extends FrameLayout {
     }
 
     private void setAttribute(TransferAttr attribute) {
-        this.attribute = attribute;
+        attr = attribute;
     }
 
     private interface OnViewPagerInstantiateListener {
         void onInstantiate();
     }
 
+
+
     public static class Builder {
         private Context context;
+        private ImageView originImage;
+        private int originIndex;
+
         private int backgroundColor;
 
         private List<Bitmap> bitmapList;
@@ -202,16 +183,56 @@ public class TransferLayout extends FrameLayout {
 
         private ITransferAnimator transferAnima;
 
+        public Builder(Context context) {
+            this.context = context;
+        }
+
+        public Builder setOriginImage(ImageView originImage) {
+            this.originImage = originImage;
+            return this;
+        }
+
+        public Builder setOriginIndex(int originIndex) {
+            this.originIndex = originIndex;
+            return this;
+        }
+
+        public Builder setBackgroundColor(int backgroundColor) {
+            this.backgroundColor = backgroundColor;
+            return this;
+        }
+
+        public Builder setBitmapList(List<Bitmap> bitmapList) {
+            this.bitmapList = bitmapList;
+            return this;
+        }
+
+        public Builder setImageStrList(List<String> imageStrList) {
+            this.imageStrList = imageStrList;
+            return this;
+        }
+
+        public Builder setImageResLsit(List<Integer> imageResLsit) {
+            this.imageResLsit = imageResLsit;
+            return this;
+        }
+
+        public Builder setTransferAnima(ITransferAnimator transferAnima) {
+            this.transferAnima = transferAnima;
+            return this;
+        }
+
         public TransferLayout create() {
             TransferAttr attr = new TransferAttr();
+            attr.setOriginImage(originImage);
             attr.setBackgroundColor(backgroundColor);
             attr.setBitmapList(bitmapList);
             attr.setImageStrList(imageStrList);
-            attr.setImageResLsit(imageResLsit);
+            attr.setImageResList(imageResLsit);
             attr.setTransferAnima(transferAnima);
+            attr.setOriginIndex(originIndex);
 
-            TransferLayout transferLayout = new TransferLayout(context);
-            transferLayout.setAttribute(attr);
+            TransferLayout transferLayout = new TransferLayout(context, attr);
 
             return transferLayout;
         }

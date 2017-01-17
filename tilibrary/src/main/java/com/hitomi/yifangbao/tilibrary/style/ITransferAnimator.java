@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary.anim;
+package com.hitomi.yifangbao.tilibrary.style;
 
 import android.view.View;
 

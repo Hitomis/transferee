@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary.anim.impl;
+package com.hitomi.yifangbao.tilibrary.style.anim;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -10,8 +10,8 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hitomi.yifangbao.tilibrary.anim.Location;
-import com.hitomi.yifangbao.tilibrary.anim.ITransferAnimator;
+import com.hitomi.yifangbao.tilibrary.style.Location;
+import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
 
 import java.lang.reflect.Field;
 

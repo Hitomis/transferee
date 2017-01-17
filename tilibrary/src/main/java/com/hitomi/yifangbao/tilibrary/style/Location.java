@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary.anim;
+package com.hitomi.yifangbao.tilibrary.style;
 
 /**
  * Created by hitomi on 2017/1/19.

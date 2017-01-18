@@ -44,6 +44,7 @@ public class TransferLayout extends FrameLayout {
             transferAnima();
         }
     };
+    private TransferAttr attribute;
 
     public TransferLayout(Context context) {
         this(context, null);
@@ -183,6 +184,10 @@ public class TransferLayout extends FrameLayout {
         }
     }
 
+    private void setAttribute(TransferAttr attribute) {
+        this.attribute = attribute;
+    }
+
     private interface OnViewPagerInstantiateListener {
         void onInstantiate();
     }
@@ -198,7 +203,15 @@ public class TransferLayout extends FrameLayout {
         private ITransferAnimator transferAnima;
 
         public TransferLayout create() {
+            TransferAttr attr = new TransferAttr();
+            attr.setBackgroundColor(backgroundColor);
+            attr.setBitmapList(bitmapList);
+            attr.setImageStrList(imageStrList);
+            attr.setImageResLsit(imageResLsit);
+            attr.setTransferAnima(transferAnima);
+
             TransferLayout transferLayout = new TransferLayout(context);
+            transferLayout.setAttribute(attr);
 
             return transferLayout;
         }

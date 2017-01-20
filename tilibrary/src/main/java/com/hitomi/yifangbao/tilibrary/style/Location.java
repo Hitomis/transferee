@@ -1,5 +1,7 @@
 package com.hitomi.yifangbao.tilibrary.style;
 
+import android.view.View;
+
 /**
  * Created by hitomi on 2017/1/19.
  */
@@ -44,5 +46,16 @@ public class Location {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public static Location converLocation(View view) {
+        int[] location = new int[2];
+        view.getLocationInWindow(location);
+        Location oLocation = new Location();
+        oLocation.setX(location[0]);
+        oLocation.setY(location[1]);
+        oLocation.setWidth(view.getWidth());
+        oLocation.setHeight(view.getHeight());
+        return oLocation;
     }
 }

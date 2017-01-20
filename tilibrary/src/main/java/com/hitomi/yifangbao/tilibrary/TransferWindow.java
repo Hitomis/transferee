@@ -1,10 +1,14 @@
 package com.hitomi.yifangbao.tilibrary;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -13,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
-import com.hitomi.yifangbao.tilibrary.style.Location;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -24,22 +27,23 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * Created by hitomi on 2017/1/19.
  */
 
-public class TransferLayout extends FrameLayout {
+public class TransferWindow extends FrameLayout {
+
+    private ViewPager viewPager;
+    private ViewPager.OnPageChangeListener pageChangeListener;
 
     private Context context;
     private TransferAttr attr;
-
-    private ViewPager viewPager;
-    private ImageView sharedImage;
+    private ImageView sharedImage, originCurrImage;
 
     private OnViewPagerInstantiateListener onInstantiateListener = new OnViewPagerInstantiateListener() {
         @Override
         public void onInstantiate() {
-            transferAnima();
+            showAnima();
         }
     };
 
-    private TransferLayout(Context context, TransferAttr attr) {
+    private TransferWindow(Context context, TransferAttr attr) {
         super(context);
         this.context = context;
         this.attr = attr;
@@ -70,15 +74,15 @@ public class TransferLayout extends FrameLayout {
                 LinearLayout.LayoutParams linlp = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
                 parentLayout.setLayoutParams(linlp);
 
+                originCurrImage = attr.getOriginImageList().get(attr.getOriginCurrIndex());
                 sharedImage = new ImageView(context);
-                sharedImage.setImageDrawable(attr.getOriginImage().getDrawable());
+                sharedImage.setImageDrawable(originCurrImage.getDrawable());
 
-                LinearLayout.LayoutParams sImageVlp = new LinearLayout.LayoutParams(
-                        attr.getOriginImage().getWidth(), attr.getOriginImage().getHeight());
+                LinearLayout.LayoutParams sImageVlp = new LinearLayout.LayoutParams(originCurrImage.getWidth(), originCurrImage.getHeight());
                 sharedImage.setLayoutParams(sImageVlp);
 
                 final int[] location = new int[2];
-                attr.getOriginImage().getLocationInWindow(location);
+                originCurrImage.getLocationInWindow(location);
                 sharedImage.setX(location[0]);
                 sharedImage.setY(location[1] - getStatusBarHeight());
 
@@ -91,6 +95,29 @@ public class TransferLayout extends FrameLayout {
                         dismiss();
                     }
                 });
+                parentLayout.setOnTouchListener(new OnTouchListener() {
+
+                    private float preX, preY;
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                preX = event.getX();
+                                preY = event.getY();
+                                break;
+                            case MotionEvent.ACTION_UP:
+                            case MotionEvent.ACTION_CANCEL:
+                                float diffX = Math.abs(event.getX() - preX);
+                                float diffY = Math.abs(event.getY() - preY);
+                                if (diffX >= 36 || diffY >= 36) {
+                                    return true;
+                                }
+                                break;
+                        }
+                        return false;
+                    }
+                });
                 return parentLayout;
             }
 
@@ -99,11 +126,31 @@ public class TransferLayout extends FrameLayout {
                 container.removeView((View) object);
             }
         });
+
+        pageChangeListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+            @Override
+            public void onPageSelected(int position) {
+                originCurrImage = attr.getOriginImageList().get(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        };
+        viewPager.addOnPageChangeListener(pageChangeListener);
         LayoutParams vpLp = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
         viewPager.setLayoutParams(vpLp);
-        viewPager.setCurrentItem(attr.getOriginIndex());
+        viewPager.setCurrentItem(attr.getOriginCurrIndex());
         viewPager.setOffscreenPageLimit(2);
         addView(viewPager);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        viewPager.removeOnPageChangeListener(pageChangeListener);
     }
 
     public void show() {
@@ -111,7 +158,41 @@ public class TransferLayout extends FrameLayout {
     }
 
     public void dismiss() {
-        attr.getTransferAnima().dismissAnimator(this);
+        dismissAnima();
+    }
+
+    private void showAnima() {
+        Animator animator = attr.getTransferAnima().showAnimator(originCurrImage, sharedImage);
+        animator.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (!attr.isLocalLoad()) { // 异步加载, 需要显示高清图的加载进度 UI
+
+                }
+            }
+        });
+    }
+
+    private void dismissAnima() {
+        Animator animator = attr.getTransferAnima().dismissAnimator(sharedImage, originCurrImage);
+        animator.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                setBackgroundColor(Color.TRANSPARENT);
+                originCurrImage.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                ViewGroup vg = (ViewGroup) getParent();
+                if (vg != null) {
+                    vg.removeView(TransferWindow.this);
+                }
+                originCurrImage.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void addToWindow() {
@@ -121,29 +202,6 @@ public class TransferLayout extends FrameLayout {
 
         Activity activity = (Activity) context;
         activity.getWindow().addContentView(this, windowLayoutParams);
-    }
-
-    private void transferAnima() {
-        attr.getTransferAnima().showAnimator(this);
-    }
-
-    public View getSharedView() {
-        return sharedImage;
-    }
-
-    public View getOriginView() {
-        return attr.getOriginImage();
-    }
-
-    public Location getOriginLocation() {
-        int[] location = new int[2];
-        attr.getOriginImage().getLocationInWindow(location);
-        Location oLocation =  new Location();
-        oLocation.setX(location[0]);
-        oLocation.setY(location[1]);
-        oLocation.setWidth(attr.getOriginImage().getWidth());
-        oLocation.setHeight(attr.getOriginImage().getHeight());
-        return oLocation;
     }
 
     /**
@@ -172,10 +230,9 @@ public class TransferLayout extends FrameLayout {
     }
 
 
-
     public static class Builder {
         private Context context;
-        private ImageView originImage;
+        private List<ImageView> originImageList;
         private int originIndex;
 
         private int backgroundColor;
@@ -190,8 +247,8 @@ public class TransferLayout extends FrameLayout {
             this.context = context;
         }
 
-        public Builder setOriginImage(ImageView originImage) {
-            this.originImage = originImage;
+        public Builder setOriginImageList(List<ImageView> originImageList) {
+            this.originImageList = originImageList;
             return this;
         }
 
@@ -215,7 +272,7 @@ public class TransferLayout extends FrameLayout {
             return this;
         }
 
-        public Builder setImageResLsit(List<Integer> imageResLsit) {
+        public Builder setImageResList(List<Integer> imageResLsit) {
             this.imageResLsit = imageResLsit;
             return this;
         }
@@ -225,17 +282,17 @@ public class TransferLayout extends FrameLayout {
             return this;
         }
 
-        public TransferLayout create() {
+        public TransferWindow create() {
             TransferAttr attr = new TransferAttr();
-            attr.setOriginImage(originImage);
+            attr.setOriginImageList(originImageList);
             attr.setBackgroundColor(backgroundColor);
             attr.setBitmapList(bitmapList);
             attr.setImageStrList(imageStrList);
             attr.setImageResList(imageResLsit);
             attr.setTransferAnima(transferAnima);
-            attr.setOriginIndex(originIndex);
+            attr.setOriginCurrIndex(originIndex);
 
-            TransferLayout transferLayout = new TransferLayout(context, attr);
+            TransferWindow transferLayout = new TransferWindow(context, attr);
             return transferLayout;
         }
 

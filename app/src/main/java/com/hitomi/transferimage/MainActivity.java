@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.hitomi.yifangbao.tilibrary.TransferLayout;
+import com.hitomi.yifangbao.tilibrary.TransferWindow;
 import com.hitomi.yifangbao.tilibrary.style.anim.TransitionAnimator;
 
 import java.util.ArrayList;
@@ -58,11 +58,13 @@ public class MainActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TransferLayout transferLayout = new TransferLayout.Builder(MainActivity.this)
+                List<ImageView> imageViewList = new ArrayList<ImageView>();
+                imageViewList.add(imageView);
+                TransferWindow transferLayout = new TransferWindow.Builder(MainActivity.this)
                         .setTransferAnima(new TransitionAnimator())
-                        .setBackgroundColor(Color.BLUE)
-                        .setImageResLsit(imageResList)
-                        .setOriginImage(imageView)
+                        .setBackgroundColor(Color.BLACK)
+                        .setImageResList(imageResList)
+                        .setOriginImageList(imageViewList)
                         .create();
                 transferLayout.show();
             }

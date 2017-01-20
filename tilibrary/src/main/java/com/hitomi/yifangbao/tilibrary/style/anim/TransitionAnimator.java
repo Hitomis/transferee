@@ -1,17 +1,14 @@
 package com.hitomi.yifangbao.tilibrary.style.anim;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hitomi.yifangbao.tilibrary.TransferLayout;
 import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
 import com.hitomi.yifangbao.tilibrary.style.Location;
 
@@ -23,51 +20,26 @@ import java.lang.reflect.Field;
 
 public class TransitionAnimator implements ITransferAnimator {
 
-    private TransferLayout transferLayout;
+    private View originView;
 
     @Override
-    public void showAnimator(final TransferLayout transferLayout) {
-        this.transferLayout = transferLayout;
-
-        AnimatorSet animatorSet = createTransferAnimator(false);
-        animatorSet.addListener(new AnimatorListenerAdapter() {
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                // 显示高清图的加载进度 UI
-            }
-        });
+    public Animator showAnimator(View beforeView, View afterView) {
+        originView = beforeView;
+        AnimatorSet animatorSet = createTransferAnimator(afterView, false);
         animatorSet.start();
+        return animatorSet;
     }
 
     @Override
-    public void dismissAnimator(final TransferLayout transferLayout) {
-        this.transferLayout = transferLayout;
-
-        AnimatorSet animatorSet = createTransferAnimator(true);
-        animatorSet.addListener(new AnimatorListenerAdapter() {
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                transferLayout.setBackgroundColor(Color.TRANSPARENT);
-                transferLayout.getOriginView().setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                ViewGroup vg = (ViewGroup) transferLayout.getParent();
-                if (vg != null) {
-                    vg.removeView(transferLayout);
-                }
-                transferLayout.getOriginView().setVisibility(View.VISIBLE);
-            }
-        });
+    public Animator dismissAnimator(View beforeView, View afterView) {
+        originView = afterView;
+        AnimatorSet animatorSet = createTransferAnimator(beforeView, true);
         animatorSet.start();
+        return animatorSet;
     }
 
-    private AnimatorSet createTransferAnimator(boolean reverse) {
-        final View sharedView = transferLayout.getSharedView();
-        AnimatorConfig config = new AnimatorConfig(reverse).invoke();
+    private AnimatorSet createTransferAnimator(final View sharedView, boolean reverse) {
+        AnimatorConfig config = new AnimatorConfig(sharedView.getContext(), reverse).invoke();
 
         // 宽度变化
         ValueAnimator widthAnima = ValueAnimator.ofInt(config.getStartWidth(), config.getEndWidth());
@@ -127,8 +99,8 @@ public class TransitionAnimator implements ITransferAnimator {
 
     private class AnimatorConfig {
         private Context context;
-        private Location originLocation;
         private boolean reverse;
+        private Location originLocation;
         private int startWidth;
         private int endWidth;
         private int startHeight;
@@ -138,10 +110,10 @@ public class TransitionAnimator implements ITransferAnimator {
         private float startTranY;
         private float endTranY;
 
-        AnimatorConfig(boolean reverse) {
-            this.context = transferLayout.getContext();
-            this.originLocation = transferLayout.getOriginLocation();
+        AnimatorConfig(Context context, boolean reverse) {
+            this.context = context;
             this.reverse = reverse;
+            this.originLocation = Location.converLocation(originView);
         }
 
         int getStartWidth() {

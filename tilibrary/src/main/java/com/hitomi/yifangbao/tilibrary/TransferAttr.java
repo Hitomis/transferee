@@ -14,8 +14,8 @@ import java.util.List;
 
 public class TransferAttr {
 
-    private ImageView originImage;
-    private int originIndex;
+    private List<ImageView> originImageList;
+    private int originCurrIndex;
     private int backgroundColor;
 
     private List<Bitmap> bitmapList;
@@ -23,13 +23,14 @@ public class TransferAttr {
     private List<Integer> imageResList;
 
     private ITransferAnimator transferAnima;
+    private boolean localLoad;
 
-    public ImageView getOriginImage() {
-        return originImage;
+    public List<ImageView> getOriginImageList() {
+        return originImageList;
     }
 
-    public void setOriginImage(ImageView originImage) {
-        this.originImage = originImage;
+    public void setOriginImageList(List<ImageView> originImageList) {
+        this.originImageList = originImageList;
     }
 
     public int getBackgroundColor() {
@@ -80,11 +81,15 @@ public class TransferAttr {
         return 1;
     }
 
-    public int getOriginIndex() {
-        return originIndex;
+    public int getOriginCurrIndex() {
+        return originCurrIndex;
     }
 
-    public void setOriginIndex(int originIndex) {
-        this.originIndex = originIndex;
+    public void setOriginCurrIndex(int originCurrIndex) {
+        this.originCurrIndex = originCurrIndex;
+    }
+
+    public boolean isLocalLoad() {
+        return localLoad;
     }
 }

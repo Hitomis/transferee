@@ -45,13 +45,8 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
     private ITransferAnimator transferAnimator;
     private IProgressIndicator progressIndicator;
     private ImageLoader imageLoader;
-
-    private OnViewPagerInstantiateListener onInstantiateListener = new OnViewPagerInstantiateListener() {
-        @Override
-        public void onInitComplete() {
-            showAnima();
-        }
-    };
+    private ImagePagerAdapter imagePagerAdapter;
+    private LinearLayout sharedLayout;
 
     private TransferWindow(Context context, TransferAttr attr) {
         super(context);
@@ -66,79 +61,118 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
     private void initLayout() {
         setBackgroundColor(attr.getBackgroundColor());
         initViewPager();
+        initSharedLayout();
+    }
+
+    private void initSharedLayout() {
+        sharedLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams linlp = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        sharedLayout.setLayoutParams(linlp);
+
+        originCurrImage = attr.getOriginImageList().get(attr.getOriginCurrIndex());
+        sharedImage = new ImageView(context);
+        sharedImage.setImageDrawable(originCurrImage.getDrawable());
+
+        LinearLayout.LayoutParams sImageVlp = new LinearLayout.LayoutParams(originCurrImage.getWidth(), originCurrImage.getHeight());
+        sharedImage.setLayoutParams(sImageVlp);
+
+        final int[] location = new int[2];
+        originCurrImage.getLocationInWindow(location);
+        sharedImage.setX(location[0]);
+        sharedImage.setY(location[1] - getStatusBarHeight());
+
+        sharedLayout.addView(sharedImage);
+        addView(sharedLayout);
+        showAnima();
+    }
+
+    class ImagePagerAdapter extends PagerAdapter {
+
+        private ImageView currImageView;
+
+        @Override
+        public int getCount() {
+            return attr.getImageSize();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            FrameLayout parentLayout = new FrameLayout(context);
+            LayoutParams parentLp = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
+            parentLayout.setLayoutParams(parentLp);
+
+
+            ImageView imageView = new ImageView(context);
+            ImageView originImage = attr.getOriginImageList().get(position);
+            imageView.setImageDrawable(originImage.getDrawable());
+
+            LayoutParams imageLp = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
+            imageView.setLayoutParams(imageLp);
+
+            parentLayout.addView(imageView);
+            container.addView(parentLayout);
+
+            parentLayout.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
+            parentLayout.setOnTouchListener(new OnTouchListener() {
+
+                private float preX, preY;
+
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            preX = event.getX();
+                            preY = event.getY();
+                            break;
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL:
+                            float diffX = Math.abs(event.getX() - preX);
+                            float diffY = Math.abs(event.getY() - preY);
+                            if (diffX >= 36 || diffY >= 36) {
+                                return true;
+                            }
+                            break;
+                    }
+                    return false;
+                }
+            });
+            if (attr.getOriginCurrIndex() == position) {
+                setPrimaryItem(container, position, imageView);
+            }
+            return parentLayout;
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            if (object instanceof ImageView)
+            currImageView = (ImageView) object;
+        }
+
+        public ImageView getPrimaryItem() {
+            return currImageView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
     }
 
     private void initViewPager() {
         viewPager = new ViewPager(context);
-        viewPager.setAdapter(new PagerAdapter() {
-            @Override
-            public int getCount() {
-                return attr.getImageSize();
-            }
-
-            @Override
-            public boolean isViewFromObject(View view, Object object) {
-                return view == object;
-            }
-
-            @Override
-            public Object instantiateItem(ViewGroup container, int position) {
-                LinearLayout parentLayout = new LinearLayout(context);
-                LinearLayout.LayoutParams linlp = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-                parentLayout.setLayoutParams(linlp);
-
-                originCurrImage = attr.getOriginImageList().get(attr.getOriginCurrIndex());
-                sharedImage = new ImageView(context);
-                sharedImage.setImageDrawable(originCurrImage.getDrawable());
-
-                LinearLayout.LayoutParams sImageVlp = new LinearLayout.LayoutParams(originCurrImage.getWidth(), originCurrImage.getHeight());
-                sharedImage.setLayoutParams(sImageVlp);
-
-                final int[] location = new int[2];
-                originCurrImage.getLocationInWindow(location);
-                sharedImage.setX(location[0]);
-                sharedImage.setY(location[1] - getStatusBarHeight());
-
-                parentLayout.addView(sharedImage);
-                container.addView(parentLayout);
-                onInstantiateListener.onInitComplete();
-                parentLayout.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dismiss();
-                    }
-                });
-                parentLayout.setOnTouchListener(new OnTouchListener() {
-
-                    private float preX, preY;
-
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                preX = event.getX();
-                                preY = event.getY();
-                                break;
-                            case MotionEvent.ACTION_UP:
-                            case MotionEvent.ACTION_CANCEL:
-                                float diffX = Math.abs(event.getX() - preX);
-                                float diffY = Math.abs(event.getY() - preY);
-                                if (diffX >= 36 || diffY >= 36) {
-                                    return true;
-                                }
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                return parentLayout;
-            }
-
-            @Override
-            public void destroyItem(ViewGroup container, int position, Object object) {
-                container.removeView((View) object);
-            }
-        });
+        viewPager.setVisibility(View.INVISIBLE);
+        imagePagerAdapter = new ImagePagerAdapter();
+        viewPager.setAdapter(imagePagerAdapter);
 
         pageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
@@ -148,6 +182,7 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
             @Override
             public void onPageSelected(int position) {
                 originCurrImage = attr.getOriginImageList().get(position);
+                showImageHD();
             }
 
             @Override
@@ -193,7 +228,7 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
 
     private void dismissAnima() {
         if (transferAnimator == null) return;
-        Animator animator = transferAnimator.dismissAnimator(sharedImage, originCurrImage);
+        Animator animator = transferAnimator.dismissAnimator(imagePagerAdapter.getPrimaryItem(), originCurrImage);
         animator.addListener(new AnimatorListenerAdapter() {
 
             @Override
@@ -249,14 +284,19 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
     @UiThread
     @Override
     public void onCacheHit(File image) {
-        sharedImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
+        viewPager.setVisibility(View.VISIBLE);
+        ImageView primaryImage = imagePagerAdapter.getPrimaryItem();
+        primaryImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
+        removeView(sharedLayout);
     }
 
     @UiThread
     @Override
     public void onCacheMiss(final File image) {
-        sharedImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
-
+        viewPager.setVisibility(View.VISIBLE);
+        ImageView primaryImage = imagePagerAdapter.getPrimaryItem();
+        primaryImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
+        removeView(sharedLayout);
     }
 
     @UiThread
@@ -279,11 +319,6 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
         if (progressIndicator == null) return;
         progressIndicator.onFinish();
     }
-
-    private interface OnViewPagerInstantiateListener {
-        void onInitComplete();
-    }
-
 
     public static class Builder {
         private Context context;

@@ -26,6 +26,7 @@ public class TransitionAnimator implements ITransferAnimator {
     public Animator showAnimator(View beforeView, View afterView) {
         originView = beforeView;
         AnimatorSet animatorSet = createTransferAnimator(afterView, false);
+        animatorSet.setStartDelay(65);
         animatorSet.start();
         return animatorSet;
     }

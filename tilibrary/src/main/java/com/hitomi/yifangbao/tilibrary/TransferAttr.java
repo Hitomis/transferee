@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.widget.ImageView;
 
+import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
+import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
 import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
 
 import java.util.List;
@@ -22,7 +24,11 @@ public class TransferAttr {
     private List<String> imageStrList;
     private List<Integer> imageResList;
 
+
     private ITransferAnimator transferAnima;
+    private IProgressIndicator progressIndicator;
+    private ImageLoader imageLoader;
+
     private boolean localLoad;
 
     public List<ImageView> getOriginImageList() {
@@ -90,6 +96,22 @@ public class TransferAttr {
     }
 
     public boolean isLocalLoad() {
-        return localLoad;
+        return false;
+    }
+
+    public void setProgressIndicator(IProgressIndicator progressIndicator) {
+        this.progressIndicator = progressIndicator;
+    }
+
+    public IProgressIndicator getProgressIndicator() {
+        return progressIndicator;
+    }
+
+    public void setImageLoader(ImageLoader imageLoader) {
+        this.imageLoader = imageLoader;
+    }
+
+    public ImageLoader getImageLoader() {
+        return imageLoader;
     }
 }

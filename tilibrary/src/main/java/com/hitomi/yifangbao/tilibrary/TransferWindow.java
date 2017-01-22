@@ -5,7 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
+import android.support.annotation.UiThread;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
@@ -16,8 +19,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
+import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
 import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -27,7 +33,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * Created by hitomi on 2017/1/19.
  */
 
-public class TransferWindow extends FrameLayout {
+public class TransferWindow extends FrameLayout implements ImageLoader.Callback {
 
     private ViewPager viewPager;
     private ViewPager.OnPageChangeListener pageChangeListener;
@@ -36,9 +42,13 @@ public class TransferWindow extends FrameLayout {
     private TransferAttr attr;
     private ImageView sharedImage, originCurrImage;
 
+    private ITransferAnimator transferAnimator;
+    private IProgressIndicator progressIndicator;
+    private ImageLoader imageLoader;
+
     private OnViewPagerInstantiateListener onInstantiateListener = new OnViewPagerInstantiateListener() {
         @Override
-        public void onInstantiate() {
+        public void onInitComplete() {
             showAnima();
         }
     };
@@ -47,6 +57,9 @@ public class TransferWindow extends FrameLayout {
         super(context);
         this.context = context;
         this.attr = attr;
+        transferAnimator = attr.getTransferAnima();
+        progressIndicator = attr.getProgressIndicator();
+        imageLoader = attr.getImageLoader();
         initLayout();
     }
 
@@ -88,7 +101,7 @@ public class TransferWindow extends FrameLayout {
 
                 parentLayout.addView(sharedImage);
                 container.addView(parentLayout);
-                onInstantiateListener.onInstantiate();
+                onInstantiateListener.onInitComplete();
                 parentLayout.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -129,7 +142,8 @@ public class TransferWindow extends FrameLayout {
 
         pageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -137,7 +151,8 @@ public class TransferWindow extends FrameLayout {
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         };
         viewPager.addOnPageChangeListener(pageChangeListener);
         LayoutParams vpLp = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
@@ -162,20 +177,23 @@ public class TransferWindow extends FrameLayout {
     }
 
     private void showAnima() {
-        Animator animator = attr.getTransferAnima().showAnimator(originCurrImage, sharedImage);
+        if (transferAnimator == null) return;
+        Animator animator = transferAnimator.showAnimator(originCurrImage, sharedImage);
         animator.addListener(new AnimatorListenerAdapter() {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!attr.isLocalLoad()) { // 异步加载, 需要显示高清图的加载进度 UI
-
+                if (!attr.isLocalLoad()) {
+                    // 加载高清图
+                    showImageHD();
                 }
             }
         });
     }
 
     private void dismissAnima() {
-        Animator animator = attr.getTransferAnima().dismissAnimator(sharedImage, originCurrImage);
+        if (transferAnimator == null) return;
+        Animator animator = transferAnimator.dismissAnimator(sharedImage, originCurrImage);
         animator.addListener(new AnimatorListenerAdapter() {
 
             @Override
@@ -225,8 +243,49 @@ public class TransferWindow extends FrameLayout {
         attr = attribute;
     }
 
+    private void showImageHD() {
+        if (imageLoader == null) return;
+
+        Uri uri = Uri.parse(attr.getImageStrList().get(0));
+        imageLoader.loadImage(uri, this);
+    }
+
+    @UiThread
+    @Override
+    public void onCacheHit(File image) {
+        sharedImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
+    }
+
+    @UiThread
+    @Override
+    public void onCacheMiss(final File image) {
+        sharedImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
+
+    }
+
+    @UiThread
+    @Override
+    public void onStart() {
+        if (progressIndicator == null) return;
+        progressIndicator.getView(TransferWindow.this);
+    }
+
+    @UiThread
+    @Override
+    public void onProgress(int progress) {
+        if (progressIndicator == null) return;
+        progressIndicator.onProgress(progress);
+    }
+
+    @UiThread
+    @Override
+    public void onFinish() {
+        if (progressIndicator == null) return;
+        progressIndicator.onFinish();
+    }
+
     private interface OnViewPagerInstantiateListener {
-        void onInstantiate();
+        void onInitComplete();
     }
 
 
@@ -239,9 +298,10 @@ public class TransferWindow extends FrameLayout {
 
         private List<Bitmap> bitmapList;
         private List<String> imageStrList;
-        private List<Integer> imageResLsit;
 
         private ITransferAnimator transferAnima;
+        private IProgressIndicator proIndicat;
+        private ImageLoader imageLoader;
 
         public Builder(Context context) {
             this.context = context;
@@ -272,13 +332,18 @@ public class TransferWindow extends FrameLayout {
             return this;
         }
 
-        public Builder setImageResList(List<Integer> imageResLsit) {
-            this.imageResLsit = imageResLsit;
+        public Builder setTransferAnima(ITransferAnimator transferAnima) {
+            this.transferAnima = transferAnima;
             return this;
         }
 
-        public Builder setTransferAnima(ITransferAnimator transferAnima) {
-            this.transferAnima = transferAnima;
+        public Builder setProgressIndicator(IProgressIndicator proIndicat) {
+            this.proIndicat = proIndicat;
+            return this;
+        }
+
+        public Builder setImageLoader(ImageLoader imageLoader) {
+            this.imageLoader = imageLoader;
             return this;
         }
 
@@ -288,9 +353,10 @@ public class TransferWindow extends FrameLayout {
             attr.setBackgroundColor(backgroundColor);
             attr.setBitmapList(bitmapList);
             attr.setImageStrList(imageStrList);
-            attr.setImageResList(imageResLsit);
-            attr.setTransferAnima(transferAnima);
             attr.setOriginCurrIndex(originIndex);
+            attr.setProgressIndicator(proIndicat);
+            attr.setTransferAnima(transferAnima);
+            attr.setImageLoader(imageLoader);
 
             TransferWindow transferLayout = new TransferWindow(context, attr);
             return transferLayout;

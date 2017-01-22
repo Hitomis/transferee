@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.hitomi.yifangbao.tilibrary.TransferWindow;
-import com.hitomi.yifangbao.tilibrary.loader.fresco.FrescoImageLoader;
+import com.hitomi.yifangbao.tilibrary.loader.glide.GlideImageLoader;
 import com.hitomi.yifangbao.tilibrary.style.anim.TransitionAnimator;
 import com.hitomi.yifangbao.tilibrary.style.indicat.ProgressPieIndicator;
 
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 List<ImageView> imageViewList = new ArrayList<ImageView>();
                 imageViewList.add(imageView);
                 TransferWindow transferLayout = new TransferWindow.Builder(MainActivity.this)
-                        .setImageLoader(FrescoImageLoader.with(getApplicationContext()))
+                        .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                         .setTransferAnima(new TransitionAnimator())
                         .setProgressIndicator(new ProgressPieIndicator())
                         .setBackgroundColor(Color.BLACK)

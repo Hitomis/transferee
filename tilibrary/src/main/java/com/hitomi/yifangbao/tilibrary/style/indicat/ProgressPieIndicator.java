@@ -33,7 +33,6 @@ public class ProgressPieIndicator implements IProgressIndicator {
         progressPieView.setTextSize(13);
         progressPieView.setStrokeWidth(1);
         progressPieView.setTextColor(Color.WHITE);
-        progressPieView.setProgress(0);
         progressPieView.setProgressFillType(ProgressPieView.FILL_TYPE_RADIAL);
         progressPieView.setBackgroundColor(Color.TRANSPARENT);
         progressPieView.setProgressColor(Color.parseColor("#EEFFFFFF"));
@@ -45,7 +44,8 @@ public class ProgressPieIndicator implements IProgressIndicator {
     }
 
     @Override
-    public void onStart() {}
+    public void onStart() {
+    }
 
     @Override
     public void onProgress(int progress) {

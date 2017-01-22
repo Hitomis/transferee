@@ -1,11 +1,8 @@
-package com.hitomi.yifangbao.tilibrary.loader.glide;
+package com.hitomi.yifangbao.tilibrary.loader.picasso;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
-import com.bumptech.glide.load.model.GlideUrl;
+import com.hitomi.yifangbao.tilibrary.loader.glide.GlideProgressSupport;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,43 +20,36 @@ import okio.Okio;
 import okio.Source;
 
 /**
- * Created by Piasy{github.com/Piasy} on 12/11/2016.
+ * Created by hitomi on 2017/1/22.
  */
 
-public class GlideProgressSupport {
-    private static Interceptor createInterceptor(final ResponseProgressListener listener) {
-        return new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request request = chain.request();
-                Response response = chain.proceed(request);
-                return response.newBuilder()
-                        .body(new OkHttpProgressResponseBody(request.url(), response.body(),
-                                listener))
-                        .build();
-            }
-        };
-    }
+public class PicassoProgressSupport {
 
-    public static void init(Glide glide, OkHttpClient okHttpClient) {
+    public static OkHttpClient.Builder init(OkHttpClient okHttpClient) {
         OkHttpClient.Builder builder;
         if (okHttpClient != null) {
             builder = okHttpClient.newBuilder();
         } else {
             builder = new OkHttpClient.Builder();
         }
-        builder.addNetworkInterceptor(createInterceptor(new DispatchingProgressListener()));
-        glide.register(GlideUrl.class, InputStream.class,
-                new OkHttpUrlLoader.Factory(builder.build()));
+        builder.addNetworkInterceptor(createInterceptor(new PicassoProgressSupport.DispatchingProgressListener()));
+        return builder;
     }
 
-    public static void forget(String url) {
-        DispatchingProgressListener.forget(url);
+    private static Interceptor createInterceptor(final PicassoProgressSupport.ResponseProgressListener listener) {
+        return new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request();
+                Response response = chain.proceed(request);
+                return response.newBuilder()
+                        .body(new PicassoProgressSupport.OkHttpProgressResponseBody(request.url(), response.body(),
+                                listener))
+                        .build();
+            }
+        };
     }
 
-    public static void expect(String url, ProgressListener listener) {
-        DispatchingProgressListener.expect(url, listener);
-    }
 
     public interface ProgressListener {
         void onDownloadStart();
@@ -73,8 +63,8 @@ public class GlideProgressSupport {
         void update(HttpUrl url, long bytesRead, long contentLength);
     }
 
-    private static class DispatchingProgressListener implements ResponseProgressListener {
-        private static final Map<String, ProgressListener> LISTENERS = new HashMap<>();
+    private static class DispatchingProgressListener implements PicassoProgressSupport.ResponseProgressListener {
+        private static final Map<String, GlideProgressSupport.ProgressListener> LISTENERS = new HashMap<>();
         private static final Map<String, Integer> PROGRESSES = new HashMap<>();
 
         static void forget(String url) {
@@ -82,14 +72,14 @@ public class GlideProgressSupport {
             PROGRESSES.remove(url);
         }
 
-        static void expect(String url, ProgressListener listener) {
+        static void expect(String url, GlideProgressSupport.ProgressListener listener) {
             LISTENERS.put(url, listener);
         }
 
         @Override
         public void update(HttpUrl url, final long bytesRead, final long contentLength) {
             String key = url.toString();
-            final ProgressListener listener = LISTENERS.get(key);
+            final GlideProgressSupport.ProgressListener listener = LISTENERS.get(key);
             if (listener == null) {
                 return;
             }
@@ -115,11 +105,11 @@ public class GlideProgressSupport {
     private static class OkHttpProgressResponseBody extends ResponseBody {
         private final HttpUrl mUrl;
         private final ResponseBody mResponseBody;
-        private final ResponseProgressListener mProgressListener;
+        private final PicassoProgressSupport.ResponseProgressListener mProgressListener;
         private BufferedSource mBufferedSource;
 
         OkHttpProgressResponseBody(HttpUrl url, ResponseBody responseBody,
-                ResponseProgressListener progressListener) {
+                                   PicassoProgressSupport.ResponseProgressListener progressListener) {
             this.mUrl = url;
             this.mResponseBody = responseBody;
             this.mProgressListener = progressListener;
@@ -162,4 +152,5 @@ public class GlideProgressSupport {
             };
         }
     }
+
 }

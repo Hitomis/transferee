@@ -239,10 +239,6 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
         }
     }
 
-    private void setAttribute(TransferAttr attribute) {
-        attr = attribute;
-    }
-
     private void showImageHD() {
         if (imageLoader == null) return;
 

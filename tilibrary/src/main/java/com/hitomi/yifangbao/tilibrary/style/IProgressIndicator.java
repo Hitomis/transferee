@@ -8,14 +8,14 @@ public interface IProgressIndicator {
     /**
      * DO NOT add indicator view into parent! Only called once per load.
      * */
-    View getView(ViewGroup parent);
+    View getView(int position, ViewGroup parent);
 
-    void onStart();
+    void onStart(int position);
 
     /**
      * @param progress in range of {@code [0, 100]}
      */
-    void onProgress(int progress);
+    void onProgress(int position, int progress);
 
-    void onFinish();
+    void onFinish(int position);
 }

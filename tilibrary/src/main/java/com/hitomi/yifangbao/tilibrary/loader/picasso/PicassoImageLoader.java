@@ -33,7 +33,7 @@ public class PicassoImageLoader extends ImageLoader {
     }
 
     @Override
-    public void loadImage(Uri uri, Callback callback) {
+    public void loadImage(Uri uri, int position, Callback callback) {
         builder.downloader(new PicassoImageDownloader(client) {
             @Override
             public void onDownloadStart() {

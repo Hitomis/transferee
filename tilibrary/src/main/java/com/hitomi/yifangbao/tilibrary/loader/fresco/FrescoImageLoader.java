@@ -2,7 +2,6 @@ package com.hitomi.yifangbao.tilibrary.loader.fresco;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Message;
 import android.view.View;
 
 import com.facebook.binaryresource.FileBinaryResource;
@@ -43,7 +42,7 @@ public final class FrescoImageLoader extends ImageLoader {
     }
 
     public static FrescoImageLoader with(Context appContext,
-            ImagePipelineConfig imagePipelineConfig) {
+                                         ImagePipelineConfig imagePipelineConfig) {
         return with(appContext, imagePipelineConfig, null);
     }
 
@@ -54,16 +53,16 @@ public final class FrescoImageLoader extends ImageLoader {
     }
 
     @Override
-    public void loadImage(Uri uri, final Callback callback) {
-        setCallback(callback);
+    public void loadImage(Uri uri, final int position, final Callback callback) {
+//        setCallback(callback);
         ImageRequest request = ImageRequest.fromUri(uri);
 
         File localCache = getCacheFile(request);
         if (localCache.exists()) {
-            callback.onCacheHit(localCache);
+            callback.onCacheHit(position, localCache);
         } else {
-            callback.onStart(); // ensure `onStart` is called before `onProgress` and `onFinish`
-            callback.onProgress(0); // show 0 progress immediately
+            callback.onStart(position); // ensure `onStart` is called before `onProgress` and `onFinish`
+            callback.onProgress(position, 0); // show 0 progress immediately
 
             ImagePipeline pipeline = Fresco.getImagePipeline();
             DataSource<CloseableReference<PooledByteBuffer>> source
@@ -71,22 +70,25 @@ public final class FrescoImageLoader extends ImageLoader {
             source.subscribe(new ImageDownloadSubscriber(mAppContext) {
                 @Override
                 protected void onProgress(int progress) {
-                    Message msg = Message.obtain();
-                    msg.what = ImageLoader.STATUS_PROGRESS;
-                    msg.obj = progress;
-                    postMessage(msg);
+//                    Message msg = Message.obtain();
+//                    msg.what = ImageLoader.STATUS_PROGRESS;
+//                    msg.obj = progress;
+//                    postMessage(msg);
+                    callback.onProgress(position, progress);
                 }
 
                 @Override
                 protected void onSuccess(File image) {
-                    Message finishMsg = Message.obtain();
-                    finishMsg.what = ImageLoader.STATUS_FINISH;
-                    postMessage(finishMsg);
+//                    Message finishMsg = Message.obtain();
+//                    finishMsg.what = ImageLoader.STATUS_FINISH;
+//                    postMessage(finishMsg);
+                    callback.onFinish(position);
 
-                    Message missMsg = Message.obtain();
-                    missMsg.what = ImageLoader.STATUS_CACHE_MISS;
-                    missMsg.obj = image;
-                    postMessage(missMsg);
+//                    Message missMsg = Message.obtain();
+//                    missMsg.what = ImageLoader.STATUS_CACHE_MISS;
+//                    missMsg.obj = image;
+//                    postMessage(missMsg);
+                    callback.onCacheMiss(position, image);
                 }
 
                 @Override

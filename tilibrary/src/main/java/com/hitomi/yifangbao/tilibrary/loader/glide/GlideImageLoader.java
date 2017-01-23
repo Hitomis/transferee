@@ -2,7 +2,6 @@ package com.hitomi.yifangbao.tilibrary.loader.glide;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -36,37 +35,30 @@ public final class GlideImageLoader extends ImageLoader {
     }
 
     @Override
-    public void loadImage(final Uri uri, final Callback callback) {
-        setCallback(callback);
+    public void loadImage(final Uri uri, final int postion, final Callback callback) {
+//        setCallback(callback);
         mRequestManager
                 .load(uri)
                 .downloadOnly(new ImageDownloadTarget(uri.toString()) {
                     @Override
                     public void onResourceReady(File image, GlideAnimation<? super File> glideAnimation) {
                         // we don't need delete this image file, so it behaves live cache hit
-                        callback.onCacheHit(image);
+                        callback.onCacheHit(postion, image);
                     }
 
                     @Override
                     public void onDownloadStart() {
-                        Message msg = Message.obtain();
-                        msg.what = ImageLoader.STATUS_START;
-                        postMessage(msg);
+                        callback.onStart(postion);
                     }
 
                     @Override
                     public void onProgress(int progress) {
-                        Message msg = Message.obtain();
-                        msg.what = ImageLoader.STATUS_PROGRESS;
-                        msg.obj = progress;
-                        postMessage(msg);
+                        callback.onProgress(postion, progress);
                     }
 
                     @Override
                     public void onDownloadFinish() {
-                        Message msg = Message.obtain();
-                        msg.what = ImageLoader.STATUS_FINISH;
-                        postMessage(msg);
+                        callback.onFinish(postion);
                     }
                 });
     }

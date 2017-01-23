@@ -84,7 +84,7 @@ public class TransferAttr {
     }
 
     public int getImageSize() {
-        return 1;
+        return imageStrList.size();
     }
 
     public int getOriginCurrIndex() {

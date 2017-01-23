@@ -5,10 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.annotation.UiThread;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +19,6 @@ import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
 import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
 import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -31,7 +28,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * Created by hitomi on 2017/1/19.
  */
 
-public class TransferWindow extends FrameLayout implements ImageLoader.Callback {
+public class TransferWindow extends FrameLayout {
 
     private ViewPager viewPager;
     private ViewPager.OnPageChangeListener pageChangeListener;
@@ -41,7 +38,6 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
     private TransferAttr attr;
 
     private ITransferAnimator transferAnimator;
-    private IProgressIndicator progressIndicator;
     private ImageLoader imageLoader;
 
     private TransferPagerAdapter imagePagerAdapter;
@@ -52,7 +48,6 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
         this.context = context;
         this.attr = attr;
         transferAnimator = attr.getTransferAnima();
-        progressIndicator = attr.getProgressIndicator();
         imageLoader = attr.getImageLoader();
         initLayout();
     }
@@ -86,19 +81,35 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
     }
 
     private void initViewPager() {
+        new ViewPager.SimpleOnPageChangeListener();
         pageChangeListener = new ViewPager.OnPageChangeListener() {
+
+            private int lastPosition = attr.getOriginCurrIndex();
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (lastPosition != position) {
+                    System.out.println("postion:" + position);
+                    System.out.println("positionOffset:" + positionOffset);
+                    System.out.println("positionOffsetPixels:" + positionOffsetPixels);
+                    lastPosition = position;
+                }
+
             }
 
             @Override
             public void onPageSelected(int position) {
                 originCurrImage = attr.getOriginImageList().get(position);
-                showImageHD();
+//                showImageHD(position);
+//                lastPosition = position;
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                if (state == 0) {
+                    System.out.println(11111);
+                }
+
             }
         };
 
@@ -145,7 +156,7 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
                     viewPager.setVisibility(View.VISIBLE);
                     removeView(sharedLayout);
                     // 加载高清图
-                    showImageHD();
+//                    showImageHD(attr.getOriginCurrIndex());
                 }
             }
         });
@@ -199,47 +210,11 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
         }
     }
 
-    private void showImageHD() {
+    private void showImageHD(int position) {
         if (imageLoader == null) return;
 
-        Uri uri = Uri.parse(attr.getImageStrList().get(0));
-        imageLoader.loadImage(uri, this);
-    }
-
-    @UiThread
-    @Override
-    public void onCacheHit(File image) {
-        ImageView primaryImage = imagePagerAdapter.getPrimaryItem();
-        primaryImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
-    }
-
-    @UiThread
-    @Override
-    public void onCacheMiss(final File image) {
-        ImageView primaryImage = imagePagerAdapter.getPrimaryItem();
-        primaryImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
-        removeView(sharedLayout);
-    }
-
-    @UiThread
-    @Override
-    public void onStart() {
-        if (progressIndicator == null) return;
-        progressIndicator.getView(imagePagerAdapter.getPrimaryItemParentLayout());
-    }
-
-    @UiThread
-    @Override
-    public void onProgress(int progress) {
-        if (progressIndicator == null) return;
-        progressIndicator.onProgress(progress);
-    }
-
-    @UiThread
-    @Override
-    public void onFinish() {
-        if (progressIndicator == null) return;
-        progressIndicator.onFinish();
+        Uri uri = Uri.parse(attr.getImageStrList().get(position));
+        imageLoader.loadImage(uri, position, imagePagerAdapter);
     }
 
     public static class Builder {

@@ -4,10 +4,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.filippudak.ProgressPieView.ProgressPieView;
-import com.hitomi.yifangbao.tilibrary.TransferWindow;
 import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
 
 import java.util.Locale;
@@ -21,7 +21,7 @@ public class ProgressPieIndicator implements IProgressIndicator {
     }
 
     @Override
-    public View getView(TransferWindow parent) {
+    public View getView(ViewGroup parent) {
         Context context = parent.getContext();
 
         int progressSize = dip2Px(context, 50);
@@ -35,7 +35,7 @@ public class ProgressPieIndicator implements IProgressIndicator {
         progressPieView.setTextColor(Color.WHITE);
         progressPieView.setProgressFillType(ProgressPieView.FILL_TYPE_RADIAL);
         progressPieView.setBackgroundColor(Color.TRANSPARENT);
-        progressPieView.setProgressColor(Color.parseColor("#EEFFFFFF"));
+        progressPieView.setProgressColor(Color.parseColor("#BBFFFFFF"));
         progressPieView.setStrokeColor(Color.WHITE);
         progressPieView.setLayoutParams(progressLp);
 

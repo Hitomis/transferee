@@ -9,9 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.UiThread;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -37,15 +35,16 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
 
     private ViewPager viewPager;
     private ViewPager.OnPageChangeListener pageChangeListener;
+    private ImageView sharedImage, originCurrImage;
 
     private Context context;
     private TransferAttr attr;
-    private ImageView sharedImage, originCurrImage;
 
     private ITransferAnimator transferAnimator;
     private IProgressIndicator progressIndicator;
     private ImageLoader imageLoader;
-    private ImagePagerAdapter imagePagerAdapter;
+
+    private TransferPagerAdapter imagePagerAdapter;
     private LinearLayout sharedLayout;
 
     private TransferWindow(Context context, TransferAttr attr) {
@@ -86,94 +85,7 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
         showAnima();
     }
 
-    class ImagePagerAdapter extends PagerAdapter {
-
-        private ImageView currImageView;
-
-        @Override
-        public int getCount() {
-            return attr.getImageSize();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            FrameLayout parentLayout = new FrameLayout(context);
-            LayoutParams parentLp = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
-            parentLayout.setLayoutParams(parentLp);
-
-
-            ImageView imageView = new ImageView(context);
-            ImageView originImage = attr.getOriginImageList().get(position);
-            imageView.setImageDrawable(originImage.getDrawable());
-
-            LayoutParams imageLp = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
-            imageView.setLayoutParams(imageLp);
-
-            parentLayout.addView(imageView);
-            container.addView(parentLayout);
-
-            parentLayout.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                }
-            });
-            parentLayout.setOnTouchListener(new OnTouchListener() {
-
-                private float preX, preY;
-
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            preX = event.getX();
-                            preY = event.getY();
-                            break;
-                        case MotionEvent.ACTION_UP:
-                        case MotionEvent.ACTION_CANCEL:
-                            float diffX = Math.abs(event.getX() - preX);
-                            float diffY = Math.abs(event.getY() - preY);
-                            if (diffX >= 36 || diffY >= 36) {
-                                return true;
-                            }
-                            break;
-                    }
-                    return false;
-                }
-            });
-            if (attr.getOriginCurrIndex() == position) {
-                setPrimaryItem(container, position, imageView);
-            }
-            return parentLayout;
-        }
-
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            if (object instanceof ImageView)
-            currImageView = (ImageView) object;
-        }
-
-        public ImageView getPrimaryItem() {
-            return currImageView;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-    }
-
     private void initViewPager() {
-        viewPager = new ViewPager(context);
-        viewPager.setVisibility(View.INVISIBLE);
-        imagePagerAdapter = new ImagePagerAdapter();
-        viewPager.setAdapter(imagePagerAdapter);
-
         pageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -189,9 +101,20 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
             public void onPageScrollStateChanged(int state) {
             }
         };
+
+        imagePagerAdapter = new TransferPagerAdapter(attr);
+        imagePagerAdapter.setOnDismissListener(new TransferPagerAdapter.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                dismiss();
+            }
+        });
+
+        viewPager = new ViewPager(context);
+        viewPager.setVisibility(View.INVISIBLE);
+        viewPager.setAdapter(imagePagerAdapter);
         viewPager.addOnPageChangeListener(pageChangeListener);
-        LayoutParams vpLp = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        viewPager.setLayoutParams(vpLp);
+        viewPager.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
         viewPager.setCurrentItem(attr.getOriginCurrIndex());
         viewPager.setOffscreenPageLimit(2);
         addView(viewPager);
@@ -219,6 +142,8 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (!attr.isLocalLoad()) {
+                    viewPager.setVisibility(View.VISIBLE);
+                    removeView(sharedLayout);
                     // 加载高清图
                     showImageHD();
                 }
@@ -284,16 +209,13 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
     @UiThread
     @Override
     public void onCacheHit(File image) {
-        viewPager.setVisibility(View.VISIBLE);
         ImageView primaryImage = imagePagerAdapter.getPrimaryItem();
         primaryImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
-        removeView(sharedLayout);
     }
 
     @UiThread
     @Override
     public void onCacheMiss(final File image) {
-        viewPager.setVisibility(View.VISIBLE);
         ImageView primaryImage = imagePagerAdapter.getPrimaryItem();
         primaryImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
         removeView(sharedLayout);
@@ -303,7 +225,7 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
     @Override
     public void onStart() {
         if (progressIndicator == null) return;
-        progressIndicator.getView(TransferWindow.this);
+        progressIndicator.getView(imagePagerAdapter.getPrimaryItemParentLayout());
     }
 
     @UiThread
@@ -392,7 +314,6 @@ public class TransferWindow extends FrameLayout implements ImageLoader.Callback 
             TransferWindow transferLayout = new TransferWindow(context, attr);
             return transferLayout;
         }
-
 
     }
 

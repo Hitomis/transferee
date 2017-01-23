@@ -1,15 +1,14 @@
 package com.hitomi.yifangbao.tilibrary.style;
 
 import android.view.View;
-
-import com.hitomi.yifangbao.tilibrary.TransferWindow;
+import android.view.ViewGroup;
 
 
 public interface IProgressIndicator {
     /**
      * DO NOT add indicator view into parent! Only called once per load.
      * */
-    View getView(TransferWindow parent);
+    View getView(ViewGroup parent);
 
     void onStart();
 

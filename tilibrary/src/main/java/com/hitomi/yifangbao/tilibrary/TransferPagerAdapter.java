@@ -3,6 +3,7 @@ package com.hitomi.yifangbao.tilibrary;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.support.v4.view.PagerAdapter;
@@ -27,10 +28,13 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Callback {
 
+    private static final int TOUCH_SLOP = 36;
+
     private TransferAttr attr;
     private Map<Integer, FrameLayout> containnerLayoutMap;
     private IProgressIndicator progressIndicator;
     private OnDismissListener onDismissListener;
+
     private Handler handler = new Handler();
 
     public TransferPagerAdapter(TransferAttr attr) {
@@ -78,30 +82,39 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        final Context context = container.getContext();
-
         FrameLayout parentLayout = containnerLayoutMap.get(position);
         if (parentLayout == null) {
-            parentLayout = new FrameLayout(context);
-            FrameLayout.LayoutParams parentLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-            parentLayout.setLayoutParams(parentLp);
-            ImageView imageView = new ImageView(context);
-            ImageView originImage;
-            if (position >= attr.getOriginImageList().size()) {
-                originImage = new ImageView(context);
-            } else {
-                originImage = attr.getOriginImageList().get(position);
-            }
-            imageView.setImageDrawable(originImage.getDrawable());
-
-            FrameLayout.LayoutParams imageLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-            imageView.setLayoutParams(imageLp);
-            parentLayout.addView(imageView);
-
+            parentLayout = newParentLayout(container.getContext(), position);
             containnerLayoutMap.put(position, parentLayout);
         }
         container.addView(parentLayout);
 
+        if (attr.getCurrOriginIndex() == position) {
+            // init value currShowIndex
+            attr.setCurrShowIndex(position);
+        }
+        loadImageHD(position);
+        return parentLayout;
+    }
+
+    @NonNull
+    private FrameLayout newParentLayout(Context context, int position) {
+        FrameLayout parentLayout;
+        parentLayout = new FrameLayout(context);
+        FrameLayout.LayoutParams parentLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        parentLayout.setLayoutParams(parentLp);
+        ImageView imageView = new ImageView(context);
+        ImageView originImage;
+        if (position >= attr.getOriginImageList().size()) {
+            originImage = new ImageView(context);
+        } else {
+            originImage = attr.getOriginImageList().get(position);
+        }
+        imageView.setImageDrawable(originImage.getDrawable());
+
+        FrameLayout.LayoutParams imageLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        imageView.setLayoutParams(imageLp);
+        parentLayout.addView(imageView);
         parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,7 +136,7 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
                     case MotionEvent.ACTION_CANCEL:
                         float diffX = Math.abs(event.getX() - preX);
                         float diffY = Math.abs(event.getY() - preY);
-                        if (diffX >= 36 || diffY >= 36) {
+                        if (diffX >= TOUCH_SLOP || diffY >= TOUCH_SLOP) {
                             return true;
                         }
                         break;
@@ -131,10 +144,6 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
                 return false;
             }
         });
-        if (attr.getCurrOriginIndex() == position) { // init value currShowIndex
-            attr.setCurrShowIndex(position);
-        }
-        loadImageHD(position);
         return parentLayout;
     }
 

@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.support.v4.graphics.ColorUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,9 +55,27 @@ public class TransitionAnimator implements ITransferAnimator {
                 beforeView.setScaleX(scale);
                 beforeView.setScaleY(scale);
                 beforeView.setAlpha(alpha);
+
             }
         });
         return missAnimator;
+    }
+
+    @Override
+    public Animator dismissBackgroundAnimator(final View backgroundLayout, final int backgroundColor) {
+        ValueAnimator backAnimator = ValueAnimator.ofFloat(0, 1f);
+        backAnimator.setInterpolator(new AccelerateInterpolator());
+        backAnimator.setDuration(350);
+        backAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int alpha = (int) (255 * (1.f - animation.getAnimatedFraction()));
+                int color = ColorUtils.setAlphaComponent(backgroundColor, alpha);
+                backgroundLayout.setBackgroundColor(color);
+
+            }
+        });
+        return backAnimator;
     }
 
     private AnimatorSet createTransferAnimator(final View sharedView, boolean reverse) {

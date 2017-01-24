@@ -15,4 +15,6 @@ public interface ITransferAnimator {
 
     Animator dismissMissAnimator(View beforeView);
 
+    Animator dismissBackgroundAnimator(View backgroundLayout, int backgroundColor);
+
 }

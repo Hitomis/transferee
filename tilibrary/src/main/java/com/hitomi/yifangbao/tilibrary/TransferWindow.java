@@ -5,8 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.net.Uri;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +36,6 @@ public class TransferWindow extends FrameLayout {
     private ViewPager.OnPageChangeListener pageChangeListener;
 
     private ITransferAnimator transferAnimator;
-    private ImageLoader imageLoader;
-
     private TransferPagerAdapter imagePagerAdapter;
     private LinearLayout sharedLayout;
 
@@ -48,7 +44,6 @@ public class TransferWindow extends FrameLayout {
         this.context = context;
         this.attr = attr;
         transferAnimator = attr.getTransferAnima();
-        imageLoader = attr.getImageLoader();
         initLayout();
     }
 
@@ -122,10 +117,15 @@ public class TransferWindow extends FrameLayout {
         if (progressIndicator != null)
             progressIndicator.hideView(attr.getCurrShowIndex());
 
-        if (attr.getCurrShowIndex() > attr.getCurrOriginIndex()) {
-            dismissMissAnima();
+        if (transferAnimator == null) {
+            removeFromWindow();
         } else {
-            dismissHitAnima();
+            if (attr.getCurrShowIndex() > attr.getCurrOriginIndex()) {
+                dismissMissAnima();
+            } else {
+                dismissHitAnima();
+            }
+            dismissBackAnima();
         }
     }
 
@@ -144,24 +144,17 @@ public class TransferWindow extends FrameLayout {
     }
 
     private void dismissHitAnima() {
-        if (transferAnimator == null) return;
-
         final View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
         final View afterView = attr.getCurrOriginImageView();
-
-        setBackgroundColor(Color.TRANSPARENT);
         afterView.setVisibility(View.INVISIBLE);
 
         Animator animator = transferAnimator.dismissHitAnimator(beforeView, afterView);
+        if (animator == null) return;
         animator.addListener(new AnimatorListenerAdapter() {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                ViewGroup vg = (ViewGroup) getParent();
-                if (vg != null) {
-                    vg.removeView(TransferWindow.this);
-                }
-                imageLoader.cancel();
+                removeFromWindow();
                 afterView.setVisibility(View.VISIBLE);
             }
         });
@@ -169,24 +162,31 @@ public class TransferWindow extends FrameLayout {
     }
 
     private void dismissMissAnima() {
-        if (transferAnimator == null) return;
-
-        setBackgroundColor(Color.TRANSPARENT);
-
         View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
         Animator animator = transferAnimator.dismissMissAnimator(beforeView);
+        if (animator == null) return;
         animator.addListener(new AnimatorListenerAdapter() {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                ViewGroup vg = (ViewGroup) getParent();
-                if (vg != null) {
-                    vg.removeView(TransferWindow.this);
-                }
-                imageLoader.cancel();
+                removeFromWindow();
             }
         });
         animator.start();
+    }
+
+    private void dismissBackAnima() {
+        Animator animator = transferAnimator.dismissBackgroundAnimator(this, attr.getBackgroundColor());
+        if (animator != null)
+            animator.start();
+    }
+
+    private void removeFromWindow() {
+        ViewGroup vg = (ViewGroup) getParent();
+        if (vg != null) {
+            vg.removeView(TransferWindow.this);
+        }
+        attr.getImageLoader().cancel();
     }
 
     private void addToWindow() {
@@ -213,13 +213,6 @@ public class TransferWindow extends FrameLayout {
         } catch (Exception e) {
             return 0;
         }
-    }
-
-    private void showImageHD(int position) {
-        if (imageLoader == null) return;
-
-        Uri uri = Uri.parse(attr.getImageStrList().get(position));
-        imageLoader.downloadImage(uri, position, imagePagerAdapter);
     }
 
     public static class Builder {

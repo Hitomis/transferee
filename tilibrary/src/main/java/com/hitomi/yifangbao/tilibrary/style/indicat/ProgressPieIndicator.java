@@ -23,7 +23,6 @@ public class ProgressPieIndicator implements IProgressIndicator {
         return (int) (dpValue * scale + 0.5f);
     }
 
-
     @Override
     public View getView(int position, ViewGroup parent) {
         Context context = parent.getContext();

@@ -127,7 +127,7 @@ public class TransferWindow extends FrameLayout {
         viewPager.addOnPageChangeListener(pageChangeListener);
         viewPager.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
         viewPager.setCurrentItem(attr.getOriginCurrIndex());
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(1);
         addView(viewPager);
     }
 
@@ -155,8 +155,6 @@ public class TransferWindow extends FrameLayout {
                 if (!attr.isLocalLoad()) {
                     viewPager.setVisibility(View.VISIBLE);
                     removeView(sharedLayout);
-                    // 加载高清图
-//                    showImageHD(attr.getOriginCurrIndex());
                 }
             }
         });
@@ -180,6 +178,7 @@ public class TransferWindow extends FrameLayout {
                     vg.removeView(TransferWindow.this);
                 }
                 originCurrImage.setVisibility(View.VISIBLE);
+                imageLoader.cancel();
             }
         });
     }
@@ -214,7 +213,7 @@ public class TransferWindow extends FrameLayout {
         if (imageLoader == null) return;
 
         Uri uri = Uri.parse(attr.getImageStrList().get(position));
-        imageLoader.loadImage(uri, position, imagePagerAdapter);
+        imageLoader.downloadImage(uri, position, imagePagerAdapter);
     }
 
     public static class Builder {

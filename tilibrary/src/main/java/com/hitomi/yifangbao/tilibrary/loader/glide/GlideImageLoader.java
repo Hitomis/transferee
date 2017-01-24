@@ -20,8 +20,10 @@ import okhttp3.OkHttpClient;
 
 public final class GlideImageLoader extends ImageLoader {
     private final RequestManager mRequestManager;
+    private Context context;
 
     private GlideImageLoader(Context context, OkHttpClient okHttpClient) {
+        this.context = context;
         GlideProgressSupport.init(Glide.get(context), okHttpClient);
         mRequestManager = Glide.with(context);
     }
@@ -35,7 +37,7 @@ public final class GlideImageLoader extends ImageLoader {
     }
 
     @Override
-    public void loadImage(final Uri uri, final int postion, final Callback callback) {
+    public void downloadImage(final Uri uri, final int postion, final Callback callback) {
 //        setCallback(callback);
         mRequestManager
                 .load(uri)
@@ -61,6 +63,19 @@ public final class GlideImageLoader extends ImageLoader {
                         callback.onFinish(postion);
                     }
                 });
+    }
+
+    @Override
+    public void loadImage(File image, ImageView imageView) {
+        Glide.with(context)
+                .load(image)
+                .crossFade(200)
+                .into(imageView);
+    }
+
+    @Override
+    public void cancel() {
+        mRequestManager.onDestroy();
     }
 
     @Override

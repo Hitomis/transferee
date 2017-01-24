@@ -1,7 +1,6 @@
 package com.hitomi.yifangbao.tilibrary;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.UiThread;
@@ -151,7 +150,7 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
 
     private void loadImageHD(int position) {
         Uri uri = Uri.parse(attr.getImageStrList().get(position));
-        attr.getImageLoader().loadImage(uri, position, this);
+        attr.getImageLoader().downloadImage(uri, position, this);
     }
 
     private Handler handler = new Handler();
@@ -159,30 +158,23 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
     @UiThread
     @Override
     public void onCacheHit(int position, File image) {
-//        ImageView primaryImage = getPrimaryItem();
-//        primaryImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
-
         ImageView imageView = getImageItem(position);
-        imageView.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
+//        imageView.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
+        attr.getImageLoader().loadImage(image, imageView);
     }
 
     @WorkerThread
     @Override
     public void onCacheMiss(final int position, final File image) {
-//        ImageView primaryImage = getPrimaryItem();
-//        primaryImage.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
-
-
         handler.post(new Runnable() {
             @Override
             public void run() {
                 ImageView imageView = getImageItem(position);
-                imageView.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
+//                imageView.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
+                attr.getImageLoader().loadImage(image, imageView);
             }
         });
     }
-
-
 
     @WorkerThread
     @Override

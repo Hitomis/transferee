@@ -3,6 +3,7 @@ package com.hitomi.yifangbao.tilibrary.loader;
 import android.net.Uri;
 import android.support.annotation.UiThread;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.hitomi.yifangbao.tilibrary.TransferWindow;
 
@@ -51,7 +52,11 @@ public abstract class ImageLoader {
 //        handler.sendMessage(msg);
 //    }
 
-    public abstract void loadImage(Uri uri, int postion, Callback callback);
+    public abstract void downloadImage(Uri uri, int postion, Callback callback);
+
+    public abstract void loadImage(File image, ImageView imageView);
+
+    public abstract void cancel();
 
     public abstract View showThumbnail(TransferWindow parent, Uri thumbnail, int scaleType);
 

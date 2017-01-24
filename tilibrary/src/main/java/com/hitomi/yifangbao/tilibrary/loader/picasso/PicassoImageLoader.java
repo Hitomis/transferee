@@ -3,10 +3,13 @@ package com.hitomi.yifangbao.tilibrary.loader.picasso;
 import android.content.Context;
 import android.net.Uri;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.hitomi.yifangbao.tilibrary.TransferWindow;
 import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 import okhttp3.OkHttpClient;
 
@@ -33,7 +36,7 @@ public class PicassoImageLoader extends ImageLoader {
     }
 
     @Override
-    public void loadImage(Uri uri, int position, Callback callback) {
+    public void downloadImage(Uri uri, int position, Callback callback) {
         builder.downloader(new PicassoImageDownloader(client) {
             @Override
             public void onDownloadStart() {
@@ -50,6 +53,16 @@ public class PicassoImageLoader extends ImageLoader {
                 System.out.println(3333);
             }
         }).build().load(uri);
+    }
+
+    @Override
+    public void loadImage(File image, ImageView imageView) {
+
+    }
+
+    @Override
+    public void cancel() {
+
     }
 
     @Override

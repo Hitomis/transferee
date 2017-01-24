@@ -3,6 +3,7 @@ package com.hitomi.yifangbao.tilibrary.loader.fresco;
 import android.content.Context;
 import android.net.Uri;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
@@ -24,17 +25,20 @@ import com.hitomi.yifangbao.tilibrary.TransferWindow;
 import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public final class FrescoImageLoader extends ImageLoader {
 
     private final Context mAppContext;
     private final DefaultExecutorSupplier mExecutorSupplier;
+    private List<DataSource<CloseableReference<PooledByteBuffer>>> sourceList;
 
     private FrescoImageLoader(Context appContext) {
         mAppContext = appContext;
-
         mExecutorSupplier = new DefaultExecutorSupplier(Runtime.getRuntime().availableProcessors());
+        sourceList = new ArrayList<>();
     }
 
     public static FrescoImageLoader with(Context appContext) {
@@ -53,7 +57,7 @@ public final class FrescoImageLoader extends ImageLoader {
     }
 
     @Override
-    public void loadImage(Uri uri, final int position, final Callback callback) {
+    public void downloadImage(Uri uri, final int position, final Callback callback) {
 //        setCallback(callback);
         ImageRequest request = ImageRequest.fromUri(uri);
 
@@ -67,6 +71,7 @@ public final class FrescoImageLoader extends ImageLoader {
             ImagePipeline pipeline = Fresco.getImagePipeline();
             DataSource<CloseableReference<PooledByteBuffer>> source
                     = pipeline.fetchEncodedImage(request, true);
+            sourceList.add(source);
             source.subscribe(new ImageDownloadSubscriber(mAppContext) {
                 @Override
                 protected void onProgress(int progress) {
@@ -96,6 +101,18 @@ public final class FrescoImageLoader extends ImageLoader {
                     t.printStackTrace();
                 }
             }, mExecutorSupplier.forBackgroundTasks());
+        }
+    }
+
+    @Override
+    public void loadImage(File image, ImageView imageView) {
+//        Fresco.getImagePipeline().
+    }
+
+    @Override
+    public void cancel() {
+        for (DataSource<CloseableReference<PooledByteBuffer>> source : sourceList) {
+            source.close();
         }
     }
 

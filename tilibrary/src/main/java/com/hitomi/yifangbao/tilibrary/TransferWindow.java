@@ -81,35 +81,10 @@ public class TransferWindow extends FrameLayout {
     }
 
     private void initViewPager() {
-        new ViewPager.SimpleOnPageChangeListener();
-        pageChangeListener = new ViewPager.OnPageChangeListener() {
-
-            private int lastPosition = attr.getOriginCurrIndex();
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (lastPosition != position) {
-                    System.out.println("postion:" + position);
-                    System.out.println("positionOffset:" + positionOffset);
-                    System.out.println("positionOffsetPixels:" + positionOffsetPixels);
-                    lastPosition = position;
-                }
-
-            }
-
+        pageChangeListener = new ViewPager.SimpleOnPageChangeListener(){
             @Override
             public void onPageSelected(int position) {
                 originCurrImage = attr.getOriginImageList().get(position);
-//                showImageHD(position);
-//                lastPosition = position;
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                if (state == 0) {
-                    System.out.println(11111);
-                }
-
             }
         };
 
@@ -124,10 +99,10 @@ public class TransferWindow extends FrameLayout {
         viewPager = new ViewPager(context);
         viewPager.setVisibility(View.INVISIBLE);
         viewPager.setAdapter(imagePagerAdapter);
-        viewPager.addOnPageChangeListener(pageChangeListener);
         viewPager.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
         viewPager.setCurrentItem(attr.getOriginCurrIndex());
         viewPager.setOffscreenPageLimit(1);
+        viewPager.addOnPageChangeListener(pageChangeListener);
         addView(viewPager);
     }
 

@@ -32,6 +32,7 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
     private Map<Integer, FrameLayout> containnerLayoutMap;
     private IProgressIndicator progressIndicator;
     private OnDismissListener onDismissListener;
+    private Handler handler = new Handler();
 
     public TransferPagerAdapter(TransferAttr attr) {
         this.attr = attr;
@@ -147,19 +148,21 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
         return parentLayout;
     }
 
-
     private void loadImageHD(int position) {
         Uri uri = Uri.parse(attr.getImageStrList().get(position));
         attr.getImageLoader().downloadImage(uri, position, this);
     }
 
-    private Handler handler = new Handler();
-
     @UiThread
     @Override
     public void onCacheHit(int position, File image) {
-        ImageView imageView = getImageItem(position);
 //        imageView.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
+        doShowImage(position, image);
+    }
+
+    @UiThread
+    private void doShowImage(int position, File image) {
+        ImageView imageView = getImageItem(position);
         attr.getImageLoader().loadImage(image, imageView);
     }
 
@@ -169,9 +172,8 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ImageView imageView = getImageItem(position);
 //                imageView.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
-                attr.getImageLoader().loadImage(image, imageView);
+                doShowImage(position, image);
             }
         });
     }

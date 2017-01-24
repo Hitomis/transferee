@@ -99,22 +99,23 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
 
     @NonNull
     private FrameLayout newParentLayout(Context context, int position) {
-        FrameLayout parentLayout;
-        parentLayout = new FrameLayout(context);
-        FrameLayout.LayoutParams parentLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        parentLayout.setLayoutParams(parentLp);
+        // create inner ImageView
         ImageView imageView = new ImageView(context);
-        ImageView originImage;
-        if (position >= attr.getOriginImageList().size()) {
-            originImage = new ImageView(context);
-        } else {
-            originImage = attr.getOriginImageList().get(position);
-        }
-        imageView.setImageDrawable(originImage.getDrawable());
-
         FrameLayout.LayoutParams imageLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         imageView.setLayoutParams(imageLp);
+        if (position < attr.getOriginImageList().size()) {
+            ImageView originImage = attr.getOriginImageList().get(position);
+            imageView.setImageDrawable(originImage.getDrawable());
+        }
+
+        // create outer ParentLayout
+        FrameLayout parentLayout = new FrameLayout(context);
+        FrameLayout.LayoutParams parentLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        parentLayout.setLayoutParams(parentLp);
+
         parentLayout.addView(imageView);
+
+        // add listener to parentLayout
         parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

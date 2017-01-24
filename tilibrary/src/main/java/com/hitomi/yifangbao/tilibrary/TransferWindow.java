@@ -94,9 +94,7 @@ public class TransferWindow extends FrameLayout {
 
         viewPager = new ViewPager(context);
         viewPager.setVisibility(View.INVISIBLE);
-        viewPager.setAdapter(imagePagerAdapter);
         viewPager.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        viewPager.setCurrentItem(attr.getCurrOriginIndex());
         viewPager.setOffscreenPageLimit(1);
         viewPager.addOnPageChangeListener(pageChangeListener);
         addView(viewPager);
@@ -136,7 +134,9 @@ public class TransferWindow extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                viewPager.setAdapter(imagePagerAdapter);
                 viewPager.setVisibility(View.VISIBLE);
+                viewPager.setCurrentItem(attr.getCurrOriginIndex());
                 removeView(sharedLayout);
             }
         });

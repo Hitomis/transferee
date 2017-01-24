@@ -30,12 +30,12 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class TransferWindow extends FrameLayout {
 
-    private ViewPager viewPager;
-    private ViewPager.OnPageChangeListener pageChangeListener;
-    private ImageView sharedImage, originCurrImage;
-
     private Context context;
     private TransferAttr attr;
+
+    private ViewPager viewPager;
+    private ImageView sharedImage;
+    private ViewPager.OnPageChangeListener pageChangeListener;
 
     private ITransferAnimator transferAnimator;
     private ImageLoader imageLoader;
@@ -63,15 +63,15 @@ public class TransferWindow extends FrameLayout {
         LinearLayout.LayoutParams linlp = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         sharedLayout.setLayoutParams(linlp);
 
-        originCurrImage = attr.getOriginImageList().get(attr.getOriginCurrIndex());
+        ImageView currOriginImage = attr.getOriginImageList().get(attr.getCurrOriginIndex());
         sharedImage = new ImageView(context);
-        sharedImage.setImageDrawable(originCurrImage.getDrawable());
+        sharedImage.setImageDrawable(currOriginImage.getDrawable());
 
-        LinearLayout.LayoutParams sImageVlp = new LinearLayout.LayoutParams(originCurrImage.getWidth(), originCurrImage.getHeight());
+        LinearLayout.LayoutParams sImageVlp = new LinearLayout.LayoutParams(currOriginImage.getWidth(), currOriginImage.getHeight());
         sharedImage.setLayoutParams(sImageVlp);
 
         final int[] location = new int[2];
-        originCurrImage.getLocationInWindow(location);
+        currOriginImage.getLocationInWindow(location);
         sharedImage.setX(location[0]);
         sharedImage.setY(location[1] - getStatusBarHeight());
 
@@ -81,10 +81,11 @@ public class TransferWindow extends FrameLayout {
     }
 
     private void initViewPager() {
-        pageChangeListener = new ViewPager.SimpleOnPageChangeListener(){
+        pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                originCurrImage = attr.getOriginImageList().get(position);
+                attr.setCurrOriginIndex(position);
+                attr.setCurrShowIndex(position);
             }
         };
 
@@ -100,7 +101,7 @@ public class TransferWindow extends FrameLayout {
         viewPager.setVisibility(View.INVISIBLE);
         viewPager.setAdapter(imagePagerAdapter);
         viewPager.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        viewPager.setCurrentItem(attr.getOriginCurrIndex());
+        viewPager.setCurrentItem(attr.getCurrOriginIndex());
         viewPager.setOffscreenPageLimit(1);
         viewPager.addOnPageChangeListener(pageChangeListener);
         addView(viewPager);
@@ -117,34 +118,38 @@ public class TransferWindow extends FrameLayout {
     }
 
     public void dismiss() {
-        dismissAnima();
+        if (attr.getCurrShowIndex() > attr.getCurrOriginIndex()) {
+            dismissMissAnima();
+        } else {
+            dismissHitAnima();
+        }
     }
 
     private void showAnima() {
         if (transferAnimator == null) return;
-        Animator animator = transferAnimator.showAnimator(originCurrImage, sharedImage);
+        Animator animator = transferAnimator.showAnimator(attr.getCurrOriginImageView(), sharedImage);
         animator.addListener(new AnimatorListenerAdapter() {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!attr.isLocalLoad()) {
-                    viewPager.setVisibility(View.VISIBLE);
-                    removeView(sharedLayout);
-                }
+                viewPager.setVisibility(View.VISIBLE);
+                removeView(sharedLayout);
             }
         });
+        animator.start();
     }
 
-    private void dismissAnima() {
+    private void dismissHitAnima() {
         if (transferAnimator == null) return;
-        Animator animator = transferAnimator.dismissAnimator(imagePagerAdapter.getPrimaryItem(), originCurrImage);
-        animator.addListener(new AnimatorListenerAdapter() {
 
-            @Override
-            public void onAnimationStart(Animator animation) {
-                setBackgroundColor(Color.TRANSPARENT);
-                originCurrImage.setVisibility(View.GONE);
-            }
+        final View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
+        final View afterView = attr.getCurrOriginImageView();
+
+        setBackgroundColor(Color.TRANSPARENT);
+        afterView.setVisibility(View.INVISIBLE);
+
+        Animator animator = transferAnimator.dismissHitAnimator(beforeView, afterView);
+        animator.addListener(new AnimatorListenerAdapter() {
 
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -152,10 +157,32 @@ public class TransferWindow extends FrameLayout {
                 if (vg != null) {
                     vg.removeView(TransferWindow.this);
                 }
-                originCurrImage.setVisibility(View.VISIBLE);
+                imageLoader.cancel();
+                afterView.setVisibility(View.VISIBLE);
+            }
+        });
+        animator.start();
+    }
+
+    private void dismissMissAnima() {
+        if (transferAnimator == null) return;
+
+        setBackgroundColor(Color.TRANSPARENT);
+
+        View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
+        Animator animator = transferAnimator.dismissMissAnimator(beforeView);
+        animator.addListener(new AnimatorListenerAdapter() {
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                ViewGroup vg = (ViewGroup) getParent();
+                if (vg != null) {
+                    vg.removeView(TransferWindow.this);
+                }
                 imageLoader.cancel();
             }
         });
+        animator.start();
     }
 
     private void addToWindow() {
@@ -255,7 +282,7 @@ public class TransferWindow extends FrameLayout {
             attr.setBackgroundColor(backgroundColor);
             attr.setBitmapList(bitmapList);
             attr.setImageStrList(imageStrList);
-            attr.setOriginCurrIndex(originIndex);
+            attr.setCurrOriginIndex(originIndex);
             attr.setProgressIndicator(proIndicat);
             attr.setTransferAnima(transferAnima);
             attr.setImageLoader(imageLoader);

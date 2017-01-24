@@ -28,7 +28,6 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Callback {
 
     private TransferAttr attr;
-    private ImageView currImageView;
     private Map<Integer, FrameLayout> containnerLayoutMap;
     private IProgressIndicator progressIndicator;
     private OnDismissListener onDismissListener;
@@ -51,17 +50,8 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
     }
 
     @Override
-    public void setPrimaryItem(ViewGroup container, int position, Object object) {
-        if (object instanceof ImageView)
-            currImageView = (ImageView) object;
-    }
-
-    public ImageView getPrimaryItem() {
-        return currImageView;
-    }
-
-    public ViewGroup getPrimaryItemParentLayout() {
-        return (ViewGroup) getPrimaryItem().getParent();
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        container.removeView((View) object);
     }
 
     public ImageView getImageItem(int position) {
@@ -82,11 +72,6 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
         return containnerLayoutMap.get(position);
     }
 
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
-    }
-
     public void setOnDismissListener(OnDismissListener listener) {
         this.onDismissListener = listener;
     }
@@ -101,7 +86,12 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
             FrameLayout.LayoutParams parentLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
             parentLayout.setLayoutParams(parentLp);
             ImageView imageView = new ImageView(context);
-            ImageView originImage = attr.getOriginImageList().get(position);
+            ImageView originImage;
+            if (position >= attr.getOriginImageList().size()) {
+                originImage = new ImageView(context);
+            } else {
+                originImage = attr.getOriginImageList().get(position);
+            }
             imageView.setImageDrawable(originImage.getDrawable());
 
             FrameLayout.LayoutParams imageLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
@@ -141,8 +131,8 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
                 return false;
             }
         });
-        if (attr.getOriginCurrIndex() == position) {
-            setPrimaryItem(container, position, getImageItem(position));
+        if (attr.getCurrOriginIndex() == position) { // init value currShowIndex
+            attr.setCurrShowIndex(position);
         }
         loadImageHD(position);
         return parentLayout;
@@ -154,16 +144,15 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
     }
 
     @UiThread
-    @Override
-    public void onCacheHit(int position, File image) {
-//        imageView.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
-        doShowImage(position, image);
-    }
-
-    @UiThread
     private void doShowImage(int position, File image) {
         ImageView imageView = getImageItem(position);
         attr.getImageLoader().loadImage(image, imageView);
+    }
+
+    @UiThread
+    @Override
+    public void onCacheHit(int position, File image) {
+        doShowImage(position, image);
     }
 
     @WorkerThread
@@ -172,7 +161,6 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
         handler.post(new Runnable() {
             @Override
             public void run() {
-//                imageView.setImageBitmap(BitmapFactory.decodeFile(image.getPath()));
                 doShowImage(position, image);
             }
         });

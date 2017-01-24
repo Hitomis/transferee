@@ -17,19 +17,16 @@ import java.util.List;
 public class TransferAttr {
 
     private List<ImageView> originImageList;
-    private int originCurrIndex;
+    private int currOriginIndex, currShowIndex;
     private int backgroundColor;
 
     private List<Bitmap> bitmapList;
-    private List<String> imageStrList;
     private List<Integer> imageResList;
-
+    private List<String> imageStrList;
 
     private ITransferAnimator transferAnima;
     private IProgressIndicator progressIndicator;
     private ImageLoader imageLoader;
-
-    private boolean localLoad;
 
     public List<ImageView> getOriginImageList() {
         return originImageList;
@@ -87,31 +84,45 @@ public class TransferAttr {
         return imageStrList.size();
     }
 
-    public int getOriginCurrIndex() {
-        return originCurrIndex;
-    }
-
-    public void setOriginCurrIndex(int originCurrIndex) {
-        this.originCurrIndex = originCurrIndex;
-    }
-
     public boolean isLocalLoad() {
         return false;
-    }
-
-    public void setProgressIndicator(IProgressIndicator progressIndicator) {
-        this.progressIndicator = progressIndicator;
     }
 
     public IProgressIndicator getProgressIndicator() {
         return progressIndicator;
     }
 
-    public void setImageLoader(ImageLoader imageLoader) {
-        this.imageLoader = imageLoader;
+    public void setProgressIndicator(IProgressIndicator progressIndicator) {
+        this.progressIndicator = progressIndicator;
     }
 
     public ImageLoader getImageLoader() {
         return imageLoader;
     }
+
+    public void setImageLoader(ImageLoader imageLoader) {
+        this.imageLoader = imageLoader;
+    }
+
+    public int getCurrOriginIndex() {
+        return currOriginIndex;
+    }
+
+    public void setCurrOriginIndex(int currOriginIndex) {
+        if (currOriginIndex >= originImageList.size()) return ;
+        this.currOriginIndex = currOriginIndex;
+    }
+
+    int getCurrShowIndex() {
+        return currShowIndex;
+    }
+
+    void setCurrShowIndex(int currShowIndex) {
+        this.currShowIndex = currShowIndex;
+    }
+
+    ImageView getCurrOriginImageView() {
+        return originImageList.get(currOriginIndex);
+    }
+
 }

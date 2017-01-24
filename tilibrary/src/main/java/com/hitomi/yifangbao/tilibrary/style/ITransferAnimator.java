@@ -11,6 +11,8 @@ public interface ITransferAnimator {
 
     Animator showAnimator(View beforeView, View afterView);
 
-    Animator dismissAnimator(View beforeView, View afterView);
+    Animator dismissHitAnimator(View beforeView, View afterView);
+
+    Animator dismissMissAnimator(View beforeView);
 
 }

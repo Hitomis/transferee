@@ -8,6 +8,7 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 
 import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
 import com.hitomi.yifangbao.tilibrary.style.Location;
@@ -27,16 +28,35 @@ public class TransitionAnimator implements ITransferAnimator {
         originView = beforeView;
         AnimatorSet animatorSet = createTransferAnimator(afterView, false);
         animatorSet.setStartDelay(65);
-        animatorSet.start();
         return animatorSet;
     }
 
     @Override
-    public Animator dismissAnimator(View beforeView, View afterView) {
+    public Animator dismissHitAnimator(View beforeView, View afterView) {
         originView = afterView;
         AnimatorSet animatorSet = createTransferAnimator(beforeView, true);
-        animatorSet.start();
+        animatorSet.setStartDelay(65);
         return animatorSet;
+    }
+
+    @Override
+    public Animator dismissMissAnimator(final View beforeView) {
+        ValueAnimator missAnimator = ValueAnimator.ofFloat(0, 1f);
+        missAnimator.setInterpolator(new AccelerateInterpolator());
+        missAnimator.setDuration(350);
+        missAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float fraction = animation.getAnimatedFraction();
+                float scale = .8f * fraction + 1.f;
+                float alpha = 1.f - fraction;
+
+                beforeView.setScaleX(scale);
+                beforeView.setScaleY(scale);
+                beforeView.setAlpha(alpha);
+            }
+        });
+        return missAnimator;
     }
 
     private AnimatorSet createTransferAnimator(final View sharedView, boolean reverse) {

@@ -10,6 +10,8 @@ public interface IProgressIndicator {
      * */
     View getView(int position, ViewGroup parent);
 
+    void hideView(int position);
+
     void onStart(int position);
 
     /**
@@ -18,4 +20,5 @@ public interface IProgressIndicator {
     void onProgress(int position, int progress);
 
     void onFinish(int position);
+
 }

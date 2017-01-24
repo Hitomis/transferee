@@ -118,6 +118,10 @@ public class TransferWindow extends FrameLayout {
     }
 
     public void dismiss() {
+        IProgressIndicator progressIndicator = attr.getProgressIndicator();
+        if (progressIndicator != null)
+            progressIndicator.hideView(attr.getCurrShowIndex());
+
         if (attr.getCurrShowIndex() > attr.getCurrOriginIndex()) {
             dismissMissAnima();
         } else {

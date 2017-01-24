@@ -49,6 +49,13 @@ public class ProgressPieIndicator implements IProgressIndicator {
     }
 
     @Override
+    public void hideView(int position) {
+        ProgressPieView progressPieView = progressPieViewMap.get(position);
+        if (progressPieView != null)
+            progressPieView.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onStart(int position) {
     }
 

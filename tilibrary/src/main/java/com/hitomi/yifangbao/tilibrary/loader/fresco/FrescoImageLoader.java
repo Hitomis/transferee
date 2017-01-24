@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public final class FrescoImageLoader extends ImageLoader {
+public final class FrescoImageLoader implements ImageLoader {
 
     private final Context mAppContext;
     private final DefaultExecutorSupplier mExecutorSupplier;

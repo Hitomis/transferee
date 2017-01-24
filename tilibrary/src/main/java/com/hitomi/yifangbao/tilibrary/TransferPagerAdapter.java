@@ -138,6 +138,7 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
         return parentLayout;
     }
 
+
     private void loadImageHD(int position) {
         Uri uri = Uri.parse(attr.getImageStrList().get(position));
         attr.getImageLoader().downloadImage(uri, position, this);

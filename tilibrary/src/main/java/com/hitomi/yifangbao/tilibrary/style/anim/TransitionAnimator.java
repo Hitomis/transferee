@@ -48,7 +48,7 @@ public class TransitionAnimator implements ITransferAnimator {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float fraction = animation.getAnimatedFraction();
-                float scale = .8f * fraction + 1.f;
+                float scale = .5f * fraction + 1.f;
                 float alpha = 1.f - fraction;
 
                 beforeView.setScaleX(scale);

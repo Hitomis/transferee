@@ -18,7 +18,7 @@ import okhttp3.OkHttpClient;
 
 
 
-public final class GlideImageLoader extends ImageLoader {
+public final class GlideImageLoader implements ImageLoader {
     private final RequestManager mRequestManager;
     private Context context;
 

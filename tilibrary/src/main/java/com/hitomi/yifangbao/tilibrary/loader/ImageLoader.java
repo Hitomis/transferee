@@ -13,56 +13,19 @@ import java.io.File;
  * Created by hitomi on 2017/1/20.
  */
 
-public abstract class ImageLoader {
+public interface ImageLoader {
 
-/*    public static final int STATUS_START = 1001;
-    public static final int STATUS_PROGRESS = 1002;
-    public static final int STATUS_FINISH = 1003;
-    public static final int STATUS_CACHE_MISS = 1004;
+    void downloadImage(Uri uri, int postion, Callback callback);
 
-    private ImageLoader.Callback callback;*/
+    void loadImage(File image, ImageView imageView);
 
-//    private Handler handler = new Handler() {
-//
-//        @Override
-//        public void handleMessage(Message msg) {
-//            if (callback == null) return ;
-//            switch (msg.what) {
-//                case STATUS_START:
-//                    callback.onStart();
-//                    break;
-//                case STATUS_PROGRESS:
-//                    callback.onProgress((int) msg.obj);
-//                    break;
-//                case STATUS_FINISH:
-//                    callback.onFinish();
-//                    break;
-//                case STATUS_CACHE_MISS:
-//                    callback.onCacheMiss((File) msg.obj);
-//                    break;
-//            }
-//        }
-//    };
+    void cancel();
 
-//    public void setCallback(Callback callback) {
-//        this.callback = callback;
-//    }
+    View showThumbnail(TransferWindow parent, Uri thumbnail, int scaleType);
 
-//    public void postMessage(Message msg) {
-//        handler.sendMessage(msg);
-//    }
+    void prefetch(Uri uri);
 
-    public abstract void downloadImage(Uri uri, int postion, Callback callback);
-
-    public abstract void loadImage(File image, ImageView imageView);
-
-    public abstract void cancel();
-
-    public abstract View showThumbnail(TransferWindow parent, Uri thumbnail, int scaleType);
-
-    public abstract void prefetch(Uri uri);
-
-    public interface Callback {
+    interface Callback {
         @UiThread
         void onCacheHit(int position, File image);
 

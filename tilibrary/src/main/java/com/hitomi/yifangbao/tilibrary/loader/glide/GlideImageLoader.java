@@ -38,7 +38,6 @@ public final class GlideImageLoader implements ImageLoader {
 
     @Override
     public void downloadImage(final Uri uri, final int postion, final Callback callback) {
-//        setCallback(callback);
         mRequestManager
                 .load(uri)
                 .downloadOnly(new ImageDownloadTarget(uri.toString()) {

@@ -28,4 +28,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':tilibrary')
 
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
+
 }

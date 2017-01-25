@@ -58,7 +58,6 @@ public final class FrescoImageLoader implements ImageLoader {
 
     @Override
     public void downloadImage(Uri uri, final int position, final Callback callback) {
-//        setCallback(callback);
         ImageRequest request = ImageRequest.fromUri(uri);
 
         File localCache = getCacheFile(request);
@@ -75,24 +74,12 @@ public final class FrescoImageLoader implements ImageLoader {
             source.subscribe(new ImageDownloadSubscriber(mAppContext) {
                 @Override
                 protected void onProgress(int progress) {
-//                    Message msg = Message.obtain();
-//                    msg.what = ImageLoader.STATUS_PROGRESS;
-//                    msg.obj = progress;
-//                    postMessage(msg);
                     callback.onProgress(position, progress);
                 }
 
                 @Override
                 protected void onSuccess(File image) {
-//                    Message finishMsg = Message.obtain();
-//                    finishMsg.what = ImageLoader.STATUS_FINISH;
-//                    postMessage(finishMsg);
                     callback.onFinish(position);
-
-//                    Message missMsg = Message.obtain();
-//                    missMsg.what = ImageLoader.STATUS_CACHE_MISS;
-//                    missMsg.obj = image;
-//                    postMessage(missMsg);
                     callback.onCacheMiss(position, image);
                 }
 
@@ -106,7 +93,7 @@ public final class FrescoImageLoader implements ImageLoader {
 
     @Override
     public void loadImage(File image, ImageView imageView) {
-//        Fresco.getImagePipeline().
+
     }
 
     @Override
@@ -141,7 +128,7 @@ public final class FrescoImageLoader implements ImageLoader {
     public void prefetch(Uri uri) {
         ImagePipeline pipeline = Fresco.getImagePipeline();
         pipeline.prefetchToDiskCache(ImageRequest.fromUri(uri),
-                false); // we don't need context, but avoid null
+                false);
     }
 
     private File getCacheFile(final ImageRequest request) {
@@ -152,7 +139,6 @@ public final class FrescoImageLoader implements ImageLoader {
                 .getInstance()
                 .getEncodedCacheKey(request, false); // we don't need context, but avoid null
         File cacheFile = request.getSourceFile();
-        // http://crashes.to/s/ee10638fb31
         if (mainFileCache.hasKey(cacheKey) && mainFileCache.getResource(cacheKey) != null) {
             cacheFile = ((FileBinaryResource) mainFileCache.getResource(cacheKey)).getFile();
         }

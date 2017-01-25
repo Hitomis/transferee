@@ -1,5 +1,6 @@
 package com.hitomi.transferimage;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +23,7 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnClearFresco, btnClearGlide;
+    private Button btnClearFresco, btnClearGlide, btnJump;
 
     private ImageView imageView1, imageView2, imageView3;
     private List<String> imageStrList;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnClearFresco = (Button) findViewById(R.id.btn_clear_fresco);
         btnClearGlide = (Button) findViewById(R.id.btn_clear_glide);
+        btnJump = (Button) findViewById(R.id.btn_jump);
 
         btnClearFresco.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
                         Glide.get(getApplicationContext()).clearMemory();
                     }
                 });
+            }
+        });
+
+        btnJump.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, GlideTestActivity.class));
             }
         });
 

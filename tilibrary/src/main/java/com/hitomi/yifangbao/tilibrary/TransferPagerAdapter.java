@@ -28,8 +28,6 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Callback {
 
-    private static final int TOUCH_SLOP = 36;
-
     private TransferAttr attr;
     private Map<Integer, FrameLayout> containnerLayoutMap;
     private IProgressIndicator progressIndicator;
@@ -106,7 +104,7 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
         imageView.setLayoutParams(imageLp);
         if (position < attr.getOriginImageList().size()) {
             ImageView originImage = attr.getOriginImageList().get(position);
-            imageView.setImageDrawable(originImage.getDrawable());
+//            imageView.setImageDrawable(originImage.getDrawable());
         }
 
         // create outer ParentLayout
@@ -123,29 +121,6 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
                 onDismissListener.onDismiss();
             }
         });
-//        parentLayout.setOnTouchListener(new View.OnTouchListener() {
-//
-//            private float preX, preY;
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        preX = event.getX();
-//                        preY = event.getY();
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                    case MotionEvent.ACTION_CANCEL:
-//                        float diffX = Math.abs(event.getX() - preX);
-//                        float diffY = Math.abs(event.getY() - preY);
-//                        if (diffX >= TOUCH_SLOP || diffY >= TOUCH_SLOP) {
-//                            return true;
-//                        }
-//                        break;
-//                }
-//                return false;
-//            }
-//        });
         return parentLayout;
     }
 

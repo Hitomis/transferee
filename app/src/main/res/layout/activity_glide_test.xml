@@ -15,26 +15,33 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.hitomi.transferimage.progress.ProgressImageView
-                android:id="@+id/image_view1"
+            <FrameLayout
+                android:id="@+id/relay"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_centerInParent="true" />
+                android:layout_height="wrap_content">
 
-            <com.hitomi.transferimage.progress.ProgressImageView
+                <com.hitomi.yifangbao.tilibrary.PhotoPreview.PhotoView
+                    android:id="@+id/image_view1"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_centerInParent="true" />
+
+            </FrameLayout>
+
+            <com.hitomi.yifangbao.tilibrary.PhotoPreview.PhotoView
                 android:id="@+id/image_view2"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_centerInParent="true" />
 
-            <com.hitomi.transferimage.progress.ProgressImageView
+            <com.hitomi.yifangbao.tilibrary.PhotoPreview.PhotoView
                 android:id="@+id/image_view3"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_centerInParent="true" />
 
 
-            <com.hitomi.transferimage.progress.ProgressImageView
+            <com.hitomi.yifangbao.tilibrary.PhotoPreview.PhotoView
                 android:id="@+id/image_view4"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"

@@ -119,7 +119,7 @@ public class GlideProgressSupport {
         private BufferedSource mBufferedSource;
 
         OkHttpProgressResponseBody(HttpUrl url, ResponseBody responseBody,
-                ResponseProgressListener progressListener) {
+                                   ResponseProgressListener progressListener) {
             this.mUrl = url;
             this.mResponseBody = responseBody;
             this.mProgressListener = progressListener;

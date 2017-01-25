@@ -1,90 +1,69 @@
 package com.hitomi.transferimage;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.FrameLayout;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.hitomi.transferimage.progress.ProgressImageView;
-import com.hitomi.transferimage.progress.ProgressModelLoader;
+import com.hitomi.yifangbao.tilibrary.PhotoPreview.PhotoView;
+import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
+import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
+import com.hitomi.yifangbao.tilibrary.style.indicat.ProgressPieIndicator;
 
-import java.lang.ref.WeakReference;
+import java.io.File;
 
-public class GlideTestActivity extends AppCompatActivity {
+public class GlideTestActivity extends AppCompatActivity implements ImageLoader.Callback {
 
-//    private Button btnLoad;
-    private ProgressImageView imageView1, imageView2, imageView3, imageView4;
+    String url1 = "http://img5.niutuku.com/phone/1212/3752/3752-niutuku.com-22310.jpg";
+    String url2 = "http://c.hiphotos.baidu.com/zhidao/pic/item/b7003af33a87e950e7d5403816385343faf2b4a0.jpg";
+    String url3 = "http://e.hiphotos.baidu.com/zhidao/pic/item/7aec54e736d12f2ed5568f4c4dc2d5628535684e.jpg";
+
+    private PhotoView imageView1, imageView2, imageView3, imageView4;
+
+    private IProgressIndicator progressIndicator = new ProgressPieIndicator();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_glide_test);
-//        btnLoad = (Button) findViewById(R.id.btn_load);
-        imageView1 = (ProgressImageView) findViewById(R.id.image_view1);
-        imageView2 = (ProgressImageView) findViewById(R.id.image_view2);
-        imageView3 = (ProgressImageView) findViewById(R.id.image_view3);
-        imageView4 = (ProgressImageView) findViewById(R.id.image_view4);
+        imageView1 = (PhotoView) findViewById(R.id.image_view1);
+        imageView2 = (PhotoView) findViewById(R.id.image_view2);
+        imageView3 = (PhotoView) findViewById(R.id.image_view3);
+        imageView4 = (PhotoView) findViewById(R.id.image_view4);
+
+        imageView1.enable();
+        imageView2.enable();
+        imageView3.enable();
+        imageView4.enable();
 
 
-        Glide.with(GlideTestActivity.this)
-                .using(new ProgressModelLoader(new ProgressHandler(GlideTestActivity.this, imageView1)))
-                .load("http://img5.niutuku.com/phone/1212/3752/3752-niutuku.com-22310.jpg")
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .placeholder(R.drawable.img1)
-                .priority(Priority.IMMEDIATE)
-                .into(imageView1.getImageView());
-
-        Glide.with(GlideTestActivity.this)
-                .using(new ProgressModelLoader(new ProgressHandler(GlideTestActivity.this, imageView2)))
-                .load("http://c.hiphotos.baidu.com/zhidao/pic/item/b7003af33a87e950e7d5403816385343faf2b4a0.jpg")
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .placeholder(R.drawable.img2)
-                .priority(Priority.HIGH)
-                .into(imageView2.getImageView());
-
-        Glide.with(GlideTestActivity.this)
-                .using(new ProgressModelLoader(new ProgressHandler(GlideTestActivity.this, imageView3)))
-                .load("http://e.hiphotos.baidu.com/zhidao/pic/item/7aec54e736d12f2ed5568f4c4dc2d5628535684e.jpg")
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .placeholder(R.drawable.img3)
-                .priority(Priority.NORMAL)
-                .into(imageView3.getImageView());
+        GlideImageLoader.with(this).loadImage(url1, imageView1, R.drawable.img1, this);
+        GlideImageLoader.with(this).loadImage(url2, imageView2, R.drawable.img2, this);
+        GlideImageLoader.with(this).loadImage(url3, imageView3, R.drawable.img3, this);
 
     }
 
-    private static class ProgressHandler extends Handler {
+    @Override
+    public void onCacheHit(int position, File image) {
 
-        private final WeakReference<Activity> mActivity;
-        private final ProgressImageView mProgressImageView;
+    }
 
-        public ProgressHandler(Activity activity, ProgressImageView progressImageView) {
-            super(Looper.getMainLooper());
-            mActivity = new WeakReference<>(activity);
-            mProgressImageView = progressImageView;
-        }
+    @Override
+    public void onCacheMiss(int position, File image) {
 
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            final Activity activity = mActivity.get();
-            if (activity != null) {
-                switch (msg.what) {
-                    case 1:
-                        int percent = msg.arg1*100/msg.arg2;
-                        mProgressImageView.setProgress(percent);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
+    }
+
+    @Override
+    public void onStart(int position) {
+        progressIndicator.getView(0, (FrameLayout) findViewById(R.id.relay));
+    }
+
+    @Override
+    public void onProgress(int position, int progress) {
+        progressIndicator.onProgress(position, progress);
+    }
+
+    @Override
+    public void onFinish(int position) {
+        progressIndicator.onFinish(0);
     }
 }

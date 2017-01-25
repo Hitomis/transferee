@@ -7,12 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 import android.support.v4.view.PagerAdapter;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.hitomi.yifangbao.tilibrary.PhotoPreview.PhotoView;
 import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
 import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
 
@@ -58,14 +58,14 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
         container.removeView((View) object);
     }
 
-    public ImageView getImageItem(int position) {
+    public PhotoView getImageItem(int position) {
         FrameLayout parentLayout = containnerLayoutMap.get(position);
         int childCount = parentLayout.getChildCount();
-        ImageView imageView = null;
+        PhotoView imageView = null;
         for (int i = 0; i < childCount; i++) {
             View view = parentLayout.getChildAt(i);
-            if (view instanceof ImageView) {
-                imageView = (ImageView) view;
+            if (view instanceof PhotoView) {
+                imageView = (PhotoView) view;
                 break;
             }
         }
@@ -100,7 +100,8 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
     @NonNull
     private FrameLayout newParentLayout(Context context, int position) {
         // create inner ImageView
-        ImageView imageView = new ImageView(context);
+        PhotoView imageView = new PhotoView(context);
+        imageView.enable();
         FrameLayout.LayoutParams imageLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         imageView.setLayoutParams(imageLp);
         if (position < attr.getOriginImageList().size()) {
@@ -116,35 +117,35 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
         parentLayout.addView(imageView);
 
         // add listener to parentLayout
-        parentLayout.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onDismissListener.onDismiss();
             }
         });
-        parentLayout.setOnTouchListener(new View.OnTouchListener() {
-
-            private float preX, preY;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        preX = event.getX();
-                        preY = event.getY();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_CANCEL:
-                        float diffX = Math.abs(event.getX() - preX);
-                        float diffY = Math.abs(event.getY() - preY);
-                        if (diffX >= TOUCH_SLOP || diffY >= TOUCH_SLOP) {
-                            return true;
-                        }
-                        break;
-                }
-                return false;
-            }
-        });
+//        parentLayout.setOnTouchListener(new View.OnTouchListener() {
+//
+//            private float preX, preY;
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        preX = event.getX();
+//                        preY = event.getY();
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                    case MotionEvent.ACTION_CANCEL:
+//                        float diffX = Math.abs(event.getX() - preX);
+//                        float diffY = Math.abs(event.getY() - preY);
+//                        if (diffX >= TOUCH_SLOP || diffY >= TOUCH_SLOP) {
+//                            return true;
+//                        }
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
         return parentLayout;
     }
 
@@ -156,7 +157,7 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
 
     @UiThread
     private void doShowImage(int position, File image) {
-        ImageView imageView = getImageItem(position);
+        PhotoView imageView = getImageItem(position);
         attr.getImageLoader().loadImage(image, imageView);
     }
 

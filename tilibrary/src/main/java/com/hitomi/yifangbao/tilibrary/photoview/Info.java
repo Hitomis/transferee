@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary.PhotoPreview;
+package com.hitomi.yifangbao.tilibrary.photoview;
 
 import android.graphics.PointF;
 import android.graphics.RectF;

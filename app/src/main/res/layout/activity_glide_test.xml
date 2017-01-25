@@ -20,7 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.hitomi.yifangbao.tilibrary.PhotoPreview.PhotoView
+                <com.hitomi.yifangbao.tilibrary.photoview.PhotoView
                     android:id="@+id/image_view1"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
@@ -28,20 +28,20 @@
 
             </FrameLayout>
 
-            <com.hitomi.yifangbao.tilibrary.PhotoPreview.PhotoView
+            <com.hitomi.yifangbao.tilibrary.photoview.PhotoView
                 android:id="@+id/image_view2"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_centerInParent="true" />
 
-            <com.hitomi.yifangbao.tilibrary.PhotoPreview.PhotoView
+            <com.hitomi.yifangbao.tilibrary.photoview.PhotoView
                 android:id="@+id/image_view3"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_centerInParent="true" />
 
 
-            <com.hitomi.yifangbao.tilibrary.PhotoPreview.PhotoView
+            <com.hitomi.yifangbao.tilibrary.photoview.PhotoView
                 android:id="@+id/image_view4"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"

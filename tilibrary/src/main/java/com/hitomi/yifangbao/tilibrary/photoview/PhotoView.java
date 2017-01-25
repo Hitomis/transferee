@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary.PhotoPreview;
+package com.hitomi.yifangbao.tilibrary.photoview;
 
 import android.content.Context;
 import android.graphics.Canvas;

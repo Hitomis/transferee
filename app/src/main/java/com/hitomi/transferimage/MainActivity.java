@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
         imageStrList.add("http://img5.niutuku.com/phone/1212/3752/3752-niutuku.com-22310.jpg");
         imageStrList.add("http://c.hiphotos.baidu.com/zhidao/pic/item/b7003af33a87e950e7d5403816385343faf2b4a0.jpg");
         imageStrList.add("http://e.hiphotos.baidu.com/zhidao/pic/item/7aec54e736d12f2ed5568f4c4dc2d5628535684e.jpg");
-        imageStrList.add("http://img2.imgtn.bdimg.com/it/u=1506529296,2739202796&fm=23&gp=0.jpg");
+        imageStrList.add("http://e.hiphotos.baidu.com/zhidao/pic/item/78310a55b319ebc443ac406c8726cffc1f17166a.jpg");
+        imageStrList.add("http://img2.niutuku.com/desk/anime/1948/1948-13519.jpg");
     }
 
     @Override

@@ -82,15 +82,27 @@ public class GlideImageLoader implements ImageLoader {
             }
         });
 
-        Glide.with(context)
-                .using(modelLoader)
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .dontAnimate()
-                .placeholder(placeholder)
-                .priority(Priority.IMMEDIATE)
-                .into(imageView);
+        if (placeholder == null) {
+            Glide.with(context)
+                    .using(modelLoader)
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .dontAnimate()
+                    .priority(Priority.IMMEDIATE)
+                    .into(imageView);
+        } else {
+            Glide.with(context)
+                    .using(modelLoader)
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .dontAnimate()
+                    .placeholder(placeholder)
+                    .priority(Priority.IMMEDIATE)
+                    .into(imageView);
+        }
+
     }
 
     @Override

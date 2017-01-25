@@ -95,8 +95,8 @@ public class TransferWindow extends FrameLayout {
         viewPager = new ViewPager(context);
         viewPager.setVisibility(View.INVISIBLE);
         viewPager.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        viewPager.setOffscreenPageLimit(1);
         viewPager.setAdapter(imagePagerAdapter);
+        viewPager.setOffscreenPageLimit(1);
         viewPager.setCurrentItem(attr.getCurrOriginIndex());
         viewPager.addOnPageChangeListener(pageChangeListener);
         addView(viewPager);

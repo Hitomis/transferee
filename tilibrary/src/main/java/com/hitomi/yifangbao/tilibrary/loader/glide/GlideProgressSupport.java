@@ -1,21 +1,22 @@
 package com.hitomi.yifangbao.tilibrary.loader.glide;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
-import com.bumptech.glide.load.model.GlideUrl;
+import android.os.Handler;
+import android.os.Message;
+
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.data.DataFetcher;
+import com.bumptech.glide.load.model.stream.StreamModelLoader;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
-import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.ForwardingSource;
@@ -23,143 +24,181 @@ import okio.Okio;
 import okio.Source;
 
 /**
- * Created by Piasy{github.com/Piasy} on 12/11/2016.
+ * Created by hitomi on 2017/1/25.
  */
 
 public class GlideProgressSupport {
-    private static Interceptor createInterceptor(final ResponseProgressListener listener) {
-        return new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request request = chain.request();
-                Response response = chain.proceed(request);
-                return response.newBuilder()
-                        .body(new OkHttpProgressResponseBody(request.url(), response.body(),
-                                listener))
-                        .build();
-            }
-        };
+
+    public static DataModelLoader init(Handler handler) {
+        return new DataModelLoader(handler);
     }
 
-    public static void init(Glide glide, OkHttpClient okHttpClient) {
-        OkHttpClient.Builder builder;
-        if (okHttpClient != null) {
-            builder = okHttpClient.newBuilder();
-        } else {
-            builder = new OkHttpClient.Builder();
-        }
-        builder.addNetworkInterceptor(createInterceptor(new DispatchingProgressListener()));
-        glide.register(GlideUrl.class, InputStream.class,
-                new OkHttpUrlLoader.Factory(builder.build()));
+    public interface ResponseProgressListener {
+        void progress(long bytesRead, long contentLength, boolean done);
     }
 
-    public static void forget(String url) {
-        DispatchingProgressListener.forget(url);
-    }
+    public static class DataModelLoader implements StreamModelLoader<String> {
+        private Handler handler;
 
-    public static void expect(String url, ProgressListener listener) {
-        DispatchingProgressListener.expect(url, listener);
-    }
-
-    public interface ProgressListener {
-        void onDownloadStart();
-
-        void onProgress(int progress);
-
-        void onDownloadFinish();
-    }
-
-    private interface ResponseProgressListener {
-        void update(HttpUrl url, long bytesRead, long contentLength);
-    }
-
-    private static class DispatchingProgressListener implements ResponseProgressListener {
-        private static final Map<String, ProgressListener> LISTENERS = new HashMap<>();
-        private static final Map<String, Integer> PROGRESSES = new HashMap<>();
-
-        static void forget(String url) {
-            LISTENERS.remove(url);
-            PROGRESSES.remove(url);
-        }
-
-        static void expect(String url, ProgressListener listener) {
-            LISTENERS.put(url, listener);
+        public DataModelLoader(Handler handler) {
+            this.handler = handler;
         }
 
         @Override
-        public void update(HttpUrl url, final long bytesRead, final long contentLength) {
-            String key = url.toString();
-            final ProgressListener listener = LISTENERS.get(key);
-            if (listener == null) {
-                return;
-            }
-
-            Integer lastProgress = PROGRESSES.get(key);
-            if (lastProgress == null) {
-                // ensure `onStart` is called before `onProgress` and `onFinish`
-                listener.onDownloadStart();
-            }
-            if (contentLength <= bytesRead) {
-                listener.onDownloadFinish();
-                forget(key);
-                return;
-            }
-            int progress = (int) ((float) bytesRead / contentLength * 100);
-            if (lastProgress == null || progress != lastProgress) {
-                PROGRESSES.put(key, progress);
-                listener.onProgress(progress);
-            }
+        public DataFetcher<InputStream> getResourceFetcher(String model, int width, int height) {
+            return new ProgressDataFetcher(model, handler);
         }
     }
 
-    private static class OkHttpProgressResponseBody extends ResponseBody {
-        private final HttpUrl mUrl;
-        private final ResponseBody mResponseBody;
-        private final ResponseProgressListener mProgressListener;
-        private BufferedSource mBufferedSource;
+    private static class ProgressDataFetcher implements DataFetcher<InputStream> {
 
-        OkHttpProgressResponseBody(HttpUrl url, ResponseBody responseBody,
-                                   ResponseProgressListener progressListener) {
-            this.mUrl = url;
-            this.mResponseBody = responseBody;
-            this.mProgressListener = progressListener;
+        private String url;
+        private Handler handler;
+        private Call progressCall;
+        private InputStream stream;
+        private boolean isCancelled;
+
+        public ProgressDataFetcher(String url, Handler handler) {
+            this.url = url;
+            this.handler = handler;
+        }
+
+        @Override
+        public InputStream loadData(Priority priority) throws Exception {
+            Request request = new Request.Builder().url(url).build();
+            OkHttpClient client = new OkHttpClient();
+            client.interceptors().add(new ProgressInterceptor(getProgressListener()));
+            try {
+                handler.sendEmptyMessage(GlideImageLoader.MSG_START);
+                progressCall = client.newCall(request);
+                Response response = progressCall.execute();
+                if (isCancelled) {
+                    return null;
+                }
+                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+                stream = response.body().byteStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+            return stream;
+        }
+
+        private ResponseProgressListener getProgressListener() {
+            ResponseProgressListener progressListener = new ResponseProgressListener() {
+
+                @Override
+                public void progress(long bytesRead, long contentLength, boolean done) {
+                    Message message = handler.obtainMessage();
+                    if (handler != null && !done) {
+                        message.what = GlideImageLoader.MSG_PROGRESS;
+                        message.arg1 = (int) bytesRead;
+                        message.arg2 = (int) contentLength;
+                    }
+                    if (done || bytesRead == contentLength) {
+                        message.what = GlideImageLoader.MSG_FINISH;
+                    }
+                    handler.sendMessage(message);
+                }
+            };
+            return progressListener;
+        }
+
+        @Override
+        public void cleanup() {
+            if (stream != null) {
+                try {
+                    stream.close();
+                    stream = null;
+                } catch (IOException e) {
+                    stream = null;
+                }
+            }
+            if (progressCall != null) {
+                progressCall.cancel();
+            }
+        }
+
+        @Override
+        public String getId() {
+            return url;
+        }
+
+        @Override
+        public void cancel() {
+            isCancelled = true;
+        }
+    }
+
+    private static class ProgressInterceptor implements Interceptor {
+
+        private ResponseProgressListener progressListener;
+
+        public ProgressInterceptor(ResponseProgressListener progressListener) {
+            this.progressListener = progressListener;
+        }
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Response originalResponse = chain.proceed(chain.request());
+            return originalResponse.newBuilder().body(new ProgressResponseBody(originalResponse.body(), progressListener)).build();
+        }
+
+    }
+
+    private static class ProgressResponseBody extends ResponseBody {
+
+        private ResponseBody responseBody;
+        private ResponseProgressListener progressListener;
+        private BufferedSource bufferedSource;
+
+        public ProgressResponseBody(ResponseBody responseBody, ResponseProgressListener progressListener) {
+            this.responseBody = responseBody;
+            this.progressListener = progressListener;
         }
 
         @Override
         public MediaType contentType() {
-            return mResponseBody.contentType();
+            return responseBody.contentType();
         }
 
         @Override
         public long contentLength() {
-            return mResponseBody.contentLength();
+            try {
+                return responseBody.contentLength();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return 0;
         }
 
         @Override
         public BufferedSource source() {
-            if (mBufferedSource == null) {
-                mBufferedSource = Okio.buffer(source(mResponseBody.source()));
+            if (bufferedSource == null) {
+                try {
+                    bufferedSource = Okio.buffer(source(responseBody.source()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            return mBufferedSource;
+            return bufferedSource;
         }
 
         private Source source(Source source) {
             return new ForwardingSource(source) {
-                private long mTotalBytesRead = 0L;
+
+                long totalBytesRead = 0;
 
                 @Override
                 public long read(Buffer sink, long byteCount) throws IOException {
                     long bytesRead = super.read(sink, byteCount);
-                    long fullLength = mResponseBody.contentLength();
-                    if (bytesRead == -1) { // this source is exhausted
-                        mTotalBytesRead = fullLength;
-                    } else {
-                        mTotalBytesRead += bytesRead;
-                    }
-                    mProgressListener.update(mUrl, mTotalBytesRead, fullLength);
+                    totalBytesRead += bytesRead != -1 ? bytesRead : 0;
+                    if (progressListener != null)
+                        progressListener.progress(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
                     return bytesRead;
                 }
             };
         }
     }
+
 }

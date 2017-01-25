@@ -1,11 +1,9 @@
 package com.hitomi.yifangbao.tilibrary;
 
 import android.content.Context;
-import android.net.Uri;
-import android.os.Handler;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import com.hitomi.yifangbao.tilibrary.PhotoPreview.PhotoView;
 import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
 import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,14 +23,14 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * Created by hitomi on 2017/1/23.
  */
 
-public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Callback {
+public class TransferPagerAdapter extends PagerAdapter {
+    @IdRes
+    private static final int ID_IMAGE = 1001;
 
     private TransferAttr attr;
     private Map<Integer, FrameLayout> containnerLayoutMap;
     private IProgressIndicator progressIndicator;
     private OnDismissListener onDismissListener;
-
-    private Handler handler = new Handler();
 
     public TransferPagerAdapter(TransferAttr attr) {
         this.attr = attr;
@@ -83,6 +80,7 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
         FrameLayout parentLayout = containnerLayoutMap.get(position);
         if (parentLayout == null) {
             parentLayout = newParentLayout(container.getContext(), position);
+            loadImageHD((PhotoView) parentLayout.findViewById(ID_IMAGE), position);
             containnerLayoutMap.put(position, parentLayout);
         }
         container.addView(parentLayout);
@@ -91,7 +89,6 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
             // init value currShowIndex
             attr.setCurrShowIndex(position);
         }
-        loadImageHD(position);
         return parentLayout;
     }
 
@@ -99,13 +96,10 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
     private FrameLayout newParentLayout(Context context, int position) {
         // create inner ImageView
         PhotoView imageView = new PhotoView(context);
+        imageView.setId(ID_IMAGE);
         imageView.enable();
         FrameLayout.LayoutParams imageLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         imageView.setLayoutParams(imageLp);
-        if (position < attr.getOriginImageList().size()) {
-            ImageView originImage = attr.getOriginImageList().get(position);
-//            imageView.setImageDrawable(originImage.getDrawable());
-        }
 
         // create outer ParentLayout
         FrameLayout parentLayout = new FrameLayout(context);
@@ -125,69 +119,35 @@ public class TransferPagerAdapter extends PagerAdapter implements ImageLoader.Ca
     }
 
 
-    private void loadImageHD(int position) {
-        Uri uri = Uri.parse(attr.getImageStrList().get(position));
-        attr.getImageLoader().downloadImage(uri, position, this);
-    }
+    private void loadImageHD(ImageView imageView, final int position) {
+        String imgUrl = attr.getImageStrList().get(position);
+        Drawable placeHolder = null;
+        if (position < attr.getOriginImageList().size()) {
+            placeHolder = attr.getOriginImageList().get(position).getDrawable();
+        }
 
-    @UiThread
-    private void doShowImage(int position, File image) {
-        PhotoView imageView = getImageItem(position);
-        attr.getImageLoader().loadImage(image, imageView);
-    }
+        attr.getImageLoader().loadImage(imgUrl, imageView, placeHolder, new ImageLoader.Callback() {
 
-    @UiThread
-    @Override
-    public void onCacheHit(int position, File image) {
-        doShowImage(position, image);
-    }
-
-    @WorkerThread
-    @Override
-    public void onCacheMiss(final int position, final File image) {
-        handler.post(new Runnable() {
             @Override
-            public void run() {
-                doShowImage(position, image);
-            }
-        });
-    }
-
-    @WorkerThread
-    @Override
-    public void onStart(final int position) {
-        if (progressIndicator == null) return;
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
+            public void onStart() {
+                if (progressIndicator == null) return;
                 progressIndicator.getView(position, getParentItem(position));
             }
-        });
-    }
 
-    @WorkerThread
-    @Override
-    public void onProgress(final int position, final int progress) {
-        if (progressIndicator == null) return;
-        handler.post(new Runnable() {
             @Override
-            public void run() {
+            public void onProgress(int progress) {
+                if (progressIndicator == null) return;
                 progressIndicator.onProgress(position, progress);
             }
-        });
-    }
 
-    @WorkerThread
-    @Override
-    public void onFinish(final int position) {
-        if (progressIndicator == null) return;
-        handler.post(new Runnable() {
             @Override
-            public void run() {
+            public void onFinish() {
+                if (progressIndicator == null) return;
                 progressIndicator.onFinish(position);
             }
         });
     }
+
 
     public interface OnDismissListener {
         void onDismiss();

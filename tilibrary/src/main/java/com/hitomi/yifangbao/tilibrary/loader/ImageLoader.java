@@ -1,13 +1,8 @@
 package com.hitomi.yifangbao.tilibrary.loader;
 
-import android.net.Uri;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.UiThread;
-import android.view.View;
 import android.widget.ImageView;
-
-import com.hitomi.yifangbao.tilibrary.TransferWindow;
-
-import java.io.File;
 
 /**
  * Created by hitomi on 2017/1/20.
@@ -15,30 +10,20 @@ import java.io.File;
 
 public interface ImageLoader {
 
-    void downloadImage(Uri uri, int postion, Callback callback);
+    void loadImage(String url, ImageView imageView, int placeholder, final ImageLoader.Callback callback);
 
-    void loadImage(File image, ImageView imageView);
+    void loadImage(String url, ImageView imageView, Drawable placeholder, final ImageLoader.Callback callback);
 
     void cancel();
 
-    View showThumbnail(TransferWindow parent, Uri thumbnail, int scaleType);
-
-    void prefetch(Uri uri);
-
     interface Callback {
         @UiThread
-        void onCacheHit(int position, File image);
+        void onStart();
 
         @UiThread
-        void onCacheMiss(int position, File image);
+        void onProgress(int progress);
 
         @UiThread
-        void onStart(int position);
-
-        @UiThread
-        void onProgress(int position, int progress);
-
-        @UiThread
-        void onFinish(int position);
+        void onFinish();
     }
 }

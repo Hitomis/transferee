@@ -1,110 +1,102 @@
 package com.hitomi.yifangbao.tilibrary.loader.glide;
 
 import android.content.Context;
-import android.net.Uri;
-import android.view.View;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.hitomi.yifangbao.tilibrary.TransferWindow;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
 
-import java.io.File;
+/**
+ * Created by hitomi on 2017/1/25.
+ */
+public class GlideImageLoader implements ImageLoader {
 
-import okhttp3.OkHttpClient;
+    static final int MSG_START = 1 << 1;
+    static final int MSG_PROGRESS = 1 << 2;
+    static final int MSG_FINISH = 1 << 3;
 
-
-
-public final class GlideImageLoader implements ImageLoader {
-    private final RequestManager mRequestManager;
     private Context context;
 
-    private GlideImageLoader(Context context, OkHttpClient okHttpClient) {
+    private GlideImageLoader(Context context) {
         this.context = context;
-        GlideProgressSupport.init(Glide.get(context), okHttpClient);
-        mRequestManager = Glide.with(context);
     }
 
     public static GlideImageLoader with(Context context) {
-        return with(context, null);
+        return new GlideImageLoader(context);
     }
 
-    public static GlideImageLoader with(Context context, OkHttpClient okHttpClient) {
-        return new GlideImageLoader(context, okHttpClient);
-    }
+    public void loadImage(String url, ImageView imageView, int placeholder, final Callback callback) {
+        GlideProgressSupport.DataModelLoader modelLoader = GlideProgressSupport.init(new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case MSG_START:
+                        callback.onStart();
+                        break;
+                    case MSG_PROGRESS:
+                        int percent = msg.arg1 * 100 / msg.arg2;
+                        callback.onProgress(percent);
+                        break;
+                    case MSG_FINISH:
+                        callback.onFinish();
+                        break;
+                }
+            }
+        });
 
-    @Override
-    public void downloadImage(final Uri uri, final int postion, final Callback callback) {
-        mRequestManager
-                .load(uri)
-                .downloadOnly(new ImageDownloadTarget(uri.toString()) {
-                    @Override
-                    public void onResourceReady(File image, GlideAnimation<? super File> glideAnimation) {
-                        // we don't need delete this image file, so it behaves live cache hit
-                        callback.onCacheHit(postion, image);
-                    }
-
-                    @Override
-                    public void onDownloadStart() {
-                        callback.onStart(postion);
-                    }
-
-                    @Override
-                    public void onProgress(int progress) {
-                        callback.onProgress(postion, progress);
-                    }
-
-                    @Override
-                    public void onDownloadFinish() {
-                        callback.onFinish(postion);
-                    }
-                });
-    }
-
-    @Override
-    public void loadImage(File image, ImageView imageView) {
         Glide.with(context)
-                .load(image)
-                .crossFade(200)
+                .using(modelLoader)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .dontAnimate()
+                .placeholder(placeholder)
+                .priority(Priority.IMMEDIATE)
+                .into(imageView);
+    }
+
+    @Override
+    public void loadImage(String url, ImageView imageView, Drawable placeholder, final Callback callback) {
+        GlideProgressSupport.DataModelLoader modelLoader = GlideProgressSupport.init(new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case MSG_START:
+                        callback.onStart();
+                        break;
+                    case MSG_PROGRESS:
+                        int percent = msg.arg1 * 100 / msg.arg2;
+                        callback.onProgress(percent);
+                        break;
+                    case MSG_FINISH:
+                        callback.onFinish();
+                        break;
+                }
+            }
+        });
+
+        Glide.with(context)
+                .using(modelLoader)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .dontAnimate()
+                .placeholder(placeholder)
+                .priority(Priority.IMMEDIATE)
                 .into(imageView);
     }
 
     @Override
     public void cancel() {
-        mRequestManager.onDestroy();
+
     }
 
-    @Override
-    public View showThumbnail(TransferWindow parent, Uri thumbnail, int scaleType) {
-        ImageView thumbnailView = new ImageView(parent.getContext());
-//        switch (scaleType) {
-//            case BigImageView.INIT_SCALE_TYPE_CENTER_CROP:
-//                thumbnailView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//                break;
-//            case BigImageView.INIT_SCALE_TYPE_CENTER_INSIDE:
-//                thumbnailView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-//            default:
-//                break;
-//        }
-        mRequestManager
-                .load(thumbnail)
-                .into(thumbnailView);
-        return thumbnailView;
-    }
 
-    @Override
-    public void prefetch(Uri uri) {
-        mRequestManager
-                .load(uri)
-                .downloadOnly(new SimpleTarget<File>() {
-                    @Override
-                    public void onResourceReady(File resource,
-                            GlideAnimation<? super File> glideAnimation) {
-                        // not interested in result
-                    }
-                });
-    }
 }

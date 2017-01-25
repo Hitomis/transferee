@@ -1,6 +1,5 @@
 package com.hitomi.transferimage;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         btnJump.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, GlideTestActivity.class));
+//                startActivity(new Intent(MainActivity.this, GlideTestActivity.class));
             }
         });
 

@@ -80,7 +80,7 @@ public class TransferPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         FrameLayout parentLayout = containnerLayoutMap.get(position);
         if (parentLayout == null) {
-            parentLayout = newParentLayout(container.getContext(), position);
+            parentLayout = newParentLayout(container.getContext());
             loadImageHD((PhotoView) parentLayout.findViewById(ID_IMAGE), position);
             containnerLayoutMap.put(position, parentLayout);
         }
@@ -94,7 +94,7 @@ public class TransferPagerAdapter extends PagerAdapter {
     }
 
     @NonNull
-    private FrameLayout newParentLayout(Context context, int position) {
+    private FrameLayout newParentLayout(Context context) {
         // create inner ImageView
         PhotoView imageView = new PhotoView(context);
         imageView.setId(ID_IMAGE);

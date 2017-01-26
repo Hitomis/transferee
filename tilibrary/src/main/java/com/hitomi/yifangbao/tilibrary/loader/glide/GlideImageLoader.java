@@ -72,8 +72,7 @@ public class GlideImageLoader implements ImageLoader {
                         callback.onStart();
                         break;
                     case MSG_PROGRESS:
-                        int percent = msg.arg1 * 100 / msg.arg2;
-                        callback.onProgress(percent);
+                        callback.onProgress(msg.arg1 * 100 / msg.arg2);
                         break;
                     case MSG_FINISH:
                         callback.onFinish();
@@ -87,7 +86,6 @@ public class GlideImageLoader implements ImageLoader {
                 .load(url)
                 .dontAnimate()
                 .placeholder(placeholder)
-                .priority(Priority.IMMEDIATE)
                 .into(imageView);
 
     }

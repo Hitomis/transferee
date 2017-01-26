@@ -84,7 +84,7 @@ public class GlideImageLoader implements ImageLoader {
         Glide.with(context)
                 .using(modelLoader)
                 .load(url)
-                .dontAnimate()
+                .crossFade()
                 .placeholder(placeholder)
                 .into(imageView);
 

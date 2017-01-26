@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -99,6 +100,7 @@ public class TransferPagerAdapter extends PagerAdapter {
         imageView.setId(ID_IMAGE);
         imageView.enable();
         FrameLayout.LayoutParams imageLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        imageLp.gravity = Gravity.CENTER;
         imageView.setLayoutParams(imageLp);
 
         // create outer ParentLayout
@@ -132,6 +134,7 @@ public class TransferPagerAdapter extends PagerAdapter {
             public void onStart() {
                 if (progressIndicator == null) return;
                 progressIndicator.getView(position, getParentItem(position));
+                progressIndicator.onStart(position);
             }
 
             @Override

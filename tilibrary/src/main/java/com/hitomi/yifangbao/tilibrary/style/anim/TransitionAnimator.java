@@ -34,9 +34,23 @@ public class TransitionAnimator implements ITransferAnimator {
 
     @Override
     public Animator dismissHitAnimator(View beforeView, View afterView) {
-        originView = afterView;
-        AnimatorSet animatorSet = createTransferAnimator(beforeView, true);
-        animatorSet.setStartDelay(65);
+        float endScale = afterView.getWidth() * 1.f / beforeView.getWidth();
+        ObjectAnimator scaleXAnima = ObjectAnimator.ofFloat(beforeView, "scaleX", beforeView.getScaleX(), endScale);
+        ObjectAnimator scaleYAnima = ObjectAnimator.ofFloat(beforeView, "scaleY", beforeView.getScaleY(), endScale);
+
+        Location location = Location.converLocation(afterView);
+        float endScaleY = (afterView.getHeight() * 1.f / beforeView.getHeight());
+        float endTranX = (beforeView.getWidth() - (beforeView.getWidth() * endScale)) * .5f - location.getX();
+        float endTranY = (beforeView.getHeight() - (beforeView.getHeight() * endScaleY)) * .5f - (location.getY() - getStatusBarHeight(beforeView.getContext()));
+        ObjectAnimator tranXAnima = ObjectAnimator.ofFloat(beforeView, "x", beforeView.getTranslationX(), -endTranX);
+        ObjectAnimator tranYAnima = ObjectAnimator.ofFloat(beforeView, "y", beforeView.getTranslationY(), -endTranY);
+
+        AnimatorSet animatorSet =  new AnimatorSet();
+        animatorSet.setDuration(300);
+        animatorSet.play(scaleXAnima)
+                .with(scaleYAnima)
+                .with(tranXAnima)
+                .with(tranYAnima);
         return animatorSet;
     }
 

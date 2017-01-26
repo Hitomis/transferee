@@ -57,6 +57,9 @@ public class ProgressPieIndicator implements IProgressIndicator {
 
     @Override
     public void onStart(int position) {
+        ProgressPieView progressPieView = progressPieViewMap.get(position);
+        progressPieView.setProgress(0);
+        progressPieView.setText(String.format(Locale.getDefault(), "%d%%", 0));
     }
 
     @Override

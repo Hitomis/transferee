@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.hitomi.yifangbao.tilibrary.TransferWindow;
 import com.hitomi.yifangbao.tilibrary.loader.glide.GlideImageLoader;
 import com.hitomi.yifangbao.tilibrary.style.anim.TransitionAnimator;
@@ -42,19 +40,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Fresco.initialize(getApplicationContext());
-        ImagePipelineFactory.initialize(getApplicationContext());
-
         btnClearFresco = (Button) findViewById(R.id.btn_clear_fresco);
         btnClearGlide = (Button) findViewById(R.id.btn_clear_glide);
         btnJump = (Button) findViewById(R.id.btn_jump);
 
-        btnClearFresco.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fresco.getImagePipeline().clearCaches();
-            }
-        });
 
         btnClearGlide.setOnClickListener(new View.OnClickListener() {
             @Override

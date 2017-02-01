@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
+import com.hitomi.yifangbao.tilibrary.style.IIndexIndicator;
 import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
 import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
 
@@ -138,9 +139,15 @@ public class TransferWindow extends FrameLayout {
                 viewPager.setAdapter(imagePagerAdapter);
                 viewPager.setCurrentItem(attr.getCurrOriginIndex());
                 removeView(sharedLayout);
+
+                initMainUI();
             }
         });
         animator.start();
+    }
+
+    private void initMainUI() {
+        attr.getIndexIndicator().getView(this, viewPager);
     }
 
     private void dismissHitAnima() {
@@ -227,6 +234,7 @@ public class TransferWindow extends FrameLayout {
 
         private ITransferAnimator transferAnima;
         private IProgressIndicator proIndicat;
+        private IIndexIndicator indexIndicator;
         private ImageLoader imageLoader;
 
         public Builder(Context context) {
@@ -268,6 +276,11 @@ public class TransferWindow extends FrameLayout {
             return this;
         }
 
+        public Builder setIndexIndicator(IIndexIndicator indexIndicator) {
+            this.indexIndicator = indexIndicator;
+            return this;
+        }
+
         public Builder setImageLoader(ImageLoader imageLoader) {
             this.imageLoader = imageLoader;
             return this;
@@ -281,6 +294,7 @@ public class TransferWindow extends FrameLayout {
             attr.setImageStrList(imageStrList);
             attr.setCurrOriginIndex(originIndex);
             attr.setProgressIndicator(proIndicat);
+            attr.setIndexIndicator(indexIndicator);
             attr.setTransferAnima(transferAnima);
             attr.setImageLoader(imageLoader);
 

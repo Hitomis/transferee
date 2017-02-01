@@ -30,13 +30,11 @@ public class TransferPagerAdapter extends PagerAdapter {
 
     private TransferAttr attr;
     private Map<Integer, FrameLayout> containnerLayoutMap;
-    private IProgressIndicator progressIndicator;
     private OnDismissListener onDismissListener;
 
     public TransferPagerAdapter(TransferAttr attr) {
         this.attr = attr;
         containnerLayoutMap = new HashMap<>();
-        progressIndicator = attr.getProgressIndicator();
     }
 
     @Override
@@ -129,6 +127,8 @@ public class TransferPagerAdapter extends PagerAdapter {
         }
 
         attr.getImageLoader().loadImage(imgUrl, imageView, placeHolder, new ImageLoader.Callback() {
+
+            private IProgressIndicator progressIndicator = attr.getProgressIndicator();
 
             @Override
             public void onStart() {

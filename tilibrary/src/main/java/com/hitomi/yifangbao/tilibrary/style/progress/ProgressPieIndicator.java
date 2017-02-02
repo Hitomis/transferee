@@ -1,10 +1,9 @@
-package com.hitomi.yifangbao.tilibrary.style.indicat;
+package com.hitomi.yifangbao.tilibrary.style.progress;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.filippudak.ProgressPieView.ProgressPieView;
@@ -27,7 +26,7 @@ public class ProgressPieIndicator implements IProgressIndicator {
     }
 
     @Override
-    public View getView(int position, ViewGroup parent) {
+    public View getView(int position, FrameLayout parent) {
         Context context = parent.getContext();
 
         int progressSize = dip2Px(context, 50);

@@ -1,14 +1,14 @@
 package com.hitomi.yifangbao.tilibrary.style;
 
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 
 public interface IProgressIndicator {
     /**
      * DO NOT add indicator view into parent! Only called once per load.
      * */
-    View getView(int position, ViewGroup parent);
+    View getView(int position, FrameLayout parent);
 
     void hideView(int position);
 

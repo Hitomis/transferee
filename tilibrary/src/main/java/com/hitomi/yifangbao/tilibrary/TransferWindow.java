@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -241,12 +243,33 @@ public class TransferWindow extends FrameLayout {
         activity.getWindow().addContentView(this, windowLayoutParams);
     }
 
+    private Drawable resizeImage(ImageView imageView, int w, int h) {
+        Bitmap BitmapOrg = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+        int width = BitmapOrg.getWidth();
+        int height = BitmapOrg.getHeight();
+        int newWidth = w;
+        int newHeight = h;
+
+        float scaleWidth = newWidth * 1.f / width;
+        float scaleHeight = newHeight * 1.f / height;
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,
+                height, matrix, true);
+        return new BitmapDrawable(resizedBitmap);
+    }
 
     public void loadImage(final int position) {
         String imgUrl = attr.getImageStrList().get(position);
         Drawable placeHolder = null;
         if (position < attr.getOriginImageList().size()) {
-            placeHolder = attr.getOriginImageList().get(position).getDrawable();
+            ImageView imageView = attr.getOriginImageList().get(position);
+            int intrinsicWidth = imageView.getDrawable().getIntrinsicWidth();
+            int intrinsicHeight = imageView.getDrawable().getIntrinsicHeight();
+            int reHeight = 1440 * intrinsicHeight / intrinsicWidth;
+            placeHolder = resizeImage(imageView, 1440, reHeight);
         }
 
         attr.getImageLoader().loadImage(imgUrl, imagePagerAdapter.getImageItem(position), placeHolder, new ImageLoader.Callback() {

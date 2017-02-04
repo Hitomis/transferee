@@ -4,10 +4,10 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
 
@@ -31,63 +31,45 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     public void loadImage(String url, ImageView imageView, int placeholder, final Callback callback) {
-        GlideProgressSupport.DataModelLoader modelLoader = GlideProgressSupport.init(new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case MSG_START:
-                        callback.onStart();
-                        break;
-                    case MSG_PROGRESS:
-                        int percent = msg.arg1 * 100 / msg.arg2;
-                        callback.onProgress(percent);
-                        break;
-                    case MSG_FINISH:
-                        callback.onFinish();
-                        break;
-                }
-            }
-        });
-
         Glide.with(context)
-                .using(modelLoader)
+                .using(getDataModelLoader(callback))
                 .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-                .dontAnimate()
+                .crossFade()
                 .placeholder(placeholder)
-                .priority(Priority.IMMEDIATE)
                 .into(imageView);
     }
 
     @Override
     public void loadImage(String url, ImageView imageView, Drawable placeholder, final Callback callback) {
-        GlideProgressSupport.DataModelLoader modelLoader = GlideProgressSupport.init(new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case MSG_START:
-                        callback.onStart();
-                        break;
-                    case MSG_PROGRESS:
-                        callback.onProgress(msg.arg1 * 100 / msg.arg2);
-                        break;
-                    case MSG_FINISH:
-                        callback.onFinish();
-                        break;
-                }
-            }
-        });
-
         Glide.with(context)
-                .using(modelLoader)
+                .using(getDataModelLoader(callback))
                 .load(url)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .crossFade()
                 .placeholder(placeholder)
                 .into(imageView);
+    }
 
+    @NonNull
+    private GlideProgressSupport.DataModelLoader getDataModelLoader(final Callback callback) {
+        return GlideProgressSupport.init(new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    switch (msg.what) {
+                        case MSG_START:
+                            callback.onStart();
+                            break;
+                        case MSG_PROGRESS:
+                            callback.onProgress(msg.arg1 * 100 / msg.arg2);
+                            break;
+                        case MSG_FINISH:
+                            callback.onFinish();
+                            break;
+                    }
+                }
+            });
     }
 
     @Override

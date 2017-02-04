@@ -16,7 +16,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 public class IndexCircleIndicator implements IIndexIndicator {
 
     @Override
-    public void getView(FrameLayout parent, ViewPager viewPager) {
+    public void attach(FrameLayout parent, ViewPager viewPager) {
         FrameLayout.LayoutParams indexLp = new FrameLayout.LayoutParams(WRAP_CONTENT, 48);
         indexLp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
 

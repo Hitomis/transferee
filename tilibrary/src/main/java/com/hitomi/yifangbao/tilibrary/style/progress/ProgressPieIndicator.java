@@ -26,7 +26,7 @@ public class ProgressPieIndicator implements IProgressIndicator {
     }
 
     @Override
-    public View getView(int position, FrameLayout parent) {
+    public View attach(int position, FrameLayout parent) {
         Context context = parent.getContext();
 
         int progressSize = dip2Px(context, 50);
@@ -44,7 +44,7 @@ public class ProgressPieIndicator implements IProgressIndicator {
         progressPieView.setStrokeColor(Color.WHITE);
         progressPieView.setLayoutParams(progressLp);
 
-        parent.addView(progressPieView);
+        parent.addView(progressPieView, parent.getChildCount());
         progressPieViewMap.put(position, progressPieView);
 
         return progressPieView;

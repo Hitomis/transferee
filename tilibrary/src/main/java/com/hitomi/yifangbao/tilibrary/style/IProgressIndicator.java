@@ -8,7 +8,7 @@ public interface IProgressIndicator {
     /**
      * DO NOT add indicator view into parent! Only called once per load.
      * */
-    View getView(int position, FrameLayout parent);
+    View attach(int position, FrameLayout parent);
 
     void hideView(int position);
 

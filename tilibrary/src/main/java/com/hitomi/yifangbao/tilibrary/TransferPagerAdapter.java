@@ -1,7 +1,6 @@
 package com.hitomi.yifangbao.tilibrary;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
@@ -9,14 +8,11 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.hitomi.yifangbao.tilibrary.photoview.PhotoView;
-import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
-import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
@@ -28,18 +24,18 @@ public class TransferPagerAdapter extends PagerAdapter {
     @IdRes
     private static final int ID_IMAGE = 1001;
 
-    private TransferAttr attr;
+    private int size;
     private Map<Integer, FrameLayout> containnerLayoutMap;
     private OnDismissListener onDismissListener;
 
-    public TransferPagerAdapter(TransferAttr attr) {
-        this.attr = attr;
-        containnerLayoutMap = new HashMap<>();
+    public TransferPagerAdapter(int imageSize) {
+        size = imageSize;
+        containnerLayoutMap = new WeakHashMap<>();
     }
 
     @Override
     public int getCount() {
-        return attr.getImageSize();
+        return size;
     }
 
     @Override
@@ -79,15 +75,9 @@ public class TransferPagerAdapter extends PagerAdapter {
         FrameLayout parentLayout = containnerLayoutMap.get(position);
         if (parentLayout == null) {
             parentLayout = newParentLayout(container.getContext());
-            loadImageHD((PhotoView) parentLayout.findViewById(ID_IMAGE), position);
             containnerLayoutMap.put(position, parentLayout);
         }
         container.addView(parentLayout);
-
-        if (attr.getCurrOriginIndex() == position) {
-            // init value currShowIndex
-            attr.setCurrShowIndex(position);
-        }
         return parentLayout;
     }
 
@@ -117,40 +107,6 @@ public class TransferPagerAdapter extends PagerAdapter {
         });
         return parentLayout;
     }
-
-
-    private void loadImageHD(ImageView imageView, final int position) {
-        String imgUrl = attr.getImageStrList().get(position);
-        Drawable placeHolder = null;
-        if (position < attr.getOriginImageList().size()) {
-            placeHolder = attr.getOriginImageList().get(position).getDrawable();
-        }
-
-        attr.getImageLoader().loadImage(imgUrl, imageView, placeHolder, new ImageLoader.Callback() {
-
-            private IProgressIndicator progressIndicator = attr.getProgressIndicator();
-
-            @Override
-            public void onStart() {
-                if (progressIndicator == null) return;
-                progressIndicator.getView(position, getParentItem(position));
-                progressIndicator.onStart(position);
-            }
-
-            @Override
-            public void onProgress(int progress) {
-                if (progressIndicator == null) return;
-                progressIndicator.onProgress(position, progress);
-            }
-
-            @Override
-            public void onFinish() {
-                if (progressIndicator == null) return;
-                progressIndicator.onFinish(position);
-            }
-        });
-    }
-
 
     public interface OnDismissListener {
         void onDismiss();

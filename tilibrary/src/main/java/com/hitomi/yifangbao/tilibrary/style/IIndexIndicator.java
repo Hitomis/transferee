@@ -9,5 +9,5 @@ import android.widget.FrameLayout;
 
 public interface IIndexIndicator {
 
-    void getView(FrameLayout parent, ViewPager viewPager);
+    void attach(FrameLayout parent, ViewPager viewPager);
 }

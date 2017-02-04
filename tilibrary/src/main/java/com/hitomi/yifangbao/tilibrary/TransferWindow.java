@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,9 @@ import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
 import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
@@ -40,10 +43,14 @@ public class TransferWindow extends FrameLayout {
     private TransferPagerAdapter imagePagerAdapter;
     private LinearLayout sharedLayout;
 
+    private boolean shown;
+    private Set<Integer> loadedIndexSet;
+
     private TransferWindow(Context context, TransferAttr attr) {
         super(context);
         this.context = context;
         this.attr = attr;
+        loadedIndexSet = new HashSet<>();
         transferAnimator = attr.getTransferAnima();
         initLayout();
     }
@@ -55,23 +62,24 @@ public class TransferWindow extends FrameLayout {
     }
 
     private void initSharedLayout() {
-        sharedLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams linlp = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        sharedLayout.setLayoutParams(linlp);
-
         ImageView currOriginImage = attr.getOriginImageList().get(attr.getCurrOriginIndex());
-        sharedImage = new ImageView(context);
-        sharedImage.setImageDrawable(currOriginImage.getDrawable());
-
         LinearLayout.LayoutParams sImageVlp = new LinearLayout.LayoutParams(currOriginImage.getWidth(), currOriginImage.getHeight());
-        sharedImage.setLayoutParams(sImageVlp);
 
         final int[] location = new int[2];
         currOriginImage.getLocationInWindow(location);
+
+        sharedImage = new ImageView(context);
+        sharedImage.setImageDrawable(currOriginImage.getDrawable());
+        sharedImage.setLayoutParams(sImageVlp);
         sharedImage.setX(location[0]);
         sharedImage.setY(location[1] - getStatusBarHeight());
 
+        LinearLayout.LayoutParams linlp = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+
+        sharedLayout = new LinearLayout(context);
+        sharedLayout.setLayoutParams(linlp);
         sharedLayout.addView(sharedImage);
+
         addView(sharedLayout);
         showAnima();
     }
@@ -82,22 +90,31 @@ public class TransferWindow extends FrameLayout {
             public void onPageSelected(int position) {
                 attr.setCurrOriginIndex(position);
                 attr.setCurrShowIndex(position);
+
+                if (!loadedIndexSet.contains(position)) {
+                    loadImage(position);
+                    loadedIndexSet.add(position);
+                }
+                for (int i = 1; i >= 1; i--) {
+                    int left = position - i;
+                    int right = position + i;
+                    if (left >= 0 && !loadedIndexSet.contains(left)) {
+                        loadImage(left);
+                        loadedIndexSet.add(left);
+                    }
+                    if (right < attr.getImageSize() && !loadedIndexSet.contains(right)) {
+                        loadImage(right);
+                        loadedIndexSet.add(right);
+                    }
+                }
+
             }
         };
-
-        imagePagerAdapter = new TransferPagerAdapter(attr);
-        imagePagerAdapter.setOnDismissListener(new TransferPagerAdapter.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                dismiss();
-            }
-        });
-
         viewPager = new ViewPager(context);
         viewPager.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
         viewPager.setVisibility(View.INVISIBLE);
-        viewPager.setOffscreenPageLimit(1);
         viewPager.addOnPageChangeListener(pageChangeListener);
+        viewPager.setOffscreenPageLimit(3);
         addView(viewPager);
     }
 
@@ -108,10 +125,16 @@ public class TransferWindow extends FrameLayout {
     }
 
     public void show() {
-        addToWindow();
+        if (!shown) {
+            shown = true;
+            addToWindow();
+        }
     }
 
     public void dismiss() {
+        if (!shown) return;
+        shown = false;
+
         IProgressIndicator progressIndicator = attr.getProgressIndicator();
         if (progressIndicator != null)
             progressIndicator.hideView(attr.getCurrShowIndex());
@@ -135,9 +158,20 @@ public class TransferWindow extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                imagePagerAdapter = new TransferPagerAdapter(attr.getImageSize());
+                imagePagerAdapter.setOnDismissListener(new TransferPagerAdapter.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        dismiss();
+                    }
+                });
+
                 viewPager.setVisibility(View.VISIBLE);
                 viewPager.setAdapter(imagePagerAdapter);
                 viewPager.setCurrentItem(attr.getCurrOriginIndex());
+                if (attr.getCurrOriginIndex() == 0)
+                    pageChangeListener.onPageSelected(attr.getCurrOriginIndex());
+
                 removeView(sharedLayout);
 
                 initMainUI();
@@ -147,7 +181,9 @@ public class TransferWindow extends FrameLayout {
     }
 
     private void initMainUI() {
-        attr.getIndexIndicator().getView(this, viewPager);
+        IIndexIndicator indexIndicator = attr.getIndexIndicator();
+        if (indexIndicator != null && attr.getImageSize() >= 2)
+            indexIndicator.attach(this, viewPager);
     }
 
     private void dismissHitAnima() {
@@ -203,6 +239,39 @@ public class TransferWindow extends FrameLayout {
 
         Activity activity = (Activity) context;
         activity.getWindow().addContentView(this, windowLayoutParams);
+    }
+
+
+    public void loadImage(final int position) {
+        String imgUrl = attr.getImageStrList().get(position);
+        Drawable placeHolder = null;
+        if (position < attr.getOriginImageList().size()) {
+            placeHolder = attr.getOriginImageList().get(position).getDrawable();
+        }
+
+        attr.getImageLoader().loadImage(imgUrl, imagePagerAdapter.getImageItem(position), placeHolder, new ImageLoader.Callback() {
+
+            private IProgressIndicator progressIndicator = attr.getProgressIndicator();
+
+            @Override
+            public void onStart() {
+                if (progressIndicator == null) return;
+                progressIndicator.attach(position, imagePagerAdapter.getParentItem(position));
+                progressIndicator.onStart(position);
+            }
+
+            @Override
+            public void onProgress(int progress) {
+                if (progressIndicator == null) return;
+                progressIndicator.onProgress(position, progress);
+            }
+
+            @Override
+            public void onFinish() {
+                if (progressIndicator == null) return;
+                progressIndicator.onFinish(position);
+            }
+        });
     }
 
     /**

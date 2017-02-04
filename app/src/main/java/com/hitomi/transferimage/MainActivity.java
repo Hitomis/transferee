@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView1, imageView2, imageView3;
     private List<String> imageStrList;
     private List<ImageView> imageViewList;
+    private TransferWindow transferLayout;
 
     {
         imageStrList = new ArrayList<>();
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     private class ShowViewHDListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            TransferWindow transferLayout = new TransferWindow.Builder(MainActivity.this)
+            transferLayout = new TransferWindow.Builder(MainActivity.this)
                     .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                     .setTransferAnima(new TransitionAnimator())
                     .setProgressIndicator(new ProgressPieIndicator())

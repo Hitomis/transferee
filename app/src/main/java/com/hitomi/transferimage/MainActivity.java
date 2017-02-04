@@ -12,7 +12,8 @@ import com.bumptech.glide.Glide;
 import com.hitomi.yifangbao.tilibrary.TransferWindow;
 import com.hitomi.yifangbao.tilibrary.loader.glide.GlideImageLoader;
 import com.hitomi.yifangbao.tilibrary.style.anim.TransitionAnimator;
-import com.hitomi.yifangbao.tilibrary.style.indicat.ProgressPieIndicator;
+import com.hitomi.yifangbao.tilibrary.style.index.IndexCircleIndicator;
+import com.hitomi.yifangbao.tilibrary.style.progress.ProgressPieIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                     .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                     .setTransferAnima(new TransitionAnimator())
                     .setProgressIndicator(new ProgressPieIndicator())
+                    .setIndexIndicator(new IndexCircleIndicator())
                     .setBackgroundColor(Color.BLACK)
                     .setImageStrList(imageStrList)
                     .setOriginImageList(imageViewList)

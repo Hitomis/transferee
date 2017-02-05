@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                     .setImageStrList(imageStrList)
                     .setOriginImageList(imageViewList)
                     .setOriginIndex(imageViewList.indexOf(v))
+                    .setOffscreenPageLimit(1)
                     .create();
             transferLayout.show();
         }

@@ -20,6 +20,7 @@ public class TransferAttr {
     private List<ImageView> originImageList;
     private int currOriginIndex, currShowIndex;
     private int backgroundColor;
+    private int offscreenPageLimit;
 
     private List<Bitmap> bitmapList;
     private List<Integer> imageResList;
@@ -119,7 +120,7 @@ public class TransferAttr {
     }
 
     public void setCurrOriginIndex(int currOriginIndex) {
-        if (currOriginIndex >= originImageList.size()) return ;
+        if (currOriginIndex >= originImageList.size()) return;
         this.currOriginIndex = currOriginIndex;
     }
 
@@ -135,4 +136,11 @@ public class TransferAttr {
         return originImageList.get(currOriginIndex);
     }
 
+    public int getOffscreenPageLimit() {
+        return offscreenPageLimit;
+    }
+
+    public void setOffscreenPageLimit(int offscreenPageLimit) {
+        this.offscreenPageLimit = offscreenPageLimit;
+    }
 }

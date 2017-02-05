@@ -97,7 +97,7 @@ public class TransferWindow extends FrameLayout {
                     loadImage(position);
                     loadedIndexSet.add(position);
                 }
-                for (int i = 1; i >= 1; i--) {
+                for (int i = 1; i <= attr.getOffscreenPageLimit(); i++) {
                     int left = position - i;
                     int right = position + i;
                     if (left >= 0 && !loadedIndexSet.contains(left)) {
@@ -116,7 +116,7 @@ public class TransferWindow extends FrameLayout {
         viewPager.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
         viewPager.setVisibility(View.INVISIBLE);
         viewPager.addOnPageChangeListener(pageChangeListener);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(attr.getOffscreenPageLimit() + 2);
         addView(viewPager);
     }
 
@@ -244,14 +244,16 @@ public class TransferWindow extends FrameLayout {
     }
 
     private Drawable resizeImage(ImageView imageView, int w, int h) {
-        Bitmap BitmapOrg = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+        Bitmap BitmapOrg = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        if (BitmapOrg == null) return null;
+
         int width = BitmapOrg.getWidth();
         int height = BitmapOrg.getHeight();
         int newWidth = w;
         int newHeight = h;
 
-        float scaleWidth = newWidth * 1.f / width;
-        float scaleHeight = newHeight * 1.f / height;
+        float scaleWidth = newWidth * 2.f / width;
+        float scaleHeight = newHeight * 2.f / height;
 
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
@@ -268,8 +270,8 @@ public class TransferWindow extends FrameLayout {
             ImageView imageView = attr.getOriginImageList().get(position);
             int intrinsicWidth = imageView.getDrawable().getIntrinsicWidth();
             int intrinsicHeight = imageView.getDrawable().getIntrinsicHeight();
-            int reHeight = 1440 * intrinsicHeight / intrinsicWidth;
-            placeHolder = resizeImage(imageView, 1440, reHeight);
+            int reHeight = getWidth() * intrinsicHeight / intrinsicWidth;
+            placeHolder = resizeImage(imageView, getWidth(), reHeight);
         }
 
         attr.getImageLoader().loadImage(imgUrl, imagePagerAdapter.getImageItem(position), placeHolder, new ImageLoader.Callback() {
@@ -317,8 +319,9 @@ public class TransferWindow extends FrameLayout {
     public static class Builder {
         private Context context;
         private List<ImageView> originImageList;
-        private int originIndex;
 
+        private int originIndex;
+        private int offscreenPageLimit;
         private int backgroundColor;
 
         private List<Bitmap> bitmapList;
@@ -340,6 +343,11 @@ public class TransferWindow extends FrameLayout {
 
         public Builder setOriginIndex(int originIndex) {
             this.originIndex = originIndex;
+            return this;
+        }
+
+        public Builder setOffscreenPageLimit(int offscreenPageLimit) {
+            this.offscreenPageLimit = offscreenPageLimit;
             return this;
         }
 
@@ -385,6 +393,7 @@ public class TransferWindow extends FrameLayout {
             attr.setBitmapList(bitmapList);
             attr.setImageStrList(imageStrList);
             attr.setCurrOriginIndex(originIndex);
+            attr.setOffscreenPageLimit(offscreenPageLimit == 0 ? 1 : offscreenPageLimit);
             attr.setProgressIndicator(proIndicat);
             attr.setIndexIndicator(indexIndicator);
             attr.setTransferAnima(transferAnima);

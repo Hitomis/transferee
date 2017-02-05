@@ -16,6 +16,7 @@ import com.squareup.okhttp.ResponseBody;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Executors;
 
 import okio.Buffer;
 import okio.BufferedSource;
@@ -39,6 +40,7 @@ public class GlideProgressSupport {
 
     public static class DataModelLoader implements StreamModelLoader<String> {
         private Handler handler;
+        private ProgressDataFetcher progressDataFetcher;
 
         public DataModelLoader(Handler handler) {
             this.handler = handler;
@@ -46,7 +48,12 @@ public class GlideProgressSupport {
 
         @Override
         public DataFetcher<InputStream> getResourceFetcher(String model, int width, int height) {
-            return new ProgressDataFetcher(model, handler);
+            progressDataFetcher = new ProgressDataFetcher(model, handler);
+            return progressDataFetcher;
+        }
+
+        public void cancel() {
+            progressDataFetcher.cleanup();
         }
     }
 
@@ -106,17 +113,24 @@ public class GlideProgressSupport {
 
         @Override
         public void cleanup() {
-            if (stream != null) {
-                try {
-                    stream.close();
-                    stream = null;
-                } catch (IOException e) {
-                    stream = null;
+            Executors.newSingleThreadExecutor().submit(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (stream != null) {
+                            stream.close();
+                            stream = null;
+                        }
+                    } catch (IOException e) {
+                        stream = null;
+                    } finally {
+                        if (progressCall != null) {
+                            progressCall.cancel();
+                        }
+                        cancel();
+                    }
                 }
-            }
-            if (progressCall != null) {
-                progressCall.cancel();
-            }
+            });
         }
 
         @Override

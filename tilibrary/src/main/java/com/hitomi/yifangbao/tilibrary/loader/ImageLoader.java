@@ -10,8 +10,6 @@ import android.widget.ImageView;
 
 public interface ImageLoader {
 
-    void loadImage(String url, ImageView imageView, int placeholder, final ImageLoader.Callback callback);
-
     void loadImage(String url, ImageView imageView, Drawable placeholder, final ImageLoader.Callback callback);
 
     void cancel();

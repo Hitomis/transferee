@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.hitomi.yifangbao.tilibrary.photoview.PhotoView;
 
@@ -48,14 +49,20 @@ public class TransferPagerAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
-    public PhotoView getImageItem(int position) {
+    /**
+     * 获取指定索引页面中的 ImageView
+     *
+     * @param position
+     * @return
+     */
+    public ImageView getImageItem(int position) {
         FrameLayout parentLayout = containnerLayoutMap.get(position);
         int childCount = parentLayout.getChildCount();
-        PhotoView imageView = null;
+        ImageView imageView = null;
         for (int i = 0; i < childCount; i++) {
             View view = parentLayout.getChildAt(i);
-            if (view instanceof PhotoView) {
-                imageView = (PhotoView) view;
+            if (view instanceof ImageView) {
+                imageView = (ImageView) view;
                 break;
             }
         }
@@ -87,6 +94,7 @@ public class TransferPagerAdapter extends PagerAdapter {
         PhotoView imageView = new PhotoView(context);
         imageView.setId(ID_IMAGE);
         imageView.enable();
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         FrameLayout.LayoutParams imageLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         imageLp.gravity = Gravity.CENTER;
         imageView.setLayoutParams(imageLp);

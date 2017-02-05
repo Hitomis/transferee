@@ -8,7 +8,6 @@ import android.content.Context;
 import android.support.v4.graphics.ColorUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 
 import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
@@ -23,12 +22,36 @@ import java.lang.reflect.Field;
 
 public class TransitionAnimator implements ITransferAnimator {
 
-    private View originView;
-
     @Override
     public Animator showAnimator(View beforeView, View afterView) {
-        originView = beforeView;
-        AnimatorSet animatorSet = createTransferAnimator(afterView, false);
+        Context context = afterView.getContext();
+
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int widthPixels = displayMetrics.widthPixels;
+        int heightPixels = displayMetrics.heightPixels - getStatusBarHeight(context);
+
+        Location originLocation = Location.converLocation(beforeView);
+        int startTranX = originLocation.getX();
+        int endTranX = (widthPixels - originLocation.getWidth()) / 2;
+
+        int startTranY = originLocation.getY() - getStatusBarHeight(context);
+        int endTranY = (heightPixels - originLocation.getHeight()) / 2;
+
+        float endScaleVal = widthPixels * 1.f / originLocation.getWidth();
+
+        // x 方向放大
+        ObjectAnimator scaleXAnima = ObjectAnimator.ofFloat(afterView, "scaleX", afterView.getScaleX(), endScaleVal);
+        // y 方向放大
+        ObjectAnimator scaleYAnima = ObjectAnimator.ofFloat(afterView, "scaleY", afterView.getScaleY(), endScaleVal);
+        // x 方向平移
+        ObjectAnimator tranXAnima = ObjectAnimator.ofFloat(afterView, "x", startTranX, endTranX);
+        // y 方向平移
+        ObjectAnimator tranYAnima = ObjectAnimator.ofFloat(afterView, "y", startTranY, endTranY);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(tranXAnima)
+                .with(tranYAnima).with(scaleXAnima).with(scaleYAnima);
+        animatorSet.setDuration(300);
         animatorSet.setStartDelay(65);
         return animatorSet;
     }
@@ -50,7 +73,7 @@ public class TransitionAnimator implements ITransferAnimator {
         ObjectAnimator tranXAnima = ObjectAnimator.ofFloat(beforeView, "x", beforeView.getTranslationX(), -endTranX);
         ObjectAnimator tranYAnima = ObjectAnimator.ofFloat(beforeView, "y", beforeView.getTranslationY(), -endTranY);
 
-        AnimatorSet animatorSet =  new AnimatorSet();
+        AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(300);
         animatorSet.play(scaleXAnima)
                 .with(scaleYAnima)
@@ -97,48 +120,6 @@ public class TransitionAnimator implements ITransferAnimator {
         return backAnimator;
     }
 
-    private AnimatorSet createTransferAnimator(final View sharedView, boolean reverse) {
-        AnimatorConfig config = new AnimatorConfig(sharedView.getContext(), reverse).invoke();
-
-        // 宽度变化
-        ValueAnimator widthAnima = ValueAnimator.ofInt(config.getStartWidth(), config.getEndWidth());
-        widthAnima.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int animaValue = Integer.parseInt(animation.getAnimatedValue().toString());
-                ViewGroup.LayoutParams layoutParams = sharedView.getLayoutParams();
-                layoutParams.width = animaValue;
-                sharedView.setLayoutParams(layoutParams);
-            }
-        });
-
-        // 高度变化
-        ValueAnimator heightAnima = ValueAnimator.ofInt(config.getStartHeight(), config.getEndHeight());
-        heightAnima.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int animaValue = Integer.parseInt(animation.getAnimatedValue().toString());
-                ViewGroup.LayoutParams layoutParams = sharedView.getLayoutParams();
-                layoutParams.height = animaValue;
-                sharedView.setLayoutParams(layoutParams);
-            }
-        });
-
-        // x 方向平移
-        ObjectAnimator tranXAnima = ObjectAnimator.ofFloat(sharedView, "x", config.getStartTranX(), config.getEndTranX());
-        // y 方向平移
-        ObjectAnimator tranYAnima = ObjectAnimator.ofFloat(sharedView, "y", config.getStartTranY(), config.getEndTranY());
-
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.play(widthAnima)
-                .with(heightAnima)
-                .with(tranXAnima)
-                .with(tranYAnima);
-        animatorSet.setDuration(300);
-
-        return animatorSet;
-    }
-
     /**
      * 获取状态栏高度
      *
@@ -156,88 +137,4 @@ public class TransitionAnimator implements ITransferAnimator {
         }
     }
 
-    private class AnimatorConfig {
-        private Context context;
-        private boolean reverse;
-        private Location originLocation;
-        private int startWidth;
-        private int endWidth;
-        private int startHeight;
-        private int endHeight;
-        private float startTranX;
-        private float endTranX;
-        private float startTranY;
-        private float endTranY;
-
-        AnimatorConfig(Context context, boolean reverse) {
-            this.context = context;
-            this.reverse = reverse;
-            this.originLocation = Location.converLocation(originView);
-        }
-
-        int getStartWidth() {
-            return startWidth;
-        }
-
-        int getEndWidth() {
-            return endWidth;
-        }
-
-        int getStartHeight() {
-            return startHeight;
-        }
-
-        int getEndHeight() {
-            return endHeight;
-        }
-
-        float getStartTranX() {
-            return startTranX;
-        }
-
-        float getEndTranX() {
-            return endTranX;
-        }
-
-        float getStartTranY() {
-            return startTranY;
-        }
-
-        float getEndTranY() {
-            return endTranY;
-        }
-
-        AnimatorConfig invoke() {
-            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-            int widthPixels = displayMetrics.widthPixels;
-            int heightPixels = displayMetrics.heightPixels - getStatusBarHeight(context);
-
-            if (reverse) {
-                startWidth = widthPixels;
-                endWidth = originLocation.getWidth();
-
-                startHeight = heightPixels;
-                endHeight = originLocation.getHeight();
-
-                startTranX = 0;
-                endTranX = originLocation.getX();
-
-                startTranY = 0;
-                endTranY = originLocation.getY() - getStatusBarHeight(context);
-            } else {
-                startWidth = originLocation.getWidth();
-                endWidth = widthPixels;
-
-                startHeight = originLocation.getHeight();
-                endHeight = heightPixels;
-
-                startTranX = originLocation.getX();
-                endTranX = 0;
-
-                startTranY = originLocation.getY() - getStatusBarHeight(context);
-                endTranY = 0;
-            }
-            return this;
-        }
-    }
 }

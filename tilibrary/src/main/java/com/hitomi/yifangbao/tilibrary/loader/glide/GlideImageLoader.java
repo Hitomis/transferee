@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
 
 import java.util.HashSet;
@@ -36,23 +35,12 @@ public class GlideImageLoader implements ImageLoader {
         return new GlideImageLoader(context);
     }
 
-    public void loadImage(String url, ImageView imageView, int placeholder, final Callback callback) {
-        Glide.with(context)
-                .using(getDataModelLoader(callback))
-                .load(url)
-                .crossFade()
-                .placeholder(placeholder)
-                .into(imageView);
-    }
-
     @Override
     public void loadImage(String url, ImageView imageView, Drawable placeholder, final Callback callback) {
         Glide.with(context)
                 .using(getDataModelLoader(callback))
                 .load(url)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .crossFade()
+                .dontAnimate()
                 .placeholder(placeholder)
                 .into(imageView);
     }

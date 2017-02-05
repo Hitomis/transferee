@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewPager;
@@ -104,7 +106,7 @@ public class TransferWindow extends FrameLayout {
                         loadImage(left);
                         loadedIndexSet.add(left);
                     }
-                    if (right < attr.getImageSize() && !loadedIndexSet.contains(right)) {
+                    if (right < attr.getImageStrList().size() && !loadedIndexSet.contains(right)) {
                         loadImage(right);
                         loadedIndexSet.add(right);
                     }
@@ -160,7 +162,7 @@ public class TransferWindow extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                imagePagerAdapter = new TransferPagerAdapter(attr.getImageSize());
+                imagePagerAdapter = new TransferPagerAdapter(attr.getImageStrList().size());
                 imagePagerAdapter.setOnDismissListener(new TransferPagerAdapter.OnDismissListener() {
                     @Override
                     public void onDismiss() {
@@ -184,7 +186,7 @@ public class TransferWindow extends FrameLayout {
 
     private void initMainUI() {
         IIndexIndicator indexIndicator = attr.getIndexIndicator();
-        if (indexIndicator != null && attr.getImageSize() >= 2)
+        if (indexIndicator != null && attr.getImageStrList().size() >= 2)
             indexIndicator.attach(this, viewPager);
     }
 
@@ -243,8 +245,15 @@ public class TransferWindow extends FrameLayout {
         activity.getWindow().addContentView(this, windowLayoutParams);
     }
 
+    /**
+     * ImageView 缩放到指定大小
+     * @param imageView imageView 对象
+     * @param w 宽
+     * @param h 高
+     * @return
+     */
     private Drawable resizeImage(ImageView imageView, int w, int h) {
-        Bitmap BitmapOrg = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        Bitmap BitmapOrg = drawable2Bitmap(imageView.getDrawable());
         if (BitmapOrg == null) return null;
 
         int width = BitmapOrg.getWidth();
@@ -261,6 +270,27 @@ public class TransferWindow extends FrameLayout {
         Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,
                 height, matrix, true);
         return new BitmapDrawable(resizedBitmap);
+    }
+
+    /**
+     * drawable转bitmap
+     *
+     * @param drawable drawable对象
+     * @return bitmap
+     */
+    private Bitmap drawable2Bitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            Bitmap bitmap = Bitmap.createBitmap(
+                    drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(),
+                    drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            drawable.draw(canvas);
+            return bitmap;
+        }
     }
 
     public void loadImage(final int position) {
@@ -324,7 +354,6 @@ public class TransferWindow extends FrameLayout {
         private int offscreenPageLimit;
         private int backgroundColor;
 
-        private List<Bitmap> bitmapList;
         private List<String> imageStrList;
 
         private ITransferAnimator transferAnima;
@@ -353,11 +382,6 @@ public class TransferWindow extends FrameLayout {
 
         public Builder setBackgroundColor(int backgroundColor) {
             this.backgroundColor = backgroundColor;
-            return this;
-        }
-
-        public Builder setBitmapList(List<Bitmap> bitmapList) {
-            this.bitmapList = bitmapList;
             return this;
         }
 
@@ -390,7 +414,6 @@ public class TransferWindow extends FrameLayout {
             TransferAttr attr = new TransferAttr();
             attr.setOriginImageList(originImageList);
             attr.setBackgroundColor(backgroundColor);
-            attr.setBitmapList(bitmapList);
             attr.setImageStrList(imageStrList);
             attr.setCurrOriginIndex(originIndex);
             attr.setOffscreenPageLimit(offscreenPageLimit == 0 ? 1 : offscreenPageLimit);

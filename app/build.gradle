@@ -28,4 +28,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':tilibrary')
 
+    compile 'com.zhy:base-adapter:3.0.3'
+    compile 'com.zhy:base-rvadapter:3.0.3'
+
 }

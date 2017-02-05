@@ -1,6 +1,5 @@
 package com.hitomi.yifangbao.tilibrary;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.widget.ImageView;
 
@@ -12,38 +11,37 @@ import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
 import java.util.List;
 
 /**
+ * Attributes
+ *
  * Created by hitomi on 2017/1/19.
  */
-
-public class TransferAttr {
+class TransferAttr {
 
     private List<ImageView> originImageList;
     private int currOriginIndex, currShowIndex;
     private int backgroundColor;
     private int offscreenPageLimit;
 
-    private List<Bitmap> bitmapList;
-    private List<Integer> imageResList;
-    private List<String> imageStrList;
-
     private ITransferAnimator transferAnima;
     private IProgressIndicator progressIndicator;
     private IIndexIndicator indexIndicator;
     private ImageLoader imageLoader;
 
-    public List<ImageView> getOriginImageList() {
+    private List<String> imageStrList;
+
+    List<ImageView> getOriginImageList() {
         return originImageList;
     }
 
-    public void setOriginImageList(List<ImageView> originImageList) {
+    void setOriginImageList(List<ImageView> originImageList) {
         this.originImageList = originImageList;
     }
 
-    public int getBackgroundColor() {
+    int getBackgroundColor() {
         return backgroundColor;
     }
 
-    public void setBackgroundColor(int backgroundColor) {
+    void setBackgroundColor(int backgroundColor) {
         if (backgroundColor == 0) {
             this.backgroundColor = Color.BLACK;
         } else {
@@ -51,75 +49,51 @@ public class TransferAttr {
         }
     }
 
-    public List<Bitmap> getBitmapList() {
-        return bitmapList;
-    }
-
-    public void setBitmapList(List<Bitmap> bitmapList) {
-        this.bitmapList = bitmapList;
-    }
-
-    public List<String> getImageStrList() {
+    List<String> getImageStrList() {
         return imageStrList;
     }
 
-    public void setImageStrList(List<String> imageStrList) {
+    void setImageStrList(List<String> imageStrList) {
         this.imageStrList = imageStrList;
     }
 
-    public List<Integer> getImageResList() {
-        return imageResList;
-    }
-
-    public void setImageResList(List<Integer> imageResList) {
-        this.imageResList = imageResList;
-    }
-
-    public ITransferAnimator getTransferAnima() {
+    ITransferAnimator getTransferAnima() {
         return transferAnima;
     }
 
-    public void setTransferAnima(ITransferAnimator transferAnima) {
+    void setTransferAnima(ITransferAnimator transferAnima) {
         this.transferAnima = transferAnima;
     }
 
-    public int getImageSize() {
-        return imageStrList.size();
-    }
-
-    public boolean isLocalLoad() {
-        return false;
-    }
-
-    public IProgressIndicator getProgressIndicator() {
+    IProgressIndicator getProgressIndicator() {
         return progressIndicator;
     }
 
-    public void setProgressIndicator(IProgressIndicator progressIndicator) {
+    void setProgressIndicator(IProgressIndicator progressIndicator) {
         this.progressIndicator = progressIndicator;
     }
 
-    public IIndexIndicator getIndexIndicator() {
+    IIndexIndicator getIndexIndicator() {
         return indexIndicator;
     }
 
-    public void setIndexIndicator(IIndexIndicator indexIndicator) {
+    void setIndexIndicator(IIndexIndicator indexIndicator) {
         this.indexIndicator = indexIndicator;
     }
 
-    public ImageLoader getImageLoader() {
+    ImageLoader getImageLoader() {
         return imageLoader;
     }
 
-    public void setImageLoader(ImageLoader imageLoader) {
+    void setImageLoader(ImageLoader imageLoader) {
         this.imageLoader = imageLoader;
     }
 
-    public int getCurrOriginIndex() {
+    int getCurrOriginIndex() {
         return currOriginIndex;
     }
 
-    public void setCurrOriginIndex(int currOriginIndex) {
+    void setCurrOriginIndex(int currOriginIndex) {
         if (currOriginIndex >= originImageList.size()) return;
         this.currOriginIndex = currOriginIndex;
     }
@@ -136,11 +110,11 @@ public class TransferAttr {
         return originImageList.get(currOriginIndex);
     }
 
-    public int getOffscreenPageLimit() {
+    int getOffscreenPageLimit() {
         return offscreenPageLimit;
     }
 
-    public void setOffscreenPageLimit(int offscreenPageLimit) {
+    void setOffscreenPageLimit(int offscreenPageLimit) {
         this.offscreenPageLimit = offscreenPageLimit;
     }
 }

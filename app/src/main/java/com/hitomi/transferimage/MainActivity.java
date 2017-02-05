@@ -1,5 +1,6 @@
 package com.hitomi.transferimage;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView1, imageView2, imageView3;
     private List<String> imageStrList;
     private List<ImageView> imageViewList;
-    private TransferWindow transferLayout;
 
     {
         imageStrList = new ArrayList<>();
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         btnJump.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(MainActivity.this, GlideTestActivity.class));
+                startActivity(new Intent(MainActivity.this, ListViewActivity.class));
             }
         });
 
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     private class ShowViewHDListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            transferLayout = new TransferWindow.Builder(MainActivity.this)
+            TransferWindow transferLayout = new TransferWindow.Builder(MainActivity.this)
                     .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                     .setTransferAnima(new TransitionAnimator())
                     .setProgressIndicator(new ProgressPieIndicator())

@@ -13,9 +13,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-/**
- * TODO: 内部维护 ProgressPieView： 把 ProgressPieView传递到 hideView onStart onProgress 等方法中
- */
 public class ProgressPieIndicator implements IProgressIndicator {
 
     private Map<Integer, ProgressPieView> progressPieViewMap = new HashMap<>();

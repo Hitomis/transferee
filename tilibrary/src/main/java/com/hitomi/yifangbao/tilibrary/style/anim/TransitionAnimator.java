@@ -37,7 +37,7 @@ public class TransitionAnimator implements ITransferAnimator {
         int startTranY = originLocation.getY() - getStatusBarHeight(context);
         int endTranY = (heightPixels - originLocation.getHeight()) / 2;
 
-        float endScaleVal = widthPixels * 1.f / originLocation.getWidth();
+        float endScaleVal = widthPixels * 1.f / originLocation.getRealWidth();
 
         // x 方向放大
         ObjectAnimator scaleXAnima = ObjectAnimator.ofFloat(afterView, "scaleX", afterView.getScaleX(), endScaleVal);
@@ -58,7 +58,8 @@ public class TransitionAnimator implements ITransferAnimator {
 
     @Override
     public Animator dismissHitAnimator(View beforeView, View afterView) {
-        float endScale = afterView.getWidth() * 1.f / beforeView.getWidth();
+        // TODO 动画不精确
+        float endScale = Location.converLocation(afterView).getRealWidth() * 1.f / beforeView.getWidth();
 
         ObjectAnimator scaleXAnima = ObjectAnimator.ofFloat(beforeView, "scaleX", beforeView.getScaleX(), endScale);
         ObjectAnimator scaleYAnima = ObjectAnimator.ofFloat(beforeView, "scaleY", beforeView.getScaleY(), endScale);
@@ -74,7 +75,7 @@ public class TransitionAnimator implements ITransferAnimator {
         ObjectAnimator tranYAnima = ObjectAnimator.ofFloat(beforeView, "y", beforeView.getTranslationY(), -endTranY);
 
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.setDuration(300);
+        animatorSet.setDuration(6000);
         animatorSet.play(scaleXAnima)
                 .with(scaleYAnima)
                 .with(tranXAnima)

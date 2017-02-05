@@ -20,8 +20,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ListViewActivity" />
-        <activity android:name=".GridViewActivity"></activity>
+        <activity
+            android:name=".ListViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GridViewActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

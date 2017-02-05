@@ -47,6 +47,15 @@ public class ListViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
 
+
+        final int imageWidth = DensityUtil.dip2Px(this, 120);
+        final int imageHeight = (int) (imageWidth * 3.f / 4);
+        List<String> scaleImages = new ArrayList<>();
+        for (String imgUrl : imageStrList) {
+            imgUrl = String.format("%s@%dw_%dh_1e_1c", imgUrl, imageWidth, imageHeight);
+            scaleImages.add(imgUrl);
+        }
+
         listView = (ListView) findViewById(R.id.list_view);
         listView.setAdapter(new CommonAdapter<String>(this, R.layout.item_list_view, imageStrList){
 

@@ -12,10 +12,25 @@
     tools:context="com.hitomi.transferimage.MainActivity">
 
     <Button
-        android:id="@+id/btn_clear_fresco"
+        android:id="@+id/btn_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="clear fresco cache" />
+        android:text="Go ListViewActivity"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Go GridViewActivity"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_group_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Go GroupImageActivity"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_clear_glide"
@@ -23,28 +38,5 @@
         android:layout_height="wrap_content"
         android:text="clear glide cache" />
 
-    <Button
-        android:id="@+id/btn_jump"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="jump" />
-
-    <ImageView
-        android:id="@+id/image_view1"
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:src="@drawable/img1" />
-
-    <ImageView
-        android:id="@+id/image_view2"
-        android:layout_width="100dp"
-        android:layout_height="120dp"
-        android:src="@drawable/img2" />
-
-    <ImageView
-        android:id="@+id/image_view3"
-        android:layout_width="100dp"
-        android:layout_height="150dp"
-        android:src="@drawable/img3" />
 
 </LinearLayout>

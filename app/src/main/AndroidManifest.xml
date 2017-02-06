@@ -25,7 +25,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".GridViewActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GroupImageActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

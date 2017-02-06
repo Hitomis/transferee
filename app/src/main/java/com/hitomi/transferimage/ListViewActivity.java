@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
-import com.hitomi.yifangbao.tilibrary.TransferWindow;
+import com.hitomi.yifangbao.tilibrary.TransferImage;
 import com.hitomi.yifangbao.tilibrary.loader.glide.GlideImageLoader;
 import com.hitomi.yifangbao.tilibrary.style.anim.TransitionAnimator;
 import com.hitomi.yifangbao.tilibrary.style.index.IndexCircleIndicator;
@@ -57,7 +57,7 @@ public class ListViewActivity extends AppCompatActivity {
         }
 
         listView = (ListView) findViewById(R.id.list_view);
-        listView.setAdapter(new CommonAdapter<String>(this, R.layout.item_list_view, imageStrList){
+        listView.setAdapter(new CommonAdapter<String>(this, R.layout.item_image, imageStrList){
 
             @Override
             protected void convert(ViewHolder viewHolder, String item, final int position) {
@@ -77,7 +77,7 @@ public class ListViewActivity extends AppCompatActivity {
                         List<String> imageList = new ArrayList<>();
                         imageList.add(imageStrList.get(position));
 
-                        TransferWindow transferLayout = new TransferWindow.Builder(ListViewActivity.this)
+                        TransferImage transferLayout = new TransferImage.Builder(ListViewActivity.this)
                                 .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                                 .setTransferAnima(new TransitionAnimator())
                                 .setProgressIndicator(new ProgressPieIndicator())

@@ -7,7 +7,6 @@ import android.widget.ImageView;
 /**
  * Created by hitomi on 2017/1/19.
  */
-
 public class Location {
 
     private int x;

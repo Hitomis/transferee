@@ -10,6 +10,7 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +32,14 @@ import java.util.Set;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 /**
+ * Main workflow: <br/>
+ * 1、点击缩略图展示缩略图到 TransferImage 过渡动画 <br/>
+ * 2、显示下载高清图片进度 <br/>
+ * 3、记载完成显示高清图片 <br/>
+ * 4、高清图支持手势缩放 <br/>
+ * 5、关闭 TransferImage 展示 TransferImage 到原缩略图的过渡动画 <br/>
  * Created by hitomi on 2017/1/19.
  */
-
 public class TransferImage extends FrameLayout {
 
     private Context context;
@@ -65,6 +71,9 @@ public class TransferImage extends FrameLayout {
         initSharedLayout();
     }
 
+    /**
+     * 初始化一个共享布局, 在 TransferImage 上 添加在与之前点击的缩略图相同的位置, 通过动画模拟出于过渡动画相似的效果
+     */
     private void initSharedLayout() {
         ImageView currOriginImage = attr.getOriginImageList().get(attr.getCurrOriginIndex());
         LinearLayout.LayoutParams sImageVlp = new LinearLayout.LayoutParams(currOriginImage.getWidth(), currOriginImage.getHeight());
@@ -85,9 +94,12 @@ public class TransferImage extends FrameLayout {
         sharedLayout.addView(sharedImage);
 
         addView(sharedLayout);
-        showAnima();
+        startShowing();
     }
 
+    /**
+     * 初始化 ViewPager
+     */
     private void initViewPager() {
         pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -125,13 +137,21 @@ public class TransferImage extends FrameLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        // unregister PageChangeListener
         viewPager.removeOnPageChangeListener(pageChangeListener);
     }
 
+    /**
+     * TransferImage 是否显示
+     * @return true ：显示, false ：关闭
+     */
     public boolean isShown() {
         return shown;
     }
 
+    /**
+     * 显示 TransferImage
+     */
     public void show() {
         if (!shown) {
             shown = true;
@@ -139,6 +159,9 @@ public class TransferImage extends FrameLayout {
         }
     }
 
+    /**
+     * 关闭 TransferImage
+     */
     public void dismiss() {
         if (!shown) return;
         shown = false;
@@ -151,15 +174,27 @@ public class TransferImage extends FrameLayout {
             removeFromWindow();
         } else {
             if (attr.getCurrShowIndex() > attr.getCurrOriginIndex()) {
-                dismissMissAnima();
+                startDismissMiss();
             } else {
-                dismissHitAnima();
+                startDismissHit();
             }
-            dismissBackAnima();
+            startDismissBackground();
         }
     }
 
-    private void showAnima() {
+    /**
+     * 初始化 TransferImage 主面板
+     */
+    private void initMainPanel() {
+        IIndexIndicator indexIndicator = attr.getIndexIndicator();
+        if (indexIndicator != null && attr.getImageStrList().size() >= 2)
+            indexIndicator.attach(this, viewPager);
+    }
+
+    /**
+     * 开启显示 TransferImage 动画
+     */
+    private void startShowing() {
         if (transferAnimator == null) return;
         Animator animator = transferAnimator.showAnimator(attr.getCurrOriginImageView(), sharedImage);
         animator.addListener(new AnimatorListenerAdapter() {
@@ -182,19 +217,16 @@ public class TransferImage extends FrameLayout {
 
                 removeView(sharedLayout);
 
-                initMainUI();
+                initMainPanel();
             }
         });
         animator.start();
     }
 
-    private void initMainUI() {
-        IIndexIndicator indexIndicator = attr.getIndexIndicator();
-        if (indexIndicator != null && attr.getImageStrList().size() >= 2)
-            indexIndicator.attach(this, viewPager);
-    }
-
-    private void dismissHitAnima() {
+    /**
+     * 开启 TransferImage 与之前缩略图对应的关闭动画
+     */
+    private void startDismissHit() {
         final View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
         final View afterView = attr.getCurrOriginImageView();
         afterView.setVisibility(View.INVISIBLE);
@@ -212,7 +244,10 @@ public class TransferImage extends FrameLayout {
         animator.start();
     }
 
-    private void dismissMissAnima() {
+    /**
+     * 开启 TransferImage 未与之前缩略图对应的关闭动画
+     */
+    private void startDismissMiss() {
         View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
         Animator animator = transferAnimator.dismissMissAnimator(beforeView);
         if (animator == null) return;
@@ -226,12 +261,18 @@ public class TransferImage extends FrameLayout {
         animator.start();
     }
 
-    private void dismissBackAnima() {
+    /**
+     * 开启 TransferImage 背景关闭动画
+     */
+    private void startDismissBackground() {
         Animator animator = transferAnimator.dismissBackgroundAnimator(this, attr.getBackgroundColor());
         if (animator != null)
             animator.start();
     }
 
+    /**
+     * 从 Window 中移除 TransferImage
+     */
     private void removeFromWindow() {
         ViewGroup vg = (ViewGroup) getParent();
         if (vg != null) {
@@ -240,6 +281,9 @@ public class TransferImage extends FrameLayout {
         attr.getImageLoader().cancel();
     }
 
+    /**
+     * 将 TransferImage 添加到 Window 中
+     */
     private void addToWindow() {
         WindowManager.LayoutParams windowLayoutParams = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -254,7 +298,7 @@ public class TransferImage extends FrameLayout {
      * @param imageView imageView 对象
      * @param w 宽
      * @param h 高
-     * @return
+     * @return Drawable
      */
     private Drawable resizeImage(ImageView imageView, int w, int h) {
         Bitmap BitmapOrg = drawable2Bitmap(imageView.getDrawable());
@@ -262,11 +306,9 @@ public class TransferImage extends FrameLayout {
 
         int width = BitmapOrg.getWidth();
         int height = BitmapOrg.getHeight();
-        int newWidth = w;
-        int newHeight = h;
 
-        float scaleWidth = newWidth * 2.f / width;
-        float scaleHeight = newHeight * 2.f / height;
+        float scaleWidth = w * 2.f / width;
+        float scaleHeight = h * 2.f / height;
 
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
@@ -297,16 +339,13 @@ public class TransferImage extends FrameLayout {
         }
     }
 
+    /**
+     * 加载高清图
+     * @param position 图片所在索引位置下标
+     */
     private void loadImage(final int position) {
         String imgUrl = attr.getImageStrList().get(position);
-        Drawable placeHolder = null;
-        if (position < attr.getOriginImageList().size()) {
-            ImageView imageView = attr.getOriginImageList().get(position);
-            int intrinsicWidth = imageView.getDrawable().getIntrinsicWidth();
-            int intrinsicHeight = imageView.getDrawable().getIntrinsicHeight();
-            int reHeight = getWidth() * intrinsicHeight / intrinsicWidth;
-            placeHolder = resizeImage(imageView, getWidth(), reHeight);
-        }
+        Drawable placeHolder = getPlaceHolderDrawable(position);
 
         attr.getImageLoader().loadImage(imgUrl, imagePagerAdapter.getImageItem(position), placeHolder, new ImageLoader.Callback() {
 
@@ -334,9 +373,30 @@ public class TransferImage extends FrameLayout {
     }
 
     /**
+     * 获取加载完高清图之前的占位图 Drawable
+     * @param position 图片索引
+     * @return 占位图 Drawable
+     */
+    @Nullable
+    private Drawable getPlaceHolderDrawable(int position) {
+        Drawable placeHolder = null;
+        if (position < attr.getOriginImageList().size()) {
+            ImageView imageView = attr.getOriginImageList().get(position);
+            int intrinsicWidth = imageView.getDrawable().getIntrinsicWidth();
+            int intrinsicHeight = imageView.getDrawable().getIntrinsicHeight();
+            int reHeight = getWidth() * intrinsicHeight / intrinsicWidth;
+            placeHolder = resizeImage(imageView, getWidth(), reHeight);
+        } else {
+            if (attr.getMissPlaceHolder() != 0)
+                placeHolder = context.getResources().getDrawable(attr.getMissPlaceHolder());
+        }
+        return placeHolder;
+    }
+
+    /**
      * 获取状态栏高度
      *
-     * @return
+     * @return 状态栏高度值 unit ：px
      */
     private int getStatusBarHeight() {
         try {
@@ -357,6 +417,7 @@ public class TransferImage extends FrameLayout {
         private int originIndex;
         private int offscreenPageLimit;
         private int backgroundColor;
+        private int missPlaceHolder;
 
         private List<String> imageStrList;
 
@@ -389,6 +450,11 @@ public class TransferImage extends FrameLayout {
             return this;
         }
 
+        public Builder setMissPlaceHolder(int missPlaceHolder) {
+            this.missPlaceHolder = missPlaceHolder;
+            return this;
+        }
+
         public Builder setImageStrList(List<String> imageStrList) {
             this.imageStrList = imageStrList;
             return this;
@@ -418,6 +484,7 @@ public class TransferImage extends FrameLayout {
             TransferAttr attr = new TransferAttr();
             attr.setOriginImageList(originImageList);
             attr.setBackgroundColor(backgroundColor);
+            attr.setMissPlaceHolder(missPlaceHolder);
             attr.setImageStrList(imageStrList);
             attr.setCurrOriginIndex(originIndex);
             attr.setOffscreenPageLimit(offscreenPageLimit == 0 ? 1 : offscreenPageLimit);
@@ -426,8 +493,7 @@ public class TransferImage extends FrameLayout {
             attr.setTransferAnima(transferAnima);
             attr.setImageLoader(imageLoader);
 
-            TransferImage transferLayout = new TransferImage(context, attr);
-            return transferLayout;
+            return new TransferImage(context, attr);
         }
 
     }

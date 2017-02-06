@@ -21,7 +21,7 @@ class TransferAttr {
     private int currOriginIndex, currShowIndex;
     private int backgroundColor;
     private int offscreenPageLimit;
-    private int placeHolder;
+    private int missPlaceHolder;
 
     private ITransferAnimator transferAnima;
     private IProgressIndicator progressIndicator;
@@ -119,11 +119,11 @@ class TransferAttr {
         this.offscreenPageLimit = offscreenPageLimit;
     }
 
-    int getPlaceHolder() {
-        return placeHolder;
+    int getMissPlaceHolder() {
+        return missPlaceHolder;
     }
 
-    void setPlaceHolder(int placeHolder) {
-        this.placeHolder = placeHolder;
+    void setMissPlaceHolder(int missPlaceHolder) {
+        this.missPlaceHolder = missPlaceHolder;
     }
 }

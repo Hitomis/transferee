@@ -34,7 +34,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * Created by hitomi on 2017/1/19.
  */
 
-public class TransferWindow extends FrameLayout {
+public class TransferImage extends FrameLayout {
 
     private Context context;
     private TransferAttr attr;
@@ -50,7 +50,7 @@ public class TransferWindow extends FrameLayout {
     private boolean shown;
     private Set<Integer> loadedIndexSet;
 
-    private TransferWindow(Context context, TransferAttr attr) {
+    private TransferImage(Context context, TransferAttr attr) {
         super(context);
         this.context = context;
         this.attr = attr;
@@ -231,7 +231,7 @@ public class TransferWindow extends FrameLayout {
     private void removeFromWindow() {
         ViewGroup vg = (ViewGroup) getParent();
         if (vg != null) {
-            vg.removeView(TransferWindow.this);
+            vg.removeView(TransferImage.this);
         }
         attr.getImageLoader().cancel();
     }
@@ -410,7 +410,7 @@ public class TransferWindow extends FrameLayout {
             return this;
         }
 
-        public TransferWindow create() {
+        public TransferImage create() {
             TransferAttr attr = new TransferAttr();
             attr.setOriginImageList(originImageList);
             attr.setBackgroundColor(backgroundColor);
@@ -422,11 +422,9 @@ public class TransferWindow extends FrameLayout {
             attr.setTransferAnima(transferAnima);
             attr.setImageLoader(imageLoader);
 
-            TransferWindow transferLayout = new TransferWindow(context, attr);
+            TransferImage transferLayout = new TransferImage(context, attr);
             return transferLayout;
         }
 
     }
-
-
 }

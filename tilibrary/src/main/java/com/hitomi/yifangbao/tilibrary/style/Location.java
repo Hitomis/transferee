@@ -90,6 +90,12 @@ public class Location {
         this.realHeight = realHeight;
     }
 
+    /**
+     * 计算 view 坐标以及宽高值, 如果 view 是 ImageView
+     * 同时也会计算图片在 ImageView 中实际坐标以及宽高值
+     * @param view View 对象
+     * @return Location
+     */
     public static Location converLocation(View view) {
         int[] location = new int[2];
         view.getLocationInWindow(location);
@@ -98,7 +104,6 @@ public class Location {
         oLocation.setY(location[1]);
         oLocation.setWidth(view.getWidth());
         oLocation.setHeight(view.getHeight());
-
 
         if (view instanceof ImageView) {
             Drawable drawable = ((ImageView) view).getDrawable();

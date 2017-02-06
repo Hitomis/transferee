@@ -58,24 +58,25 @@ public class TransitionAnimator implements ITransferAnimator {
 
     @Override
     public Animator dismissHitAnimator(View beforeView, View afterView) {
-        // TODO 动画不精确
-        float endScale = Location.converLocation(afterView).getRealWidth() * 1.f / beforeView.getWidth();
-
-        ObjectAnimator scaleXAnima = ObjectAnimator.ofFloat(beforeView, "scaleX", beforeView.getScaleX(), endScale);
-        ObjectAnimator scaleYAnima = ObjectAnimator.ofFloat(beforeView, "scaleY", beforeView.getScaleY(), endScale);
-
         Location location = Location.converLocation(afterView);
 
+        float endScale = location.getRealWidth() * 1.f / beforeView.getWidth();
         float endScaleY = (afterView.getHeight() * 1.f / beforeView.getHeight());
-        float endTranX = (beforeView.getWidth() - (beforeView.getWidth() * endScale)) * .5f - location.getX();
+        float endTranX = (beforeView.getWidth() - (beforeView.getWidth() * endScale)) * .5f - location.getRealX();
         float endTranY = (beforeView.getHeight() - (beforeView.getHeight() * endScaleY)) * .5f
                 - (location.getY() - getStatusBarHeight(beforeView.getContext()));
 
+        // x 方向缩小
+        ObjectAnimator scaleXAnima = ObjectAnimator.ofFloat(beforeView, "scaleX", beforeView.getScaleX(), endScale);
+        // y 方向缩小
+        ObjectAnimator scaleYAnima = ObjectAnimator.ofFloat(beforeView, "scaleY", beforeView.getScaleY(), endScale);
+        // x 方向平移
         ObjectAnimator tranXAnima = ObjectAnimator.ofFloat(beforeView, "x", beforeView.getTranslationX(), -endTranX);
+        // y 方向平移
         ObjectAnimator tranYAnima = ObjectAnimator.ofFloat(beforeView, "y", beforeView.getTranslationY(), -endTranY);
 
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.setDuration(6000);
+        animatorSet.setDuration(300);
         animatorSet.play(scaleXAnima)
                 .with(scaleYAnima)
                 .with(tranXAnima)

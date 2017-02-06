@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * Attributes
- *
+ * <p>
  * Created by hitomi on 2017/1/19.
  */
 class TransferAttr {
@@ -21,6 +21,7 @@ class TransferAttr {
     private int currOriginIndex, currShowIndex;
     private int backgroundColor;
     private int offscreenPageLimit;
+    private int placeHolder;
 
     private ITransferAnimator transferAnima;
     private IProgressIndicator progressIndicator;
@@ -116,5 +117,13 @@ class TransferAttr {
 
     void setOffscreenPageLimit(int offscreenPageLimit) {
         this.offscreenPageLimit = offscreenPageLimit;
+    }
+
+    int getPlaceHolder() {
+        return placeHolder;
+    }
+
+    void setPlaceHolder(int placeHolder) {
+        this.placeHolder = placeHolder;
     }
 }

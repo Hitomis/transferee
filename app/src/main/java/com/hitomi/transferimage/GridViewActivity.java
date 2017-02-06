@@ -23,6 +23,7 @@ public class GridViewActivity extends AppCompatActivity {
     private GridView gridView;
 
     private List<String> imageStrList;
+    private TransferImage transferLayout;
 
     {
         imageStrList = new ArrayList<>();
@@ -66,7 +67,7 @@ public class GridViewActivity extends AppCompatActivity {
                         List<String> imageList = new ArrayList<>();
                         imageList.add(imageStrList.get(position));
 
-                        TransferImage transferLayout = new TransferImage.Builder(GridViewActivity.this)
+                        transferLayout = new TransferImage.Builder(GridViewActivity.this)
                                 .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                                 .setTransferAnima(new TransitionAnimator())
                                 .setProgressIndicator(new ProgressPieIndicator())
@@ -82,5 +83,14 @@ public class GridViewActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (transferLayout.isShown()) {
+            transferLayout.dismiss();
+        } else{
+            super.onBackPressed();
+        }
     }
 }

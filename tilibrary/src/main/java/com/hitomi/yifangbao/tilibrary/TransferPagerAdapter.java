@@ -91,7 +91,7 @@ public class TransferPagerAdapter extends PagerAdapter {
     @NonNull
     private FrameLayout newParentLayout(Context context) {
         // create inner ImageView
-        PhotoView imageView = new PhotoView(context);
+        final PhotoView imageView = new PhotoView(context);
         imageView.setId(ID_IMAGE);
         imageView.enable();
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -110,6 +110,7 @@ public class TransferPagerAdapter extends PagerAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                imageView.reset();
                 onDismissListener.onDismiss();
             }
         });

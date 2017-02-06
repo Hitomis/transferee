@@ -4,9 +4,6 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.widget.ImageView;
 
-/**
- * Created by liuheng on 2015/8/19.
- */
 public class Info {
 
     // 内部图片在整个手机界面的位置

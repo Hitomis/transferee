@@ -128,6 +128,10 @@ public class TransferImage extends FrameLayout {
         viewPager.removeOnPageChangeListener(pageChangeListener);
     }
 
+    public boolean isShown() {
+        return shown;
+    }
+
     public void show() {
         if (!shown) {
             shown = true;
@@ -293,7 +297,7 @@ public class TransferImage extends FrameLayout {
         }
     }
 
-    public void loadImage(final int position) {
+    private void loadImage(final int position) {
         String imgUrl = attr.getImageStrList().get(position);
         Drawable placeHolder = null;
         if (position < attr.getOriginImageList().size()) {

@@ -1231,7 +1231,7 @@ public class PhotoView extends ImageView {
         position[1] = (int) (position[1] + 0.5f);
     }
 
-    private void reset() {
+    public void reset() {
         mAnimaMatrix.reset();
         executeTranslate();
         mScale = 1;

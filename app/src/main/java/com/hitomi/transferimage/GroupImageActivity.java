@@ -21,7 +21,6 @@ public class GroupImageActivity extends AppCompatActivity {
     private ImageView imageView1, imageView2, imageView3;
     private List<String> imageStrList;
     private List<ImageView> imageViewList;
-
     {
         imageStrList = new ArrayList<>();
         imageStrList.add("http://img5.niutuku.com/phone/1212/3752/3752-niutuku.com-22310.jpg");

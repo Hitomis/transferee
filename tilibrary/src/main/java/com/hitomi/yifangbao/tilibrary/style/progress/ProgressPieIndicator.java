@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.filippudak.ProgressPieView.ProgressPieView;
@@ -73,6 +74,10 @@ public class ProgressPieIndicator implements IProgressIndicator {
 
     @Override
     public void onFinish(int position) {
-        progressPieViewMap.get(position).setVisibility(View.GONE);
+        ProgressPieView progressPieView = progressPieViewMap.get(position);
+        ViewGroup vg = (ViewGroup) progressPieView.getParent();;
+        if (vg != null) {
+            vg.removeView(progressPieView);
+        }
     }
 }

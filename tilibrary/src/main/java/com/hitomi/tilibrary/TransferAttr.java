@@ -11,8 +11,8 @@ import com.hitomi.tilibrary.style.ITransferAnimator;
 import java.util.List;
 
 /**
- * Attributes
- * <p>
+ * Attributes <br/>
+ *
  * Created by hitomi on 2017/1/19.
  */
 class TransferAttr {

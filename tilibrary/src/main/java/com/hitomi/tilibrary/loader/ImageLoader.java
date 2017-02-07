@@ -9,7 +9,6 @@ import android.widget.ImageView;
  */
 
 public interface ImageLoader {
-
     /**
      * 开始加载图片
      * @param url 图片地址

@@ -31,9 +31,7 @@ dependencies {
 
     // glide
     compile "com.github.bumptech.glide:glide:3.7.0"
-
     // okhttp
-    compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
 
     compile 'com.github.filippudak.progresspieview:library:1.0.4'

@@ -1,33 +1,24 @@
 package com.hitomi.tilibrary.loader.glide;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.Message;
-import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.hitomi.tilibrary.loader.ImageLoader;
+import com.hitomi.tilibrary.loader.glide.GlideProgressSupport.ProgressTarget;
 
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by hitomi on 2017/1/25.
  */
 public class GlideImageLoader implements ImageLoader {
-
-    static final int MSG_START = 1 << 1;
-    static final int MSG_PROGRESS = 1 << 2;
-    static final int MSG_FINISH = 1 << 3;
-
     private Context context;
 
-    private Set<GlideProgressSupport.DataModelLoader> loaderSupportSet;
-
     private GlideImageLoader(Context context) {
-        loaderSupportSet = new HashSet<>();
         this.context = context;
     }
 
@@ -37,43 +28,40 @@ public class GlideImageLoader implements ImageLoader {
 
     @Override
     public void loadImage(String url, ImageView imageView, Drawable placeholder, final Callback callback) {
-        Glide.with(context)
-                .using(getDataModelLoader(callback))
-                .load(url)
-                .dontAnimate()
-                .placeholder(placeholder)
-                .into(imageView);
-    }
+        ProgressTarget<String, Bitmap> progressTarget = new ProgressTarget<String, Bitmap>(url, new BitmapImageViewTarget(imageView)) {
 
-    @NonNull
-    private GlideProgressSupport.DataModelLoader getDataModelLoader(final Callback callback) {
-        GlideProgressSupport.DataModelLoader loaderSupport = GlideProgressSupport.init(new Handler() {
             @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case MSG_START:
-                        callback.onStart();
-                        break;
-                    case MSG_PROGRESS:
-                        callback.onProgress(msg.arg1 * 100 / msg.arg2);
-                        break;
-                    case MSG_FINISH:
-                        callback.onFinish();
-                        break;
-                }
+            protected void onConnecting() {
+                callback.onStart();
             }
-        });
-        loaderSupportSet.add(loaderSupport);
-        return loaderSupport;
+
+            @Override
+            protected void onDownloading(long bytesRead, long expectedLength) {
+                callback.onProgress((int) (bytesRead * 100 / expectedLength));
+            }
+
+            @Override
+            protected void onDownloaded() {
+                callback.onProgress(100);
+            }
+
+            @Override
+            protected void onDelivered() {
+                callback.onFinish();
+            }
+        };
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .dontAnimate()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .placeholder(placeholder)
+                .into(progressTarget);
     }
 
     @Override
     public void cancel() {
-        for (GlideProgressSupport.DataModelLoader loaderSupport : loaderSupportSet) {
-            loaderSupport.cancel();
-        }
+
     }
-
-
 }

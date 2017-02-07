@@ -9,6 +9,7 @@ import com.bumptech.glide.request.target.Target;
 public abstract class ProgressTarget<T, Z> extends WrappingTarget<Z> implements OkHttpProgressGlideModule.UIProgressListener {
     private T model;
     private boolean ignoreProgress = true;
+    private boolean first = true;
 
     public ProgressTarget(Target<Z> target) {
         this(null, target);
@@ -51,8 +52,9 @@ public abstract class ProgressTarget<T, Z> extends WrappingTarget<Z> implements 
         if (ignoreProgress) {
             return;
         }
-        if (expectedLength == Long.MAX_VALUE) {
-            onConnecting();
+        if (first) {
+            onStartDownload();
+            first = false;
         } else if (bytesRead == expectedLength) {
             onDownloaded();
         } else {
@@ -64,7 +66,7 @@ public abstract class ProgressTarget<T, Z> extends WrappingTarget<Z> implements 
      * Called when the Glide load has started.
      * At this time it is not known if the Glide will even go and use the network to fetch the image.
      */
-    protected abstract void onConnecting();
+    protected abstract void onStartDownload();
 
     /**
      * Called when there's any progress on the download; not called when loading from cache.
@@ -90,7 +92,6 @@ public abstract class ProgressTarget<T, Z> extends WrappingTarget<Z> implements 
     private void start() {
         OkHttpProgressGlideModule.expect(toUrlString(model), this);
         ignoreProgress = false;
-        onProgress(0, Long.MAX_VALUE);
     }
 
     private void cleanup() {

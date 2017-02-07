@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.loader.glide.GlideProgressSupport.ProgressTarget;
@@ -31,7 +30,7 @@ public class GlideImageLoader implements ImageLoader {
         ProgressTarget<String, Bitmap> progressTarget = new ProgressTarget<String, Bitmap>(url, new BitmapImageViewTarget(imageView)) {
 
             @Override
-            protected void onConnecting() {
+            protected void onStartDownload() {
                 callback.onStart();
             }
 
@@ -42,20 +41,17 @@ public class GlideImageLoader implements ImageLoader {
 
             @Override
             protected void onDownloaded() {
-                callback.onProgress(100);
+                callback.onFinish();
             }
 
             @Override
             protected void onDelivered() {
-                callback.onFinish();
             }
         };
         Glide.with(context)
                 .load(url)
                 .asBitmap()
                 .dontAnimate()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .placeholder(placeholder)
                 .into(progressTarget);
     }

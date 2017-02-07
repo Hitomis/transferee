@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary;
+package com.hitomi.tilibrary;
 
 import android.content.Context;
 import android.support.annotation.IdRes;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.hitomi.yifangbao.tilibrary.style.view.photoview.PhotoView;
+import com.hitomi.tilibrary.style.view.photoview.PhotoView;
 
 import java.util.Map;
 import java.util.WeakHashMap;

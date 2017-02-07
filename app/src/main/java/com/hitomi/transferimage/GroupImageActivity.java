@@ -7,11 +7,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.hitomi.yifangbao.tilibrary.TransferImage;
-import com.hitomi.yifangbao.tilibrary.loader.glide.GlideImageLoader;
-import com.hitomi.yifangbao.tilibrary.style.anim.TransitionAnimator;
-import com.hitomi.yifangbao.tilibrary.style.index.IndexCircleIndicator;
-import com.hitomi.yifangbao.tilibrary.style.progress.ProgressPieIndicator;
+import com.hitomi.tilibrary.TransferImage;
+import com.hitomi.tilibrary.loader.glide.GlideImageLoader;
+import com.hitomi.tilibrary.style.anim.TransitionAnimator;
+import com.hitomi.tilibrary.style.index.IndexCircleIndicator;
+import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 
 import java.util.ArrayList;
 import java.util.List;

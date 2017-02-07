@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary.style;
+package com.hitomi.tilibrary.style;
 
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -95,7 +95,7 @@ public class Location {
      * @param view View 对象
      * @return Location
      */
-    public static Location converLocation(View view) {
+    public static Location convertLocation(View view) {
         int[] location = new int[2];
         view.getLocationInWindow(location);
         Location oLocation = new Location();

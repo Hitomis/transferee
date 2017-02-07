@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary.style.progress;
+package com.hitomi.tilibrary.style.progress;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.filippudak.ProgressPieView.ProgressPieView;
-import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
+import com.hitomi.tilibrary.style.IProgressIndicator;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -24,7 +24,7 @@ public class ProgressPieIndicator implements IProgressIndicator {
     }
 
     @Override
-    public View attach(int position, FrameLayout parent) {
+    public void attach(int position, FrameLayout parent) {
         Context context = parent.getContext();
 
         int progressSize = dip2Px(context, 50);
@@ -44,8 +44,6 @@ public class ProgressPieIndicator implements IProgressIndicator {
 
         parent.addView(progressPieView, parent.getChildCount());
         progressPieViewMap.put(position, progressPieView);
-
-        return progressPieView;
     }
 
     @Override

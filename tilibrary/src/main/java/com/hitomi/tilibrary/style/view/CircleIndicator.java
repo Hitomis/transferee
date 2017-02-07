@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary.style.view;
+package com.hitomi.tilibrary.style.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
-import com.hitomi.yifangbao.tilibrary.R;
+import com.hitomi.tilibrary.R;
 
 import static android.support.v4.view.ViewPager.OnPageChangeListener;
 

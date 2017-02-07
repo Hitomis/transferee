@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary.style.anim;
+package com.hitomi.tilibrary.style.anim;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -10,16 +10,15 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 
-import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
-import com.hitomi.yifangbao.tilibrary.style.Location;
+import com.hitomi.tilibrary.style.ITransferAnimator;
+import com.hitomi.tilibrary.style.Location;
 
 import java.lang.reflect.Field;
 
 /**
  * Created by hitomi on 2017/1/19.
- * TODO：动画需要兼容横竖屏幕切换的情景
+ *
  */
-
 public class TransitionAnimator implements ITransferAnimator {
 
     @Override
@@ -30,7 +29,7 @@ public class TransitionAnimator implements ITransferAnimator {
         int widthPixels = displayMetrics.widthPixels;
         int heightPixels = displayMetrics.heightPixels - getStatusBarHeight(context);
 
-        Location originLocation = Location.converLocation(beforeView);
+        Location originLocation = Location.convertLocation(beforeView);
         int startTranX = originLocation.getX();
         int endTranX = (widthPixels - originLocation.getWidth()) / 2;
 
@@ -58,7 +57,7 @@ public class TransitionAnimator implements ITransferAnimator {
 
     @Override
     public Animator dismissHitAnimator(View beforeView, View afterView) {
-        Location location = Location.converLocation(afterView);
+        Location location = Location.convertLocation(afterView);
 
         float endScale = location.getRealWidth() * 1.f / beforeView.getWidth();
         float endScaleY = (afterView.getHeight() * 1.f / beforeView.getHeight());
@@ -106,7 +105,7 @@ public class TransitionAnimator implements ITransferAnimator {
     }
 
     @Override
-    public Animator dismissBackgroundAnimator(final View backgroundLayout, final int backgroundColor) {
+    public Animator dismissBackgroundAnimator(final View parent, final int backgroundColor) {
         ValueAnimator backAnimator = ValueAnimator.ofFloat(0, 1f);
         backAnimator.setInterpolator(new AccelerateInterpolator());
         backAnimator.setDuration(350);
@@ -115,7 +114,7 @@ public class TransitionAnimator implements ITransferAnimator {
             public void onAnimationUpdate(ValueAnimator animation) {
                 int alpha = (int) (255 * (1.f - animation.getAnimatedFraction()));
                 int color = ColorUtils.setAlphaComponent(backgroundColor, alpha);
-                backgroundLayout.setBackgroundColor(color);
+                parent.setBackgroundColor(color);
 
             }
         });
@@ -125,7 +124,7 @@ public class TransitionAnimator implements ITransferAnimator {
     /**
      * 获取状态栏高度
      *
-     * @return
+     * @return 状态栏高度
      */
     private int getStatusBarHeight(Context context) {
         try {

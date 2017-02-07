@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary.loader.glide;
+package com.hitomi.tilibrary.loader.glide;
 
 import android.os.Handler;
 import android.os.Message;

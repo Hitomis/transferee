@@ -1,12 +1,12 @@
-package com.hitomi.yifangbao.tilibrary;
+package com.hitomi.tilibrary;
 
 import android.graphics.Color;
 import android.widget.ImageView;
 
-import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
-import com.hitomi.yifangbao.tilibrary.style.IIndexIndicator;
-import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
-import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
+import com.hitomi.tilibrary.loader.ImageLoader;
+import com.hitomi.tilibrary.style.IIndexIndicator;
+import com.hitomi.tilibrary.style.IProgressIndicator;
+import com.hitomi.tilibrary.style.ITransferAnimator;
 
 import java.util.List;
 

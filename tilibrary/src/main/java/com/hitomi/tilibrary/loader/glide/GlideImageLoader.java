@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary.loader.glide;
+package com.hitomi.tilibrary.loader.glide;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
+import com.hitomi.tilibrary.loader.ImageLoader;
 
 import java.util.HashSet;
 import java.util.Set;

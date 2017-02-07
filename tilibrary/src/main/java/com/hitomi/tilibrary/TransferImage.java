@@ -1,4 +1,4 @@
-package com.hitomi.yifangbao.tilibrary;
+package com.hitomi.tilibrary;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -19,10 +19,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.hitomi.yifangbao.tilibrary.loader.ImageLoader;
-import com.hitomi.yifangbao.tilibrary.style.IIndexIndicator;
-import com.hitomi.yifangbao.tilibrary.style.IProgressIndicator;
-import com.hitomi.yifangbao.tilibrary.style.ITransferAnimator;
+import com.hitomi.tilibrary.loader.ImageLoader;
+import com.hitomi.tilibrary.style.IIndexIndicator;
+import com.hitomi.tilibrary.style.IProgressIndicator;
+import com.hitomi.tilibrary.style.ITransferAnimator;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -187,8 +187,11 @@ public class TransferImage extends FrameLayout {
      */
     private void initMainPanel() {
         IIndexIndicator indexIndicator = attr.getIndexIndicator();
-        if (indexIndicator != null && attr.getImageStrList().size() >= 2)
-            indexIndicator.attach(this, viewPager);
+        if (indexIndicator != null && attr.getImageStrList().size() >= 2) {
+            indexIndicator.attach(this);
+            indexIndicator.onShow(viewPager);
+        }
+
     }
 
     /**

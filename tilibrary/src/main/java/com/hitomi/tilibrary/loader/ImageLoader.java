@@ -19,6 +19,12 @@ public interface ImageLoader {
     void loadImage(String url, ImageView imageView, Drawable placeholder, final ImageLoader.Callback callback);
 
     /**
+     * 后台预加载图片资源
+     * @param url
+     */
+    void preFetch(String url);
+
+    /**
      * 取消图片加载
      */
     void cancel();

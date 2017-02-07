@@ -6,9 +6,13 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.loader.glide.GlideProgressSupport.ProgressTarget;
+
+import java.io.File;
 
 
 /**
@@ -54,6 +58,18 @@ public class GlideImageLoader implements ImageLoader {
                 .dontAnimate()
                 .placeholder(placeholder)
                 .into(progressTarget);
+    }
+
+    @Override
+    public void preFetch(String url) {
+        Glide.with(context)
+                .load(url)
+                .downloadOnly(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
+
+                    }
+                });
     }
 
     @Override

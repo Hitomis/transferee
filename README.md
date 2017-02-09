@@ -2,7 +2,23 @@
 
 仿微博、微信、qq 点击缩略图后预览高清图的组件
 
+TransferImage 是一款模仿微博、微信、qq的高清图查看控件, 实现了在列表控件(ListView, RecycleView, GridView)中
+
+点击缩略图后播放过渡动画, 加载高清图, 加载高清图时同时显示加载进度条, 加载完成后显示高清图的一个组件。同时关闭
+
+TransferImage 也会有对应的过渡动画.
+
+支持或包含的功能：
+
+    - 打开和关闭 TransferImage 的过渡动画, 支持自定义
+    - 图片加载内置了一个使用 Glide 的图片加载器, 支持自定义
+    - 图片支持手势操作, 可缩放、双击、移动
+    - 图片加载时的进度条, 支持自定义
+    - 图片索引指示器, 支持自定义
+
 # Preview
+
+预览图图片质量有问题, 会出现卡顿的现象, 真实项目中不会出现.
 
 <img src="preview/transfer_1.gif" width="265px"/>
 <img src="preview/transfer_2.gif" width="265px"/>
@@ -19,6 +35,17 @@
             .setOffscreenPageLimit(1)
             .create();
     transferLayout.show();
+
+注意：需要在 Activity 中重写 onBackPressed 方法
+
+    @Override
+    public void onBackPressed() {
+        if (transferLayout != null && transferLayout.isShown()) {
+            transferLayout.dismiss();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
 详细示例代码可以参考 [TransferImageDemo](https://github.com/Hitomis/TransferImage/blob/master/app/src/main/java/com/hitomi/transferimage)
 

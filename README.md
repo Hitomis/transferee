@@ -33,10 +33,11 @@
 | backgroundColor | TransferImage 背景色 |
 | missPlaceHolder | 缺省的占位图, 假设缩略图为 N 张, 而 TransferImage 要显示 N + 1 张高清图, 那么 missPlaceHolder 表示为第 N + 1 张图加载完成之前的展位图 |
 | imageUrls | 高清图地址数组 |
-| ITransferAnimator | 从缩略图到高清图的过渡动画 (默认内置 TransitionAnimator), 可自实现 ITransferAnimator 接口定义自己的过渡动画 |
-| IProgressIndicator | 加载高清图的进度条 (默认内置 ProgressPieIndicator), 可自实现 IProgressIndicator 接口定义自己的图片加载进度条 |
-| IIndexIndicator | 图片索引指示器 (默认内置 IndexCircleIndicator), 可自实现 IIndexIndicator 接口定义自己的图片索引指示器|
-| ImageLoader | 图片加载器 (默认内置 GlideImageLoader), 可自实现 ImageLoader 接口定义自己的图片加载器|
+| imageUrlList | 高清图地址集合 |
+| transferAnima | 从缩略图到高清图的过渡动画 (默认内置 TransitionAnimator), 可自实现 ITransferAnimator 接口定义自己的过渡动画 |
+| progressIndicat | 加载高清图的进度条 (默认内置 ProgressPieIndicator), 可自实现 IProgressIndicator 接口定义自己的图片加载进度条 |
+| indexIndicator | 图片索引指示器 (默认内置 IndexCircleIndicator), 可自实现 IIndexIndicator 接口定义自己的图片索引指示器|
+| imageLoader | 图片加载器 (默认内置 GlideImageLoader), 可自实现 ImageLoader 接口定义自己的图片加载器|
 
 
 #Licence

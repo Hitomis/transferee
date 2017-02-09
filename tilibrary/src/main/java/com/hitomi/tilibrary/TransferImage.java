@@ -433,7 +433,7 @@ public class TransferImage extends FrameLayout {
         private List<String> imageUrlList;
 
         private ITransferAnimator transferAnima;
-        private IProgressIndicator proIndicat;
+        private IProgressIndicator progressIndicat;
         private IIndexIndicator indexIndicator;
         private ImageLoader imageLoader;
 
@@ -487,7 +487,7 @@ public class TransferImage extends FrameLayout {
         }
 
         public Builder setProgressIndicator(IProgressIndicator proIndicat) {
-            this.proIndicat = proIndicat;
+            this.progressIndicat = proIndicat;
             return this;
         }
 
@@ -516,10 +516,10 @@ public class TransferImage extends FrameLayout {
                 attr.setImageUrlList(Arrays.asList(imageUrls));
             }
 
-            if (proIndicat == null) {
+            if (progressIndicat == null) {
                 attr.setProgressIndicator(new ProgressPieIndicator());
             } else {
-                attr.setProgressIndicator(proIndicat);
+                attr.setProgressIndicator(progressIndicat);
             }
 
             if (indexIndicator == null) {

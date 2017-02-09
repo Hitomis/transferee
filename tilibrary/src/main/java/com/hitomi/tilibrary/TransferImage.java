@@ -535,7 +535,8 @@ public class TransferImage extends FrameLayout {
             }
 
             if (imageLoader == null) {
-                attr.setImageLoader(GlideImageLoader.with(context));
+                // Fix splash screen bug : context replace applicationContext
+                attr.setImageLoader(GlideImageLoader.with(context.getApplicationContext()));
             } else {
                 attr.setImageLoader(imageLoader);
             }

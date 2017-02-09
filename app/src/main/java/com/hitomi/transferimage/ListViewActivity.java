@@ -9,10 +9,6 @@ import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.TransferImage;
-import com.hitomi.tilibrary.loader.glide.GlideImageLoader;
-import com.hitomi.tilibrary.style.anim.TransitionAnimator;
-import com.hitomi.tilibrary.style.index.IndexCircleIndicator;
-import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -24,6 +20,8 @@ public class ListViewActivity extends AppCompatActivity {
     private ListView listView;
 
     private List<String> imageStrList;
+    private TransferImage transferLayout;
+
     {
         imageStrList = new ArrayList<>();
         imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486263697527.png");
@@ -47,7 +45,7 @@ public class ListViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_view);
 
         listView = (ListView) findViewById(R.id.list_view);
-        listView.setAdapter(new CommonAdapter<String>(this, R.layout.item_image, imageStrList){
+        listView.setAdapter(new CommonAdapter<String>(this, R.layout.item_image, imageStrList) {
 
             @Override
             protected void convert(ViewHolder viewHolder, String item, final int position) {
@@ -61,27 +59,24 @@ public class ListViewActivity extends AppCompatActivity {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        List<ImageView> originImageList = new ArrayList<>();
-                        originImageList.add(imageView);
-
-                        List<String> imageList = new ArrayList<>();
-                        imageList.add(imageStrList.get(position));
-
-                        TransferImage transferLayout = new TransferImage.Builder(ListViewActivity.this)
-                                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                                .setTransferAnima(new TransitionAnimator())
-                                .setProgressIndicator(new ProgressPieIndicator())
-                                .setIndexIndicator(new IndexCircleIndicator())
-                                .setBackgroundColor(Color.BLACK)
-                                .setImageStrList(imageList)
-                                .setOriginImageList(originImageList)
-                                .setOriginIndex(0)
-                                .setOffscreenPageLimit(1)
+                        transferLayout = new TransferImage.Builder(ListViewActivity.this)
+                                .setBackgroundColor(Color.parseColor("#2f008d"))
+                                .setImageUrls(imageStrList.get(position))
+                                .setOriginImages(imageView)
                                 .create();
                         transferLayout.show();
                     }
                 });
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (transferLayout != null && transferLayout.isShown()) {
+            transferLayout.dismiss();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

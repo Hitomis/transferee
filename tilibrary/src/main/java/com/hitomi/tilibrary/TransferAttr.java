@@ -54,7 +54,7 @@ class TransferAttr {
         return imageStrList;
     }
 
-    void setImageStrList(List<String> imageStrList) {
+    void setImageUrlList(List<String> imageStrList) {
         this.imageStrList = imageStrList;
     }
 

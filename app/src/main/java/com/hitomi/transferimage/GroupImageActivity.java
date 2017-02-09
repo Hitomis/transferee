@@ -8,10 +8,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.TransferImage;
-import com.hitomi.tilibrary.loader.glide.GlideImageLoader;
-import com.hitomi.tilibrary.style.anim.TransitionAnimator;
-import com.hitomi.tilibrary.style.index.IndexCircleIndicator;
-import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +17,8 @@ public class GroupImageActivity extends AppCompatActivity {
     private ImageView imageView1, imageView2, imageView3;
     private List<String> imageStrList;
     private List<ImageView> imageViewList;
+    private TransferImage transferLayout;
+
     {
         imageStrList = new ArrayList<>();
         imageStrList.add("http://img5.niutuku.com/phone/1212/3752/3752-niutuku.com-22310.jpg");
@@ -56,17 +54,23 @@ public class GroupImageActivity extends AppCompatActivity {
         imageViewList.add(imageView3);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (transferLayout != null && transferLayout.isShown()) {
+            transferLayout.dismiss();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private class ShowViewHDListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            TransferImage transferLayout = new TransferImage.Builder(GroupImageActivity.this)
-                    .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                    .setTransferAnima(new TransitionAnimator())
-                    .setProgressIndicator(new ProgressPieIndicator())
-                    .setIndexIndicator(new IndexCircleIndicator())
+            transferLayout = new TransferImage.Builder(GroupImageActivity.this)
                     .setBackgroundColor(Color.BLACK)
-                    .setImageStrList(imageStrList)
+                    .setMissPlaceHolder(R.mipmap.ic_launcher)
                     .setOriginImageList(imageViewList)
+                    .setImageUrlList(imageStrList)
                     .setOriginIndex(imageViewList.indexOf(v))
                     .setOffscreenPageLimit(1)
                     .create();

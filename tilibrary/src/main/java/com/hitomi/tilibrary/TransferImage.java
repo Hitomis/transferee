@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
@@ -20,11 +21,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
+import com.hitomi.tilibrary.loader.glide.GlideImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.style.ITransferAnimator;
+import com.hitomi.tilibrary.style.anim.TransitionAnimator;
+import com.hitomi.tilibrary.style.index.IndexCircleIndicator;
+import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -415,6 +421,7 @@ public class TransferImage extends FrameLayout {
 
     public static class Builder {
         private Context context;
+        private ImageView[] originImages;
         private List<ImageView> originImageList;
 
         private int originIndex;
@@ -422,7 +429,8 @@ public class TransferImage extends FrameLayout {
         private int backgroundColor;
         private int missPlaceHolder;
 
-        private List<String> imageStrList;
+        private String[] imageUrls;
+        private List<String> imageUrlList;
 
         private ITransferAnimator transferAnima;
         private IProgressIndicator proIndicat;
@@ -431,6 +439,11 @@ public class TransferImage extends FrameLayout {
 
         public Builder(Context context) {
             this.context = context;
+        }
+
+        public Builder setOriginImages(ImageView... originImages) {
+            this.originImages = originImages;
+            return this;
         }
 
         public Builder setOriginImageList(List<ImageView> originImageList) {
@@ -458,8 +471,13 @@ public class TransferImage extends FrameLayout {
             return this;
         }
 
-        public Builder setImageStrList(List<String> imageStrList) {
-            this.imageStrList = imageStrList;
+        public Builder setImageUrls(String... imageUrls) {
+            this.imageUrls = imageUrls;
+            return this;
+        }
+
+        public Builder setImageUrlList(List<String> imageUrlList) {
+            this.imageUrlList = imageUrlList;
             return this;
         }
 
@@ -485,16 +503,47 @@ public class TransferImage extends FrameLayout {
 
         public TransferImage create() {
             TransferAttr attr = new TransferAttr();
-            attr.setOriginImageList(originImageList);
-            attr.setBackgroundColor(backgroundColor);
+
+            if (originImageList != null && !originImageList.isEmpty()) {
+                attr.setOriginImageList(originImageList);
+            } else {
+                attr.setOriginImageList(Arrays.asList(originImages));
+            }
+
+            if (imageUrlList != null && !imageUrlList.isEmpty()) {
+                attr.setImageUrlList(imageUrlList);
+            } else {
+                attr.setImageUrlList(Arrays.asList(imageUrls));
+            }
+
+            if (proIndicat == null) {
+                attr.setProgressIndicator(new ProgressPieIndicator());
+            } else {
+                attr.setProgressIndicator(proIndicat);
+            }
+
+            if (indexIndicator == null) {
+                attr.setIndexIndicator(new IndexCircleIndicator());
+            } else {
+                attr.setIndexIndicator(indexIndicator);
+            }
+
+            if (transferAnima == null) {
+                attr.setTransferAnima(new TransitionAnimator());
+            } else  {
+                attr.setTransferAnima(transferAnima);
+            }
+
+            if (imageLoader == null) {
+                attr.setImageLoader(GlideImageLoader.with(context));
+            } else {
+                attr.setImageLoader(imageLoader);
+            }
+
+            attr.setOffscreenPageLimit(offscreenPageLimit <= 0 ? 1 : offscreenPageLimit);
+            attr.setBackgroundColor(backgroundColor == 0 ? Color.BLACK : backgroundColor);
+            attr.setCurrOriginIndex(originIndex < 0 ? 0 : originIndex);
             attr.setMissPlaceHolder(missPlaceHolder);
-            attr.setImageStrList(imageStrList);
-            attr.setCurrOriginIndex(originIndex);
-            attr.setOffscreenPageLimit(offscreenPageLimit == 0 ? 1 : offscreenPageLimit);
-            attr.setProgressIndicator(proIndicat);
-            attr.setIndexIndicator(indexIndicator);
-            attr.setTransferAnima(transferAnima);
-            attr.setImageLoader(imageLoader);
 
             return new TransferImage(context, attr);
         }

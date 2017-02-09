@@ -9,10 +9,6 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.TransferImage;
-import com.hitomi.tilibrary.loader.glide.GlideImageLoader;
-import com.hitomi.tilibrary.style.anim.TransitionAnimator;
-import com.hitomi.tilibrary.style.index.IndexCircleIndicator;
-import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -61,22 +57,10 @@ public class GridViewActivity extends AppCompatActivity {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        List<ImageView> originImageList = new ArrayList<>();
-                        originImageList.add(imageView);
-
-                        List<String> imageList = new ArrayList<>();
-                        imageList.add(imageStrList.get(position));
-
                         transferLayout = new TransferImage.Builder(GridViewActivity.this)
-                                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                                .setTransferAnima(new TransitionAnimator())
-                                .setProgressIndicator(new ProgressPieIndicator())
-                                .setIndexIndicator(new IndexCircleIndicator())
-                                .setBackgroundColor(Color.BLACK)
-                                .setImageStrList(imageList)
-                                .setOriginImageList(originImageList)
-                                .setOriginIndex(0)
-                                .setOffscreenPageLimit(1)
+                                .setBackgroundColor(Color.parseColor("#158d3d"))
+                                .setImageUrls(imageStrList.get(position))
+                                .setOriginImages(imageView)
                                 .create();
                         transferLayout.show();
                     }
@@ -87,9 +71,10 @@ public class GridViewActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (transferLayout.isShown()) {
+
+        if (transferLayout != null && transferLayout.isShown()) {
             transferLayout.dismiss();
-        } else{
+        } else {
             super.onBackPressed();
         }
     }

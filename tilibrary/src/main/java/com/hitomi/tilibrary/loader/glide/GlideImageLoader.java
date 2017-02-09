@@ -67,7 +67,7 @@ public class GlideImageLoader implements ImageLoader {
                 .downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-
+                        // Don't do anything
                     }
                 });
     }

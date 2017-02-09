@@ -1,99 +1,42 @@
 # TransferImage
 
-
-
-
+仿微博、微信、qq 点击缩略图后预览高清图的组件
 
 # Preview
 
-<img src="preview/transfer_1.gif" width="250px"/>
-<img src="preview/transfer_2.gif" width="250px"/>
-<img src="preview/transfer_3.gif" width="250px"/>
+<img src="preview/transfer_1.gif" width="265px"/>
+<img src="preview/transfer_2.gif" width="265px"/>
+<img src="preview/transfer_3.gif" width="265px"/>
 
-
-# Import
-
-### Gradle
-
-Step 1. Add the JitPack repository to your build file
-
-	allprojects {
-		repositories {
-			...
-			maven { url "https://jitpack.io" }
-		}
-	}
-   
-Step 2. Add the dependency
-
-	dependencies {
-	        compile 'com.github.Hitomis:CircleMenu:v1.0.2'
-	}
-   
-### Maven
-   
-Step 1. Add the JitPack repository to your build file
-
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-   
-Step 2. Add the dependency
-
-	<dependency>
-	    <groupId>com.github.Hitomis</groupId>
-	    <artifactId>CircleMenu</artifactId>
-	    <version>v1.0.2</version>
-	</dependency>
-   
 # Usage
 
-布局文件中：
+    transferLayout = new TransferImage.Builder(GroupImageActivity.this)
+            .setBackgroundColor(Color.BLACK)
+            .setMissPlaceHolder(R.mipmap.ic_launcher)
+            .setOriginImageList(imageViewList)
+            .setImageUrlList(imageStrList)
+            .setOriginIndex(imageViewList.indexOf(v))
+            .setOffscreenPageLimit(1)
+            .create();
+    transferLayout.show();
 
-    <com.hitomi.cmlibrary.CircleMenu
-        android:id="@+id/circle_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    详细示例代码可以参考 [TransferImageDemo](https://github.com/Hitomis/TransferImage/blob/master/app/src/main/java/com/hitomi/transferimage)
 
-Activity 中：
+# Attribute
 
-    circleMenu = (CircleMenu) findViewById(R.id.circle_menu);
-
-    circleMenu.setMainMenu(Color.parseColor("#CDCDCD"), R.mipmap.icon_menu, R.mipmap.icon_cancel)
-            .addSubMenu(Color.parseColor("#258CFF"), R.mipmap.icon_home)
-            .addSubMenu(Color.parseColor("#30A400"), R.mipmap.icon_search)
-            .addSubMenu(Color.parseColor("#FF4B32"), R.mipmap.icon_notify)
-            .addSubMenu(Color.parseColor("#8A39FF"), R.mipmap.icon_setting)
-            .addSubMenu(Color.parseColor("#FF6A00"), R.mipmap.icon_gps)
-            .setOnMenuSelectedListener(new OnMenuSelectedListener() {
-
-                @Override
-                public void onMenuSelected(int index) {}
-
-            }).setOnMenuStatusChangeListener(new OnMenuStatusChangeListener() {
-
-                @Override
-                public void onMenuOpened() {}
-
-                @Override
-                public void onMenuClosed() {}
-
-            });
-
-# Method
-
-| 方法 | 说明 |
+| 属性 | 说明 |
 | :--: | :--: |
-| setMainMenu | 设置主按钮(打开/关闭)的背景色，以及打开/关闭的图标。图标支持 Resource、Bitmap、Drawable 形式 |
-| addSubMenu | 添加一个子菜单项，包括子菜单的背景色以及图标 。图标支持 Resource、Bitmap、Drawable 形式|
-| openMenu | 打开菜单 |
-| closeMenu | 关闭菜单 |
-| isOpened | 菜单是否打开，返回 boolean 值 |
-| setOnMenuSelectedListener | 设置选中子菜单项的监听器，回调方法会传递当前点击子菜单项的下标值，从 0 开始计算 |
-| setOnMenuStatusChangeListener | 设置 CircleMenu 行为状态监听器，onMenuOpened 为菜单打开后的回调方法，onMenuClosed 为菜单关闭后的回调方法 |
+| originImages | 缩略图 ImageView 数组 |
+| originImageList | 缩略图 ImageView 集合 |
+| originIndex | 如果是一组缩略图, originIndex 表示当前点击的缩略图下标位置, 否则 originIndex 默认为 0 |
+| offscreenPageLimit | 显示 TransferImage 时初始化加载的图片数量, 默认为1, 表示第一次加载3张(originIndex, originIndex + 1, originIndex - 1); 值为 2, 表示加载5张。依次类推 |
+| backgroundColor | TransferImage 背景色 |
+| missPlaceHolder | 缺省的占位图, 假设缩略图为 N 张, 而 TransferImage 要显示 N + 1 张高清图, 那么 missPlaceHolder 表示为第 N + 1 张图加载完成之前的展位图 |
+| imageUrls | 高清图地址数组 |
+| ITransferAnimator | 从缩略图到高清图的过渡动画 (默认内置 TransitionAnimator), 可自实现 ITransferAnimator 接口定义自己的过渡动画 |
+| IProgressIndicator | 加载高清图的进度条 (默认内置 ProgressPieIndicator), 可自实现 IProgressIndicator 接口定义自己的图片加载进度条 |
+| IIndexIndicator | 图片索引指示器 (默认内置 IndexCircleIndicator), 可自实现 IIndexIndicator 接口定义自己的图片索引指示器|
+| ImageLoader | 图片加载器 (默认内置 GlideImageLoader), 可自实现 ImageLoader 接口定义自己的图片加载器|
 
 
 #Licence

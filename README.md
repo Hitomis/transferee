@@ -20,7 +20,7 @@
             .create();
     transferLayout.show();
 
-    详细示例代码可以参考 [TransferImageDemo](https://github.com/Hitomis/TransferImage/blob/master/app/src/main/java/com/hitomi/transferimage)
+详细示例代码可以参考 [TransferImageDemo](https://github.com/Hitomis/TransferImage/blob/master/app/src/main/java/com/hitomi/transferimage)
 
 # Attribute
 

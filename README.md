@@ -56,7 +56,7 @@ TransferImage 也会有对应的过渡动画.
 | originIndex | 如果是一组缩略图, originIndex 表示当前点击的缩略图下标位置, 否则 originIndex 默认为 0 |
 | offscreenPageLimit | 显示 TransferImage 时初始化加载的图片数量, 默认为1, 表示第一次加载3张(originIndex, originIndex + 1, originIndex - 1); 值为 2, 表示加载5张。依次类推 |
 | backgroundColor | TransferImage 背景色 |
-| missPlaceHolder | 缺省的占位图, 假设缩略图为 N 张, 而 TransferImage 要显示 N + 1 张高清图, 那么 missPlaceHolder 表示为第 N + 1 张图加载完成之前的展位图 |
+| missPlaceHolder | 缺省的占位图, 假设缩略图为 N 张, 而 TransferImage 要显示 N + 1 张高清图, 那么 missPlaceHolder 表示为第 N + 1 张图加载完成之前的占位图 |
 | imageUrls | 高清图地址数组 |
 | imageUrlList | 高清图地址集合 |
 | transferAnima | 从缩略图到高清图的过渡动画 (默认内置 TransitionAnimator), 可自实现 ITransferAnimator 接口定义自己的过渡动画 |

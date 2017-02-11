@@ -6,6 +6,8 @@ TransferImage 是一款模仿微博、微信、qq的高清图查看控件, 实�
 点击缩略图后播放过渡动画, 加载高清图, 加载高清图时同时显示加载进度条, 加载完成后显示高清图的一个组件。同时关闭
 TransferImage 也会有对应的过渡动画.
 
+此库若有不完善的地方, 请提 Issues
+
 支持或包含的功能：
 
 - 打开和关闭 TransferImage 的过渡动画, 支持自定义
@@ -34,7 +36,7 @@ TransferImage 也会有对应的过渡动画.
             .create();
     transferLayout.show();
 
-注意：需要在 Activity 中重写 onBackPressed 方法
+注意：需要在 Activity 中重写 onBackPressed 方法 (如果有 BaseActivity, 在 BaseActivity 中重写即可)
 
     @Override
     public void onBackPressed() {

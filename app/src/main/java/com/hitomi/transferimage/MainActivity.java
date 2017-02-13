@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnList, btnGrid, btngroupImage, btnClearGlide;
+    private Button btnList, btnGrid, btngroupImage, btnGoTouchMove, btnClearGlide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +22,8 @@ public class MainActivity extends AppCompatActivity {
         btnList = (Button) findViewById(R.id.btn_list);
         btnGrid = (Button) findViewById(R.id.btn_grid);
         btngroupImage = (Button) findViewById(R.id.btn_group_image);
+        btnGoTouchMove = (Button) findViewById(R.id.btn_touch_move);
         btnClearGlide = (Button) findViewById(R.id.btn_clear_glide);
-
-
 
         btnList.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, GroupImageActivity.class));
+            }
+        });
+
+        btnGoTouchMove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, TouchMoveImageActivity.class));
             }
         });
 

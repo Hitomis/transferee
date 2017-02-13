@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_group_image"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.hitomi.transferimage.TouchMoveImageActivity">
+
+    <ImageView
+        android:id="@+id/image_view1"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:src="@drawable/img1" />
+
+    <ImageView
+        android:id="@+id/image_view2"
+        android:layout_width="100dp"
+        android:layout_height="120dp"
+        android:src="@drawable/img2" />
+
+    <ImageView
+        android:id="@+id/image_view3"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:src="@drawable/img3" />
+
+</LinearLayout>

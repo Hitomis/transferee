@@ -2,30 +2,36 @@ package com.hitomi.transferimage;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
+import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.TransferImage;
+import com.zhy.adapter.abslistview.CommonAdapter;
+import com.zhy.adapter.abslistview.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupImageActivity extends AppCompatActivity {
+public class GroupImageActivity extends BaseActivity {
 
-    private ImageView imageView1, imageView2, imageView3;
+    private GridView gvImages;
+
     private List<String> imageStrList;
-    private List<ImageView> imageViewList;
-    private TransferImage transferLayout;
-
     {
         imageStrList = new ArrayList<>();
-        imageStrList.add("http://img5.niutuku.com/phone/1212/3752/3752-niutuku.com-22310.jpg");
-        imageStrList.add("http://c.hiphotos.baidu.com/zhidao/pic/item/b7003af33a87e950e7d5403816385343faf2b4a0.jpg");
-        imageStrList.add("http://e.hiphotos.baidu.com/zhidao/pic/item/7aec54e736d12f2ed5568f4c4dc2d5628535684e.jpg");
-        imageStrList.add("http://e.hiphotos.baidu.com/zhidao/pic/item/78310a55b319ebc443ac406c8726cffc1f17166a.jpg");
-        imageStrList.add("http://img2.niutuku.com/desk/anime/1948/1948-13519.jpg");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
     }
 
     @Override
@@ -33,73 +39,47 @@ public class GroupImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_image);
 
-        imageView1 = (ImageView) findViewById(R.id.image_view1);
-        imageView2 = (ImageView) findViewById(R.id.image_view2);
-        imageView3 = (ImageView) findViewById(R.id.image_view3);
+        gvImages = (GridView) findViewById(R.id.gv_images);
 
-        GroupImageActivity.TouchViewMotion touchViewMotion = new GroupImageActivity.TouchViewMotion();
-        imageView1.setOnTouchListener(touchViewMotion);
-        imageView2.setOnTouchListener(touchViewMotion);
-        imageView3.setOnTouchListener(touchViewMotion);
+        gvImages.setAdapter(new CommonAdapter<String>(this, R.layout.item_image, imageStrList) {
+            @Override
+            protected void convert(ViewHolder viewHolder, String item, final int position) {
+                final ImageView imageView = viewHolder.getView(R.id.image_view);
+                imageView.setClickable(true);
+                Glide.with(GroupImageActivity.this)
+                        .load(item)
+                        .override(200, 200)
+                        .placeholder(R.mipmap.ic_launcher)
+                        .into(imageView);
 
-
-        GroupImageActivity.ShowViewHDListener showViewHDListener = new GroupImageActivity.ShowViewHDListener();
-        imageView1.setOnClickListener(showViewHDListener);
-        imageView2.setOnClickListener(showViewHDListener);
-        imageView3.setOnClickListener(showViewHDListener);
-
-        imageViewList = new ArrayList<>();
-        imageViewList.add(imageView1);
-        imageViewList.add(imageView2);
-        imageViewList.add(imageView3);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (transferLayout != null && transferLayout.isShown()) {
-            transferLayout.dismiss();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    private class ShowViewHDListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            transferLayout = new TransferImage.Builder(GroupImageActivity.this)
-                    .setBackgroundColor(Color.BLACK)
-                    .setMissPlaceHolder(R.mipmap.ic_launcher)
-                    .setOriginImageList(imageViewList)
-                    .setImageUrlList(imageStrList)
-                    .setOriginIndex(imageViewList.indexOf(v))
-                    .setOffscreenPageLimit(1)
-                    .create();
-            transferLayout.show();
-        }
-    }
-
-    private class TouchViewMotion implements View.OnTouchListener {
-        private float preX, preY;
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    preX = event.getRawX();
-                    preY = event.getRawY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    float diffX = event.getRawX() - preX;
-                    float diffY = event.getRawY() - preY;
-
-                    v.setX(v.getX() + diffX);
-                    v.setY(v.getY() + diffY);
-
-                    preX = event.getRawX();
-                    preY = event.getRawY();
-                    break;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        transferLayout = new TransferImage.Builder(GroupImageActivity.this)
+                                .setBackgroundColor(Color.BLACK)
+                                .setOriginImageList(wrapOriginImageViewList())
+                                .setImageUrlList(imageStrList)
+                                .setOriginIndex(position)
+                                .create();
+                        transferLayout.show();
+                    }
+                });
             }
-            return false;
-        }
+        });
     }
+
+    /**
+     * 包装缩略图 ImageView 集合
+     * @return
+     */
+    @NonNull
+    private List<ImageView> wrapOriginImageViewList() {
+        List<ImageView> originImgList = new ArrayList<>();
+        for (int i = 0; i < imageStrList.size(); i++) {
+            ImageView thumImg = (ImageView) ((LinearLayout) gvImages.getChildAt(i)).getChildAt(0);
+            originImgList.add(thumImg);
+        }
+        return originImgList;
+    }
+
 }

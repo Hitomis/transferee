@@ -2,7 +2,6 @@ package com.hitomi.transferimage;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -15,12 +14,10 @@ import com.zhy.adapter.abslistview.ViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GridViewActivity extends AppCompatActivity {
+public class GridViewActivity extends BaseActivity {
     private GridView gridView;
 
     private List<String> imageStrList;
-    private TransferImage transferLayout;
-
     {
         imageStrList = new ArrayList<>();
         imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486263697527.png");
@@ -69,13 +66,4 @@ public class GridViewActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-
-        if (transferLayout != null && transferLayout.isShown()) {
-            transferLayout.dismiss();
-        } else {
-            super.onBackPressed();
-        }
-    }
 }

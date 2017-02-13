@@ -136,7 +136,7 @@ public class TransferImage extends FrameLayout {
         viewPager.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
         viewPager.setVisibility(View.INVISIBLE);
         viewPager.addOnPageChangeListener(pageChangeListener);
-        viewPager.setOffscreenPageLimit(attr.getOffscreenPageLimit() + 2);
+        viewPager.setOffscreenPageLimit(attr.getImageStrList().size() + 1);
         addView(viewPager);
     }
 
@@ -149,6 +149,7 @@ public class TransferImage extends FrameLayout {
 
     /**
      * TransferImage 是否显示
+     *
      * @return true ：显示, false ：关闭
      */
     public boolean isShown() {
@@ -197,7 +198,6 @@ public class TransferImage extends FrameLayout {
             indexIndicator.attach(this);
             indexIndicator.onShow(viewPager);
         }
-
     }
 
     /**
@@ -304,9 +304,10 @@ public class TransferImage extends FrameLayout {
 
     /**
      * ImageView 缩放到指定大小
+     *
      * @param imageView imageView 对象
-     * @param w 宽
-     * @param h 高
+     * @param w         宽
+     * @param h         高
      * @return Drawable
      */
     private Drawable resizeImage(ImageView imageView, int w, int h) {
@@ -350,6 +351,7 @@ public class TransferImage extends FrameLayout {
 
     /**
      * 加载高清图
+     *
      * @param position 图片所在索引位置下标
      */
     private void loadImage(final int position) {
@@ -383,6 +385,7 @@ public class TransferImage extends FrameLayout {
 
     /**
      * 获取加载完高清图之前的占位图 Drawable
+     *
      * @param position 图片索引
      * @return 占位图 Drawable
      */
@@ -530,7 +533,7 @@ public class TransferImage extends FrameLayout {
 
             if (transferAnima == null) {
                 attr.setTransferAnima(new TransitionAnimator());
-            } else  {
+            } else {
                 attr.setTransferAnima(transferAnima);
             }
 

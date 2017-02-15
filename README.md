@@ -26,24 +26,26 @@ TransferImage 也会有对应的过渡动画.
 
 # Usage
 
-    // 初始化 TransferImage
+    // 初始化 TransferImage, 一个页面使用一个 TransferImage 对象
     transferImage = TransferImage.getDefault(this);
 
-    // 使用 TransferImage.Builder 构造参数设置给 transferImage, 并显示出来
+    // 使用 TransferImage.Builder 构造参数设置给 TransferImage, 并显示出来
     new TransferImage.Builder(GroupImageActivity.this)
-                                    .setBackgroundColor(Color.BLACK)
-                                    .setOriginImageList(wrapOriginImageViewList())
-                                    .setImageUrlList(imageStrList)
-                                    .setOriginIndex(position)
-                                    .setup(transferImage)
-                                    .show();
+                     .setBackgroundColor(Color.BLACK)
+                     .setOriginImageList(wrapOriginImageViewList())
+                     .setImageUrlList(imageStrList)
+                     .setOriginIndex(position)
+                     .setup(transferImage)
+                     .show();
+
 
 注意：需要在 Activity 中重写 onBackPressed 方法 (如果有 BaseActivity, 在 BaseActivity 中重写即可)
 
     @Override
     public void onBackPressed() {
-        if (transferLayout != null && transferLayout.isShown()) {
-            transferLayout.dismiss();
+
+        if (transferImage != null && transferImage.isShown()) {
+            transferImage.dismiss();
         } else {
             super.onBackPressed();
         }

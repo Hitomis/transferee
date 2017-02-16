@@ -26,15 +26,17 @@ TransferImage 也会有对应的过渡动画.
 
 # Usage
 
-    transferLayout = new TransferImage.Builder(GroupImageActivity.this)
-            .setBackgroundColor(Color.BLACK)
-            .setMissPlaceHolder(R.mipmap.ic_launcher)
-            .setOriginImageList(imageViewList)
-            .setImageUrlList(imageStrList)
-            .setOriginIndex(imageViewList.indexOf(v))
-            .setOffscreenPageLimit(1)
-            .create();
-    transferLayout.show();
+    // 初始化 TransferImage
+    transferImage = TransferImage.getDefault(this);
+
+    // 使用 TransferImage.Builder 构造参数设置给 transferImage, 并显示出来
+    new TransferImage.Builder(GroupImageActivity.this)
+                                    .setBackgroundColor(Color.BLACK)
+                                    .setOriginImageList(wrapOriginImageViewList())
+                                    .setImageUrlList(imageStrList)
+                                    .setOriginIndex(position)
+                                    .setup(transferImage)
+                                    .show();
 
 注意：需要在 Activity 中重写 onBackPressed 方法 (如果有 BaseActivity, 在 BaseActivity 中重写即可)
 

@@ -41,6 +41,8 @@ public class ListViewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
 
+        transferImage = TransferImage.getDefault(this);
+
         listView = (ListView) findViewById(R.id.list_view);
         listView.setAdapter(new CommonAdapter<String>(this, R.layout.item_image, imageStrList) {
 
@@ -56,12 +58,12 @@ public class ListViewActivity extends BaseActivity {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        transferLayout = new TransferImage.Builder(ListViewActivity.this)
+                        new TransferImage.Builder(ListViewActivity.this)
                                 .setBackgroundColor(Color.parseColor("#2f008d"))
                                 .setImageUrls(imageStrList.get(position))
                                 .setOriginImages(imageView)
-                                .create();
-                        transferLayout.show();
+                                .setup(transferImage)
+                                .show();
                     }
                 });
             }

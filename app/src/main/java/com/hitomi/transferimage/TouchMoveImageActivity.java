@@ -31,6 +31,8 @@ public class TouchMoveImageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_touch_move);
 
+        transferImage = TransferImage.getDefault(this);
+
         imageView1 = (ImageView) findViewById(R.id.image_view1);
         imageView2 = (ImageView) findViewById(R.id.image_view2);
         imageView3 = (ImageView) findViewById(R.id.image_view3);
@@ -54,15 +56,15 @@ public class TouchMoveImageActivity extends BaseActivity {
     private class ShowViewHDListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            transferLayout = new TransferImage.Builder(TouchMoveImageActivity.this)
+            new TransferImage.Builder(TouchMoveImageActivity.this)
                     .setBackgroundColor(Color.BLACK)
                     .setMissPlaceHolder(R.mipmap.ic_launcher)
                     .setOriginImageList(imageViewList)
                     .setImageUrlList(imageStrList)
                     .setOriginIndex(imageViewList.indexOf(v))
                     .setOffscreenPageLimit(1)
-                    .create();
-            transferLayout.show();
+                    .setup(transferImage)
+                    .show();
         }
     }
 

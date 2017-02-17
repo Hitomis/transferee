@@ -10,13 +10,13 @@ import com.hitomi.tilibrary.TransferImage;
 
 public class BaseActivity extends AppCompatActivity {
 
-    protected TransferImage transferLayout;
+    protected TransferImage transferImage;
 
     @Override
     public void onBackPressed() {
 
-        if (transferLayout != null && transferLayout.isShown()) {
-            transferLayout.dismiss();
+        if (transferImage != null && transferImage.isShown()) {
+            transferImage.dismiss();
         } else {
             super.onBackPressed();
         }

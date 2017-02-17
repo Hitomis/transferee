@@ -40,6 +40,8 @@ public class GridViewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_view);
 
+        transferImage = TransferImage.getDefault(this);
+
         gridView = (GridView) findViewById(R.id.grid_view);
         gridView.setAdapter(new CommonAdapter<String>(this, R.layout.item_image, imageStrList) {
             @Override
@@ -54,12 +56,12 @@ public class GridViewActivity extends BaseActivity {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        transferLayout = new TransferImage.Builder(GridViewActivity.this)
+                        new TransferImage.Builder(GridViewActivity.this)
                                 .setBackgroundColor(Color.parseColor("#158d3d"))
                                 .setImageUrls(imageStrList.get(position))
                                 .setOriginImages(imageView)
-                                .create();
-                        transferLayout.show();
+                                .setup(transferImage)
+                                .show();
                     }
                 });
             }

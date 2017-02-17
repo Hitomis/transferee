@@ -39,6 +39,7 @@ public class GroupImageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_image);
 
+        transferImage = TransferImage.getDefault(this);
         gvImages = (GridView) findViewById(R.id.gv_images);
 
         gvImages.setAdapter(new CommonAdapter<String>(this, R.layout.item_image, imageStrList) {
@@ -55,13 +56,14 @@ public class GroupImageActivity extends BaseActivity {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        transferLayout = new TransferImage.Builder(GroupImageActivity.this)
+                        new TransferImage.Builder(GroupImageActivity.this)
                                 .setBackgroundColor(Color.BLACK)
                                 .setOriginImageList(wrapOriginImageViewList())
                                 .setImageUrlList(imageStrList)
                                 .setOriginIndex(position)
-                                .create();
-                        transferLayout.show();
+                                .setup(transferImage)
+                                .show();
+
                     }
                 });
             }

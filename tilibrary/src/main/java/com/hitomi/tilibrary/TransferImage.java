@@ -394,10 +394,10 @@ public class TransferImage extends FrameLayout {
         Drawable placeHolder = null;
         if (position < attr.getOriginImageList().size()) {
             ImageView imageView = attr.getOriginImageList().get(position);
-            int intrinsicWidth = imageView.getDrawable().getIntrinsicWidth();
-            int intrinsicHeight = imageView.getDrawable().getIntrinsicHeight();
-            int reHeight = getWidth() * intrinsicHeight / intrinsicWidth;
-            placeHolder = resizeImage(imageView, getWidth(), reHeight);
+//            int intrinsicWidth = imageView.getDrawable().getIntrinsicWidth();
+//            int intrinsicHeight = imageView.getDrawable().getIntrinsicHeight();
+//            int reHeight = getWidth() * intrinsicHeight / intrinsicWidth;
+            placeHolder = imageView.getDrawable();
         } else {
             if (attr.getMissPlaceHolder() != 0)
                 placeHolder = context.getResources().getDrawable(attr.getMissPlaceHolder());

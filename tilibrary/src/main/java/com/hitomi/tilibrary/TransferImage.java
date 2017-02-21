@@ -2,6 +2,7 @@ package com.hitomi.tilibrary;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -62,16 +63,18 @@ public class TransferImage extends FrameLayout {
     private boolean shown;
     private Set<Integer> loadedIndexSet;
 
-    private TransferImage(Context context, TransferAttr attr) {
+    private TransferImage(Context context) {
         super(context);
         this.context = context;
-        this.attr = attr;
         loadedIndexSet = new HashSet<>();
-        transferAnimator = attr.getTransferAnima();
-        initLayout();
+    }
+
+    public static TransferImage getDefault(Context context) {
+        return new TransferImage(context);
     }
 
     private void initLayout() {
+        transferAnimator = attr.getTransferAnima();
         setBackgroundColor(attr.getBackgroundColor());
         initViewPager();
         initSharedLayout();
@@ -163,6 +166,7 @@ public class TransferImage extends FrameLayout {
         if (!shown) {
             shown = true;
             addToWindow();
+            initLayout();
         }
     }
 
@@ -180,12 +184,7 @@ public class TransferImage extends FrameLayout {
         if (transferAnimator == null) {
             removeFromWindow();
         } else {
-            if (attr.getCurrShowIndex() > attr.getCurrOriginIndex()) {
-                startDismissMiss();
-            } else {
-                startDismissHit();
-            }
-            startDismissBackground();
+            startDismissing();
         }
     }
 
@@ -193,18 +192,14 @@ public class TransferImage extends FrameLayout {
      * 初始化 TransferImage 主面板
      */
     private void initMainPanel() {
-        IIndexIndicator indexIndicator = attr.getIndexIndicator();
-        if (indexIndicator != null && attr.getImageStrList().size() >= 2) {
-            indexIndicator.attach(this);
-            indexIndicator.onShow(viewPager);
-        }
+        addIndexIndicator();
     }
 
     /**
      * 开启显示 TransferImage 动画
      */
     private void startShowing() {
-        if (transferAnimator == null) return;
+        if (transferAnimator == null && !shown) return;
         Animator animator = transferAnimator.showAnimator(attr.getCurrOriginImageView(), sharedImage);
         animator.addListener(new AnimatorListenerAdapter() {
 
@@ -233,50 +228,96 @@ public class TransferImage extends FrameLayout {
     }
 
     /**
-     * 开启 TransferImage 与之前缩略图对应的关闭动画
+     * 在 TransferImage 面板中添加下标指示器 UI 组件
      */
-    private void startDismissHit() {
+    private void addIndexIndicator() {
+        IIndexIndicator indexIndicator = attr.getIndexIndicator();
+        if (indexIndicator != null && attr.getImageStrList().size() >= 2) {
+            indexIndicator.attach(this);
+            indexIndicator.onShow(viewPager);
+        }
+    }
+
+    /**
+     * 从 TransferImage 面板中移除下标指示器 UI 组件
+     */
+    private void removeIndexIndicator() {
+        IIndexIndicator indexIndicator = attr.getIndexIndicator();
+        if (indexIndicator != null && attr.getImageStrList().size() >= 2) {
+            indexIndicator.onRemove();
+        }
+    }
+
+    /**
+     * 开启关闭动画
+     */
+    private void startDismissing() {
+        Animator dismissAnimator;
+        if (attr.getCurrShowIndex() > attr.getCurrOriginIndex()) {
+            dismissAnimator = getDismissMissAnimator();
+        } else {
+            dismissAnimator = getDismissHitAnimator();
+        }
+        Animator dismissBackgroundAnimator = getDismissBackgroundAnimator();
+
+        Animator animator;
+        if (dismissBackgroundAnimator != null) {
+            AnimatorSet animatorSet = new AnimatorSet();
+            animatorSet.play(dismissAnimator).with(dismissBackgroundAnimator);
+            animator = animatorSet;
+        } else {
+            animator = dismissBackgroundAnimator;
+        }
+
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                removeIndexIndicator();
+                loadedIndexSet.clear();
+                removeView(viewPager);
+                removeFromWindow();
+            }
+        });
+
+        animator.start();
+    }
+
+    /**
+     * 获取 TransferImage 与之前缩略图对应的关闭动画
+     */
+    private Animator getDismissHitAnimator() {
         final View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
         final View afterView = attr.getCurrOriginImageView();
         afterView.setVisibility(View.INVISIBLE);
 
         Animator animator = transferAnimator.dismissHitAnimator(beforeView, afterView);
-        if (animator == null) return;
-        animator.addListener(new AnimatorListenerAdapter() {
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                removeFromWindow();
-                afterView.setVisibility(View.VISIBLE);
-            }
-        });
-        animator.start();
+        if (animator != null)
+            animator.addListener(new AnimatorListenerAdapter() {
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    afterView.setVisibility(View.VISIBLE);
+                }
+            });
+
+        return animator;
     }
 
     /**
-     * 开启 TransferImage 未与之前缩略图对应的关闭动画
+     * 获取 TransferImage 未与之前缩略图对应的关闭动画
      */
-    private void startDismissMiss() {
+    private Animator getDismissMissAnimator() {
         View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
         Animator animator = transferAnimator.dismissMissAnimator(beforeView);
-        if (animator == null) return;
-        animator.addListener(new AnimatorListenerAdapter() {
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                removeFromWindow();
-            }
-        });
-        animator.start();
+        return animator;
     }
 
     /**
-     * 开启 TransferImage 背景关闭动画
+     * 获取 TransferImage 背景关闭动画
      */
-    private void startDismissBackground() {
-        Animator animator = transferAnimator.dismissBackgroundAnimator(this, attr.getBackgroundColor());
-        if (animator != null)
-            animator.start();
+    private Animator getDismissBackgroundAnimator() {
+        return transferAnimator.dismissBackgroundAnimator(this, attr.getBackgroundColor());
     }
 
     /**
@@ -422,6 +463,10 @@ public class TransferImage extends FrameLayout {
         }
     }
 
+    private void applyAttr(TransferAttr attr) {
+        this.attr = attr;
+    }
+
     public static class Builder {
         private Context context;
         private ImageView[] originImages;
@@ -504,7 +549,7 @@ public class TransferImage extends FrameLayout {
             return this;
         }
 
-        public TransferImage create() {
+        public TransferImage setup(TransferImage transferImage) {
             TransferAttr attr = new TransferAttr();
 
             if (originImageList != null && !originImageList.isEmpty()) {
@@ -549,7 +594,8 @@ public class TransferImage extends FrameLayout {
             attr.setCurrOriginIndex(originIndex < 0 ? 0 : originIndex);
             attr.setMissPlaceHolder(missPlaceHolder);
 
-            return new TransferImage(context, attr);
+            transferImage.applyAttr(attr);
+            return transferImage;
         }
 
     }

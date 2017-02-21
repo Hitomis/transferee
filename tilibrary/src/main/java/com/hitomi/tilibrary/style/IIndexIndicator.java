@@ -27,4 +27,9 @@ public interface IIndexIndicator {
      * 隐藏图片索引指示器 UI 组件
      */
     void onHide();
+
+    /**
+     * 移除图片索引指示器 UI 组件
+     */
+    void onRemove();
 }

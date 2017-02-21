@@ -3,6 +3,7 @@ package com.hitomi.tilibrary.style.index;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.hitomi.tilibrary.style.IIndexIndicator;
@@ -39,5 +40,14 @@ public class IndexCircleIndicator implements IIndexIndicator {
     @Override
     public void onHide() {
         circleIndicator.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onRemove() {
+        ViewGroup vg = (ViewGroup) circleIndicator.getParent();
+
+        if (vg != null) {
+            vg.removeView(circleIndicator);
+        }
     }
 }

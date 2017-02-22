@@ -550,6 +550,8 @@ public class TransferImage extends FrameLayout {
         }
 
         public TransferImage setup(TransferImage transferImage) {
+            if (transferImage.isShown()) return transferImage;
+
             TransferAttr attr = new TransferAttr();
 
             if (originImageList != null && !originImageList.isEmpty()) {

@@ -12,14 +12,13 @@ import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.ImageView;
 
 /**
  * 平滑变化显示图片的 ImageView
  * 仅限于用于:从一个ScaleType==CENTER_CROP的ImageView，切换到另一个ScaleType=
  * FIT_CENTER的ImageView，或者反之 (使用同样的图片最好)
  */
-public class TransferImage extends ImageView {
+public class TransferImage extends PhotoView {
 
     public static final int STATE_TRANS_NORMAL = 0;
     public static final int STATE_TRANS_IN = 1; // 从缩略图到大图状态

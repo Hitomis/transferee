@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
-import com.hitomi.tilibrary.view.image.PhotoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.lang.reflect.Field;
@@ -21,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.widget.ImageView.ScaleType.CENTER_CROP;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
 
 /**
@@ -89,8 +89,8 @@ class TransferLayout extends FrameLayout {
      */
     private TransferImage.OnTransferListener transferListener = new TransferImage.OnTransferListener() {
         @Override
-        public void onTransferComplete(int mode) {
-            switch (mode) {
+        public void onTransferComplete(int state, int cate, int stage) {
+            switch (state) {
                 case TransferImage.STATE_TRANS_IN: // 伸展动画执行完毕
                     addIndexIndicator();
                     transViewPager.setVisibility(View.VISIBLE);
@@ -152,22 +152,22 @@ class TransferLayout extends FrameLayout {
         createTransferViewPager();
         if (transConfig.isThumbnailEmpty()) {
 
-//            ImageView originImage = transConfig.getOriginImageList().get(
-//                    transConfig.getNowThumbnailIndex());
-//            int[] location = new int[2];
-//            originImage.getLocationInWindow(location);
-//
-//            transImage = new TransferImage(context);
-//            transImage.setScaleType(CENTER_CROP);
-//            transImage.setImageDrawable(originImage.getDrawable());
-//            transImage.setOriginalInfo(originImage.getWidth(),
-//                    originImage.getHeight(), location[0], getTransImageLocalY(location[1]));
-//            transImage.setDuration(transConfig.getDuration());
-//            transImage.setLayoutParams(new FrameLayout.LayoutParams(
-//                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-//            transImage.setOnTransferListener(transferListener);
-//            addView(transImage, 1);
-//            transImage.transformIn();
+            ImageView originImage = transConfig.getOriginImageList().get(
+                    transConfig.getNowThumbnailIndex());
+            int[] location = new int[2];
+            originImage.getLocationInWindow(location);
+
+            transImage = new TransferImage(context);
+            transImage.setScaleType(CENTER_CROP);
+            transImage.setImageDrawable(originImage.getDrawable());
+            transImage.setOriginalInfo(originImage.getWidth(),
+                    originImage.getHeight(), location[0], getTransImageLocalY(location[1]));
+            transImage.setDuration(transConfig.getDuration());
+            transImage.setLayoutParams(new FrameLayout.LayoutParams(
+                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            transImage.setOnTransferListener(transferListener);
+            addView(transImage, 1);
+            transImage.transformIn();
 
         } else {
             createTransferImage(transConfig.getNowThumbnailIndex(),
@@ -238,7 +238,7 @@ class TransferLayout extends FrameLayout {
                             public void run() {
                                 setOriginImageVisibility(View.INVISIBLE);
                             }
-                        }, 10);
+                        }, 20);
                         break;
                     case TransferImage.STATE_TRANS_OUT:
                         transImage.transformOut();
@@ -377,13 +377,13 @@ class TransferLayout extends FrameLayout {
 
                     @Override
                     public void onDelivered(int status) {
-                        PhotoView photoView = transAdapter.getImageItem(position);
+                        TransferImage imageView = transAdapter.getImageItem(position);
                         if (status == ImageLoader.STATUS_DISPLAY_SUCCESS)
-                            // 加载成功，启用 PhotoView 的缩放功能
-                            photoView.enable();
+                            // 加载成功，启用 TransferImage 的手势缩放功能
+                            imageView.enable();
                         else if (status == ImageLoader.STATUS_DISPLAY_FAILED)
                             // 加载失败，显示加载错误的占位图
-                            photoView.setImageDrawable(transConfig.getErrorDrawable(context));
+                            imageView.setImageDrawable(transConfig.getErrorDrawable(context));
                     }
                 });
             }

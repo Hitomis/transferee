@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.hitomi.tilibrary.view.image.PhotoView;
+import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -54,23 +54,23 @@ class TransferAdapter extends PagerAdapter {
     }
 
     /**
-     * 获取指定索引页面中的 PhotoView
+     * 获取指定索引页面中的 TransferImage
      *
      * @param position
      * @return
      */
-    public PhotoView getImageItem(int position) {
+    public TransferImage getImageItem(int position) {
         FrameLayout parentLayout = containnerLayoutMap.get(position);
         int childCount = parentLayout.getChildCount();
-        PhotoView photoView = null;
+        TransferImage transImage = null;
         for (int i = 0; i < childCount; i++) {
             View view = parentLayout.getChildAt(i);
             if (view instanceof ImageView) {
-                photoView = (PhotoView) view;
+                transImage = (TransferImage) view;
                 break;
             }
         }
-        return photoView;
+        return transImage;
     }
 
     public FrameLayout getParentItem(int position) {
@@ -102,7 +102,7 @@ class TransferAdapter extends PagerAdapter {
     @NonNull
     private FrameLayout newParentLayout(Context context, final int pos) {
         // create inner ImageView
-        PhotoView imageView = new PhotoView(context);
+        TransferImage imageView = new TransferImage(context);
         imageView.setImageDrawable(placeHolder);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));

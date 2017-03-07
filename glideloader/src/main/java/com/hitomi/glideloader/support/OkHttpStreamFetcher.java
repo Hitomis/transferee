@@ -1,4 +1,4 @@
-package com.hitomi.glideloader.GlideProgressSupport;
+package com.hitomi.glideloader.support;
 
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.data.DataFetcher;

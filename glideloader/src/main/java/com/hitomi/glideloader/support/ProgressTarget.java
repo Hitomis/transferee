@@ -1,4 +1,4 @@
-package com.hitomi.glideloader.GlideProgressSupport;
+package com.hitomi.glideloader.support;
 
 import android.graphics.drawable.Drawable;
 

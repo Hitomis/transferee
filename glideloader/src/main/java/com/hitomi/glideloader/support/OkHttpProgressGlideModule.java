@@ -1,4 +1,4 @@
-package com.hitomi.glideloader.GlideProgressSupport;
+package com.hitomi.glideloader.support;
 
 import android.content.Context;
 import android.os.Handler;

@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.hitomi.glideloader.GlideProgressSupport.ProgressTarget;
+import com.hitomi.glideloader.support.ProgressTarget;
 
 public class TestGlideActivity extends AppCompatActivity {
 

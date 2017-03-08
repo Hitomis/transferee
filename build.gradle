@@ -22,3 +22,28 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+def supportVersion = "25.3.1"
+project.ext {
+    compileSdkVersion = 25
+    buildToolsVersion = "25.0.2"
+
+    applicationId = "com.hitomi.transferimage"
+    minSdkVersion = 14
+    targetSdkVersion = 25
+    versionCode = 1
+    versionName = "1.0.0"
+
+    abortOnLintError = false
+    checkLintRelease = false
+    useJack = false
+    abortOnLintError = false
+    javaVersion = JavaVersion.VERSION_1_8
+
+    // 第三方库版本管理
+    libSupportV4 = "com.android.support:support-v4:${supportVersion}"
+    libSupportV7 = "com.android.support:appcompat-v7:${supportVersion}"
+    libSupportAppcompat = "com.android.support:appcompat-v7:${supportVersion}"
+    libSupportDesign = "com.android.support:design:${supportVersion}"
+    libSupportRecyclerview = "com.android.support:recyclerview-v7:${supportVersion}"
+}

@@ -6,7 +6,7 @@
         android:supportsRtl="true">
 
         <meta-data
-            android:name="com.hitomi.glideloader.GlideProgressSupport.OkHttpProgressGlideModule"
+            android:name="com.hitomi.glideloader.support.OkHttpProgressGlideModule"
             android:value="GlideModule" />
 
     </application>

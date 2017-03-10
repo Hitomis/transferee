@@ -18,7 +18,7 @@ import static com.hitomi.tilibrary.TransferConfig.MODE_EMPTY_THUMBNAIL;
  * 展示高清图的图片数据适配器
  * Created by hitomi on 2017/1/23.
  */
-class TransferAdapter extends PagerAdapter {
+public class TransferAdapter extends PagerAdapter {
 
     private int showIndex;
     private int imageSize;

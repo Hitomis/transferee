@@ -2,35 +2,29 @@ package com.hitomi.tilibrary;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.v4.view.ViewPager;
-import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.hitomi.tilibrary.loader.ImageLoader;
+import com.hitomi.tilibrary.core.BaseTransferState;
+import com.hitomi.tilibrary.core.EmptyThumState;
+import com.hitomi.tilibrary.core.LocalThumState;
+import com.hitomi.tilibrary.core.RemoteThumState;
 import com.hitomi.tilibrary.style.IIndexIndicator;
-import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.widget.ImageView.ScaleType.FIT_CENTER;
-import static com.hitomi.tilibrary.TransferConfig.MODE_EMPTY_THUMBNAIL;
-import static com.hitomi.tilibrary.TransferConfig.MODE_LOCAL_THUMBNAIL;
-import static com.hitomi.tilibrary.TransferConfig.MODE_REMOTE_THUMBNAIL;
 
 /**
  * TransferImage 中 Dialog 显示的内容
  * Created by Hitomis on 2017/4/23 0023.
  */
-class TransferLayout extends FrameLayout {
+public class TransferLayout extends FrameLayout {
     private Context context;
 
     private TransferImage transImage;
@@ -39,9 +33,7 @@ class TransferLayout extends FrameLayout {
     private TransferConfig transConfig;
 
     private OnLayoutResetListener layoutResetListener;
-
     private Set<Integer> loadedIndexSet;
-    private SparseBooleanArray loadedArray;
 
     /**
      * ViewPager 页面切换监听器 => 当页面切换时，根据相邻优先加载的规则去加载图片
@@ -73,7 +65,7 @@ class TransferLayout extends FrameLayout {
     /**
      * TransferImage 伸/缩动画执行完成监听器
      */
-    private TransferImage.OnTransferListener transferListener = new TransferImage.OnTransferListener() {
+    private TransferImage.OnTransferListener transListener = new TransferImage.OnTransferListener() {
         @Override
         public void onTransferComplete(int state, int cate, int stage) {
             if (cate == TransferImage.CATE_ANIMA_TOGETHER) {
@@ -118,7 +110,6 @@ class TransferLayout extends FrameLayout {
 
         this.context = context;
         this.loadedIndexSet = new HashSet<>();
-        this.loadedArray = new SparseBooleanArray();
     }
 
     private void loadSourceImageOffset(int position, int offset) {
@@ -140,17 +131,8 @@ class TransferLayout extends FrameLayout {
     }
 
     private void loadSourceImage(int position) {
-        switch (transConfig.getThumbMode(context, position)) {
-            case MODE_EMPTY_THUMBNAIL:
-                loadSourceImageByEmptyThumbnail(position);
-                break;
-            case MODE_LOCAL_THUMBNAIL:
-                loadSourceImageByLoadedThumbnail(position);
-                break;
-            case MODE_REMOTE_THUMBNAIL:
-                loadSourceImageByLoadedThumbnail(position);
-                break;
-        }
+        BaseTransferState transferState = getTransferState(position);
+        transferState.loadTransfer(position);
     }
 
     /**
@@ -192,100 +174,6 @@ class TransferLayout extends FrameLayout {
         addView(transViewPager, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
     }
 
-    private void createTransferImage() {
-        ImageView originImage = transConfig.getOriginImageList().get(
-                transConfig.getNowThumbnailIndex());
-        int[] location = new int[2];
-        originImage.getLocationInWindow(location);
-
-        transImage = new TransferImage(context);
-        transImage.setScaleType(FIT_CENTER);
-        transImage.setImageDrawable(originImage.getDrawable());
-        transImage.setOriginalInfo(location[0], getTransImageLocalY(location[1]),
-                originImage.getWidth(), originImage.getHeight());
-        transImage.setDuration(transConfig.getDuration());
-        transImage.setLayoutParams(new LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        transImage.setOnTransferListener(transferListener);
-        transImage.transformIn(TransferImage.STAGE_TRANSLATE);
-
-        addView(transImage, 1);
-    }
-
-    /**
-     * 创建 TransferImage 模拟图片扩大的过渡动画
-     */
-    private void createTransferImage(final int pos, final int state) {
-        ImageView originImage = transConfig.getOriginImageList().get(pos);
-        int[] location = new int[2];
-        originImage.getLocationInWindow(location);
-
-        transImage = new TransferImage(context);
-        transImage.setScaleType(FIT_CENTER);
-        transImage.setOriginalInfo(location[0], getTransImageLocalY(location[1]),
-                originImage.getWidth(), originImage.getHeight());
-        transImage.setDuration(transConfig.getDuration());
-        transImage.setLayoutParams(new FrameLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        transImage.setOnTransferListener(transferListener);
-        addView(transImage, 1);
-
-        int thumbMode = transConfig.getThumbMode(context, pos);
-        if (thumbMode == MODE_EMPTY_THUMBNAIL) {
-            Drawable thumbnailDrawable = transAdapter.getImageItem(
-                    transConfig.getNowThumbnailIndex()).getDrawable();
-            transImage.setImageDrawable(thumbnailDrawable);
-            if (!loadedArray.get(pos)) { // 还在加载中 -> 当前显示的是小缩略图
-                transImage.transformOut(TransferImage.STAGE_TRANSLATE);
-            } else {
-                switch (state) {
-                    case TransferImage.STATE_TRANS_IN:
-                        transImage.transformIn();
-                        break;
-                    case TransferImage.STATE_TRANS_OUT:
-                        transImage.transformOut();
-                        break;
-                }
-            }
-
-        } else if (thumbMode == MODE_REMOTE_THUMBNAIL || thumbMode == MODE_LOCAL_THUMBNAIL) {
-
-            String transUrl;
-            if (thumbMode == MODE_REMOTE_THUMBNAIL) {
-                transUrl = transConfig.getNowThumbnailImageUrl();
-            } else {
-                transUrl = transConfig.getNowSourceImageUrl();
-            }
-
-            transConfig.getImageLoader().loadThumbnailAsync(transUrl, transImage, new ImageLoader.ThumbnailCallback() {
-                @Override
-                public void onFinish(Drawable drawable) {
-                    if (drawable == null) {
-                        transImage.setImageDrawable(transConfig.getMissDrawable(context));
-                    } else {
-                        transImage.setImageDrawable(drawable);
-                    }
-
-                    switch (state) {
-                        case TransferImage.STATE_TRANS_IN:
-                            transImage.transformIn();
-                            break;
-                        case TransferImage.STATE_TRANS_OUT:
-                            transImage.transformOut();
-                            break;
-                    }
-                }
-            });
-        }
-    }
-
-    private int getTransImageLocalY(int oldY) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            return oldY;
-        }
-        return oldY - getStatusBarHeight();
-    }
-
     private void removeFromParent(View view) {
         ViewGroup vg = (ViewGroup) view.getParent();
         if (vg != null)
@@ -299,6 +187,18 @@ class TransferLayout extends FrameLayout {
         transViewPager.removeOnPageChangeListener(transChangeListener);
     }
 
+    public TransferAdapter getTransAdapter() {
+        return transAdapter;
+    }
+
+    public TransferConfig getTransConfig() {
+        return transConfig;
+    }
+
+    public TransferImage.OnTransferListener getTransListener() {
+        return transListener;
+    }
+
     /**
      * 初始化 TransferLayout 中的各个组件，并显示，同时开启动画
      */
@@ -306,20 +206,27 @@ class TransferLayout extends FrameLayout {
         createTransferViewPager();
 
         int nowThumbnailIndex = transConfig.getNowThumbnailIndex();
-        switch (transConfig.getThumbMode(context, nowThumbnailIndex)) {
-            case MODE_LOCAL_THUMBNAIL:
-                createTransferImage(nowThumbnailIndex,
-                        TransferImage.STATE_TRANS_IN);
-                break;
-            case MODE_EMPTY_THUMBNAIL:
-                createTransferImage();
-                break;
-            case MODE_REMOTE_THUMBNAIL:
-                createTransferImage(nowThumbnailIndex,
-                        TransferImage.STATE_TRANS_IN);
-                break;
+        BaseTransferState transferState = getTransferState(nowThumbnailIndex);
+        transImage = transferState.createTransferIn(nowThumbnailIndex);
+
+    }
+
+    private BaseTransferState getTransferState(int position) {
+        BaseTransferState transferState;
+
+        if (!transConfig.isThumbnailEmpty()) { // 客户端指定了缩略图路径集合
+            transferState = new RemoteThumState(this);
+        } else {
+            String url = transConfig.getSourceImageList().get(position);
+
+            if (transConfig.containsSourceImageUrl(context, url)) {
+                transferState = new LocalThumState(this);
+            } else {
+                transferState = new EmptyThumState(this);
+            }
         }
 
+        return transferState;
     }
 
     /**
@@ -332,7 +239,9 @@ class TransferLayout extends FrameLayout {
                 == TransferImage.STATE_TRANS_OUT) // 防止双击
             return;
 
-        createTransferImage(pos, TransferImage.STATE_TRANS_OUT);
+        BaseTransferState transferState = getTransferState(pos);
+        transImage = transferState.createTransferOut(pos);
+
         hideIndexIndicator();
         postDelayed(new Runnable() {
             @Override
@@ -391,133 +300,13 @@ class TransferLayout extends FrameLayout {
         }
     }
 
-    private void bindOnDismissListener(ImageView imageView, final int pos) {
+    public void bindOnDismissListener(ImageView imageView, final int pos) {
         imageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss(pos);
             }
         });
-    }
-
-    /**
-     * 加载高清图(高清图未缓存，使用原缩略图作为占位图)
-     *
-     * @param position 当前加载的图片索引
-     */
-    private void loadSourceImageByEmptyThumbnail(final int position) {
-        final String imgUrl = transConfig.getSourceImageList().get(position);
-        final TransferImage targetImage = transAdapter.getImageItem(position);
-        ImageView originImage = transConfig.getOriginImageList().get(position);
-
-        final IProgressIndicator progressIndicator = transConfig.getProgressIndicator();
-        progressIndicator.attach(position, transAdapter.getParentItem(position));
-
-        transConfig.getImageLoader().showSourceImage(imgUrl, targetImage,
-                originImage.getDrawable(), new ImageLoader.SourceCallback() {
-
-                    @Override
-                    public void onStart() {
-                        progressIndicator.onStart(position);
-                    }
-
-                    @Override
-                    public void onProgress(int progress) {
-                        progressIndicator.onProgress(position, progress);
-                    }
-
-                    @Override
-                    public void onFinish() {
-                    }
-
-                    @Override
-                    public void onDelivered(int status) {
-                        switch (status) {
-                            case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
-                                progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
-
-                                if (transConfig.getThumbMode(context, position) == MODE_EMPTY_THUMBNAIL)
-                                    transConfig.cacheLoadedImageUrl(context, imgUrl);
-
-                                targetImage.transformIn(TransferImage.STAGE_SCALE);
-                                targetImage.enable();
-                                bindOnDismissListener(targetImage, position);
-                                loadedArray.put(position, true);
-                                break;
-                            case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                                targetImage.setImageDrawable(transConfig.getErrorDrawable(context));
-                                break;
-                        }
-                    }
-                });
-
-    }
-
-    /**
-     * 加载高清图（高清图已缓存，直接使用高清图作为占位图）
-     *
-     * @param position 当前加载的图片索引
-     */
-    private void loadSourceImageByLoadedThumbnail(final int position) {
-        final String imgUrl = transConfig.getSourceImageList().get(position);
-        final TransferImage targetImage = transAdapter.getImageItem(position);
-        final ImageLoader imageLoader = transConfig.getImageLoader();
-
-        imageLoader.loadThumbnailAsync(imgUrl, targetImage, new ImageLoader.ThumbnailCallback() {
-            @Override
-            public void onFinish(Drawable drawable) {
-                if (drawable == null)
-                    drawable = transConfig.getMissDrawable(context);
-
-                imageLoader.showSourceImage(imgUrl, targetImage,
-                        drawable, new ImageLoader.SourceCallback() {
-
-                            @Override
-                            public void onStart() {
-                            }
-
-                            @Override
-                            public void onProgress(int progress) {
-                            }
-
-                            @Override
-                            public void onFinish() {
-                            }
-
-                            @Override
-                            public void onDelivered(int status) {
-                                switch (status) {
-                                    case ImageLoader.STATUS_DISPLAY_SUCCESS:
-                                        // 启用 TransferImage 的手势缩放功能
-                                        targetImage.enable();
-                                        // 绑定点击关闭 Transferee
-                                        bindOnDismissListener(targetImage, position);
-                                        break;
-                                    case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                                        targetImage.setImageDrawable(transConfig.getErrorDrawable(context));
-                                        break;
-                                }
-                            }
-                        });
-            }
-        });
-    }
-
-    /**
-     * 获取状态栏高度
-     *
-     * @return 状态栏高度
-     */
-    private int getStatusBarHeight() {
-        try {
-            Class<?> c = Class.forName("com.android.internal.R$dimen");
-            Object object = c.newInstance();
-            Field field = c.getField("status_bar_height");
-            int x = (Integer) field.get(object);
-            return context.getResources().getDimensionPixelSize(x);
-        } catch (Exception e) {
-            return 0;
-        }
     }
 
     /**

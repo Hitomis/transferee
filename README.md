@@ -73,7 +73,7 @@ TransferImage 也会有对应的过渡动画.
 
 #Licence
 
-      Copyright 2016 Hitomis, Inc.
+      Copyright 2017 Hitomis, Inc.
 
       Licensed under the Apache License, Version 2.0 (the "License");
       you may not use this file except in compliance with the License.

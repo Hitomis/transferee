@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.TransferConfig;
 import com.hitomi.tilibrary.Transferee;
+import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +79,7 @@ public class TouchMoveActivity extends BaseActivity {
                     .setSourceImageList(imageStrList)
                     .setNowThumbnailIndex(imageViewList.indexOf(v))
                     .setOffscreenPageLimit(1)
+                    .setProgressIndicator(new ProgressBarIndicator())
                     .create())
                     .show();
         }

@@ -24,8 +24,8 @@ dependencies {
     compile rootProject.ext.libSupportV7
     compile rootProject.ext.libSupportDesign
 
-    compile project(':transferee')
-    compile project(':glideloader')
+    compile project(':Transferee')
+    compile project(':GlideLoader')
 
     compile 'com.zhy:base-adapter:3.0.3'
 

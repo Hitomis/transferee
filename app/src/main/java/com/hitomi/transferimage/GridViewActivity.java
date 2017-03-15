@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.hitomi.glideloader.GlideImageLoader;
 import com.hitomi.tilibrary.TransferConfig;
 import com.hitomi.tilibrary.Transferee;
+import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -58,11 +59,12 @@ public class GridViewActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         TransferConfig config = TransferConfig.build()
-                                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+                                .setNowThumbnailIndex(position)
+                                .setSourceImageList(imageStrList)
                                 .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                                 .setOriginImageList(wrapOriginImageViewList())
-                                .setSourceImageList(imageStrList)
-                                .setNowThumbnailIndex(position)
+                                .setProgressIndicator(new ProgressPieIndicator())
+                                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                                 .create();
                         transferee.apply(config).show();
                     }

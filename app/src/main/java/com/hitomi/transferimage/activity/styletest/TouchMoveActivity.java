@@ -26,6 +26,9 @@ public class TouchMoveActivity extends BaseActivity {
         imageStrList.add("http://c.hiphotos.baidu.com/zhidao/pic/item/b7003af33a87e950e7d5403816385343faf2b4a0.jpg");
         imageStrList.add("http://e.hiphotos.baidu.com/zhidao/pic/item/7aec54e736d12f2ed5568f4c4dc2d5628535684e.jpg");
         imageStrList.add("http://e.hiphotos.baidu.com/zhidao/pic/item/78310a55b319ebc443ac406c8726cffc1f17166a.jpg");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
+        imageStrList.add("http://www.1tong.com/uploads/wallpaper/anime/105-2-1680x1050.jpg");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
     }
 
     @Override

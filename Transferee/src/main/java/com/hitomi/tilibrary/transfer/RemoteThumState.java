@@ -1,10 +1,13 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
+
+import java.util.List;
 
 /**
  * 用户指定了缩略图路径，使用该路径加载缩略图，
@@ -12,7 +15,7 @@ import com.hitomi.tilibrary.view.image.TransferImage;
  * <p>
  * Created by hitomi on 2017/5/4.
  */
-public class RemoteThumState extends BaseTransferState {
+public class RemoteThumState extends TransferState {
 
     public RemoteThumState(TransferLayout transfer) {
         super(transfer);
@@ -31,7 +34,7 @@ public class RemoteThumState extends BaseTransferState {
     }
 
     @Override
-    public void loadTransfer(final int position) {
+    public void transferLoad(final int position) {
         TransferAdapter adapter = transfer.getTransAdapter();
         final TransferConfig config = transfer.getTransConfig();
         final String imgUrl = config.getSourceImageList().get(position);
@@ -84,14 +87,21 @@ public class RemoteThumState extends BaseTransferState {
     }
 
     @Override
-    public TransferImage createTransferOut(final int position) {
+    public boolean transferOut(final int position) {
+        boolean transferOut = false;
+
         TransferConfig config = transfer.getTransConfig();
+        List<ImageView> originImageList = config.getOriginImageList();
 
-        TransferImage transImage = createTransferImage(
-                config.getOriginImageList().get(position));
-        transformThumbnail(transImage, false);
-        transfer.addView(transImage, 1);
+        if (position < originImageList.size()) {
+            TransferImage transImage = createTransferImage(
+                    originImageList.get(position));
+            transformThumbnail(transImage, false);
 
-        return transImage;
+            transferOut = true;
+            transfer.addView(transImage, 1);
+        }
+
+        return transferOut;
     }
 }

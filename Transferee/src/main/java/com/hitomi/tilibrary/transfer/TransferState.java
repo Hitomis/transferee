@@ -20,12 +20,12 @@ import static android.widget.ImageView.ScaleType.FIT_CENTER;
  * Created by hitomi on 2017/5/4.
  */
 
-public abstract class BaseTransferState {
+public abstract class TransferState {
 
     protected TransferLayout transfer;
     protected Context context;
 
-    public BaseTransferState(TransferLayout transfer) {
+    public TransferState(TransferLayout transfer) {
         this.transfer = transfer;
         this.context = transfer.getContext();
     }
@@ -122,8 +122,8 @@ public abstract class BaseTransferState {
 
     public abstract TransferImage createTransferIn(final int position);
 
-    public abstract void loadTransfer(final int position);
+    public abstract void transferLoad(final int position);
 
-    public abstract TransferImage createTransferOut(final int position);
+    public abstract boolean transferOut(final int position);
 
 }

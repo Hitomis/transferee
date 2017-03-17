@@ -8,13 +8,15 @@ import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
+import java.util.List;
+
 /**
  * 高清图尚未加载，使用原 ImageView 中显示的图片作为缩略图。
  * 同时使用 {@link TransferImage#CATE_ANIMA_APART} 动画类型展示图片
  * <p>
  * Created by hitomi on 2017/5/4.
  */
-public class EmptyThumState extends BaseTransferState {
+public class EmptyThumState extends TransferState {
 
     public EmptyThumState(TransferLayout transfer) {
         super(transfer);
@@ -34,20 +36,29 @@ public class EmptyThumState extends BaseTransferState {
     }
 
     @Override
-    public void loadTransfer(final int position) {
+    public void transferLoad(final int position) {
         TransferAdapter adapter = transfer.getTransAdapter();
         final TransferConfig config = transfer.getTransConfig();
         final String imgUrl = config.getSourceImageList().get(position);
         final TransferImage targetImage = adapter.getImageItem(position);
-        ImageView originImage = config.getOriginImageList().get(position);
 
-        clipTargetImageByOriginImage(targetImage, originImage);
+        Drawable placeHolder;
+        int[] clipSize = new int[2];
+        if (position < config.getOriginImageList().size()) {
+            ImageView originImage = config.getOriginImageList().get(position);
+            clipSize[0] = originImage.getWidth();
+            clipSize[1] = originImage.getHeight();
+            placeHolder = originImage.getDrawable();
+        } else {
+            placeHolder = config.getMissDrawable(context);
+        }
+        clipTargetImage(targetImage, clipSize);
 
         final IProgressIndicator progressIndicator = config.getProgressIndicator();
         progressIndicator.attach(position, adapter.getParentItem(position));
 
         config.getImageLoader().showSourceImage(imgUrl, targetImage,
-                originImage.getDrawable(), new ImageLoader.SourceCallback() {
+                placeHolder, new ImageLoader.SourceCallback() {
 
                     @Override
                     public void onStart() {
@@ -83,34 +94,39 @@ public class EmptyThumState extends BaseTransferState {
     }
 
     /**
-     * 按照 OriginImage 的大小裁剪 TransferImage 中图片显示的区域
+     * 裁剪 ImageView 显示图片的区域
      *
-     * @param targetImage TransferImage
-     * @param originImage OriginImage
+     * @param targetImage 被裁减的 ImageView
+     * @param clipSize    裁剪的尺寸数组
      */
-    private void clipTargetImageByOriginImage(TransferImage targetImage, ImageView originImage) {
+    private void clipTargetImage(TransferImage targetImage, int[] clipSize) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int locationX = (displayMetrics.widthPixels - originImage.getWidth()) / 2;
-        int locationY = (getTransImageLocalY(displayMetrics.heightPixels) - originImage.getHeight()) / 2;
+        int locationX = (displayMetrics.widthPixels - clipSize[0]) / 2;
+        int locationY = (getTransImageLocalY(displayMetrics.heightPixels) - clipSize[1]) / 2;
         targetImage.setOriginalInfo(locationX, locationY,
-                originImage.getWidth(), originImage.getHeight());
+                clipSize[0], clipSize[1]);
         targetImage.transClip();
     }
 
     @Override
-    public TransferImage createTransferOut(final int position) {
+    public boolean transferOut(final int position) {
+        boolean transferOut = false;
+
         TransferConfig config = transfer.getTransConfig();
-        Drawable thumbnailDrawable = transfer.getTransAdapter().getImageItem(
-                config.getNowThumbnailIndex()).getDrawable();
+        List<ImageView> originImageList = config.getOriginImageList();
 
-        TransferImage transImage = createTransferImage(
-                config.getOriginImageList().get(position));
-        transImage.setImageDrawable(thumbnailDrawable);
-        transImage.transformOut(TransferImage.STAGE_TRANSLATE);
-        transfer.addView(transImage, 1);
+        if (position < originImageList.size()) {
+            TransferImage transImage = createTransferImage(
+                    originImageList.get(position));
+            Drawable thumbnailDrawable = transfer.getTransAdapter().getImageItem(
+                    config.getNowThumbnailIndex()).getDrawable();
+            transImage.setImageDrawable(thumbnailDrawable);
+            transImage.transformOut(TransferImage.STAGE_TRANSLATE);
 
-        return transImage;
+            transferOut = true;
+            transfer.addView(transImage, 1);
+        }
+
+        return transferOut;
     }
-
-
 }

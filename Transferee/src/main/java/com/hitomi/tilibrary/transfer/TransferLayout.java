@@ -1,10 +1,14 @@
 package com.hitomi.tilibrary.transfer;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -17,13 +21,16 @@ import java.util.Set;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 /**
- * TransferImage 中 Dialog 显示的内容
+ * Transferee 中 Dialog 显示的内容
+ * <p>
+ * 所有过渡动画的展示，图片的加载都是在这个 FrameLayout 中实现
+ * <p>
  * Created by Hitomis on 2017/4/23 0023.
  */
 class TransferLayout extends FrameLayout {
     private Context context;
 
-    private TransferImage transImage;
+    private TransferImage transImage; // 用来模拟
     private ViewPager transViewPager;
     private TransferAdapter transAdapter;
     private TransferConfig transConfig;
@@ -125,8 +132,7 @@ class TransferLayout extends FrameLayout {
     }
 
     private void loadSourceImage(int position) {
-        BaseTransferState transferState = getTransferState(position);
-        transferState.loadTransfer(position);
+        getTransferState(position).transferLoad(position);
     }
 
     /**
@@ -150,7 +156,6 @@ class TransferLayout extends FrameLayout {
         transViewPager = new ViewPager(context);
         // 先隐藏，待 ViewPager 下标为 config.getCurrOriginIndex() 的页面创建完毕再显示
         transViewPager.setVisibility(View.INVISIBLE);
-        transViewPager.setBackgroundColor(Color.BLACK);
         transViewPager.setOffscreenPageLimit(transConfig.getOffscreenPageLimit() + 1);
         transViewPager.setAdapter(transAdapter);
         transViewPager.setCurrentItem(transConfig.getNowThumbnailIndex());
@@ -190,13 +195,12 @@ class TransferLayout extends FrameLayout {
         createTransferViewPager();
 
         int nowThumbnailIndex = transConfig.getNowThumbnailIndex();
-        BaseTransferState transferState = getTransferState(nowThumbnailIndex);
+        TransferState transferState = getTransferState(nowThumbnailIndex);
         transImage = transferState.createTransferIn(nowThumbnailIndex);
-
     }
 
-    private BaseTransferState getTransferState(int position) {
-        BaseTransferState transferState;
+    private TransferState getTransferState(int position) {
+        TransferState transferState;
 
         if (!transConfig.isThumbnailEmpty()) { // 客户端指定了缩略图路径集合
             transferState = new RemoteThumState(this);
@@ -223,16 +227,46 @@ class TransferLayout extends FrameLayout {
                 == TransferImage.STATE_TRANS_OUT) // 防止双击
             return;
 
-        BaseTransferState transferState = getTransferState(pos);
-        transImage = transferState.createTransferOut(pos);
-
         hideIndexIndicator();
-        postDelayed(new Runnable() {
+        if (!getTransferState(pos).transferOut(pos))
+            diffusionTransfer(pos);
+    }
+
+    /**
+     * 扩散消失动画
+     *
+     * @param pos 动画作用于 pos 索引位置的 图片
+     */
+    private void diffusionTransfer(int pos) {
+        final TransferImage targetImage = transAdapter.getImageItem(pos);
+
+        ValueAnimator valueAnimator = new ValueAnimator();
+        valueAnimator.setDuration(transConfig.getDuration());
+        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofFloat("alpha", 1, 0);
+        PropertyValuesHolder scaleXHolder = PropertyValuesHolder.ofFloat("scaleX", 1, 1.2f);
+        valueAnimator.setValues(alphaHolder, scaleXHolder);
+
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            public void run() {
-                transViewPager.setVisibility(View.INVISIBLE);
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float alpha = (Float) animation.getAnimatedValue("alpha");
+                float scale = (Float) animation.getAnimatedValue("scaleX");
+
+                targetImage.setAlpha(alpha);
+                targetImage.setScaleX(scale);
+                targetImage.setScaleY(scale);
             }
-        }, transImage.getDuration() / 3);
+        });
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                resetTransfer();
+            }
+        });
+
+        valueAnimator.start();
     }
 
     /**

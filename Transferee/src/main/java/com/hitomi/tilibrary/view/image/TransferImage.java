@@ -15,9 +15,16 @@ import android.util.AttributeSet;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 /**
- * 平滑变化显示图片的 ImageView
- * 仅限于用于:从一个ScaleType==CENTER_CROP的ImageView，切换到另一个ScaleType=
- * FIT_CENTER的ImageView，或者反之 (使用同样的图片最好)
+ * TransferImage 主要功能：<br/>
+ * <p>
+ * 可以完成从缩略图平滑伸展到一张完整的图片<br/>
+ * 也可以从整图平滑收缩到一张缩略图
+ * <ul>
+ * <li>支持动画：从缩略图平滑伸展到一张完整的图片</li>
+ * <li>支持动画：从整图平滑收缩到一张缩略图</li>
+ * <li>支持按指定尺寸参数裁剪后，在裁剪的区域显示图片</li>
+ * <li>支持动画分离：只有图片平移动画或者只有图片缩放动画</li>
+ * </ul>
  */
 public class TransferImage extends PhotoView {
 
@@ -40,8 +47,8 @@ public class TransferImage extends PhotoView {
     private int originalHeight;
     private int originalLocationX;
     private int originalLocationY;
-    private long duration = 300;
-    private boolean transformStart = false;
+    private long duration = 300; // 默认动画时长
+    private boolean transformStart = false; // 开始动画的标记
 
     private Paint paint;
     private Matrix transMatrix;
@@ -74,9 +81,6 @@ public class TransferImage extends PhotoView {
         originalLocationY = locationY;
         originalWidth = width;
         originalHeight = height;
-        // 因为是屏幕坐标，所以要转换为该视图内的坐标，因为我所用的该视图是MATCH_PARENT，所以不用定位该视图的位置,
-        // 如果不是的话，还需要定位视图的位置，然后计算mOriginalLocationX和mOriginalLocationY
-        //originalLocationY = mOriginalLocationY - getStatusBarHeight(getContext());
     }
 
     /**
@@ -455,7 +459,6 @@ public class TransferImage extends PhotoView {
         public Object clone() throws CloneNotSupportedException {
             return super.clone();
         }
-
     }
 
 }

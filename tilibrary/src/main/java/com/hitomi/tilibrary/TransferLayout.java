@@ -526,12 +526,14 @@ class TransferLayout extends FrameLayout {
 
     private void cacheLoadedImageUrl(final String url) {
         Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
-        loadedSet.add(url);
+        if (!loadedSet.contains(url)) {
+            loadedSet.add(url);
 
-        loadSharedPref.edit()
-                .clear() // SharedPreferences 关于 putStringSet 的 bug 修复方案
-                .putStringSet(SP_LOAD_SET, loadedSet)
-                .apply();
+            loadSharedPref.edit()
+                    .clear() // SharedPreferences 关于 putStringSet 的 bug 修复方案
+                    .putStringSet(SP_LOAD_SET, loadedSet)
+                    .apply();
+        }
     }
 
     private boolean containsSourceImageUrl(String url) {

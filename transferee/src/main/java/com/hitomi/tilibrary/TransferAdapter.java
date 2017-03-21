@@ -1,5 +1,6 @@
 package com.hitomi.tilibrary;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.util.SparseArray;
@@ -11,7 +12,7 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static com.hitomi.tilibrary.TransferLayout.MODE_EMPTY_THUMBNAIL;
+import static com.hitomi.tilibrary.TransferConfig.MODE_EMPTY_THUMBNAIL;
 
 /**
  * 展示高清图的图片数据适配器
@@ -21,19 +22,17 @@ class TransferAdapter extends PagerAdapter {
 
     private int showIndex;
     private int imageSize;
-    private int mode;
     private TransferConfig config;
 
     private OnInstantiateItemListener onInstantListener;
 
     private SparseArray<FrameLayout> containLayoutArray;
 
-    public TransferAdapter(TransferConfig config, int thumbMode) {
+    public TransferAdapter(TransferConfig config) {
         this.imageSize = config.getSourceImageList().size();
         this.showIndex = config.getNowThumbnailIndex() + 1 == imageSize
                 ? config.getNowThumbnailIndex() - 1 : config.getNowThumbnailIndex() + 1;
         this.config = config;
-        this.mode = thumbMode;
         containLayoutArray = new SparseArray<>();
     }
 
@@ -100,9 +99,10 @@ class TransferAdapter extends PagerAdapter {
 
     @NonNull
     private FrameLayout newParentLayout(ViewGroup container, final int pos) {
+        Context context = container.getContext();
         // create inner ImageView
-        TransferImage imageView = new TransferImage(container.getContext());
-        if (mode == MODE_EMPTY_THUMBNAIL) {
+        TransferImage imageView = new TransferImage(context);
+        if (config.getThumbMode(context, pos) == MODE_EMPTY_THUMBNAIL) {
             ImageView originImage = config.getOriginImageList().get(pos);
             int locationX = (container.getMeasuredWidth() - originImage.getWidth()) / 2;
             int locationY = (container.getMeasuredHeight() - originImage.getHeight()) / 2;
@@ -114,7 +114,7 @@ class TransferAdapter extends PagerAdapter {
         imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
 
         // create outer ParentLayout
-        FrameLayout parentLayout = new FrameLayout(container.getContext());
+        FrameLayout parentLayout = new FrameLayout(context);
         parentLayout.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         parentLayout.addView(imageView);
 

@@ -1,7 +1,6 @@
 package com.hitomi.tilibrary;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -23,28 +22,15 @@ import java.util.Set;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
+import static com.hitomi.tilibrary.TransferConfig.MODE_EMPTY_THUMBNAIL;
+import static com.hitomi.tilibrary.TransferConfig.MODE_LOCAL_THUMBNAIL;
+import static com.hitomi.tilibrary.TransferConfig.MODE_REMOTE_THUMBNAIL;
 
 /**
  * TransferImage 中 Dialog 显示的内容
  * Created by Hitomis on 2017/4/23 0023.
  */
 class TransferLayout extends FrameLayout {
-    static final String SP_FILE = "transferee";
-    static final String SP_LOAD_SET = "load_set";
-
-    /**
-     * 高清图图片已经加载过了，直接使用 {@link TransferImage#CATE_ANIMA_TOGETHER} 动画类型展示图片
-     */
-    static final int MODE_LOCAL_THUMBNAIL = 1;
-    /**
-     * 高清图尚未加载，使用 {@link TransferImage#CATE_ANIMA_APART} 动画类型展示图片
-     */
-    static final int MODE_EMPTY_THUMBNAIL = 1 << 1;
-    /**
-     * 用户指定了缩略图路径，使用该路径加载缩略图，并使用 {@link TransferImage#CATE_ANIMA_TOGETHER} 动画类型展示图片
-     */
-    static final int MODE_REMOTE_THUMBNAIL = 1 << 2;
-
     private Context context;
 
     private TransferImage transImage;
@@ -53,11 +39,9 @@ class TransferLayout extends FrameLayout {
     private TransferConfig transConfig;
 
     private OnLayoutResetListener layoutResetListener;
-    private SharedPreferences loadSharedPref;
 
     private Set<Integer> loadedIndexSet;
     private SparseBooleanArray loadedArray;
-    private int thumbMode;
 
     /**
      * ViewPager 页面切换监听器 => 当页面切换时，根据相邻优先加载的规则去加载图片
@@ -135,9 +119,6 @@ class TransferLayout extends FrameLayout {
         this.context = context;
         this.loadedIndexSet = new HashSet<>();
         this.loadedArray = new SparseBooleanArray();
-
-        loadSharedPref = context.getSharedPreferences(
-                SP_FILE, Context.MODE_PRIVATE);
     }
 
     private void loadSourceImageOffset(int position, int offset) {
@@ -159,7 +140,7 @@ class TransferLayout extends FrameLayout {
     }
 
     private void loadSourceImage(int position) {
-        switch (thumbMode) {
+        switch (transConfig.getThumbMode(context, position)) {
             case MODE_EMPTY_THUMBNAIL:
                 loadSourceImageByEmptyThumbnail(position);
                 break;
@@ -197,7 +178,7 @@ class TransferLayout extends FrameLayout {
      * 创建 ViewPager
      */
     private void createTransferViewPager() {
-        transAdapter = new TransferAdapter(transConfig, thumbMode);
+        transAdapter = new TransferAdapter(transConfig);
         transAdapter.setOnInstantListener(instantListener);
 
         transViewPager = new ViewPager(context);
@@ -249,6 +230,7 @@ class TransferLayout extends FrameLayout {
         transImage.setOnTransferListener(transferListener);
         addView(transImage, 1);
 
+        int thumbMode = transConfig.getThumbMode(context, pos);
         if (thumbMode == MODE_EMPTY_THUMBNAIL) {
             Drawable thumbnailDrawable = transAdapter.getImageItem(
                     transConfig.getNowThumbnailIndex()).getDrawable();
@@ -317,36 +299,23 @@ class TransferLayout extends FrameLayout {
      * 初始化 TransferLayout 中的各个组件，并显示，同时开启动画
      */
     public void show() {
-        updateThumbMode();
         createTransferViewPager();
 
-        switch (thumbMode) {
+        int nowThumbnailIndex = transConfig.getNowThumbnailIndex();
+        switch (transConfig.getThumbMode(context, nowThumbnailIndex)) {
             case MODE_LOCAL_THUMBNAIL:
-                createTransferImage(transConfig.getNowThumbnailIndex(),
+                createTransferImage(nowThumbnailIndex,
                         TransferImage.STATE_TRANS_IN);
                 break;
             case MODE_EMPTY_THUMBNAIL:
                 createTransferImage();
                 break;
             case MODE_REMOTE_THUMBNAIL:
-                createTransferImage(transConfig.getNowThumbnailIndex(),
+                createTransferImage(nowThumbnailIndex,
                         TransferImage.STATE_TRANS_IN);
                 break;
         }
 
-    }
-
-    private void updateThumbMode() {
-        String url = transConfig.getNowSourceImageUrl();
-        if (containsSourceImageUrl(url)) {
-            thumbMode = MODE_LOCAL_THUMBNAIL;
-        } else {
-            if (transConfig.isThumbnailEmpty()) {
-                thumbMode = MODE_EMPTY_THUMBNAIL;
-            } else {
-                thumbMode = MODE_REMOTE_THUMBNAIL;
-            }
-        }
     }
 
     /**
@@ -463,7 +432,7 @@ class TransferLayout extends FrameLayout {
                             case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
                                 progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
 
-                                cacheLoadedImageUrl(imgUrl);
+                                transConfig.cacheLoadedImageUrl(context, imgUrl);
                                 targetImage.transformIn(TransferImage.STAGE_SCALE);
                                 targetImage.enable();
                                 bindOnDismissListener(targetImage, position);
@@ -510,7 +479,7 @@ class TransferLayout extends FrameLayout {
                             public void onDelivered(int status) {
                                 switch (status) {
                                     case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功，启用 TransferImage 的手势缩放功能
-                                        cacheLoadedImageUrl(imgUrl);
+                                        transConfig.cacheLoadedImageUrl(context, imgUrl);
                                         targetImage.enable();
                                         bindOnDismissListener(targetImage, position);
                                         break;
@@ -522,24 +491,6 @@ class TransferLayout extends FrameLayout {
                         });
             }
         });
-    }
-
-    private void cacheLoadedImageUrl(final String url) {
-        Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
-        if (!loadedSet.contains(url)) {
-            loadedSet.add(url);
-
-            loadSharedPref.edit()
-                    .clear() // SharedPreferences 关于 putStringSet 的 bug 修复方案
-                    .putStringSet(SP_LOAD_SET, loadedSet)
-                    .apply();
-        }
-    }
-
-    private boolean containsSourceImageUrl(String url) {
-        Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
-        return loadedSet.contains(url);
-
     }
 
     /**

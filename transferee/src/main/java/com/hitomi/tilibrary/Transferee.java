@@ -11,6 +11,9 @@ import android.view.KeyEvent;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 
+import static com.hitomi.tilibrary.TransferConfig.SP_FILE;
+import static com.hitomi.tilibrary.TransferConfig.SP_LOAD_SET;
+
 /**
  * Main workflow: <br/>
  * 1、点击缩略图展示缩略图到 transferee 过渡动画 <br/>
@@ -181,9 +184,9 @@ public class Transferee implements DialogInterface.OnShowListener,
      */
     public static void clear(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(
-                TransferLayout.SP_FILE, Context.MODE_PRIVATE);
+                SP_FILE, Context.MODE_PRIVATE);
         sharedPref.edit()
-                .remove(TransferLayout.SP_LOAD_SET)
+                .remove(SP_LOAD_SET)
                 .apply();
     }
 

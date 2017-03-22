@@ -432,7 +432,9 @@ class TransferLayout extends FrameLayout {
                             case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
                                 progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
 
-                                transConfig.cacheLoadedImageUrl(context, imgUrl);
+                                if (transConfig.getThumbMode(context, position) == MODE_EMPTY_THUMBNAIL)
+                                    transConfig.cacheLoadedImageUrl(context, imgUrl);
+
                                 targetImage.transformIn(TransferImage.STAGE_SCALE);
                                 targetImage.enable();
                                 bindOnDismissListener(targetImage, position);
@@ -478,9 +480,10 @@ class TransferLayout extends FrameLayout {
                             @Override
                             public void onDelivered(int status) {
                                 switch (status) {
-                                    case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功，启用 TransferImage 的手势缩放功能
-                                        transConfig.cacheLoadedImageUrl(context, imgUrl);
+                                    case ImageLoader.STATUS_DISPLAY_SUCCESS:
+                                        // 启用 TransferImage 的手势缩放功能
                                         targetImage.enable();
+                                        // 绑定点击关闭 Transferee
                                         bindOnDismissListener(targetImage, position);
                                         break;
                                     case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图

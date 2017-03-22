@@ -14,6 +14,7 @@ import com.hitomi.tilibrary.view.image.TransferImage;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 /**
  * Attributes <br/>
@@ -213,14 +214,14 @@ public class TransferConfig {
     public int getThumbMode(Context context, int thumbIndex) {
         int thumbMode;
 
-        String url = sourceImageList.get(thumbIndex);
-        if (containsSourceImageUrl(context, url)) {
-            thumbMode = MODE_LOCAL_THUMBNAIL;
+        if (!isThumbnailEmpty()) { // 客户端指定了缩略图路径集合
+            thumbMode = MODE_REMOTE_THUMBNAIL;
         } else {
-            if (isThumbnailEmpty()) {
-                thumbMode = MODE_EMPTY_THUMBNAIL;
+            String url = sourceImageList.get(thumbIndex);
+            if (containsSourceImageUrl(context, url)) {
+                thumbMode = MODE_LOCAL_THUMBNAIL;
             } else {
-                thumbMode = MODE_REMOTE_THUMBNAIL;
+                thumbMode = MODE_EMPTY_THUMBNAIL;
             }
         }
 
@@ -235,18 +236,23 @@ public class TransferConfig {
 
     }
 
-    public void cacheLoadedImageUrl(Context context, final String url) {
-        SharedPreferences loadSharedPref = context.getSharedPreferences(
-                SP_FILE, Context.MODE_PRIVATE);
-        Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
-        if (!loadedSet.contains(url)) {
-            loadedSet.add(url);
+    public void cacheLoadedImageUrl(final Context context, final String url) {
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences loadSharedPref = context.getSharedPreferences(
+                        SP_FILE, Context.MODE_PRIVATE);
+                Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
+                if (!loadedSet.contains(url)) {
+                    loadedSet.add(url);
 
-            loadSharedPref.edit()
-                    .clear() // SharedPreferences 关于 putStringSet 的 bug 修复方案
-                    .putStringSet(SP_LOAD_SET, loadedSet)
-                    .apply();
-        }
+                    loadSharedPref.edit()
+                            .clear() // SharedPreferences 关于 putStringSet 的 bug 修复方案
+                            .putStringSet(SP_LOAD_SET, loadedSet)
+                            .apply();
+                }
+            }
+        });
     }
 
     public static class Builder {

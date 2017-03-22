@@ -40,6 +40,15 @@ public class GridViewActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_view);
+//        final UniversalImageLoader universalLoader = UniversalImageLoader.with(getApplicationContext());
+//        final DisplayImageOptions normalImageOptions = new DisplayImageOptions
+//                .Builder()
+//                .showImageOnLoading(R.mipmap.ic_empty_photo)
+//                .bitmapConfig(Bitmap.Config.RGB_565)
+//                .cacheInMemory(true)
+//                .cacheOnDisk(true)
+//                .resetViewBeforeLoading(true)
+//                .build();
 
         transferee = Transferee.getDefault(this);
         gvImages = (GridView) findViewById(R.id.gv_images);
@@ -55,11 +64,14 @@ public class GridViewActivity extends BaseActivity {
                         .placeholder(R.mipmap.ic_empty_photo)
                         .into(imageView);
 
+//                ImageLoader.getInstance().displayImage(item, imageView, normalImageOptions);
+
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         TransferConfig config = TransferConfig.build()
                                 .setNowThumbnailIndex(position)
+//                                .setThumbnailImageList(imageStrList)
                                 .setSourceImageList(imageStrList)
                                 .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                                 .setOriginImageList(wrapOriginImageViewList())

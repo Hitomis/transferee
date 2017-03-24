@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Set;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.widget.ImageView.ScaleType.FIT_CENTER;
 
 /**
  * Main workflow: <br/>
@@ -92,6 +93,7 @@ public class TransferImage extends FrameLayout {
 
         sharedImage = new ImageView(context);
         sharedImage.setImageDrawable(currOriginImage.getDrawable());
+        sharedImage.setScaleType(FIT_CENTER);
         sharedImage.setLayoutParams(sImageVlp);
         sharedImage.setX(location[0]);
         sharedImage.setY(location[1] - getStatusBarHeight());

@@ -57,7 +57,7 @@ public class GroupImageActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         new TransferImage.Builder(GroupImageActivity.this)
-                                .setBackgroundColor(Color.BLACK)
+                                .setBackgroundColor(Color.parseColor("#EE009999"))
                                 .setOriginImageList(wrapOriginImageViewList())
                                 .setImageUrlList(imageStrList)
                                 .setOriginIndex(position)

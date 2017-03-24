@@ -268,7 +268,7 @@ public class TransferImage extends FrameLayout {
             animatorSet.play(dismissAnimator).with(dismissBackgroundAnimator);
             animator = animatorSet;
         } else {
-            animator = dismissBackgroundAnimator;
+            animator = dismissAnimator;
         }
 
         animator.addListener(new AnimatorListenerAdapter() {

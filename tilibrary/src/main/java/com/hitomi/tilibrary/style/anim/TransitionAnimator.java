@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -106,13 +107,13 @@ public class TransitionAnimator implements ITransferAnimator {
 
     @Override
     public Animator dismissBackgroundAnimator(final View parent, final int backgroundColor) {
-        ValueAnimator backAnimator = ValueAnimator.ofFloat(0, 1f);
+        ValueAnimator backAnimator = ValueAnimator.ofFloat(1.f - Color.alpha(backgroundColor) / 255.f, 1f);
         backAnimator.setInterpolator(new AccelerateInterpolator());
         backAnimator.setDuration(350);
         backAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                int alpha = (int) (255 * (1.f - animation.getAnimatedFraction()));
+                int alpha = (int) (255 * (1.f - Float.parseFloat(animation.getAnimatedValue().toString())));
                 int color = ColorUtils.setAlphaComponent(backgroundColor, alpha);
                 parent.setBackgroundColor(color);
 

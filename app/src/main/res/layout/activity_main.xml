@@ -26,13 +26,6 @@
         android:textAllCaps="false" />
 
     <Button
-        android:id="@+id/btn_group_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Go GroupImageActivity"
-        android:textAllCaps="false" />
-
-    <Button
         android:id="@+id/btn_touch_move"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

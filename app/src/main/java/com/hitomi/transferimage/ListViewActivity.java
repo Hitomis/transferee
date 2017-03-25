@@ -44,7 +44,7 @@ public class ListViewActivity extends BaseActivity {
         transferImage = TransferImage.getDefault(this);
 
         listView = (ListView) findViewById(R.id.list_view);
-        listView.setAdapter(new CommonAdapter<String>(this, R.layout.item_image, imageStrList) {
+        listView.setAdapter(new CommonAdapter<String>(this, R.layout.item_list_image, imageStrList) {
 
             @Override
             protected void convert(ViewHolder viewHolder, String item, final int position) {

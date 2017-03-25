@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_grid_view"
+    android:id="@+id/activity_group_image"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.hitomi.transferimage.GridViewActivity">
 
     <GridView
-        android:id="@+id/grid_view"
+        android:id="@+id/gv_images"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:horizontalSpacing="10dp"
-        android:verticalSpacing="10dp"
-        android:numColumns="3" />
+        android:numColumns="3"
+        android:verticalSpacing="10dp" />
 
 </RelativeLayout>

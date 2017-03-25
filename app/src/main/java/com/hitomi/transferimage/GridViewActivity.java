@@ -49,7 +49,7 @@ public class GridViewActivity extends BaseActivity {
                 imageView.setClickable(true);
                 Glide.with(GridViewActivity.this)
                         .load(item)
-                        .override(200, 200)
+                        .override(500, 500)
                         .placeholder(R.mipmap.ic_launcher)
                         .into(imageView);
 

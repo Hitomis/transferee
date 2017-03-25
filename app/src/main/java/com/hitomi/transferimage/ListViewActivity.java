@@ -33,7 +33,6 @@ public class ListViewActivity extends BaseActivity {
         imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png");
         imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
         imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
     }
 
     @Override

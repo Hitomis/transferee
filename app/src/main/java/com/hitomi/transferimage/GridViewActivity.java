@@ -49,7 +49,7 @@ public class GridViewActivity extends BaseActivity {
                 imageView.setClickable(true);
                 Glide.with(GridViewActivity.this)
                         .load(item)
-                        .override(500, 500)
+                        .override(500, 500) // todo:这里的值只需要大于等于列表中 Item 的最大宽高即可
                         .placeholder(R.mipmap.ic_launcher)
                         .into(imageView);
 

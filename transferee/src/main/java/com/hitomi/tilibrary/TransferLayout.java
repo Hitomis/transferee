@@ -260,7 +260,11 @@ class TransferLayout extends FrameLayout {
             transConfig.getImageLoader().loadThumbnailAsync(transUrl, transImage, new ImageLoader.ThumbnailCallback() {
                 @Override
                 public void onFinish(Drawable drawable) {
-                    transImage.setImageDrawable(drawable);
+                    if (drawable == null) {
+                        transImage.setImageDrawable(transConfig.getMissDrawable(context));
+                    } else {
+                        transImage.setImageDrawable(drawable);
+                    }
 
                     switch (state) {
                         case TransferImage.STATE_TRANS_IN:
@@ -462,6 +466,9 @@ class TransferLayout extends FrameLayout {
         imageLoader.loadThumbnailAsync(imgUrl, targetImage, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
+                if (drawable == null)
+                    drawable = transConfig.getMissDrawable(context);
+
                 imageLoader.showSourceImage(imgUrl, targetImage,
                         drawable, new ImageLoader.SourceCallback() {
 

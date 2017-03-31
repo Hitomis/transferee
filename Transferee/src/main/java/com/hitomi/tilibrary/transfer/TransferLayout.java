@@ -143,7 +143,8 @@ class TransferLayout extends FrameLayout {
      * 创建 ViewPager
      */
     private void createTransferViewPager() {
-        transAdapter = new TransferAdapter(transConfig);
+        transAdapter = new TransferAdapter(transConfig.getSourceImageList().size(),
+                transConfig.getNowThumbnailIndex());
         transAdapter.setOnInstantListener(instantListener);
 
         transViewPager = new ViewPager(context);

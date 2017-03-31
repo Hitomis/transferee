@@ -21,17 +21,17 @@ class TransferAdapter extends PagerAdapter {
 
     private int showIndex;
     private int imageSize;
-    private TransferConfig config;
 
     private OnInstantiateItemListener onInstantListener;
 
     private SparseArray<FrameLayout> containLayoutArray;
 
-    TransferAdapter(TransferConfig config) {
-        this.imageSize = config.getSourceImageList().size();
-        this.showIndex = config.getNowThumbnailIndex() + 1 == imageSize
-                ? config.getNowThumbnailIndex() - 1 : config.getNowThumbnailIndex() + 1;
-        this.config = config;
+    TransferAdapter(int imageSize, int nowThumbnailIndex) {
+        this.imageSize = imageSize;
+        this.showIndex = nowThumbnailIndex + 1 == imageSize
+                ? nowThumbnailIndex - 1 : nowThumbnailIndex + 1;
+        this.showIndex = showIndex < 0 ? 0 : showIndex;
+
         containLayoutArray = new SparseArray<>();
     }
 

@@ -40,7 +40,6 @@ public class TransferImage extends PhotoView {
     private int originalHeight;
     private int originalLocationX;
     private int originalLocationY;
-    private int backgroundAlpha = 0;
     private long duration = 300;
     private boolean transformStart = false;
 
@@ -248,7 +247,6 @@ public class TransferImage extends PhotoView {
                 }
             }
 
-            paint.setAlpha(backgroundAlpha);
             canvas.drawPaint(paint);
 
             int saveCount = canvas.getSaveCount();
@@ -273,8 +271,6 @@ public class TransferImage extends PhotoView {
                 }
             }
         } else {
-            //当Transform In变化完成后，把背景改为黑色，使得 TransferImage 不透明
-            paint.setAlpha(255);
             canvas.drawPaint(paint);
             super.onDraw(canvas);
         }
@@ -292,8 +288,7 @@ public class TransferImage extends PhotoView {
             PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transform.startRect.top, transform.endRect.top);
             PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transform.startRect.width, transform.endRect.width);
             PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transform.startRect.height, transform.endRect.height);
-            PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofInt("alpha", 0, 255);
-            valueAnimator.setValues(leftHolder, topHolder, widthHolder, heightHolder, alphaHolder);
+            valueAnimator.setValues(leftHolder, topHolder, widthHolder, heightHolder);
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public synchronized void onAnimationUpdate(ValueAnimator animation) {
@@ -301,7 +296,6 @@ public class TransferImage extends PhotoView {
                     transform.rect.top = (Float) animation.getAnimatedValue("top");
                     transform.rect.width = (Float) animation.getAnimatedValue("width");
                     transform.rect.height = (Float) animation.getAnimatedValue("height");
-                    backgroundAlpha = (Integer) animation.getAnimatedValue("alpha");
                     invalidate();
                 }
             });
@@ -361,8 +355,7 @@ public class TransferImage extends PhotoView {
         PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transform.startRect.top, transform.endRect.top);
         PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transform.startRect.width, transform.endRect.width);
         PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transform.startRect.height, transform.endRect.height);
-        PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofInt("alpha", 0, 255);
-        valueAnimator.setValues(scaleHolder, leftHolder, topHolder, widthHolder, heightHolder, alphaHolder);
+        valueAnimator.setValues(scaleHolder, leftHolder, topHolder, widthHolder, heightHolder);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public synchronized void onAnimationUpdate(ValueAnimator animation) {
@@ -371,7 +364,6 @@ public class TransferImage extends PhotoView {
                 transform.rect.top = (Float) animation.getAnimatedValue("top");
                 transform.rect.width = (Float) animation.getAnimatedValue("width");
                 transform.rect.height = (Float) animation.getAnimatedValue("height");
-                backgroundAlpha = (Integer) animation.getAnimatedValue("alpha");
                 invalidate();
             }
         });

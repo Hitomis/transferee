@@ -360,7 +360,7 @@ class TransferLayout extends FrameLayout {
                         if (status == ImageLoader.STATUS_DISPLAY_SUCCESS)
                             // 加载成功，启用 PhotoView 的缩放功能
                             photoView.enable();
-                        else
+                        else if (status == ImageLoader.STATUS_DISPLAY_FAILED)
                             // 加载失败，显示加载错误的占位图
                             photoView.setImageDrawable(transConfig.getErrorDrawable(context));
                     }

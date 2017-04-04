@@ -81,7 +81,7 @@ public class TransferConfig {
     }
 
     public Drawable getMissDrawable(Context context) {
-        if (missDrawable == null)
+        if (missDrawable == null && missPlaceHolder != 0)
             return context.getResources().getDrawable(missPlaceHolder);
         return missDrawable;
     }
@@ -91,7 +91,7 @@ public class TransferConfig {
     }
 
     public Drawable getErrorDrawable(Context context) {
-        if (errorDrawable == null)
+        if (errorDrawable == null && errorPlaceHolder != 0)
             return context.getResources().getDrawable(errorPlaceHolder);
         return errorDrawable;
     }

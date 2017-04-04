@@ -123,7 +123,7 @@ public abstract class ProgressTarget<T, Z> extends WrappingTarget<Z> implements 
 
     @Override
     public void onLoadCleared(Drawable placeholder) {
-        cleanup(ImageLoader.STATUS_DISPLAY_FAILED);
+        cleanup(ImageLoader.STATUS_DISPLAY_CANCEL);
         super.onLoadCleared(placeholder);
     }
 }

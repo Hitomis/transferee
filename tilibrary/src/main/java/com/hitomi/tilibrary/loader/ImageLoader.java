@@ -10,6 +10,10 @@ import android.widget.ImageView;
 
 public interface ImageLoader {
     /**
+     * 状态码，取消加载高清图
+     */
+    int STATUS_DISPLAY_CANCEL = -1;
+    /**
      * 状态码，加载高清图失败
      */
     int STATUS_DISPLAY_FAILED = 0;

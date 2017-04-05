@@ -1,10 +1,9 @@
 package com.hitomi.tilibrary;
 
 import android.content.Context;
-import android.support.annotation.IdRes;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -22,20 +21,20 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * Created by hitomi on 2017/1/23.
  */
 class TransferAdapter extends PagerAdapter {
-    @IdRes
-    private static final int ID_IMAGE = 1001;
 
     private int showIndex;
     private int imageSize;
+    private Drawable placeHolder;
 
     private OnDismissListener onDismissListener;
     private OnInstantiateItemListener onInstantListener;
 
     private Map<Integer, FrameLayout> containnerLayoutMap;
 
-    public TransferAdapter(int showIndex, int imageSize) {
+    public TransferAdapter(int showIndex, int imageSize, Drawable placeHolder) {
         this.showIndex = showIndex == 0 ? 1 : showIndex;
         this.imageSize = imageSize;
+        this.placeHolder = placeHolder;
         containnerLayoutMap = new WeakHashMap<>();
     }
 
@@ -55,23 +54,23 @@ class TransferAdapter extends PagerAdapter {
     }
 
     /**
-     * 获取指定索引页面中的 ImageView
+     * 获取指定索引页面中的 PhotoView
      *
      * @param position
      * @return
      */
-    public ImageView getImageItem(int position) {
+    public PhotoView getImageItem(int position) {
         FrameLayout parentLayout = containnerLayoutMap.get(position);
         int childCount = parentLayout.getChildCount();
-        ImageView imageView = null;
+        PhotoView photoView = null;
         for (int i = 0; i < childCount; i++) {
             View view = parentLayout.getChildAt(i);
             if (view instanceof ImageView) {
-                imageView = (ImageView) view;
+                photoView = (PhotoView) view;
                 break;
             }
         }
-        return imageView;
+        return photoView;
     }
 
     public FrameLayout getParentItem(int position) {
@@ -103,19 +102,14 @@ class TransferAdapter extends PagerAdapter {
     @NonNull
     private FrameLayout newParentLayout(Context context, final int pos) {
         // create inner ImageView
-        final PhotoView imageView = new PhotoView(context);
-        imageView.setId(ID_IMAGE);
-        imageView.enable();
+        PhotoView imageView = new PhotoView(context);
+        imageView.setImageDrawable(placeHolder);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        FrameLayout.LayoutParams imageLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        imageLp.gravity = Gravity.CENTER;
-        imageView.setLayoutParams(imageLp);
+        imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
 
         // create outer ParentLayout
         FrameLayout parentLayout = new FrameLayout(context);
-        FrameLayout.LayoutParams parentLp = new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        parentLayout.setLayoutParams(parentLp);
-
+        parentLayout.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         parentLayout.addView(imageView);
 
         // add listener to parentLayout

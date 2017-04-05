@@ -50,7 +50,8 @@ public class GlideImageLoader implements ImageLoader {
             }
 
             @Override
-            protected void onDelivered() {
+            protected void onDelivered(int status) {
+                sourceCallback.onDelivered(status);
             }
         };
 

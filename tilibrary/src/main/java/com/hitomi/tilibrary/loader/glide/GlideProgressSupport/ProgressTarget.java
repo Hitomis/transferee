@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.Target;
+import com.hitomi.tilibrary.loader.ImageLoader;
 
 public abstract class ProgressTarget<T, Z> extends WrappingTarget<Z> implements OkHttpProgressGlideModule.UIProgressListener {
     private T model;
@@ -87,17 +88,17 @@ public abstract class ProgressTarget<T, Z> extends WrappingTarget<Z> implements 
      * Called when the Glide load has finished either by successfully loading the image or failing to load or cancelled.
      * In any case the best is to hide/reset any progress displays.
      */
-    protected abstract void onDelivered();
+    protected abstract void onDelivered(int status);
 
     private void start() {
         OkHttpProgressGlideModule.expect(toUrlString(model), this);
         ignoreProgress = false;
     }
 
-    private void cleanup() {
+    private void cleanup(int status) {
         ignoreProgress = true;
         T model = this.model; // save in case it gets modified
-        onDelivered();
+        onDelivered(status);
         OkHttpProgressGlideModule.forget(toUrlString(model));
         this.model = null;
     }
@@ -110,19 +111,19 @@ public abstract class ProgressTarget<T, Z> extends WrappingTarget<Z> implements 
 
     @Override
     public void onResourceReady(Z resource, GlideAnimation<? super Z> animation) {
-        cleanup();
+        cleanup(ImageLoader.STATUS_DISPLAY_SUCCESS);
         super.onResourceReady(resource, animation);
     }
 
     @Override
     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-        cleanup();
+        cleanup(ImageLoader.STATUS_DISPLAY_FAILED);
         super.onLoadFailed(e, errorDrawable);
     }
 
     @Override
     public void onLoadCleared(Drawable placeholder) {
-        cleanup();
+        cleanup(ImageLoader.STATUS_DISPLAY_FAILED);
         super.onLoadCleared(placeholder);
     }
 }

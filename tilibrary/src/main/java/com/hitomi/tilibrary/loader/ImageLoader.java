@@ -10,6 +10,15 @@ import android.widget.ImageView;
 
 public interface ImageLoader {
     /**
+     * 状态码，加载高清图失败
+     */
+    int STATUS_DISPLAY_FAILED = 0;
+    /**
+     * 状态码，加载高清图成功
+     */
+    int STATUS_DISPLAY_SUCCESS = 1;
+
+    /**
      * 加载并显示原高清图
      *
      * @param srcUrl         高清图图片地址
@@ -43,6 +52,9 @@ public interface ImageLoader {
 
         @UiThread
         void onFinish();
+
+        @UiThread
+        void onDelivered(int status);
     }
 
     interface ThumbnailCallback {

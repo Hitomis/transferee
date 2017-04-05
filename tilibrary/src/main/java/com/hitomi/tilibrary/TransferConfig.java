@@ -1,5 +1,7 @@
 package com.hitomi.tilibrary;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
@@ -19,7 +21,11 @@ public class TransferConfig {
     private int nowThumbnailIndex;
     private int offscreenPageLimit;
     private int missPlaceHolder;
+    private int errorPlaceHolder;
     private long duration;
+
+    private Drawable missDrawable;
+    private Drawable errorDrawable;
 
     private List<ImageView> originImageList;
     private List<String> sourceImageList;
@@ -58,12 +64,40 @@ public class TransferConfig {
         this.missPlaceHolder = missPlaceHolder;
     }
 
+    public int getErrorPlaceHolder() {
+        return errorPlaceHolder;
+    }
+
+    public void setErrorPlaceHolder(int errorPlaceHolder) {
+        this.errorPlaceHolder = errorPlaceHolder;
+    }
+
     public long getDuration() {
         return duration;
     }
 
     public void setDuration(long duration) {
         this.duration = duration;
+    }
+
+    public Drawable getMissDrawable(Context context) {
+        if (missDrawable == null)
+            return context.getResources().getDrawable(missPlaceHolder);
+        return missDrawable;
+    }
+
+    public void setMissDrawable(Drawable missDrawable) {
+        this.missDrawable = missDrawable;
+    }
+
+    public Drawable getErrorDrawable(Context context) {
+        if (errorDrawable == null)
+            return context.getResources().getDrawable(errorPlaceHolder);
+        return errorDrawable;
+    }
+
+    public void setErrorDrawable(Drawable errorDrawable) {
+        this.errorDrawable = errorDrawable;
     }
 
     public List<ImageView> getOriginImageList() {
@@ -122,11 +156,16 @@ public class TransferConfig {
         this.imageLoader = imageLoader;
     }
 
+
     public static class Builder {
         private int nowThumbnailIndex;
         private int offscreenPageLimit;
         private int missPlaceHolder;
+        private int errorPlaceHolder;
         private long duration;
+
+        private Drawable missDrawable;
+        private Drawable errorDrawable;
 
         private List<ImageView> originImageList;
         private List<String> sourceImageList;
@@ -158,10 +197,18 @@ public class TransferConfig {
         }
 
         /**
-         * 缺省的占位图资源ID
+         * 缺省的占位图(资源ID)
          */
         public Builder setMissPlaceHolder(int missPlaceHolder) {
             this.missPlaceHolder = missPlaceHolder;
+            return this;
+        }
+
+        /**
+         * 图片加载错误显示的图片(资源ID)
+         */
+        public Builder setErrorPlaceHolder(int errorPlaceHolder) {
+            this.errorPlaceHolder = errorPlaceHolder;
             return this;
         }
 
@@ -170,6 +217,22 @@ public class TransferConfig {
          */
         public Builder setDuration(long duration) {
             this.duration = duration;
+            return this;
+        }
+
+        /**
+         * 缺省的占位图(Drawable 格式)
+         */
+        public Builder setMissDrawable(Drawable missDrawable) {
+            this.missDrawable = missDrawable;
+            return this;
+        }
+
+        /**
+         * 图片加载错误显示的图片(Drawable 格式)
+         */
+        public Builder setErrorDrawable(Drawable errorDrawable) {
+            this.errorDrawable = errorDrawable;
             return this;
         }
 
@@ -238,7 +301,11 @@ public class TransferConfig {
             config.setNowThumbnailIndex(nowThumbnailIndex);
             config.setOffscreenPageLimit(offscreenPageLimit);
             config.setMissPlaceHolder(missPlaceHolder);
+            config.setErrorPlaceHolder(errorPlaceHolder);
             config.setDuration(duration);
+
+            config.setMissDrawable(missDrawable);
+            config.setErrorDrawable(errorDrawable);
 
             config.setOriginImageList(originImageList);
             config.setSourceImageList(sourceImageList);

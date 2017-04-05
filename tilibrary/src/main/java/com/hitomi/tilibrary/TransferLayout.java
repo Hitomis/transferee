@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
+import com.hitomi.tilibrary.view.image.PhotoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.lang.reflect.Field;
@@ -167,7 +168,9 @@ class TransferLayout extends FrameLayout {
      * 创建 ViewPager
      */
     private void createTransferViewPager() {
-        transAdapter = new TransferAdapter(transConfig.getNowThumbnailIndex(), transConfig.getSourceImageList().size());
+        transAdapter = new TransferAdapter(transConfig.getNowThumbnailIndex(),
+                transConfig.getSourceImageList().size(),
+                transConfig.getMissDrawable(context));
         transAdapter.setOnDismissListener(dismissListener);
         transAdapter.setOnInstantListener(instantListener);
 
@@ -326,7 +329,8 @@ class TransferLayout extends FrameLayout {
         transConfig.getImageLoader().displayThumbnailImageAsync(imgUrl, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
-                transConfig.getImageLoader().displaySourceImage(imgUrl, transAdapter.getImageItem(position), drawable, new ImageLoader.SourceCallback() {
+                transConfig.getImageLoader().displaySourceImage(imgUrl,
+                        transAdapter.getImageItem(position), drawable, new ImageLoader.SourceCallback() {
 
                     private IProgressIndicator progressIndicator = transConfig.getProgressIndicator();
 
@@ -347,6 +351,18 @@ class TransferLayout extends FrameLayout {
                     public void onFinish() {
                         if (progressIndicator == null) return;
                         progressIndicator.onFinish(position);
+                        transAdapter.getImageItem(position).enable();
+                    }
+
+                    @Override
+                    public void onDelivered(int status) {
+                        PhotoView photoView = transAdapter.getImageItem(position);
+                        if (status == ImageLoader.STATUS_DISPLAY_SUCCESS)
+                            // 加载成功，启用 PhotoView 的缩放功能
+                            photoView.enable();
+                        else
+                            // 加载失败，显示加载错误的占位图
+                            photoView.setImageDrawable(transConfig.getErrorDrawable(context));
                     }
                 });
             }

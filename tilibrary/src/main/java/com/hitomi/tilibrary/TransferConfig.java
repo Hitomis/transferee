@@ -30,6 +30,10 @@ public class TransferConfig {
     private IIndexIndicator indexIndicator;
     private ImageLoader imageLoader;
 
+    public static Builder build() {
+        return new Builder();
+    }
+
     public int getNowThumbnailIndex() {
         return nowThumbnailIndex;
     }
@@ -118,10 +122,6 @@ public class TransferConfig {
         this.imageLoader = imageLoader;
     }
 
-    public static Builder build(){
-        return new Builder();
-    }
-
     public static class Builder {
         private int nowThumbnailIndex;
         private int offscreenPageLimit;
@@ -137,56 +137,96 @@ public class TransferConfig {
         private IIndexIndicator indexIndicator;
         private ImageLoader imageLoader;
 
+        /**
+         * 当前缩略图在所有图片中的索引
+         */
         public Builder setNowThumbnailIndex(int nowThumbnailIndex) {
             this.nowThumbnailIndex = nowThumbnailIndex;
             return this;
         }
 
+        /**
+         * <p>ViewPager 中进行初始化并保留的页面设置为当前页面加上当前页面两侧的页面</p>
+         * <p>默认为1, 表示第一次加载3张(nowThumbnailIndex, nowThumbnailIndex
+         * + 1, nowThumbnailIndex - 1);值为 2, 表示加载5张。依次类推</p>
+         * <p>这个参数是为了优化而提供的，值越大，初始化创建的页面越多，保留的页面也
+         * 越多，推荐使用默认值</p>
+         */
         public Builder setOffscreenPageLimit(int offscreenPageLimit) {
             this.offscreenPageLimit = offscreenPageLimit;
             return this;
         }
 
+        /**
+         * 缺省的占位图资源ID
+         */
         public Builder setMissPlaceHolder(int missPlaceHolder) {
             this.missPlaceHolder = missPlaceHolder;
             return this;
         }
 
+        /**
+         * 动画播放时长
+         */
         public Builder setDuration(long duration) {
             this.duration = duration;
             return this;
         }
 
+        /**
+         * 原始的 ImageView 集合
+         */
         public Builder setOriginImageList(List<ImageView> originImageList) {
             this.originImageList = originImageList;
             return this;
         }
 
+        /**
+         * 高清图的地址集合
+         */
         public Builder setSourceImageList(List<String> sourceImageList) {
             this.sourceImageList = sourceImageList;
             return this;
         }
 
+        /**
+         * 缩略图地址集合
+         */
         public Builder setThumbnailImageList(List<String> thumbnailImageList) {
             this.thumbnailImageList = thumbnailImageList;
             return this;
         }
 
+        /**
+         * 扩展动画
+         */
         public Builder setTransferAnima(ITransferAnimator transferAnima) {
             this.transferAnima = transferAnima;
             return this;
         }
 
+        /**
+         * 加载高清图的进度条 (默认内置 ProgressPieIndicator), 可自实现
+         * IProgressIndicator 接口定义自己的图片加载进度条
+         */
         public Builder setProgressIndicator(IProgressIndicator progressIndicator) {
             this.progressIndicator = progressIndicator;
             return this;
         }
 
+        /**
+         * 图片索引指示器 (默认内置 IndexCircleIndicator), 可自实现
+         * IIndexIndicator 接口定义自己的图片索引指示器
+         */
         public Builder setIndexIndicator(IIndexIndicator indexIndicator) {
             this.indexIndicator = indexIndicator;
             return this;
         }
 
+        /**
+         * 图片加载器 (默认内置 GlideImageLoader), 可自实现
+         * ImageLoader 接口定义自己的图片加载器
+         */
         public Builder setImageLoader(ImageLoader imageLoader) {
             this.imageLoader = imageLoader;
             return this;

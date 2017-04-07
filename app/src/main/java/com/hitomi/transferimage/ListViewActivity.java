@@ -2,11 +2,11 @@ package com.hitomi.transferimage;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.Transferee;
-import com.hitomi.tilibrary.view.image.TransferImage;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -46,7 +46,7 @@ public class ListViewActivity extends BaseActivity {
 
             @Override
             protected void convert(ViewHolder viewHolder, String item, final int position) {
-                final TransferImage imageView = viewHolder.getView(R.id.image_view);
+                final ImageView imageView = viewHolder.getView(R.id.image_view);
                 imageView.setClickable(true);
                 Glide.with(ListViewActivity.this)
                         .load(item)

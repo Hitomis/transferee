@@ -26,12 +26,14 @@
         android:id="@+id/image_view2"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginTop="10dp"
         android:scaleType="centerCrop" />
 
     <ImageView
         android:id="@+id/image_view3"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_marginTop="10dp"
         android:scaleType="centerCrop" />
 
 </LinearLayout>

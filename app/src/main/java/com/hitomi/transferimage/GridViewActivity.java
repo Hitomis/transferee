@@ -50,7 +50,7 @@ public class GridViewActivity extends BaseActivity {
                 imageView.setClickable(true);
                 Glide.with(GridViewActivity.this)
                         .load(item)
-                        .placeholder(R.mipmap.ic_launcher)
+                        .placeholder(R.mipmap.ic_empty_photo)
                         .into(imageView);
 
                 imageView.setOnClickListener(new View.OnClickListener() {

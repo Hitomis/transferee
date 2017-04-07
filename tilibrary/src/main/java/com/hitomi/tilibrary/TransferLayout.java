@@ -196,13 +196,13 @@ class TransferLayout extends FrameLayout {
         transImage.setLayoutParams(new FrameLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         transImage.setOnTransferListener(transferListener);
+        addView(transImage, 1);
 
         String transUrl = transConfig.getThumbnailImageList().get(transConfig.getNowThumbnailIndex());
         transConfig.getImageLoader().displayThumbnailImage(transUrl, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
                 transImage.setImageDrawable(drawable);
-                addView(transImage, 1);
 
                 switch (state) {
                     case TransferImage.STATE_TRANS_IN:

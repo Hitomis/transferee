@@ -1,6 +1,5 @@
 package com.hitomi.transferimage;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -58,7 +57,7 @@ public class GridViewActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         TransferConfig config = TransferConfig.build()
-                                .setBackgroundColor(Color.parseColor("#EE009999"))
+                                .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                                 .setOriginImageList(wrapOriginImageViewList())
                                 .setThumbnailImageList(imageStrList)
                                 .setSourceImageList(imageStrList)

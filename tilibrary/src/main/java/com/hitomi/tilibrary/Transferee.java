@@ -3,7 +3,6 @@ package com.hitomi.tilibrary;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 
@@ -80,9 +79,6 @@ public class Transferee implements DialogInterface.OnShowListener,
     private void checkConfig() {
         transConfig.setNowThumbnailIndex(transConfig.getNowThumbnailIndex() < 0
                 ? 0 : transConfig.getNowThumbnailIndex());
-
-        transConfig.setBackgroundColor(transConfig.getBackgroundColor() == 0
-                ? Color.BLACK : transConfig.getBackgroundColor());
 
         transConfig.setOffscreenPageLimit(transConfig.getOffscreenPageLimit() <= 0
                 ? 1 : transConfig.getOffscreenPageLimit());

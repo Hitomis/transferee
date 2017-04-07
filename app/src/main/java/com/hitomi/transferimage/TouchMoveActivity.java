@@ -1,6 +1,5 @@
 package com.hitomi.transferimage;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,15 +42,15 @@ public class TouchMoveActivity extends BaseActivity {
 
         Glide.with(this)
                 .load(imageStrList.get(0))
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.mipmap.ic_empty_photo)
                 .into(imageView1);
         Glide.with(this)
                 .load(imageStrList.get(1))
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.mipmap.ic_empty_photo)
                 .into(imageView2);
         Glide.with(this)
                 .load(imageStrList.get(2))
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.mipmap.ic_empty_photo)
                 .into(imageView3);
 
         TouchMoveActivity.TouchViewMotion touchViewMotion = new TouchMoveActivity.TouchViewMotion();
@@ -75,8 +74,7 @@ public class TouchMoveActivity extends BaseActivity {
         public void onClick(View v) {
 
             transferee.apply(TransferConfig.build()
-                    .setBackgroundColor(Color.BLACK)
-                    .setMissPlaceHolder(R.mipmap.ic_launcher)
+                    .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                     .setOriginImageList(imageViewList)
                     .setSourceImageList(imageStrList)
                     .setNowThumbnailIndex(imageViewList.indexOf(v))

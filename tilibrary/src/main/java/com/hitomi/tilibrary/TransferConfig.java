@@ -17,7 +17,6 @@ import java.util.List;
 public class TransferConfig {
 
     private int nowThumbnailIndex;
-    private int backgroundColor;
     private int offscreenPageLimit;
     private int missPlaceHolder;
     private long duration;
@@ -37,14 +36,6 @@ public class TransferConfig {
 
     public void setNowThumbnailIndex(int nowThumbnailIndex) {
         this.nowThumbnailIndex = nowThumbnailIndex;
-    }
-
-    public int getBackgroundColor() {
-        return backgroundColor;
-    }
-
-    public void setBackgroundColor(int backgroundColor) {
-        this.backgroundColor = backgroundColor;
     }
 
     public int getOffscreenPageLimit() {
@@ -133,7 +124,6 @@ public class TransferConfig {
 
     public static class Builder {
         private int nowThumbnailIndex;
-        private int backgroundColor;
         private int offscreenPageLimit;
         private int missPlaceHolder;
         private long duration;
@@ -149,11 +139,6 @@ public class TransferConfig {
 
         public Builder setNowThumbnailIndex(int nowThumbnailIndex) {
             this.nowThumbnailIndex = nowThumbnailIndex;
-            return this;
-        }
-
-        public Builder setBackgroundColor(int backgroundColor) {
-            this.backgroundColor = backgroundColor;
             return this;
         }
 
@@ -211,7 +196,6 @@ public class TransferConfig {
             TransferConfig config = new TransferConfig();
 
             config.setNowThumbnailIndex(nowThumbnailIndex);
-            config.setBackgroundColor(backgroundColor);
             config.setOffscreenPageLimit(offscreenPageLimit);
             config.setMissPlaceHolder(missPlaceHolder);
             config.setDuration(duration);

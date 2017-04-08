@@ -7,25 +7,31 @@
     android:orientation="vertical"
     tools:context="com.hitomi.transferimage.TouchMoveActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:text="高清图测试"
+        android:textColor="#FFF"
+        android:textSize="18sp" />
+
     <ImageView
         android:id="@+id/image_view1"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/img1" />
+        android:scaleType="centerCrop" />
 
     <ImageView
         android:id="@+id/image_view2"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/img2" />
+        android:scaleType="centerCrop" />
 
     <ImageView
         android:id="@+id/image_view3"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/img3" />
+        android:scaleType="centerCrop" />
 
 </LinearLayout>

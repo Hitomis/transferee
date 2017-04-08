@@ -3,6 +3,7 @@ package com.hitomi.transferimage;
 import android.support.v7.app.AppCompatActivity;
 
 import com.hitomi.tilibrary.Transferee;
+import com.jaeger.library.StatusBarUtil;
 
 /**
  * Created by hitomi on 2017/2/13.
@@ -11,6 +12,10 @@ import com.hitomi.tilibrary.Transferee;
 public class BaseActivity extends AppCompatActivity {
 
     protected Transferee transferee;
+
+    protected void updateStatusBar(){
+        StatusBarUtil.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
+    }
 
     @Override
     protected void onDestroy() {

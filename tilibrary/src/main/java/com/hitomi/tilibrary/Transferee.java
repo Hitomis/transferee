@@ -141,7 +141,7 @@ public class Transferee implements DialogInterface.OnShowListener,
      */
     public void dismiss() {
         if (!shown) return;
-        transLayout.dismiss(transConfig.getNowShowIndex());
+        transLayout.dismiss(transConfig.getNowThumbnailIndex());
         shown = false;
     }
 

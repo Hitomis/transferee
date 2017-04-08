@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.TransferConfig;
 import com.hitomi.tilibrary.Transferee;
-import com.jaeger.library.StatusBarUtil;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -40,7 +39,7 @@ public class GridViewActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_view);
-        StatusBarUtil.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
+        updateStatusBar();
 
         transferee = Transferee.getDefault(this);
         gvImages = (GridView) findViewById(R.id.gv_images);

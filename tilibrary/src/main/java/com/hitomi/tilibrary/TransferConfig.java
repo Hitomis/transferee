@@ -17,7 +17,6 @@ import java.util.List;
 public class TransferConfig {
 
     private int nowThumbnailIndex;
-    private int nowShowIndex;
     private int backgroundColor;
     private int offscreenPageLimit;
     private int missPlaceHolder;
@@ -38,14 +37,6 @@ public class TransferConfig {
 
     public void setNowThumbnailIndex(int nowThumbnailIndex) {
         this.nowThumbnailIndex = nowThumbnailIndex;
-    }
-
-    public int getNowShowIndex() {
-        return nowShowIndex;
-    }
-
-    public void setNowShowIndex(int nowShowIndex) {
-        this.nowShowIndex = nowShowIndex;
     }
 
     public int getBackgroundColor() {

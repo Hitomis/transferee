@@ -1,9 +1,9 @@
 package com.hitomi.tilibrary.view.image;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -158,7 +158,7 @@ public class TransferImage extends PhotoView {
         transfrom.startRect.top = originalLocationY;
         transfrom.startRect.width = originalWidth;
         transfrom.startRect.height = originalHeight;
-		/* 结束区域 */
+        /* 结束区域 */
         transfrom.endRect = new LocationSizeF();
         float bitmapEndWidth = transDrawable.getIntrinsicWidth() * transfrom.endScale;// 图片最终的宽度
         float bitmapEndHeight = transDrawable.getIntrinsicHeight() * transfrom.endScale;// 图片最终的宽度
@@ -262,36 +262,20 @@ public class TransferImage extends PhotoView {
                 transfrom.rect.height = (Float) animation.getAnimatedValue("height");
                 backgroundAlpha = (Integer) animation.getAnimatedValue("alpha");
                 invalidate();
-                ((Activity) getContext()).getWindow().getDecorView().invalidate();
             }
         });
-        valueAnimator.addListener(new ValueAnimator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-				/*
+                if (transformListener != null)
+                    transformListener.onTransferComplete(state);
+
+                /*
 				 * 如果是进入的话，当然是希望最后停留在center_crop的区域。但是如果是out的话，就不应该是center_crop的位置了
 				 * ， 而应该是最后变化的位置，因为当out的时候结束时，不回复视图是Normal，要不然会有一个突然闪动回去的bug
 				 */
-                if (state == STATE_TRANS_IN) {
+                if (state == STATE_TRANS_IN)
                     TransferImage.this.state = STATE_TRANS_NORMAL;
-                }
-                if (transformListener != null) {
-                    transformListener.onTransferComplete(state);
-                }
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
 
             }
         });

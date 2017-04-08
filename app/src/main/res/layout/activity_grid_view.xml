@@ -12,7 +12,7 @@
         android:layout_height="45dp"
         android:background="@color/colorPrimary"
         android:gravity="center"
-        android:text="九宫格"
+        android:text="九宫格测试"
         android:textColor="#FFF"
         android:textSize="18sp" />
 

@@ -43,8 +43,9 @@ class TransferLayout extends FrameLayout {
     private ViewPager.OnPageChangeListener transChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
+            setOriginImageVisibility(View.VISIBLE); // 显示出之前的缩略图
             transConfig.setNowThumbnailIndex(position);
-            transConfig.setNowShowIndex(position);
+            setOriginImageVisibility(View.INVISIBLE); // 隐藏当前的缩略图
 
             if (!loadedIndexSet.contains(position)) {
                 loadSourceImage(position);
@@ -75,7 +76,6 @@ class TransferLayout extends FrameLayout {
 
             // 初始加载第一张原图
             int position = transConfig.getNowThumbnailIndex();
-            transConfig.setNowShowIndex(position);
             loadSourceImage(position);
             loadedIndexSet.add(position);
         }
@@ -95,7 +95,12 @@ class TransferLayout extends FrameLayout {
                     break;
                 case TransferImage.STATE_TRANS_OUT: // 缩小动画执行完毕
                     setOriginImageVisibility(View.VISIBLE);
-                    resetTransfer();
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            resetTransfer();
+                        }
+                    }, 10);
                     break;
             }
 
@@ -109,7 +114,7 @@ class TransferLayout extends FrameLayout {
         public void onDismiss(final int pos) {
             if (transImage != null &&
                     transImage.getState() == TransferImage.STATE_TRANS_OUT)
-                return ;
+                return;
 
             dismiss(pos);
         }
@@ -132,7 +137,7 @@ class TransferLayout extends FrameLayout {
      * @param visibility
      */
     private void setOriginImageVisibility(int visibility) {
-        int showIndex = transConfig.getNowShowIndex();
+        int showIndex = transConfig.getNowThumbnailIndex();
         ImageView originImage = transConfig.getOriginImageList().get(showIndex);
         originImage.setVisibility(visibility);
     }
@@ -202,6 +207,12 @@ class TransferLayout extends FrameLayout {
                 switch (state) {
                     case TransferImage.STATE_TRANS_IN:
                         transImage.transformIn();
+                        postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                setOriginImageVisibility(View.INVISIBLE);
+                            }
+                        }, 10);
                         break;
                     case TransferImage.STATE_TRANS_OUT:
                         transImage.transformOut();

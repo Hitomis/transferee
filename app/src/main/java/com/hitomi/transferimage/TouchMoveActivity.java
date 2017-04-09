@@ -33,7 +33,7 @@ public class TouchMoveActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_touch_move);
 
-        transferImage = Transferee.getDefault(this);
+        transferee = Transferee.getDefault(this);
 
         imageView1 = (ImageView) findViewById(R.id.image_view1);
         imageView2 = (ImageView) findViewById(R.id.image_view2);
@@ -59,7 +59,7 @@ public class TouchMoveActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
 
-            transferImage.apply(TransferConfig.build()
+            transferee.apply(TransferConfig.build()
                     .setBackgroundColor(Color.BLACK)
                     .setMissPlaceHolder(R.mipmap.ic_launcher)
                     .setOriginImageList(imageViewList)

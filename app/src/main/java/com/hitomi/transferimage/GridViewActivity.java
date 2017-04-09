@@ -42,7 +42,7 @@ public class GridViewActivity extends BaseActivity {
         setContentView(R.layout.activity_grid_view);
         StatusBarUtil.setColor(this, getResources().getColor(R.color.colorPrimary), 0);
 
-        transferImage = Transferee.getDefault(this);
+        transferee = Transferee.getDefault(this);
         gvImages = (GridView) findViewById(R.id.gv_images);
 
         gvImages.setAdapter(new CommonAdapter<String>(this, R.layout.item_grid_image, imageStrList) {
@@ -65,7 +65,7 @@ public class GridViewActivity extends BaseActivity {
                                 .setSourceImageList(imageStrList)
                                 .setNowThumbnailIndex(position)
                                 .create();
-                        transferImage.apply(config).show();
+                        transferee.apply(config).show();
                     }
                 });
             }

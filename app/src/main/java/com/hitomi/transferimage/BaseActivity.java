@@ -10,11 +10,11 @@ import com.hitomi.tilibrary.Transferee;
 
 public class BaseActivity extends AppCompatActivity {
 
-    protected Transferee transferImage;
+    protected Transferee transferee;
 
     @Override
     protected void onDestroy() {
-        transferImage.destroy();
+        transferee.destroy();
         super.onDestroy();
     }
 }

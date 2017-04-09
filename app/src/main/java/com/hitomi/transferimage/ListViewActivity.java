@@ -39,7 +39,7 @@ public class ListViewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
 
-        transferImage = Transferee.getDefault(this);
+        transferee = Transferee.getDefault(this);
 
         listView = (ListView) findViewById(R.id.list_view);
         listView.setAdapter(new CommonAdapter<String>(this, R.layout.item_list_image, imageStrList) {

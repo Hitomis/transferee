@@ -29,7 +29,7 @@
         android:id="@+id/btn_touch_move"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go TouchMoveImageActivity"
+        android:text="Go TouchMoveActivity"
         android:textAllCaps="false" />
 
     <Button

@@ -12,7 +12,7 @@ import com.hitomi.tilibrary.TransferImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TouchMoveImageActivity extends BaseActivity {
+public class TouchMoveActivity extends BaseActivity {
 
     private ImageView imageView1, imageView2, imageView3;
     private List<ImageView> imageViewList;
@@ -39,12 +39,12 @@ public class TouchMoveImageActivity extends BaseActivity {
         imageView2 = (ImageView) findViewById(R.id.image_view2);
         imageView3 = (ImageView) findViewById(R.id.image_view3);
 
-        TouchMoveImageActivity.TouchViewMotion touchViewMotion = new TouchMoveImageActivity.TouchViewMotion();
+        TouchMoveActivity.TouchViewMotion touchViewMotion = new TouchMoveActivity.TouchViewMotion();
         imageView1.setOnTouchListener(touchViewMotion);
         imageView2.setOnTouchListener(touchViewMotion);
         imageView3.setOnTouchListener(touchViewMotion);
 
-        TouchMoveImageActivity.ShowViewHDListener showViewHDListener = new TouchMoveImageActivity.ShowViewHDListener();
+        TouchMoveActivity.ShowViewHDListener showViewHDListener = new TouchMoveActivity.ShowViewHDListener();
         imageView1.setOnClickListener(showViewHDListener);
         imageView2.setOnClickListener(showViewHDListener);
         imageView3.setOnClickListener(showViewHDListener);

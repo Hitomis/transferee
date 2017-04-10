@@ -25,7 +25,7 @@
             android:name=".ListViewActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".TouchMoveImageActivity"
+            android:name=".TouchMoveActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".GridViewActivity"

@@ -107,7 +107,7 @@ public class TransferImage {
      */
     public void dismiss() {
         if (!transLayout.isAdded()) return;
-        transLayout.dismiss();
+        transLayout.dismiss(transConfig.getNowShowIndex());
     }
 
     public void destroy() {

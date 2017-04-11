@@ -81,7 +81,7 @@ class TransferLayout extends FrameLayout {
                     break;
                 case FlexImageView.STATE_TRANS_OUT: // 缩小动画执行完毕
                     setOriginImageVisibility(View.VISIBLE);
-                    dismiss();
+                    resetTransfer();
                     break;
             }
 
@@ -94,14 +94,7 @@ class TransferLayout extends FrameLayout {
     private TransferAdapter.OnDismissListener dismissListener = new TransferAdapter.OnDismissListener() {
         @Override
         public void onDismiss(final int pos) {
-            setOriginImageVisibility(View.INVISIBLE);
-            createSharedImage(pos, FlexImageView.STATE_TRANS_OUT);
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    transViewPager.setVisibility(View.INVISIBLE);
-                }
-            }, sharedImage.getDuration() / 2);
+            dismiss(pos);
         }
     };
 
@@ -169,10 +162,24 @@ class TransferLayout extends FrameLayout {
         }
     }
 
+    /**
+     * 初始化 TransferImage
+     */
     private void initTransfer() {
         createTransferViewPager();
         createSharedImage(transConfig.getNowThumbnailIndex(),
                 FlexImageView.STATE_TRANS_IN);
+    }
+
+    /**
+     * 重置 TransferImage
+     */
+    private void resetTransfer() {
+        loadedIndexSet.clear();
+        removeIndexIndicator();
+        removeAllViews();
+        removeFromWindow();
+        added = false;
     }
 
     /**
@@ -251,23 +258,23 @@ class TransferLayout extends FrameLayout {
         initTransfer();
     }
 
+    public void dismiss(int pos) {
+        setOriginImageVisibility(View.INVISIBLE);
+        createSharedImage(pos, FlexImageView.STATE_TRANS_OUT);
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                transViewPager.setVisibility(View.INVISIBLE);
+            }
+        }, sharedImage.getDuration() / 2);
+    }
+
     public boolean isAdded() {
         return added;
     }
 
     public void apply(TransferConfig config) {
         transConfig = config;
-    }
-
-    /**
-     * 关闭 TransferImage
-     */
-    public void dismiss() {
-        loadedIndexSet.clear();
-        removeIndexIndicator();
-        removeAllViews();
-        removeFromWindow();
-        added = false;
     }
 
     /**

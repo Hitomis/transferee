@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 
 import com.hitomi.tilibrary.loader.glide.GlideImageLoader;
-import com.hitomi.tilibrary.style.index.IndexCircleIndicator;
+import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 
 /**
@@ -63,7 +63,7 @@ public class TransferImage {
                 ? new ProgressPieIndicator() : transConfig.getProgressIndicator());
 
         transConfig.setIndexIndicator(transConfig.getIndexIndicator() == null
-                ? new IndexCircleIndicator() : transConfig.getIndexIndicator());
+                ? new CircleIndexIndicator() : transConfig.getIndexIndicator());
 
         transConfig.setImageLoader(transConfig.getImageLoader() == null
                 ? GlideImageLoader.with(context) : transConfig.getImageLoader());

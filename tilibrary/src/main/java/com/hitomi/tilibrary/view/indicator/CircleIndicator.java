@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary.view;
+package com.hitomi.tilibrary.view.indicator;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -79,6 +79,7 @@ public class CircleIndicator extends LinearLayout {
         public void onPageScrollStateChanged(int state) {
         }
     };
+
     private DataSetObserver mInternalDataSetObserver = new DataSetObserver() {
         @Override
         public void onChanged() {

@@ -204,7 +204,7 @@ class TransferLayout extends FrameLayout {
     /**
      * 创建 SharedImage 模拟图片扩大的过渡动画
      */
-    private void createSharedImage(int pos, int state) {
+    private void createSharedImage(final int pos, final int state) {
         ImageView originImage = transConfig.getOriginImageList().get(pos);
         int[] location = new int[2];
         originImage.getLocationInWindow(location);
@@ -217,23 +217,23 @@ class TransferLayout extends FrameLayout {
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         sharedImage.setOnTransferListener(transferListener);
 
-        switch (state) {
-            case FlexImageView.STATE_TRANS_IN:
-                sharedImage.transformIn();
-                break;
-            case FlexImageView.STATE_TRANS_OUT:
-                sharedImage.transformOut();
-                break;
-        }
-
-        String sharedUrl = transConfig.getSourceImageList().get(transConfig.getNowThumbnailIndex());
+        String sharedUrl = transConfig.getThumbnailImageList().get(transConfig.getNowThumbnailIndex());
         transConfig.getImageLoader().displayThumbnailImage(sharedUrl, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
                 sharedImage.setImageDrawable(drawable);
+                addView(sharedImage, 1);
+
+                switch (state) {
+                    case FlexImageView.STATE_TRANS_IN:
+                        sharedImage.transformIn();
+                        break;
+                    case FlexImageView.STATE_TRANS_OUT:
+                        sharedImage.transformOut();
+                        break;
+                }
             }
         });
-        addView(sharedImage);
     }
 
     private void removeFromParent(View view) {
@@ -261,12 +261,13 @@ class TransferLayout extends FrameLayout {
     public void dismiss(int pos) {
         setOriginImageVisibility(View.INVISIBLE);
         createSharedImage(pos, FlexImageView.STATE_TRANS_OUT);
+        hideIndexIndicator();
         postDelayed(new Runnable() {
             @Override
             public void run() {
                 transViewPager.setVisibility(View.INVISIBLE);
             }
-        }, sharedImage.getDuration() / 2);
+        }, sharedImage.getDuration() / 5);
     }
 
     public boolean isAdded() {
@@ -285,6 +286,16 @@ class TransferLayout extends FrameLayout {
         if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
             indexIndicator.attach(this);
             indexIndicator.onShow(transViewPager);
+        }
+    }
+
+    /**
+     * 隐藏下标指示器 UI 组件
+     */
+    private void hideIndexIndicator() {
+        IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
+        if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
+            indexIndicator.onHide();
         }
     }
 

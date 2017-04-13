@@ -91,12 +91,13 @@ public class TransferImage extends FrameLayout {
         @Override
         public void onTransferComplete(int mode) {
             switch (mode) {
-                case FlexImageView.STATE_TRANS_IN:
+                case FlexImageView.STATE_TRANS_IN: // 伸展动画执行完毕
                     addIndexIndicator();
                     transViewPager.setVisibility(View.VISIBLE);
                     removeFromParent(sharedImage);
                     break;
-                case FlexImageView.STATE_TRANS_OUT:
+                case FlexImageView.STATE_TRANS_OUT: // 缩小动画执行完毕
+                    setOriginImageVisibility(View.VISIBLE);
                     dismiss();
                     break;
             }
@@ -105,21 +106,25 @@ public class TransferImage extends FrameLayout {
     };
 
     /**
-     * TransferAdapter 中对应页面创建完成监听器
+     * 点击 ImageView 关闭 TransferImage 的监听器
      */
     private TransferAdapter.OnDismissListener dismissListener = new TransferAdapter.OnDismissListener() {
         @Override
         public void onDismiss(final int pos) {
+            setOriginImageVisibility(View.INVISIBLE);
             createSharedImage(pos, FlexImageView.STATE_TRANS_OUT);
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    transViewPager.setVisibility(View.GONE);
+                    transViewPager.setVisibility(View.INVISIBLE);
                 }
             }, sharedImage.getDuration() / 2);
         }
     };
 
+    /**
+     * TransferAdapter 中对应页面创建完成监听器
+     */
     private TransferAdapter.OnInstantiateItemListener instantListener = new TransferAdapter.OnInstantiateItemListener() {
         @Override
         public void onComplete() {
@@ -152,6 +157,17 @@ public class TransferImage extends FrameLayout {
             }
         }
         return defaultInstance;
+    }
+
+    /**
+     * 设置当前显示大图对应的缩略图隐藏或者显示
+     *
+     * @param visibility
+     */
+    private void setOriginImageVisibility(int visibility) {
+        int showIndex = attr.getCurrShowIndex();
+        ImageView originImage = attr.getOriginImageList().get(showIndex);
+        originImage.setVisibility(visibility);
     }
 
     /**
@@ -276,6 +292,7 @@ public class TransferImage extends FrameLayout {
         shown = false;
 
         loadedIndexSet.clear();
+        removeIndexIndicator();
         removeAllViews();
         removeFromWindow();
 

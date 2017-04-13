@@ -82,7 +82,7 @@ public class PhotoView extends ImageView {
     private Transform mTranslate = new Transform();
 
     private RectF mClip;
-    private Info mFromInfo;
+    private PhotoInfo mFromInfo;
     private long mInfoTime;
     private Runnable mCompleteCallBack;
 
@@ -1177,15 +1177,15 @@ public class PhotoView extends ImageView {
         }
     }
 
-    public Info getInfo() {
+    public PhotoInfo getInfo() {
         RectF rect = new RectF();
         int[] p = new int[2];
         getLocation(this, p);
         rect.set(p[0] + mImgRect.left, p[1] + mImgRect.top, p[0] + mImgRect.right, p[1] + mImgRect.bottom);
-        return new Info(rect, mImgRect, mWidgetRect, mBaseRect, mScreenCenter, mScale, mDegrees, mScaleType);
+        return new PhotoInfo(rect, mImgRect, mWidgetRect, mBaseRect, mScreenCenter, mScale, mDegrees, mScaleType);
     }
 
-    public static Info getImageViewInfo(ImageView imgView) {
+    public static PhotoInfo getImageViewInfo(ImageView imgView) {
         int[] p = new int[2];
         getLocation(imgView, p);
 
@@ -1204,7 +1204,7 @@ public class PhotoView extends ImageView {
         RectF baseRect = new RectF(widgetRect);
         PointF screenCenter = new PointF(widgetRect.width() / 2, widgetRect.height() / 2);
 
-        return new Info(rect, imgRect, widgetRect, baseRect, screenCenter, 1, 0, imgView.getScaleType());
+        return new PhotoInfo(rect, imgRect, widgetRect, baseRect, screenCenter, 1, 0, imgView.getScaleType());
     }
 
     private static void getLocation(View target, int[] position) {
@@ -1269,11 +1269,11 @@ public class PhotoView extends ImageView {
      * 若等待时间过长也没有给控件设置图片，则会忽略该动画，若要再次播放动画则需要重新调用该方法
      * (等待的时间默认500毫秒，可以通过setMaxAnimFromWaiteTime(int)设置最大等待时间)
      */
-    public void animaFrom(Info info) {
+    public void animaFrom(PhotoInfo info) {
         if (isInit) {
             reset();
 
-            Info mine = getInfo();
+            PhotoInfo mine = getInfo();
 
             float scaleX = info.mImgRect.width() / mine.mImgRect.width();
             float scaleY = info.mImgRect.height() / mine.mImgRect.height();
@@ -1318,7 +1318,7 @@ public class PhotoView extends ImageView {
         }
     }
 
-    public void animaTo(Info info, Runnable completeCallBack) {
+    public void animaTo(PhotoInfo info, Runnable completeCallBack) {
         if (isInit) {
             mTranslate.stop();
 

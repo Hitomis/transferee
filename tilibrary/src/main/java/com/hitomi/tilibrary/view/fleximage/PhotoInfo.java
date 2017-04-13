@@ -4,7 +4,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.widget.ImageView;
 
-public class Info {
+public class PhotoInfo {
 
     // 内部图片在整个手机界面的位置
     RectF mRect = new RectF();
@@ -24,7 +24,7 @@ public class Info {
 
     ImageView.ScaleType mScaleType;
 
-    public Info(RectF rect, RectF img, RectF widget, RectF base, PointF screenCenter, float scale, float degrees, ImageView.ScaleType scaleType) {
+    public PhotoInfo(RectF rect, RectF img, RectF widget, RectF base, PointF screenCenter, float scale, float degrees, ImageView.ScaleType scaleType) {
         mRect.set(rect);
         mImgRect.set(img);
         mWidgetRect.set(widget);

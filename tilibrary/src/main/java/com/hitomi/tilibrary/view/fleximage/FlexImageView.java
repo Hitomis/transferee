@@ -27,13 +27,14 @@ public class FlexImageView extends PhotoView {
     public static final int STATE_TRANS_OUT = 2; // 从大图到缩略图状态
 
     private final int backgroundColor = 0xFF000000;
-    private boolean transformStart = false;
     private int state = STATE_TRANS_NORMAL;
     private int originalWidth;
     private int originalHeight;
     private int originalLocationX;
     private int originalLocationY;
     private int backgroundAlpha = 0;
+    private long duration = 300;
+    private boolean transformStart = false;
 
     private Paint paint;
     private Matrix flexMatrix;
@@ -111,6 +112,22 @@ public class FlexImageView extends PhotoView {
         state = STATE_TRANS_OUT;
         transformStart = true;
         invalidate();
+    }
+
+    /**
+     * 获取伸缩动画执行的时间
+     * @return unit ：毫秒
+     */
+    public long getDuration() {
+        return duration;
+    }
+
+    /**
+     * 设置伸缩动画执行的时间
+     * @param duration unit ：毫秒
+     */
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     /**
@@ -230,7 +247,7 @@ public class FlexImageView extends PhotoView {
             return;
         }
         ValueAnimator valueAnimator = new ValueAnimator();
-        valueAnimator.setDuration(300);
+        valueAnimator.setDuration(duration);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         if (state == STATE_TRANS_IN) {
             PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transfrom.startScale, transfrom.endScale);

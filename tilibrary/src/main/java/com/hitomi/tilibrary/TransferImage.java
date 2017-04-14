@@ -47,15 +47,17 @@ public class TransferImage extends FrameLayout {
     static volatile TransferImage defaultInstance;
 
     private Context context;
-    private TransferAttr attr;
-
     private FlexImageView sharedImage;
     private ViewPager transViewPager;
     private TransferAdapter transAdapter;
 
+    private TransferAttr attr;
     private Set<Integer> loadedIndexSet;
     private boolean shown;
 
+    /**
+     * ViewPager 页面切换监听器 => 当页面切换时，根据相邻优先加载的规则去加载图片
+     */
     private ViewPager.OnPageChangeListener transChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
@@ -82,6 +84,9 @@ public class TransferImage extends FrameLayout {
         }
     };
 
+    /**
+     * FlexImageView 伸/缩动画执行完成监听器
+     */
     private FlexImageView.OnTransferListener transferListener = new FlexImageView.OnTransferListener() {
         @Override
         public void onTransferComplete(int mode) {
@@ -99,6 +104,9 @@ public class TransferImage extends FrameLayout {
         }
     };
 
+    /**
+     * TransferAdapter 中对应页面创建完成监听器
+     */
     private TransferAdapter.OnDismissListener dismissListener = new TransferAdapter.OnDismissListener() {
         @Override
         public void onDismiss(final int pos) {
@@ -108,7 +116,7 @@ public class TransferImage extends FrameLayout {
                 public void run() {
                     transViewPager.setVisibility(View.GONE);
                 }
-            }, 150);
+            }, sharedImage.getDuration() / 2);
         }
     };
 

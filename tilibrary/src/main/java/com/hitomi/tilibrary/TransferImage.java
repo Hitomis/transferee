@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -50,9 +51,9 @@ public class TransferImage extends FrameLayout {
     private Context context;
     private TransferAttr attr;
 
-    private ViewPager viewPager;
     private FlexImageView sharedImage;
-    private TransferAdapter transferAdapter;
+    private ViewPager transViewPager;
+    private TransferAdapter transAdapter;
 
     private Set<Integer> loadedIndexSet;
     private boolean shown;
@@ -83,19 +84,44 @@ public class TransferImage extends FrameLayout {
         }
     };
 
-    private FlexImageView.OnTransferListener transformListener = new FlexImageView.OnTransferListener() {
+    private FlexImageView.OnTransferListener transferListener = new FlexImageView.OnTransferListener() {
         @Override
         public void onTransferComplete(int mode) {
             switch (mode) {
                 case FlexImageView.STATE_TRANS_IN:
-                    viewPager.addOnPageChangeListener(transChangeListener);
-                    if (attr.getCurrOriginIndex() == 0)
-                        transChangeListener.onPageSelected(0);
+                    transViewPager.setVisibility(View.VISIBLE);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setBackgroundColor(Color.BLACK);
+                            removeFromParent(sharedImage);
+                        }
+                    }, 500);
+
                     break;
                 case FlexImageView.STATE_TRANS_OUT:
                     break;
             }
 
+        }
+    };
+
+    private TransferAdapter.OnDismissListener dismissListener = new TransferAdapter.OnDismissListener() {
+        @Override
+        public void onDismiss() {
+            dismiss();
+        }
+    };
+
+    private TransferAdapter.OnInstantiateItemListener instantListener = new TransferAdapter.OnInstantiateItemListener() {
+        @Override
+        public void onComplete() {
+            transViewPager.addOnPageChangeListener(transChangeListener);
+
+            int position = attr.getCurrOriginIndex();
+            attr.setCurrShowIndex(position);
+            loadImage(position);
+            loadedIndexSet.add(position);
         }
     };
 
@@ -156,22 +182,18 @@ public class TransferImage extends FrameLayout {
      * 创建 ViewPager
      */
     private void createTransferViewPager() {
-        transferAdapter = new TransferAdapter(attr.getImageStrList().size());
-        transferAdapter.setOnDismissListener(new TransferAdapter.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                dismiss();
-            }
-        });
+        transAdapter = new TransferAdapter(attr.getCurrOriginIndex(), attr.getImageStrList().size());
+        transAdapter.setOnDismissListener(dismissListener);
+        transAdapter.setOnInstantListener(instantListener);
 
-        viewPager = new ViewPager(context);
+        transViewPager = new ViewPager(context);
         // 先隐藏，待 ViewPager 下标为 attr.getCurrOriginIndex() 的页面创建完毕再显示
-        viewPager.setVisibility(View.INVISIBLE);
-        viewPager.setOffscreenPageLimit(attr.getImageStrList().size() + 1);
-        viewPager.setAdapter(transferAdapter);
-        viewPager.setCurrentItem(attr.getCurrOriginIndex());
+        transViewPager.setVisibility(View.INVISIBLE);
+        transViewPager.setOffscreenPageLimit(attr.getImageStrList().size() + 1);
+        transViewPager.setAdapter(transAdapter);
+        transViewPager.setCurrentItem(attr.getCurrOriginIndex());
 
-        addView(viewPager, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        addView(transViewPager, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
     }
 
     /**
@@ -188,7 +210,7 @@ public class TransferImage extends FrameLayout {
                 originImage.getHeight(), location[0], location[1]);
         sharedImage.setLayoutParams(new FrameLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        sharedImage.setOnTransferListener(transformListener);
+        sharedImage.setOnTransferListener(transferListener);
         sharedImage.transformIn();
 
         String sharedUrl = attr.getImageStrList().get(attr.getCurrOriginIndex());
@@ -206,7 +228,7 @@ public class TransferImage extends FrameLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         // unregister PageChangeListener
-        viewPager.removeOnPageChangeListener(transChangeListener);
+        transViewPager.removeOnPageChangeListener(transChangeListener);
     }
 
     /**
@@ -236,6 +258,8 @@ public class TransferImage extends FrameLayout {
         if (!shown) return;
         shown = false;
 
+        setBackgroundColor(Color.TRANSPARENT);
+        loadedIndexSet.clear();
         removeAllViews();
         removeFromWindow();
 
@@ -292,7 +316,7 @@ public class TransferImage extends FrameLayout {
         IIndexIndicator indexIndicator = attr.getIndexIndicator();
         if (indexIndicator != null && attr.getImageStrList().size() >= 2) {
             indexIndicator.attach(this);
-            indexIndicator.onShow(viewPager);
+            indexIndicator.onShow(transViewPager);
         }
     }
 
@@ -435,14 +459,14 @@ public class TransferImage extends FrameLayout {
         String imgUrl = attr.getImageStrList().get(position);
         Drawable placeHolder = getPlaceHolderDrawable(position);
 
-        attr.getImageLoader().loadImage(imgUrl, transferAdapter.getImageItem(position), placeHolder, new ImageLoader.Callback() {
+        attr.getImageLoader().loadImage(imgUrl, transAdapter.getImageItem(position), placeHolder, new ImageLoader.Callback() {
 
             private IProgressIndicator progressIndicator = attr.getProgressIndicator();
 
             @Override
             public void onStart() {
                 if (progressIndicator == null) return;
-                progressIndicator.attach(position, transferAdapter.getParentItem(position));
+                progressIndicator.attach(position, transAdapter.getParentItem(position));
                 progressIndicator.onStart(position);
             }
 

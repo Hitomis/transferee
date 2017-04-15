@@ -18,6 +18,7 @@ public class BaseActivity extends AppCompatActivity {
         if (transferImage != null && transferImage.isShown()) {
             transferImage.dismiss();
         } else {
+            transferImage.destroy();
             super.onBackPressed();
         }
     }

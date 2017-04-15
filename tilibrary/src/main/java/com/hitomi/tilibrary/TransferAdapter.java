@@ -25,18 +25,23 @@ public class TransferAdapter extends PagerAdapter {
     @IdRes
     private static final int ID_IMAGE = 1001;
 
-    private int size;
-    private Map<Integer, FrameLayout> containnerLayoutMap;
-    private OnDismissListener onDismissListener;
+    private int showIndex;
+    private int imageSize;
 
-    public TransferAdapter(int imageSize) {
-        size = imageSize;
+    private OnDismissListener onDismissListener;
+    private OnInstantiateItemListener onInstantListener;
+
+    private Map<Integer, FrameLayout> containnerLayoutMap;
+
+    public TransferAdapter(int showIndex, int imageSize) {
+        this.showIndex = showIndex == 0 ? 1 : showIndex;
+        this.imageSize = imageSize;
         containnerLayoutMap = new WeakHashMap<>();
     }
 
     @Override
     public int getCount() {
-        return size;
+        return imageSize;
     }
 
     @Override
@@ -77,14 +82,21 @@ public class TransferAdapter extends PagerAdapter {
         this.onDismissListener = listener;
     }
 
+    public void setOnInstantListener(OnInstantiateItemListener listener) {
+        this.onInstantListener = listener;
+    }
+
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
+        // ViewPager instantiateItem 顺序：从 position 开始递减到0位置，再从 positon 递增到 getCount() - 1
         FrameLayout parentLayout = containnerLayoutMap.get(position);
         if (parentLayout == null) {
             parentLayout = newParentLayout(container.getContext());
             containnerLayoutMap.put(position, parentLayout);
         }
         container.addView(parentLayout);
+        if (position == showIndex && onInstantListener != null)
+            onInstantListener.onComplete();
         return parentLayout;
     }
 
@@ -117,8 +129,12 @@ public class TransferAdapter extends PagerAdapter {
         return parentLayout;
     }
 
-    public interface OnDismissListener {
+    interface OnDismissListener {
         void onDismiss();
+    }
+
+    interface OnInstantiateItemListener {
+        void onComplete();
     }
 
 }

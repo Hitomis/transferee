@@ -7,7 +7,7 @@ import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.TransferImage;
-import com.hitomi.tilibrary.style.view.fleximage.FlexImageView;
+import com.hitomi.tilibrary.view.fleximage.FlexImageView;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 

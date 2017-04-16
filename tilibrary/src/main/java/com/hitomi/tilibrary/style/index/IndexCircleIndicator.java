@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.hitomi.tilibrary.style.IIndexIndicator;
-import com.hitomi.tilibrary.style.view.CircleIndicator;
+import com.hitomi.tilibrary.view.CircleIndicator;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 

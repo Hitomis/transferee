@@ -23,7 +23,7 @@ import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.style.ITransferAnimator;
 import com.hitomi.tilibrary.style.index.IndexCircleIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
-import com.hitomi.tilibrary.style.view.fleximage.FlexImageView;
+import com.hitomi.tilibrary.view.fleximage.FlexImageView;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -80,6 +80,22 @@ public class TransferImage extends FrameLayout {
                     loadedIndexSet.add(right);
                 }
             }
+        }
+    };
+
+    private FlexImageView.OnTransferListener transformListener = new FlexImageView.OnTransferListener() {
+        @Override
+        public void onTransferComplete(int mode) {
+            switch (mode) {
+                case FlexImageView.STATE_TRANS_IN:
+                    viewPager.addOnPageChangeListener(transChangeListener);
+                    if (attr.getCurrOriginIndex() == 0)
+                        transChangeListener.onPageSelected(0);
+                    break;
+                case FlexImageView.STATE_TRANS_OUT:
+                    break;
+            }
+
         }
     };
 
@@ -172,15 +188,8 @@ public class TransferImage extends FrameLayout {
                 originImage.getHeight(), location[0], location[1]);
         sharedImage.setLayoutParams(new FrameLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        sharedImage.setOnTransferListener(transformListener);
         sharedImage.transformIn();
-        sharedImage.setOnTransformListener(new FlexImageView.OnTransformListener() {
-            @Override
-            public void onTransformComplete(int mode) {
-                viewPager.addOnPageChangeListener(transChangeListener);
-                if (attr.getCurrOriginIndex() == 0)
-                    transChangeListener.onPageSelected(0);
-            }
-        });
 
         String sharedUrl = attr.getImageStrList().get(attr.getCurrOriginIndex());
         attr.getImageLoader().displayImage(sharedUrl, sharedImage);

@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary.style.view.fleximage;
+package com.hitomi.tilibrary.view.fleximage;
 
 import android.view.MotionEvent;
 

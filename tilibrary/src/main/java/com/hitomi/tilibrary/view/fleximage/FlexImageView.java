@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary.style.view.fleximage;
+package com.hitomi.tilibrary.view.fleximage;
 
 import android.animation.Animator;
 import android.animation.PropertyValuesHolder;
@@ -363,7 +363,7 @@ public class FlexImageView extends PhotoView {
                     mState = STATE_TRANS_NORMAL;
                 }
                 if (mTransformListener != null) {
-                    mTransformListener.onTransformComplete(state);
+                    mTransformListener.onTransferComplete(state);
                 }
             }
 
@@ -375,17 +375,17 @@ public class FlexImageView extends PhotoView {
         valueAnimator.start();
     }
 
-    public void setOnTransformListener(OnTransformListener listener) {
+    public void setOnTransferListener(OnTransferListener listener) {
         mTransformListener = listener;
     }
 
-    private OnTransformListener mTransformListener;
+    private OnTransferListener mTransformListener;
 
-    public static interface OnTransformListener {
+    public static interface OnTransferListener {
         /**
          * @param mode {@link #STATE_TRANS_IN} {@link #STATE_TRANS_OUT}
          */
-        void onTransformComplete(int mode);// mode 1
+        void onTransferComplete(int mode);// mode 1
     }
 
 }

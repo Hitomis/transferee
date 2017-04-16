@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary.style.view;
+package com.hitomi.tilibrary.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;

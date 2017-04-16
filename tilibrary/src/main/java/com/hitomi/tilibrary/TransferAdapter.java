@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.hitomi.tilibrary.style.view.fleximage.PhotoView;
+import com.hitomi.tilibrary.view.fleximage.PhotoView;
 
 import java.util.Map;
 import java.util.WeakHashMap;

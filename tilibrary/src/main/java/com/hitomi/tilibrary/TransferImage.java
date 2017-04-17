@@ -20,7 +20,6 @@ import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.loader.glide.GlideImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
-import com.hitomi.tilibrary.style.ITransferAnimator;
 import com.hitomi.tilibrary.style.index.IndexCircleIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.tilibrary.view.fleximage.FlexImageView;
@@ -38,7 +37,7 @@ import static android.widget.ImageView.ScaleType.FIT_CENTER;
  * Main workflow: <br/>
  * 1、点击缩略图展示缩略图到 TransferImage 过渡动画 <br/>
  * 2、显示下载高清图片进度 <br/>
- * 3、记载完成显示高清图片 <br/>
+ * 3、加载完成显示高清图片 <br/>
  * 4、高清图支持手势缩放 <br/>
  * 5、关闭 TransferImage 展示 TransferImage 到原缩略图的过渡动画 <br/>
  * Created by hitomi on 2017/1/19.
@@ -392,9 +391,6 @@ public class TransferImage extends FrameLayout {
         Drawable placeHolder = null;
         if (position < attr.getOriginImageList().size()) {
             ImageView imageView = attr.getOriginImageList().get(position);
-//            int intrinsicWidth = imageView.getDrawable().getIntrinsicWidth();
-//            int intrinsicHeight = imageView.getDrawable().getIntrinsicHeight();
-//            int reHeight = getWidth() * intrinsicHeight / intrinsicWidth;
             placeHolder = imageView.getDrawable();
         } else {
             if (attr.getMissPlaceHolder() != 0)
@@ -437,7 +433,6 @@ public class TransferImage extends FrameLayout {
         private String[] imageUrls;
         private List<String> imageUrlList;
 
-        private ITransferAnimator transferAnima;
         private IProgressIndicator progressIndicat;
         private IIndexIndicator indexIndicator;
         private ImageLoader imageLoader;
@@ -483,11 +478,6 @@ public class TransferImage extends FrameLayout {
 
         public Builder setImageUrlList(List<String> imageUrlList) {
             this.imageUrlList = imageUrlList;
-            return this;
-        }
-
-        public Builder setTransferAnima(ITransferAnimator transferAnima) {
-            this.transferAnima = transferAnima;
             return this;
         }
 

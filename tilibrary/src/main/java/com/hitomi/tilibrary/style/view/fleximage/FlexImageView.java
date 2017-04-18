@@ -24,8 +24,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 public class FlexImageView extends PhotoView {
 
     public static final int STATE_TRANS_NORMAL = 0;
-    public static final int STATE_TRANS_IN = 1;
-    public static final int STATE_TRANS_OUT = 2;
+    public static final int STATE_TRANS_IN = 1; // 从缩略图到大图状态
+    public static final int STATE_TRANS_OUT = 2; // 从大图到缩略图状态
 
     private int mOriginalWidth;
     private int mOriginalHeight;

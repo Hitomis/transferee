@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.hitomi.tilibrary.style.view.photoview.PhotoView;
+import com.hitomi.tilibrary.style.view.fleximage.PhotoView;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -21,7 +21,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * 展示高清图的图片数据适配器
  * Created by hitomi on 2017/1/23.
  */
-public class TransferPagerAdapter extends PagerAdapter {
+public class TransferAdapter extends PagerAdapter {
     @IdRes
     private static final int ID_IMAGE = 1001;
 
@@ -29,7 +29,7 @@ public class TransferPagerAdapter extends PagerAdapter {
     private Map<Integer, FrameLayout> containnerLayoutMap;
     private OnDismissListener onDismissListener;
 
-    public TransferPagerAdapter(int imageSize) {
+    public TransferAdapter(int imageSize) {
         size = imageSize;
         containnerLayoutMap = new WeakHashMap<>();
     }

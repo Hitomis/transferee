@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary.style.view.photoview;
+package com.hitomi.tilibrary.style.view.fleximage;
 
 import android.animation.Animator;
 import android.animation.PropertyValuesHolder;
@@ -22,7 +22,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
  * @author Dean Tao
  * 
  */
-public class SmoothImageView extends PhotoView {
+public class FlexImageView extends PhotoView {
 
 	private static final int STATE_NORMAL = 0;
 	private static final int STATE_TRANSFORM_IN = 1;
@@ -40,17 +40,17 @@ public class SmoothImageView extends PhotoView {
 	private int mBgAlpha = 0;
 	private Paint mPaint;
 	
-	public SmoothImageView(Context context) {
+	public FlexImageView(Context context) {
 		super(context);
 		init();
 	}
 
-	public SmoothImageView(Context context, AttributeSet attrs) {
+	public FlexImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
 
-	public SmoothImageView(Context context, AttributeSet attrs, int defStyle) {
+	public FlexImageView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
 	}
@@ -358,7 +358,6 @@ public class SmoothImageView extends PhotoView {
 				 * 如果是进入的话，当然是希望最后停留在center_crop的区域。但是如果是out的话，就不应该是center_crop的位置了
 				 * ， 而应该是最后变化的位置，因为当out的时候结束时，不回复视图是Normal，要不然会有一个突然闪动回去的bug
 				 */
-				// TODO 这个可以根据实际需求来修改
 				if (state == STATE_TRANSFORM_IN) {
 					mState = STATE_NORMAL;
 				}

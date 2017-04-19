@@ -1,8 +1,5 @@
 package com.hitomi.tilibrary;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,16 +16,16 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.loader.glide.GlideImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.style.ITransferAnimator;
-import com.hitomi.tilibrary.style.anim.TransitionAnimator;
 import com.hitomi.tilibrary.style.index.IndexCircleIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
+import com.hitomi.tilibrary.style.view.fleximage.FlexImageView;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -50,106 +47,172 @@ import static android.widget.ImageView.ScaleType.FIT_CENTER;
  */
 public class TransferImage extends FrameLayout {
 
+    static volatile TransferImage defaultInstance;
+
     private Context context;
     private TransferAttr attr;
-
-    private ViewPager viewPager;
-    private ImageView sharedImage;
-    private ViewPager.OnPageChangeListener pageChangeListener;
-
-    private ITransferAnimator transferAnimator;
-    private TransferPagerAdapter imagePagerAdapter;
-    private LinearLayout sharedLayout;
 
     private boolean shown;
     private Set<Integer> loadedIndexSet;
 
+    private FlexImageView sharedImage;
+    private ViewPager viewPager;
+    private TransferAdapter transferAdapter;
+
+    private ViewPager.OnPageChangeListener transChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+        @Override
+        public void onPageSelected(int position) {
+            attr.setCurrOriginIndex(position);
+            attr.setCurrShowIndex(position);
+
+            if (!loadedIndexSet.contains(position)) {
+                loadImage(position);
+                loadedIndexSet.add(position);
+            }
+            for (int i = 1; i <= attr.getOffscreenPageLimit(); i++) {
+                int left = position - i;
+                int right = position + i;
+                if (left >= 0 && !loadedIndexSet.contains(left)) {
+                    loadImage(left);
+                    loadedIndexSet.add(left);
+                }
+                if (right < attr.getImageStrList().size() && !loadedIndexSet.contains(right)) {
+                    loadImage(right);
+                    loadedIndexSet.add(right);
+                }
+            }
+        }
+    };
+
+    /**
+     * 构造方法私有化，通过{@link #getDefault(Context)} 创建 TransferImage
+     *
+     * @param context 上下文环境
+     */
     private TransferImage(Context context) {
         super(context);
         this.context = context;
-        loadedIndexSet = new HashSet<>();
+        this.loadedIndexSet = new HashSet<>();
     }
 
     public static TransferImage getDefault(Context context) {
-        return new TransferImage(context);
-    }
-
-    private void initLayout() {
-        transferAnimator = attr.getTransferAnima();
-        setBackgroundColor(attr.getBackgroundColor());
-        initViewPager();
-        initSharedLayout();
-    }
-
-    /**
-     * 初始化一个共享布局, 在 TransferImage 上 添加在与之前点击的缩略图相同的位置, 通过动画模拟出于过渡动画相似的效果
-     */
-    private void initSharedLayout() {
-        ImageView currOriginImage = attr.getOriginImageList().get(attr.getCurrOriginIndex());
-        LinearLayout.LayoutParams sImageVlp = new LinearLayout.LayoutParams(currOriginImage.getWidth(), currOriginImage.getHeight());
-
-        final int[] location = new int[2];
-        currOriginImage.getLocationInWindow(location);
-
-        sharedImage = new ImageView(context);
-        sharedImage.setImageDrawable(currOriginImage.getDrawable());
-        sharedImage.setScaleType(FIT_CENTER);
-        sharedImage.setLayoutParams(sImageVlp);
-        sharedImage.setX(location[0]);
-        sharedImage.setY(location[1] - getStatusBarHeight());
-
-        LinearLayout.LayoutParams linlp = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-
-        sharedLayout = new LinearLayout(context);
-        sharedLayout.setLayoutParams(linlp);
-        sharedLayout.addView(sharedImage);
-
-        addView(sharedLayout);
-        startShowing();
-    }
-
-    /**
-     * 初始化 ViewPager
-     */
-    private void initViewPager() {
-        pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                attr.setCurrOriginIndex(position);
-                attr.setCurrShowIndex(position);
-
-                if (!loadedIndexSet.contains(position)) {
-                    loadImage(position);
-                    loadedIndexSet.add(position);
+        if (defaultInstance == null) {
+            synchronized (TransferImage.class) {
+                if (defaultInstance == null) {
+                    defaultInstance = new TransferImage(context);
                 }
-                for (int i = 1; i <= attr.getOffscreenPageLimit(); i++) {
-                    int left = position - i;
-                    int right = position + i;
-                    if (left >= 0 && !loadedIndexSet.contains(left)) {
-                        loadImage(left);
-                        loadedIndexSet.add(left);
-                    }
-                    if (right < attr.getImageStrList().size() && !loadedIndexSet.contains(right)) {
-                        loadImage(right);
-                        loadedIndexSet.add(right);
-                    }
-                }
-
             }
-        };
+        }
+        return defaultInstance;
+    }
+
+    /**
+     * 将 TransferImage 添加到 Window 中
+     */
+    private void addToWindow() {
+        FrameLayout.LayoutParams windowLayoutParams = new FrameLayout.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT);
+
+        //(((LinearLayout)(LinearLayout)((ViewGroup) context.getWindow().getDecorView()).getChildAt(0))).getChildAt(0) => 状态栏
+        // ((ViewGroup) context.getWindow().getDecorView()) => 状态栏的父布局的父布局
+
+        Activity activity = (Activity) context;
+//        ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
+//        decorView.addView(this, windowLayoutParams);
+        activity.getWindow().addContentView(this, windowLayoutParams);
+    }
+
+    /**
+     * 从 Window 中移除 TransferImage
+     */
+    private void removeFromWindow() {
+        ViewGroup vg = (ViewGroup) getParent();
+        if (vg != null) {
+            vg.removeView(TransferImage.this);
+        }
+        attr.getImageLoader().cancel();
+    }
+
+    private void initTransfer() {
+//        createTransferViewPager();
+        createSharedImage();
+    }
+
+    /**
+     * 创建 ViewPager
+     */
+    private void createTransferViewPager() {
+        transferAdapter = new TransferAdapter(attr.getImageStrList().size());
+        transferAdapter.setOnDismissListener(new TransferAdapter.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                dismiss();
+            }
+        });
+
         viewPager = new ViewPager(context);
-        viewPager.setLayoutParams(new LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        // 先隐藏，待 ViewPager 下标为 attr.getCurrOriginIndex() 的页面创建完毕再显示
         viewPager.setVisibility(View.INVISIBLE);
-        viewPager.addOnPageChangeListener(pageChangeListener);
+        viewPager.addOnPageChangeListener(transChangeListener);
         viewPager.setOffscreenPageLimit(attr.getImageStrList().size() + 1);
-        addView(viewPager);
+        viewPager.setAdapter(transferAdapter);
+        viewPager.setCurrentItem(attr.getCurrOriginIndex());
+//        if (attr.getCurrOriginIndex() == 0)
+//            transChangeListener.onPageSelected(0);
+
+        addView(viewPager, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
+    }
+
+    /**
+     * 创建 SharedImage 模拟图片扩大的过渡动画
+     */
+    private void createSharedImage() {
+        ImageView originImage = attr.getOriginImageList().get(attr.getCurrOriginIndex());
+        int[] location = new int[2];
+        originImage.getLocationInWindow(location);
+
+        if (originImage instanceof FlexImageView) {
+            removeFromParent(sharedImage = (FlexImageView) originImage);
+        } else {
+            sharedImage = new FlexImageView(context);
+//            originImage.setVisibility(View.GONE);
+        }
+
+        sharedImage.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedImage.transformOut();
+            }
+        });
+
+        sharedImage.setScaleType(FIT_CENTER);
+        sharedImage.setOriginalInfo(originImage.getWidth(),
+                originImage.getHeight(), location[0], location[1]);
+        sharedImage.setLayoutParams(new FrameLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+        if (!(originImage instanceof FlexImageView))
+            Glide.with(context).
+                    load(attr.getImageStrList().get(attr.getCurrOriginIndex()))
+                    .dontAnimate()
+                    .into(sharedImage);
+
+        sharedImage.transformIn();
+        addView(sharedImage);
+    }
+
+    private void removeFromParent(View view) {
+        ViewGroup vg = (ViewGroup) view.getParent();
+        if (vg != null)
+            vg.removeView(view);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         // unregister PageChangeListener
-        viewPager.removeOnPageChangeListener(pageChangeListener);
+        viewPager.removeOnPageChangeListener(transChangeListener);
     }
 
     /**
@@ -168,7 +231,7 @@ public class TransferImage extends FrameLayout {
         if (!shown) {
             shown = true;
             addToWindow();
-            initLayout();
+            initTransfer();
         }
     }
 
@@ -183,11 +246,7 @@ public class TransferImage extends FrameLayout {
         if (progressIndicator != null)
             progressIndicator.hideView(attr.getCurrShowIndex());
 
-        if (transferAnimator == null) {
-            removeFromWindow();
-        } else {
-            startDismissing();
-        }
+        removeFromWindow();
     }
 
     /**
@@ -197,37 +256,37 @@ public class TransferImage extends FrameLayout {
         addIndexIndicator();
     }
 
-    /**
-     * 开启显示 TransferImage 动画
-     */
-    private void startShowing() {
-        if (transferAnimator == null && !shown) return;
-        Animator animator = transferAnimator.showAnimator(attr.getCurrOriginImageView(), sharedImage);
-        animator.addListener(new AnimatorListenerAdapter() {
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                imagePagerAdapter = new TransferPagerAdapter(attr.getImageStrList().size());
-                imagePagerAdapter.setOnDismissListener(new TransferPagerAdapter.OnDismissListener() {
-                    @Override
-                    public void onDismiss() {
-                        dismiss();
-                    }
-                });
-
-                viewPager.setVisibility(View.VISIBLE);
-                viewPager.setAdapter(imagePagerAdapter);
-                viewPager.setCurrentItem(attr.getCurrOriginIndex());
-                if (attr.getCurrOriginIndex() == 0)
-                    pageChangeListener.onPageSelected(attr.getCurrOriginIndex());
-
-                removeView(sharedLayout);
-
-                initMainPanel();
-            }
-        });
-        animator.start();
-    }
+//    /**
+//     * 开启显示 TransferImage 动画
+//     */
+//    private void startShowing() {
+//        if (transferAnimator == null && !shown) return;
+//        Animator animator = transferAnimator.showAnimator(attr.getCurrOriginImageView(), sharedImage);
+//        animator.addListener(new AnimatorListenerAdapter() {
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                imagePagerAdapter = new TransferPagerAdapter(attr.getImageStrList().size());
+//                imagePagerAdapter.setOnDismissListener(new TransferPagerAdapter.OnDismissListener() {
+//                    @Override
+//                    public void onDismiss() {
+//                        dismiss();
+//                    }
+//                });
+//
+//                viewPager.setVisibility(View.VISIBLE);
+//                viewPager.setAdapter(imagePagerAdapter);
+//                viewPager.setCurrentItem(attr.getCurrOriginIndex());
+//                if (attr.getCurrOriginIndex() == 0)
+//                    pageChangeListener.onPageSelected(attr.getCurrOriginIndex());
+//
+//                removeView(sharedLayout);
+//
+//                initMainPanel();
+//            }
+//        });
+//        animator.start();
+//    }
 
     /**
      * 在 TransferImage 面板中添加下标指示器 UI 组件
@@ -250,100 +309,78 @@ public class TransferImage extends FrameLayout {
         }
     }
 
-    /**
-     * 开启关闭动画
-     */
-    private void startDismissing() {
-        Animator dismissAnimator;
-        if (attr.getCurrShowIndex() > attr.getCurrOriginIndex()) {
-            dismissAnimator = getDismissMissAnimator();
-        } else {
-            dismissAnimator = getDismissHitAnimator();
-        }
-        Animator dismissBackgroundAnimator = getDismissBackgroundAnimator();
+//    /**
+//     * 开启关闭动画
+//     */
+//    private void startDismissing() {
+//        Animator dismissAnimator;
+//        if (attr.getCurrShowIndex() > attr.getCurrOriginIndex()) {
+//            dismissAnimator = getDismissMissAnimator();
+//        } else {
+//            dismissAnimator = getDismissHitAnimator();
+//        }
+//        Animator dismissBackgroundAnimator = getDismissBackgroundAnimator();
+//
+//        Animator animator;
+//        if (dismissBackgroundAnimator != null) {
+//            AnimatorSet animatorSet = new AnimatorSet();
+//            animatorSet.play(dismissAnimator).with(dismissBackgroundAnimator);
+//            animator = animatorSet;
+//        } else {
+//            animator = dismissAnimator;
+//        }
+//
+//        animator.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                removeIndexIndicator();
+//                loadedIndexSet.clear();
+//                removeView(viewPager);
+//                removeFromWindow();
+//            }
+//        });
+//
+//        animator.start();
+//    }
 
-        Animator animator;
-        if (dismissBackgroundAnimator != null) {
-            AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet.play(dismissAnimator).with(dismissBackgroundAnimator);
-            animator = animatorSet;
-        } else {
-            animator = dismissAnimator;
-        }
+//    /**
+//     * 获取 TransferImage 与之前缩略图对应的关闭动画
+//     */
+//    private Animator getDismissHitAnimator() {
+//        final View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
+//        final View afterView = attr.getCurrOriginImageView();
+//        afterView.setVisibility(View.INVISIBLE);
+//
+//        Animator animator = transferAnimator.dismissHitAnimator(beforeView, afterView);
+//
+//        if (animator != null)
+//            animator.addListener(new AnimatorListenerAdapter() {
+//
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    afterView.setVisibility(View.VISIBLE);
+//                }
+//            });
+//
+//        return animator;
+//    }
+//
+//    /**
+//     * 获取 TransferImage 未与之前缩略图对应的关闭动画
+//     */
+//    private Animator getDismissMissAnimator() {
+//        View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
+//        Animator animator = transferAnimator.dismissMissAnimator(beforeView);
+//        return animator;
+//    }
+//
+//    /**
+//     * 获取 TransferImage 背景关闭动画
+//     */
+//    private Animator getDismissBackgroundAnimator() {
+//        return transferAnimator.dismissBackgroundAnimator(this, attr.getBackgroundColor());
+//    }
 
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                removeIndexIndicator();
-                loadedIndexSet.clear();
-                removeView(viewPager);
-                removeFromWindow();
-            }
-        });
-
-        animator.start();
-    }
-
-    /**
-     * 获取 TransferImage 与之前缩略图对应的关闭动画
-     */
-    private Animator getDismissHitAnimator() {
-        final View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
-        final View afterView = attr.getCurrOriginImageView();
-        afterView.setVisibility(View.INVISIBLE);
-
-        Animator animator = transferAnimator.dismissHitAnimator(beforeView, afterView);
-
-        if (animator != null)
-            animator.addListener(new AnimatorListenerAdapter() {
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    afterView.setVisibility(View.VISIBLE);
-                }
-            });
-
-        return animator;
-    }
-
-    /**
-     * 获取 TransferImage 未与之前缩略图对应的关闭动画
-     */
-    private Animator getDismissMissAnimator() {
-        View beforeView = imagePagerAdapter.getImageItem(attr.getCurrShowIndex());
-        Animator animator = transferAnimator.dismissMissAnimator(beforeView);
-        return animator;
-    }
-
-    /**
-     * 获取 TransferImage 背景关闭动画
-     */
-    private Animator getDismissBackgroundAnimator() {
-        return transferAnimator.dismissBackgroundAnimator(this, attr.getBackgroundColor());
-    }
-
-    /**
-     * 从 Window 中移除 TransferImage
-     */
-    private void removeFromWindow() {
-        ViewGroup vg = (ViewGroup) getParent();
-        if (vg != null) {
-            vg.removeView(TransferImage.this);
-        }
-        attr.getImageLoader().cancel();
-    }
-
-    /**
-     * 将 TransferImage 添加到 Window 中
-     */
-    private void addToWindow() {
-        WindowManager.LayoutParams windowLayoutParams = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.MATCH_PARENT);
-
-        Activity activity = (Activity) context;
-        activity.getWindow().addContentView(this, windowLayoutParams);
-    }
 
     /**
      * ImageView 缩放到指定大小
@@ -395,20 +432,20 @@ public class TransferImage extends FrameLayout {
     /**
      * 加载高清图
      *
-     * @param position 图片所在索引位置下标
+     * @param position
      */
     private void loadImage(final int position) {
         String imgUrl = attr.getImageStrList().get(position);
         Drawable placeHolder = getPlaceHolderDrawable(position);
 
-        attr.getImageLoader().loadImage(imgUrl, imagePagerAdapter.getImageItem(position), placeHolder, new ImageLoader.Callback() {
+        attr.getImageLoader().loadImage(imgUrl, transferAdapter.getImageItem(position), placeHolder, new ImageLoader.Callback() {
 
             private IProgressIndicator progressIndicator = attr.getProgressIndicator();
 
             @Override
             public void onStart() {
                 if (progressIndicator == null) return;
-                progressIndicator.attach(position, imagePagerAdapter.getParentItem(position));
+                progressIndicator.attach(position, transferAdapter.getParentItem(position));
                 progressIndicator.onStart(position);
             }
 
@@ -578,12 +615,6 @@ public class TransferImage extends FrameLayout {
                 attr.setIndexIndicator(new IndexCircleIndicator());
             } else {
                 attr.setIndexIndicator(indexIndicator);
-            }
-
-            if (transferAnima == null) {
-                attr.setTransferAnima(new TransitionAnimator());
-            } else {
-                attr.setTransferAnima(transferAnima);
             }
 
             if (imageLoader == null) {

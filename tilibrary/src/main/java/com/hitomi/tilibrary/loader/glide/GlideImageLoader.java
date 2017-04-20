@@ -61,6 +61,14 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     @Override
+    public void displayImage(String url, ImageView imageView) {
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .into(imageView);
+    }
+
+    @Override
     public void preFetch(String url) {
         Glide.with(context)
                 .load(url)

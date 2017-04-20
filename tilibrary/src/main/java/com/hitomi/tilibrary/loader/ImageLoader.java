@@ -19,6 +19,13 @@ public interface ImageLoader {
     void loadImage(String url, ImageView imageView, Drawable placeholder, final ImageLoader.Callback callback);
 
     /**
+     * 显示加载完成的图片
+     * @param url 图片地址
+     * @param imageView 用于图片加载成功后显示的 ImageView
+     */
+    void displayImage(String url, ImageView imageView);
+
+    /**
      * 后台预加载图片资源
      * @param url
      */

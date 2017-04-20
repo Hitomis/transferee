@@ -13,11 +13,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.loader.glide.GlideImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
@@ -52,12 +50,12 @@ public class TransferImage extends FrameLayout {
     private Context context;
     private TransferAttr attr;
 
-    private boolean shown;
-    private Set<Integer> loadedIndexSet;
-
-    private FlexImageView sharedImage;
     private ViewPager viewPager;
+    private FlexImageView sharedImage;
     private TransferAdapter transferAdapter;
+
+    private Set<Integer> loadedIndexSet;
+    private boolean shown;
 
     private ViewPager.OnPageChangeListener transChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
@@ -69,6 +67,7 @@ public class TransferImage extends FrameLayout {
                 loadImage(position);
                 loadedIndexSet.add(position);
             }
+
             for (int i = 1; i <= attr.getOffscreenPageLimit(); i++) {
                 int left = position - i;
                 int right = position + i;
@@ -111,16 +110,15 @@ public class TransferImage extends FrameLayout {
      */
     private void addToWindow() {
         FrameLayout.LayoutParams windowLayoutParams = new FrameLayout.LayoutParams(
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.MATCH_PARENT);
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
         //(((LinearLayout)(LinearLayout)((ViewGroup) context.getWindow().getDecorView()).getChildAt(0))).getChildAt(0) => 状态栏
         // ((ViewGroup) context.getWindow().getDecorView()) => 状态栏的父布局的父布局
 
         Activity activity = (Activity) context;
-//        ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
-//        decorView.addView(this, windowLayoutParams);
-        activity.getWindow().addContentView(this, windowLayoutParams);
+        ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
+        decorView.addView(this, windowLayoutParams);
+//        activity.getWindow().addContentView(this, windowLayoutParams);
     }
 
     /**
@@ -131,11 +129,10 @@ public class TransferImage extends FrameLayout {
         if (vg != null) {
             vg.removeView(TransferImage.this);
         }
-        attr.getImageLoader().cancel();
     }
 
     private void initTransfer() {
-//        createTransferViewPager();
+        createTransferViewPager();
         createSharedImage();
     }
 
@@ -154,12 +151,9 @@ public class TransferImage extends FrameLayout {
         viewPager = new ViewPager(context);
         // 先隐藏，待 ViewPager 下标为 attr.getCurrOriginIndex() 的页面创建完毕再显示
         viewPager.setVisibility(View.INVISIBLE);
-        viewPager.addOnPageChangeListener(transChangeListener);
         viewPager.setOffscreenPageLimit(attr.getImageStrList().size() + 1);
         viewPager.setAdapter(transferAdapter);
         viewPager.setCurrentItem(attr.getCurrOriginIndex());
-//        if (attr.getCurrOriginIndex() == 0)
-//            transChangeListener.onPageSelected(0);
 
         addView(viewPager, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
     }
@@ -172,33 +166,24 @@ public class TransferImage extends FrameLayout {
         int[] location = new int[2];
         originImage.getLocationInWindow(location);
 
-        if (originImage instanceof FlexImageView) {
-            removeFromParent(sharedImage = (FlexImageView) originImage);
-        } else {
-            sharedImage = new FlexImageView(context);
-//            originImage.setVisibility(View.GONE);
-        }
-
-        sharedImage.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sharedImage.transformOut();
-            }
-        });
-
+        sharedImage = new FlexImageView(context);
         sharedImage.setScaleType(FIT_CENTER);
         sharedImage.setOriginalInfo(originImage.getWidth(),
                 originImage.getHeight(), location[0], location[1]);
         sharedImage.setLayoutParams(new FrameLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
-        if (!(originImage instanceof FlexImageView))
-            Glide.with(context).
-                    load(attr.getImageStrList().get(attr.getCurrOriginIndex()))
-                    .dontAnimate()
-                    .into(sharedImage);
-
         sharedImage.transformIn();
+        sharedImage.setOnTransformListener(new FlexImageView.OnTransformListener() {
+            @Override
+            public void onTransformComplete(int mode) {
+                viewPager.addOnPageChangeListener(transChangeListener);
+                if (attr.getCurrOriginIndex() == 0)
+                    transChangeListener.onPageSelected(0);
+            }
+        });
+
+        String sharedUrl = attr.getImageStrList().get(attr.getCurrOriginIndex());
+        attr.getImageLoader().displayImage(sharedUrl, sharedImage);
         addView(sharedImage);
     }
 
@@ -242,11 +227,14 @@ public class TransferImage extends FrameLayout {
         if (!shown) return;
         shown = false;
 
-        IProgressIndicator progressIndicator = attr.getProgressIndicator();
-        if (progressIndicator != null)
-            progressIndicator.hideView(attr.getCurrShowIndex());
-
+        removeAllViews();
         removeFromWindow();
+
+        attr.getImageLoader().cancel();
+    }
+
+    public void destroy() {
+        defaultInstance = null;
     }
 
     /**

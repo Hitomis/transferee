@@ -90,14 +90,7 @@ public class TransferImage extends FrameLayout {
             switch (mode) {
                 case FlexImageView.STATE_TRANS_IN:
                     transViewPager.setVisibility(View.VISIBLE);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setBackgroundColor(Color.BLACK);
-                            removeFromParent(sharedImage);
-                        }
-                    }, 500);
-
+                    removeFromParent(sharedImage);
                     break;
                 case FlexImageView.STATE_TRANS_OUT:
                     break;
@@ -189,6 +182,7 @@ public class TransferImage extends FrameLayout {
         transViewPager = new ViewPager(context);
         // 先隐藏，待 ViewPager 下标为 attr.getCurrOriginIndex() 的页面创建完毕再显示
         transViewPager.setVisibility(View.INVISIBLE);
+        transViewPager.setBackgroundColor(Color.BLACK);
         transViewPager.setOffscreenPageLimit(attr.getImageStrList().size() + 1);
         transViewPager.setAdapter(transAdapter);
         transViewPager.setCurrentItem(attr.getCurrOriginIndex());
@@ -258,7 +252,6 @@ public class TransferImage extends FrameLayout {
         if (!shown) return;
         shown = false;
 
-        setBackgroundColor(Color.TRANSPARENT);
         loadedIndexSet.clear();
         removeAllViews();
         removeFromWindow();

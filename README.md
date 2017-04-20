@@ -1,4 +1,4 @@
-# TransferImage
+# TransferImage【正中重构中···】
 
 仿微博、微信、qq 点击缩略图后预览高清图的组件
 

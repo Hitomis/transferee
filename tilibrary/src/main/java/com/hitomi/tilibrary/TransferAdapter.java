@@ -91,7 +91,7 @@ public class TransferAdapter extends PagerAdapter {
         // ViewPager instantiateItem 顺序：从 position 开始递减到0位置，再从 positon 递增到 getCount() - 1
         FrameLayout parentLayout = containnerLayoutMap.get(position);
         if (parentLayout == null) {
-            parentLayout = newParentLayout(container.getContext());
+            parentLayout = newParentLayout(container.getContext(), position);
             containnerLayoutMap.put(position, parentLayout);
         }
         container.addView(parentLayout);
@@ -101,7 +101,7 @@ public class TransferAdapter extends PagerAdapter {
     }
 
     @NonNull
-    private FrameLayout newParentLayout(Context context) {
+    private FrameLayout newParentLayout(Context context, final int pos) {
         // create inner ImageView
         final PhotoView imageView = new PhotoView(context);
         imageView.setId(ID_IMAGE);
@@ -122,15 +122,14 @@ public class TransferAdapter extends PagerAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageView.reset();
-                onDismissListener.onDismiss();
+                onDismissListener.onDismiss(pos);
             }
         });
         return parentLayout;
     }
 
     interface OnDismissListener {
-        void onDismiss();
+        void onDismiss(int pos);
     }
 
     interface OnInstantiateItemListener {

@@ -23,8 +23,8 @@ public class GridViewActivity extends BaseActivity {
     private List<String> imageStrList;
     {
         imageStrList = new ArrayList<>();
-        imageStrList.add("http://img5.niutuku.com/phone/1212/3752/3752-niutuku.com-22310.jpg");
-        imageStrList.add("http://c.hiphotos.baidu.com/zhidao/pic/item/b7003af33a87e950e7d5403816385343faf2b4a0.jpg");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
+        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png");
         imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png");
         imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png");
         imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png");

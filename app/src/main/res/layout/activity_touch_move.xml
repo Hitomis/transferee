@@ -10,19 +10,22 @@
     <ImageView
         android:id="@+id/image_view1"
         android:layout_width="100dp"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/img1" />
 
     <ImageView
         android:id="@+id/image_view2"
         android:layout_width="100dp"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/img2" />
 
     <ImageView
         android:id="@+id/image_view3"
         android:layout_width="100dp"
-        android:layout_height="150dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/img3" />
 
 </LinearLayout>

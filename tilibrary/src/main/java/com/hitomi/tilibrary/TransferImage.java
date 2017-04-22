@@ -2,12 +2,7 @@ package com.hitomi.tilibrary;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -65,7 +60,7 @@ public class TransferImage extends FrameLayout {
             attr.setCurrShowIndex(position);
 
             if (!loadedIndexSet.contains(position)) {
-                loadImage(position);
+                loadSourceImage(position);
                 loadedIndexSet.add(position);
             }
 
@@ -73,11 +68,11 @@ public class TransferImage extends FrameLayout {
                 int left = position - i;
                 int right = position + i;
                 if (left >= 0 && !loadedIndexSet.contains(left)) {
-                    loadImage(left);
+                    loadSourceImage(left);
                     loadedIndexSet.add(left);
                 }
                 if (right < attr.getImageStrList().size() && !loadedIndexSet.contains(right)) {
-                    loadImage(right);
+                    loadSourceImage(right);
                     loadedIndexSet.add(right);
                 }
             }
@@ -132,7 +127,7 @@ public class TransferImage extends FrameLayout {
 
             int position = attr.getCurrOriginIndex();
             attr.setCurrShowIndex(position);
-            loadImage(position);
+            loadSourceImage(position);
             loadedIndexSet.add(position);
         }
     };
@@ -247,7 +242,12 @@ public class TransferImage extends FrameLayout {
         }
 
         String sharedUrl = attr.getImageStrList().get(attr.getCurrOriginIndex());
-        attr.getImageLoader().displayImage(sharedUrl, sharedImage);
+        attr.getImageLoader().displayThumbnailImage(sharedUrl, new ImageLoader.ThumbnailCallback() {
+            @Override
+            public void onFinish(Drawable drawable) {
+                sharedImage.setImageDrawable(drawable);
+            }
+        });
         addView(sharedImage);
     }
 
@@ -296,7 +296,6 @@ public class TransferImage extends FrameLayout {
         removeAllViews();
         removeFromWindow();
 
-        attr.getImageLoader().cancel();
     }
 
     public void destroy() {
@@ -325,82 +324,38 @@ public class TransferImage extends FrameLayout {
     }
 
     /**
-     * ImageView 缩放到指定大小
-     *
-     * @param imageView imageView 对象
-     * @param w         宽
-     * @param h         高
-     * @return Drawable
-     */
-    private Drawable resizeImage(ImageView imageView, int w, int h) {
-        Bitmap BitmapOrg = drawable2Bitmap(imageView.getDrawable());
-        if (BitmapOrg == null) return null;
-
-        int width = BitmapOrg.getWidth();
-        int height = BitmapOrg.getHeight();
-
-        float scaleWidth = w * 2.f / width;
-        float scaleHeight = h * 2.f / height;
-
-        Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        Bitmap resizedBitmap = Bitmap.createBitmap(BitmapOrg, 0, 0, width,
-                height, matrix, true);
-        return new BitmapDrawable(resizedBitmap);
-    }
-
-    /**
-     * drawable转bitmap
-     *
-     * @param drawable drawable对象
-     * @return bitmap
-     */
-    private Bitmap drawable2Bitmap(Drawable drawable) {
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
-        } else {
-            Bitmap bitmap = Bitmap.createBitmap(
-                    drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(),
-                    drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-            drawable.draw(canvas);
-            return bitmap;
-        }
-    }
-
-    /**
      * 加载高清图
      *
      * @param position
      */
-    private void loadImage(final int position) {
-        String imgUrl = attr.getImageStrList().get(position);
-        Drawable placeHolder = getPlaceHolderDrawable(position);
-
-        attr.getImageLoader().loadImage(imgUrl, transAdapter.getImageItem(position), placeHolder, new ImageLoader.Callback() {
-
-            private IProgressIndicator progressIndicator = attr.getProgressIndicator();
-
+    private void loadSourceImage(final int position) {
+        final String imgUrl = attr.getImageStrList().get(position);
+        attr.getImageLoader().displayThumbnailImage(imgUrl, new ImageLoader.ThumbnailCallback() {
             @Override
-            public void onStart() {
-                if (progressIndicator == null) return;
-                progressIndicator.attach(position, transAdapter.getParentItem(position));
-                progressIndicator.onStart(position);
-            }
+            public void onFinish(Drawable drawable) {
+                attr.getImageLoader().displaySourceImage(imgUrl, transAdapter.getImageItem(position), drawable, new ImageLoader.SourceCallback() {
 
-            @Override
-            public void onProgress(int progress) {
-                if (progressIndicator == null) return;
-                progressIndicator.onProgress(position, progress);
-            }
+                    private IProgressIndicator progressIndicator = attr.getProgressIndicator();
 
-            @Override
-            public void onFinish() {
-                if (progressIndicator == null) return;
-                progressIndicator.onFinish(position);
+                    @Override
+                    public void onStart() {
+                        if (progressIndicator == null) return;
+                        progressIndicator.attach(position, transAdapter.getParentItem(position));
+                        progressIndicator.onStart(position);
+                    }
+
+                    @Override
+                    public void onProgress(int progress) {
+                        if (progressIndicator == null) return;
+                        progressIndicator.onProgress(position, progress);
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        if (progressIndicator == null) return;
+                        progressIndicator.onFinish(position);
+                    }
+                });
             }
         });
     }
@@ -551,8 +506,7 @@ public class TransferImage extends FrameLayout {
             }
 
             if (imageLoader == null) {
-                // Fix splash screen bug : context replace applicationContext
-                attr.setImageLoader(GlideImageLoader.with(context.getApplicationContext()));
+                attr.setImageLoader(GlideImageLoader.with(context));
             } else {
                 attr.setImageLoader(imageLoader);
             }

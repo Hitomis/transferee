@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -30,28 +31,29 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void loadImage(String url, ImageView imageView, Drawable placeholder, final Callback callback) {
+    public void displaySourceImage(String url, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
         ProgressTarget<String, Bitmap> progressTarget = new ProgressTarget<String, Bitmap>(url, new BitmapImageViewTarget(imageView)) {
 
             @Override
             protected void onStartDownload() {
-                callback.onStart();
+                sourceCallback.onStart();
             }
 
             @Override
             protected void onDownloading(long bytesRead, long expectedLength) {
-                callback.onProgress((int) (bytesRead * 100 / expectedLength));
+                sourceCallback.onProgress((int) (bytesRead * 100 / expectedLength));
             }
 
             @Override
             protected void onDownloaded() {
-                callback.onFinish();
+                sourceCallback.onFinish();
             }
 
             @Override
             protected void onDelivered() {
             }
         };
+
         Glide.with(context)
                 .load(url)
                 .asBitmap()
@@ -61,11 +63,17 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void displayImage(String url, ImageView imageView) {
+    public void displayThumbnailImage(String url, final ThumbnailCallback callback) {
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
-                .into(imageView);
+                .override(100, 100)
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        callback.onFinish(resource);
+                    }
+                });
     }
 
     @Override
@@ -80,8 +88,4 @@ public class GlideImageLoader implements ImageLoader {
                 });
     }
 
-    @Override
-    public void cancel() {
-
-    }
 }

@@ -10,33 +10,31 @@ import android.widget.ImageView;
 
 public interface ImageLoader {
     /**
-     * 开始加载图片
-     * @param url 图片地址
-     * @param imageView 用于图片加载成功后显示的 ImageView
-     * @param placeholder 加载完成之前显示的占位图
-     * @param callback 图片加载过程的回调
+     * 加载并显示原高清图
+     *
+     * @param url            图片地址
+     * @param imageView      用于图片加载成功后显示的 ImageView
+     * @param placeholder    加载完成之前显示的占位图
+     * @param sourceCallback 图片加载过程的回调
      */
-    void loadImage(String url, ImageView imageView, Drawable placeholder, final ImageLoader.Callback callback);
+    void displaySourceImage(String url, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback);
 
     /**
-     * 显示加载完成的图片
-     * @param url 图片地址
-     * @param imageView 用于图片加载成功后显示的 ImageView
+     * 加载并显示缩略图
+     *
+     * @param url      缩略图图片地址
+     * @param callback 缩略图片加载完成的回调
      */
-    void displayImage(String url, ImageView imageView);
+    void displayThumbnailImage(String url, final ThumbnailCallback callback);
 
     /**
      * 后台预加载图片资源
+     *
      * @param url
      */
     void preFetch(String url);
 
-    /**
-     * 取消图片加载
-     */
-    void cancel();
-
-    interface Callback {
+    interface SourceCallback {
         @UiThread
         void onStart();
 
@@ -45,5 +43,10 @@ public interface ImageLoader {
 
         @UiThread
         void onFinish();
+    }
+
+    interface ThumbnailCallback {
+        @UiThread
+        void onFinish(Drawable drawable);
     }
 }

@@ -57,12 +57,12 @@ public class ListViewActivity extends BaseActivity {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new TransferImage.Builder(ListViewActivity.this)
-                                .setBackgroundColor(Color.parseColor("#2f008d"))
-                                .setImageUrls(imageStrList.get(position))
-                                .setOriginImages(imageView)
-                                .setup(transferImage)
-                                .show();
+//                        new TransferImage.Builder(ListViewActivity.this)
+//                                .setBackgroundColor(Color.parseColor("#2f008d"))
+//                                .setImageUrls(imageStrList.get(position))
+//                                .setOriginImages(imageView)
+//                                .setup(transferImage)
+//                                .show();
                     }
                 });
             }

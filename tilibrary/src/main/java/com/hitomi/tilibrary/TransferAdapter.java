@@ -21,7 +21,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * 展示高清图的图片数据适配器
  * Created by hitomi on 2017/1/23.
  */
-public class TransferAdapter extends PagerAdapter {
+class TransferAdapter extends PagerAdapter {
     @IdRes
     private static final int ID_IMAGE = 1001;
 

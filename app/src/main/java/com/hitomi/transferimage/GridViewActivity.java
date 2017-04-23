@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.hitomi.tilibrary.TransferConfig;
 import com.hitomi.tilibrary.TransferImage;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
@@ -19,8 +20,8 @@ import java.util.List;
 public class GridViewActivity extends BaseActivity {
 
     private GridView gvImages;
-
     private List<String> imageStrList;
+
     {
         imageStrList = new ArrayList<>();
         imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
@@ -55,14 +56,14 @@ public class GridViewActivity extends BaseActivity {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new TransferImage.Builder(GridViewActivity.this)
+                        TransferConfig config = TransferConfig.build()
                                 .setBackgroundColor(Color.parseColor("#EE009999"))
                                 .setOriginImageList(wrapOriginImageViewList())
-                                .setImageUrlList(imageStrList)
-                                .setOriginIndex(position)
-                                .setup(transferImage)
-                                .show();
-
+                                .setThumbnailImageList(imageStrList)
+                                .setSourceImageList(imageStrList)
+                                .setNowThumbnailIndex(position)
+                                .create();
+                        transferImage.apply(config).show();
                     }
                 });
             }
@@ -71,6 +72,7 @@ public class GridViewActivity extends BaseActivity {
 
     /**
      * 包装缩略图 ImageView 集合
+     *
      * @return
      */
     @NonNull

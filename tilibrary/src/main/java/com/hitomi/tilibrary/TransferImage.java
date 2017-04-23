@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +19,7 @@ import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.tilibrary.view.fleximage.FlexImageView;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -43,10 +40,11 @@ public class TransferImage extends FrameLayout {
 
     private Context context;
     private FlexImageView sharedImage;
+
     private ViewPager transViewPager;
     private TransferAdapter transAdapter;
+    private TransferConfig transConfig;
 
-    private TransferAttr attr;
     private Set<Integer> loadedIndexSet;
     private boolean shown;
 
@@ -56,22 +54,22 @@ public class TransferImage extends FrameLayout {
     private ViewPager.OnPageChangeListener transChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
-            attr.setCurrOriginIndex(position);
-            attr.setCurrShowIndex(position);
+            transConfig.setNowThumbnailIndex(position);
+            transConfig.setNowShowIndex(position);
 
             if (!loadedIndexSet.contains(position)) {
                 loadSourceImage(position);
                 loadedIndexSet.add(position);
             }
 
-            for (int i = 1; i <= attr.getOffscreenPageLimit(); i++) {
+            for (int i = 1; i <= transConfig.getOffscreenPageLimit(); i++) {
                 int left = position - i;
                 int right = position + i;
                 if (left >= 0 && !loadedIndexSet.contains(left)) {
                     loadSourceImage(left);
                     loadedIndexSet.add(left);
                 }
-                if (right < attr.getImageStrList().size() && !loadedIndexSet.contains(right)) {
+                if (right < transConfig.getSourceImageList().size() && !loadedIndexSet.contains(right)) {
                     loadSourceImage(right);
                     loadedIndexSet.add(right);
                 }
@@ -125,8 +123,9 @@ public class TransferImage extends FrameLayout {
         public void onComplete() {
             transViewPager.addOnPageChangeListener(transChangeListener);
 
-            int position = attr.getCurrOriginIndex();
-            attr.setCurrShowIndex(position);
+            // 初始加载第一张原图
+            int position = transConfig.getNowThumbnailIndex();
+            transConfig.setNowShowIndex(position);
             loadSourceImage(position);
             loadedIndexSet.add(position);
         }
@@ -160,8 +159,8 @@ public class TransferImage extends FrameLayout {
      * @param visibility
      */
     private void setOriginImageVisibility(int visibility) {
-        int showIndex = attr.getCurrShowIndex();
-        ImageView originImage = attr.getOriginImageList().get(showIndex);
+        int showIndex = transConfig.getNowShowIndex();
+        ImageView originImage = transConfig.getOriginImageList().get(showIndex);
         originImage.setVisibility(visibility);
     }
 
@@ -193,7 +192,7 @@ public class TransferImage extends FrameLayout {
 
     private void initTransfer() {
         createTransferViewPager();
-        createSharedImage(attr.getCurrOriginIndex(),
+        createSharedImage(transConfig.getNowThumbnailIndex(),
                 FlexImageView.STATE_TRANS_IN);
     }
 
@@ -201,17 +200,17 @@ public class TransferImage extends FrameLayout {
      * 创建 ViewPager
      */
     private void createTransferViewPager() {
-        transAdapter = new TransferAdapter(attr.getCurrOriginIndex(), attr.getImageStrList().size());
+        transAdapter = new TransferAdapter(transConfig.getNowThumbnailIndex(), transConfig.getSourceImageList().size());
         transAdapter.setOnDismissListener(dismissListener);
         transAdapter.setOnInstantListener(instantListener);
 
         transViewPager = new ViewPager(context);
-        // 先隐藏，待 ViewPager 下标为 attr.getCurrOriginIndex() 的页面创建完毕再显示
+        // 先隐藏，待 ViewPager 下标为 config.getCurrOriginIndex() 的页面创建完毕再显示
         transViewPager.setVisibility(View.INVISIBLE);
         transViewPager.setBackgroundColor(Color.BLACK);
-        transViewPager.setOffscreenPageLimit(attr.getImageStrList().size() + 1);
+        transViewPager.setOffscreenPageLimit(transConfig.getSourceImageList().size() + 1);
         transViewPager.setAdapter(transAdapter);
-        transViewPager.setCurrentItem(attr.getCurrOriginIndex());
+        transViewPager.setCurrentItem(transConfig.getNowThumbnailIndex());
 
         addView(transViewPager, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
     }
@@ -220,7 +219,7 @@ public class TransferImage extends FrameLayout {
      * 创建 SharedImage 模拟图片扩大的过渡动画
      */
     private void createSharedImage(int pos, int state) {
-        ImageView originImage = attr.getOriginImageList().get(pos);
+        ImageView originImage = transConfig.getOriginImageList().get(pos);
         int[] location = new int[2];
         originImage.getLocationInWindow(location);
 
@@ -241,8 +240,8 @@ public class TransferImage extends FrameLayout {
                 break;
         }
 
-        String sharedUrl = attr.getImageStrList().get(attr.getCurrOriginIndex());
-        attr.getImageLoader().displayThumbnailImage(sharedUrl, new ImageLoader.ThumbnailCallback() {
+        String sharedUrl = transConfig.getSourceImageList().get(transConfig.getNowThumbnailIndex());
+        transConfig.getImageLoader().displayThumbnailImage(sharedUrl, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
                 sharedImage.setImageDrawable(drawable);
@@ -255,6 +254,33 @@ public class TransferImage extends FrameLayout {
         ViewGroup vg = (ViewGroup) view.getParent();
         if (vg != null)
             vg.removeView(view);
+    }
+
+    private void checkConfig() {
+        transConfig.setNowThumbnailIndex(transConfig.getNowThumbnailIndex() < 0
+                ? 0 : transConfig.getNowThumbnailIndex());
+
+        transConfig.setBackgroundColor(transConfig.getBackgroundColor() == 0
+                ? Color.BLACK : transConfig.getBackgroundColor());
+
+        transConfig.setOffscreenPageLimit(transConfig.getOffscreenPageLimit() <= 0
+                ? 1 : transConfig.getOffscreenPageLimit());
+
+        transConfig.setProgressIndicator(transConfig.getProgressIndicator() == null
+                ? new ProgressPieIndicator() : transConfig.getProgressIndicator());
+
+        transConfig.setIndexIndicator(transConfig.getIndexIndicator() == null
+                ? new IndexCircleIndicator() : transConfig.getIndexIndicator());
+
+        transConfig.setImageLoader(transConfig.getImageLoader() == null
+                ? GlideImageLoader.with(context) : transConfig.getImageLoader());
+
+        if (transConfig.getSourceImageList() == null || transConfig.getSourceImageList().isEmpty())
+            transConfig.setSourceImageList(transConfig.getThumbnailImageList());
+
+        if (transConfig.getThumbnailImageList() == null || transConfig.getThumbnailImageList().isEmpty())
+            transConfig.setThumbnailImageList(transConfig.getSourceImageList());
+
     }
 
     @Override
@@ -279,9 +305,15 @@ public class TransferImage extends FrameLayout {
     public void show() {
         if (!shown) {
             shown = true;
+            checkConfig();
             addToWindow();
             initTransfer();
         }
+    }
+
+    public TransferImage apply(TransferConfig config) {
+        transConfig = config;
+        return defaultInstance;
     }
 
     /**
@@ -306,8 +338,8 @@ public class TransferImage extends FrameLayout {
      * 在 TransferImage 面板中添加下标指示器 UI 组件
      */
     private void addIndexIndicator() {
-        IIndexIndicator indexIndicator = attr.getIndexIndicator();
-        if (indexIndicator != null && attr.getImageStrList().size() >= 2) {
+        IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
+        if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
             indexIndicator.attach(this);
             indexIndicator.onShow(transViewPager);
         }
@@ -317,8 +349,8 @@ public class TransferImage extends FrameLayout {
      * 从 TransferImage 面板中移除下标指示器 UI 组件
      */
     private void removeIndexIndicator() {
-        IIndexIndicator indexIndicator = attr.getIndexIndicator();
-        if (indexIndicator != null && attr.getImageStrList().size() >= 2) {
+        IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
+        if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
             indexIndicator.onRemove();
         }
     }
@@ -329,13 +361,13 @@ public class TransferImage extends FrameLayout {
      * @param position
      */
     private void loadSourceImage(final int position) {
-        final String imgUrl = attr.getImageStrList().get(position);
-        attr.getImageLoader().displayThumbnailImage(imgUrl, new ImageLoader.ThumbnailCallback() {
+        final String imgUrl = transConfig.getSourceImageList().get(position);
+        transConfig.getImageLoader().displayThumbnailImage(imgUrl, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
-                attr.getImageLoader().displaySourceImage(imgUrl, transAdapter.getImageItem(position), drawable, new ImageLoader.SourceCallback() {
+                transConfig.getImageLoader().displaySourceImage(imgUrl, transAdapter.getImageItem(position), drawable, new ImageLoader.SourceCallback() {
 
-                    private IProgressIndicator progressIndicator = attr.getProgressIndicator();
+                    private IProgressIndicator progressIndicator = transConfig.getProgressIndicator();
 
                     @Override
                     public void onStart() {
@@ -361,25 +393,6 @@ public class TransferImage extends FrameLayout {
     }
 
     /**
-     * 获取加载完高清图之前的占位图 Drawable
-     *
-     * @param position 图片索引
-     * @return 占位图 Drawable
-     */
-    @Nullable
-    private Drawable getPlaceHolderDrawable(int position) {
-        Drawable placeHolder = null;
-        if (position < attr.getOriginImageList().size()) {
-            ImageView imageView = attr.getOriginImageList().get(position);
-            placeHolder = imageView.getDrawable();
-        } else {
-            if (attr.getMissPlaceHolder() != 0)
-                placeHolder = context.getResources().getDrawable(attr.getMissPlaceHolder());
-        }
-        return placeHolder;
-    }
-
-    /**
      * 获取状态栏高度
      *
      * @return 状态栏高度值 unit ：px
@@ -394,131 +407,5 @@ public class TransferImage extends FrameLayout {
         } catch (Exception e) {
             return 0;
         }
-    }
-
-    private void applyAttr(TransferAttr attr) {
-        this.attr = attr;
-    }
-
-    public static class Builder {
-        private Context context;
-        private ImageView[] originImages;
-        private List<ImageView> originImageList;
-
-        private int originIndex;
-        private int offscreenPageLimit;
-        private int backgroundColor;
-        private int missPlaceHolder;
-
-        private String[] imageUrls;
-        private List<String> imageUrlList;
-
-        private IProgressIndicator progressIndicat;
-        private IIndexIndicator indexIndicator;
-        private ImageLoader imageLoader;
-
-        public Builder(Context context) {
-            this.context = context;
-        }
-
-        public Builder setOriginImages(ImageView... originImages) {
-            this.originImages = originImages;
-            return this;
-        }
-
-        public Builder setOriginImageList(List<ImageView> originImageList) {
-            this.originImageList = originImageList;
-            return this;
-        }
-
-        public Builder setOriginIndex(int originIndex) {
-            this.originIndex = originIndex;
-            return this;
-        }
-
-        public Builder setOffscreenPageLimit(int offscreenPageLimit) {
-            this.offscreenPageLimit = offscreenPageLimit;
-            return this;
-        }
-
-        public Builder setBackgroundColor(int backgroundColor) {
-            this.backgroundColor = backgroundColor;
-            return this;
-        }
-
-        public Builder setMissPlaceHolder(int missPlaceHolder) {
-            this.missPlaceHolder = missPlaceHolder;
-            return this;
-        }
-
-        public Builder setImageUrls(String... imageUrls) {
-            this.imageUrls = imageUrls;
-            return this;
-        }
-
-        public Builder setImageUrlList(List<String> imageUrlList) {
-            this.imageUrlList = imageUrlList;
-            return this;
-        }
-
-        public Builder setProgressIndicator(IProgressIndicator proIndicat) {
-            this.progressIndicat = proIndicat;
-            return this;
-        }
-
-        public Builder setIndexIndicator(IIndexIndicator indexIndicator) {
-            this.indexIndicator = indexIndicator;
-            return this;
-        }
-
-        public Builder setImageLoader(ImageLoader imageLoader) {
-            this.imageLoader = imageLoader;
-            return this;
-        }
-
-        public TransferImage setup(TransferImage transferImage) {
-            if (transferImage.isShown()) return transferImage;
-
-            TransferAttr attr = new TransferAttr();
-
-            if (originImageList != null && !originImageList.isEmpty()) {
-                attr.setOriginImageList(originImageList);
-            } else {
-                attr.setOriginImageList(Arrays.asList(originImages));
-            }
-
-            if (imageUrlList != null && !imageUrlList.isEmpty()) {
-                attr.setImageUrlList(imageUrlList);
-            } else {
-                attr.setImageUrlList(Arrays.asList(imageUrls));
-            }
-
-            if (progressIndicat == null) {
-                attr.setProgressIndicator(new ProgressPieIndicator());
-            } else {
-                attr.setProgressIndicator(progressIndicat);
-            }
-
-            if (indexIndicator == null) {
-                attr.setIndexIndicator(new IndexCircleIndicator());
-            } else {
-                attr.setIndexIndicator(indexIndicator);
-            }
-
-            if (imageLoader == null) {
-                attr.setImageLoader(GlideImageLoader.with(context));
-            } else {
-                attr.setImageLoader(imageLoader);
-            }
-
-            attr.setOffscreenPageLimit(offscreenPageLimit <= 0 ? 1 : offscreenPageLimit);
-            attr.setBackgroundColor(backgroundColor == 0 ? Color.BLACK : backgroundColor);
-            attr.setCurrOriginIndex(originIndex < 0 ? 0 : originIndex);
-            attr.setMissPlaceHolder(missPlaceHolder);
-
-            transferImage.applyAttr(attr);
-            return transferImage;
-        }
-
     }
 }

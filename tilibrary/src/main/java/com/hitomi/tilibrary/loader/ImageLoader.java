@@ -20,7 +20,7 @@ public interface ImageLoader {
     void displaySourceImage(String url, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback);
 
     /**
-     * 加载并显示缩略图
+     * 加载缩略图
      *
      * @param url      缩略图图片地址
      * @param callback 缩略图片加载完成的回调

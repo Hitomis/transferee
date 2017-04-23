@@ -56,15 +56,15 @@ public class TouchMoveImageActivity extends BaseActivity {
     private class ShowViewHDListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            new TransferImage.Builder(TouchMoveImageActivity.this)
-                    .setBackgroundColor(Color.BLACK)
-                    .setMissPlaceHolder(R.mipmap.ic_launcher)
-                    .setOriginImageList(imageViewList)
-                    .setImageUrlList(imageStrList)
-                    .setOriginIndex(imageViewList.indexOf(v))
-                    .setOffscreenPageLimit(1)
-                    .setup(transferImage)
-                    .show();
+//            new TransferImage.Builder(TouchMoveImageActivity.this)
+//                    .setBackgroundColor(Color.BLACK)
+//                    .setMissPlaceHolder(R.mipmap.ic_launcher)
+//                    .setOriginImageList(imageViewList)
+//                    .setImageUrlList(imageStrList)
+//                    .setOriginIndex(imageViewList.indexOf(v))
+//                    .setOffscreenPageLimit(1)
+//                    .setup(transferImage)
+//                    .show();
         }
     }
 

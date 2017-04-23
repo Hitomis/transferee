@@ -267,7 +267,7 @@ class TransferLayout extends FrameLayout {
             public void run() {
                 transViewPager.setVisibility(View.INVISIBLE);
             }
-        }, sharedImage.getDuration() / 5);
+        }, sharedImage.getDuration() / 3);
     }
 
     public boolean isAdded() {

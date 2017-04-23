@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.hitomi.tilibrary.TransferConfig;
 import com.hitomi.tilibrary.TransferImage;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class TouchMoveImageActivity extends BaseActivity {
     private List<ImageView> imageViewList;
 
     private List<String> imageStrList;
+
     {
         imageStrList = new ArrayList<>();
         imageStrList.add("http://img5.niutuku.com/phone/1212/3752/3752-niutuku.com-22310.jpg");
@@ -56,15 +58,16 @@ public class TouchMoveImageActivity extends BaseActivity {
     private class ShowViewHDListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-//            new TransferImage.Builder(TouchMoveImageActivity.this)
-//                    .setBackgroundColor(Color.BLACK)
-//                    .setMissPlaceHolder(R.mipmap.ic_launcher)
-//                    .setOriginImageList(imageViewList)
-//                    .setImageUrlList(imageStrList)
-//                    .setOriginIndex(imageViewList.indexOf(v))
-//                    .setOffscreenPageLimit(1)
-//                    .setup(transferImage)
-//                    .show();
+
+            transferImage.apply(TransferConfig.build()
+                    .setBackgroundColor(Color.BLACK)
+                    .setMissPlaceHolder(R.mipmap.ic_launcher)
+                    .setOriginImageList(imageViewList)
+                    .setSourceImageList(imageStrList)
+                    .setNowThumbnailIndex(imageViewList.indexOf(v))
+                    .setOffscreenPageLimit(1)
+                    .create())
+                    .show();
         }
     }
 

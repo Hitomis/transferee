@@ -23,9 +23,9 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
 
 /**
+ * android.R.style.Theme_Translucent_NoTitleBar_Fullscreen
  * Created by Hitomis on 2017/4/23 0023.
  */
-
 class TransferLayout extends FrameLayout {
 
     private Context context;

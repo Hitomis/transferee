@@ -1,13 +1,12 @@
 package com.hitomi.transferimage;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
-import com.hitomi.tilibrary.TransferImage;
-import com.hitomi.tilibrary.view.fleximage.FlexImageView;
+import com.hitomi.tilibrary.Transferee;
+import com.hitomi.tilibrary.view.image.TransferImage;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -40,14 +39,14 @@ public class ListViewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
 
-        transferImage = TransferImage.getDefault(this);
+        transferImage = Transferee.getDefault(this);
 
         listView = (ListView) findViewById(R.id.list_view);
         listView.setAdapter(new CommonAdapter<String>(this, R.layout.item_list_image, imageStrList) {
 
             @Override
             protected void convert(ViewHolder viewHolder, String item, final int position) {
-                final FlexImageView imageView = viewHolder.getView(R.id.image_view);
+                final TransferImage imageView = viewHolder.getView(R.id.image_view);
                 imageView.setClickable(true);
                 Glide.with(ListViewActivity.this)
                         .load(item)

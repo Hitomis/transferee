@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary.view.fleximage;
+package com.hitomi.tilibrary.view.image;
 
 import android.animation.Animator;
 import android.animation.PropertyValuesHolder;
@@ -14,13 +14,11 @@ import android.util.AttributeSet;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 /**
- * 2d平滑变化的显示图片的ImageView
+ * 平滑变化显示图片的 ImageView
  * 仅限于用于:从一个ScaleType==CENTER_CROP的ImageView，切换到另一个ScaleType=
- * FIT_CENTER的ImageView，或者反之 (当然，得使用同样的图片最好)
- *
- * @author Dean Tao
+ * FIT_CENTER的ImageView，或者反之 (使用同样的图片最好)
  */
-public class FlexImageView extends PhotoView {
+public class TransferImage extends PhotoView {
 
     public static final int STATE_TRANS_NORMAL = 0;
     public static final int STATE_TRANS_IN = 1; // 从缩略图到大图状态
@@ -37,51 +35,27 @@ public class FlexImageView extends PhotoView {
     private boolean transformStart = false;
 
     private Paint paint;
-    private Matrix flexMatrix;
-    private Drawable flexDrawable;
+    private Matrix transMatrix;
+    private Drawable transDrawable;
 
     private Transfrom transfrom;
     private OnTransferListener transformListener;
 
-    public FlexImageView(Context context) {
+    public TransferImage(Context context) {
         this(context, null);
     }
 
-    public FlexImageView(Context context, AttributeSet attrs) {
+    public TransferImage(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public FlexImageView(Context context, AttributeSet attrs, int defStyle) {
+    public TransferImage(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
 
-    /**
-     * 获取状态栏高度
-     *
-     * @return
-     */
-    public static int getStatusBarHeight(Context context) {
-        Class<?> c = null;
-        Object obj = null;
-        java.lang.reflect.Field field = null;
-        int x = 0;
-        int statusBarHeight = 0;
-        try {
-            c = Class.forName("com.android.internal.R$dimen");
-            obj = c.newInstance();
-            field = c.getField("status_bar_height");
-            x = Integer.parseInt(field.get(obj).toString());
-            statusBarHeight = context.getResources().getDimensionPixelSize(x);
-            return statusBarHeight;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return statusBarHeight;
-    }
-
     private void init() {
-        flexMatrix = new Matrix();
+        transMatrix = new Matrix();
         paint = new Paint();
         paint.setColor(backgroundColor);
         paint.setStyle(Style.FILL);
@@ -116,6 +90,7 @@ public class FlexImageView extends PhotoView {
 
     /**
      * 获取伸缩动画执行的时间
+     *
      * @return unit ：毫秒
      */
     public long getDuration() {
@@ -124,10 +99,20 @@ public class FlexImageView extends PhotoView {
 
     /**
      * 设置伸缩动画执行的时间
+     *
      * @param duration unit ：毫秒
      */
     public void setDuration(long duration) {
         this.duration = duration;
+    }
+
+    /**
+     * 获取当前的状态
+     *
+     * @return {@link #STATE_TRANS_NORMAL}, {@link #STATE_TRANS_IN}, {@link #STATE_TRANS_OUT}
+     */
+    public int getState() {
+        return state;
     }
 
     /**
@@ -137,8 +122,8 @@ public class FlexImageView extends PhotoView {
         if (getDrawable() == null) {
             return;
         }
-        if (flexDrawable == null) {
-            flexDrawable = getDrawable();
+        if (transDrawable == null) {
+            transDrawable = getDrawable();
         }
         //防止mTransfrom重复的做同样的初始化
         if (transfrom != null) {
@@ -151,13 +136,13 @@ public class FlexImageView extends PhotoView {
 
         /** 下面为缩放的计算 */
         /* 计算初始的缩放值，初始值因为是CENTR_CROP效果，所以要保证图片的宽和高至少1个能匹配原始的宽和高，另1个大于 */
-        float xSScale = originalWidth / ((float) flexDrawable.getIntrinsicWidth());
-        float ySScale = originalHeight / ((float) flexDrawable.getIntrinsicHeight());
+        float xSScale = originalWidth / ((float) transDrawable.getIntrinsicWidth());
+        float ySScale = originalHeight / ((float) transDrawable.getIntrinsicHeight());
         float startScale = xSScale > ySScale ? xSScale : ySScale;
         transfrom.startScale = startScale;
         /* 计算结束时候的缩放值，结束值因为要达到FIT_CENTER效果，所以要保证图片的宽和高至少1个能匹配原始的宽和高，另1个小于 */
-        float xEScale = getWidth() / ((float) flexDrawable.getIntrinsicWidth());
-        float yEScale = getHeight() / ((float) flexDrawable.getIntrinsicHeight());
+        float xEScale = getWidth() / ((float) transDrawable.getIntrinsicWidth());
+        float yEScale = getHeight() / ((float) transDrawable.getIntrinsicHeight());
         float endScale = xEScale < yEScale ? xEScale : yEScale;
         transfrom.endScale = endScale;
 
@@ -167,7 +152,7 @@ public class FlexImageView extends PhotoView {
          * ，到最终的FIT_CENTER的范围之间的，区域我用LocationSizeF更好计算
          * ，他就包括左上顶点坐标，和宽高，最后转为Canvas裁减的Rect.
          */
-		/* 开始区域 */
+        /* 开始区域 */
         transfrom.startRect = new LocationSizeF();
         transfrom.startRect.left = originalLocationX;
         transfrom.startRect.top = originalLocationY;
@@ -175,8 +160,8 @@ public class FlexImageView extends PhotoView {
         transfrom.startRect.height = originalHeight;
 		/* 结束区域 */
         transfrom.endRect = new LocationSizeF();
-        float bitmapEndWidth = flexDrawable.getIntrinsicWidth() * transfrom.endScale;// 图片最终的宽度
-        float bitmapEndHeight = flexDrawable.getIntrinsicHeight() * transfrom.endScale;// 图片最终的宽度
+        float bitmapEndWidth = transDrawable.getIntrinsicWidth() * transfrom.endScale;// 图片最终的宽度
+        float bitmapEndHeight = transDrawable.getIntrinsicHeight() * transfrom.endScale;// 图片最终的宽度
         transfrom.endRect.left = (getWidth() - bitmapEndWidth) / 2;
         transfrom.endRect.top = (getHeight() - bitmapEndHeight) / 2;
         transfrom.endRect.width = bitmapEndWidth;
@@ -187,14 +172,14 @@ public class FlexImageView extends PhotoView {
 
     private void calcBmpMatrix() {
         if (getDrawable() == null || transfrom == null) return;
-        if (flexDrawable == null) {
-            flexDrawable = getDrawable();
+        if (transDrawable == null) {
+            transDrawable = getDrawable();
         }
 
 		/* 下面实现了CENTER_CROP的功能 */
-        flexMatrix.setScale(transfrom.scale, transfrom.scale);
-        flexMatrix.postTranslate(-(transfrom.scale * flexDrawable.getIntrinsicWidth() / 2 - transfrom.rect.width / 2),
-                -(transfrom.scale * flexDrawable.getIntrinsicHeight() / 2 - transfrom.rect.height / 2));
+        transMatrix.setScale(transfrom.scale, transfrom.scale);
+        transMatrix.postTranslate(-(transfrom.scale * transDrawable.getIntrinsicWidth() / 2 - transfrom.rect.width / 2),
+                -(transfrom.scale * transDrawable.getIntrinsicHeight() / 2 - transfrom.rect.height / 2));
     }
 
     @Override
@@ -227,7 +212,7 @@ public class FlexImageView extends PhotoView {
             calcBmpMatrix();
             canvas.translate(transfrom.rect.left, transfrom.rect.top);
             canvas.clipRect(0, 0, transfrom.rect.width, transfrom.rect.height);
-            canvas.concat(flexMatrix);
+            canvas.concat(transMatrix);
             getDrawable().draw(canvas);
             canvas.restoreToCount(saveCount);
             if (transformStart) {
@@ -298,7 +283,7 @@ public class FlexImageView extends PhotoView {
 				 * ， 而应该是最后变化的位置，因为当out的时候结束时，不回复视图是Normal，要不然会有一个突然闪动回去的bug
 				 */
                 if (state == STATE_TRANS_IN) {
-                    FlexImageView.this.state = STATE_TRANS_NORMAL;
+                    TransferImage.this.state = STATE_TRANS_NORMAL;
                 }
                 if (transformListener != null) {
                     transformListener.onTransferComplete(state);

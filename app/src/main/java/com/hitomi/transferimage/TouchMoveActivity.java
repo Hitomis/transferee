@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.TransferConfig;
-import com.hitomi.tilibrary.TransferImage;
+import com.hitomi.tilibrary.Transferee;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class TouchMoveActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_touch_move);
 
-        transferImage = TransferImage.getDefault(this);
+        transferImage = Transferee.getDefault(this);
 
         imageView1 = (ImageView) findViewById(R.id.image_view1);
         imageView2 = (ImageView) findViewById(R.id.image_view2);

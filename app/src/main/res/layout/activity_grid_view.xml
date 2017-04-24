@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_group_image"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.hitomi.transferimage.GridViewActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:text="九宫格"
+        android:textColor="#FFF"
+        android:textSize="18sp" />
 
     <GridView
         android:id="@+id/gv_images"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:gravity="center"
         android:horizontalSpacing="5dp"
         android:numColumns="3"
         android:verticalSpacing="5dp" />
 
-</RelativeLayout>
+</LinearLayout>

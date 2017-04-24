@@ -1,6 +1,5 @@
 package com.hitomi.tilibrary;
 
-import android.graphics.Color;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
@@ -22,6 +21,7 @@ public class TransferConfig {
     private int backgroundColor;
     private int offscreenPageLimit;
     private int missPlaceHolder;
+    private long duration;
 
     private List<ImageView> originImageList;
     private List<String> sourceImageList;
@@ -70,6 +70,14 @@ public class TransferConfig {
 
     public void setMissPlaceHolder(int missPlaceHolder) {
         this.missPlaceHolder = missPlaceHolder;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     public List<ImageView> getOriginImageList() {
@@ -137,6 +145,7 @@ public class TransferConfig {
         private int backgroundColor;
         private int offscreenPageLimit;
         private int missPlaceHolder;
+        private long duration;
 
         private List<ImageView> originImageList;
         private List<String> sourceImageList;
@@ -164,6 +173,11 @@ public class TransferConfig {
 
         public Builder setMissPlaceHolder(int missPlaceHolder) {
             this.missPlaceHolder = missPlaceHolder;
+            return this;
+        }
+
+        public Builder setDuration(long duration) {
+            this.duration = duration;
             return this;
         }
 
@@ -209,6 +223,7 @@ public class TransferConfig {
             config.setBackgroundColor(backgroundColor);
             config.setOffscreenPageLimit(offscreenPageLimit);
             config.setMissPlaceHolder(missPlaceHolder);
+            config.setDuration(duration);
 
             config.setOriginImageList(originImageList);
             config.setSourceImageList(sourceImageList);

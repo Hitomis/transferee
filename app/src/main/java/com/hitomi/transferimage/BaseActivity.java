@@ -2,7 +2,7 @@ package com.hitomi.transferimage;
 
 import android.support.v7.app.AppCompatActivity;
 
-import com.hitomi.tilibrary.TransferImage;
+import com.hitomi.tilibrary.Transferee;
 
 /**
  * Created by hitomi on 2017/2/13.
@@ -10,16 +10,11 @@ import com.hitomi.tilibrary.TransferImage;
 
 public class BaseActivity extends AppCompatActivity {
 
-    protected TransferImage transferImage;
+    protected Transferee transferImage;
 
     @Override
-    public void onBackPressed() {
-
-        if (transferImage != null && transferImage.isShown()) {
-            transferImage.dismiss();
-        } else {
-            transferImage.destroy();
-            super.onBackPressed();
-        }
+    protected void onDestroy() {
+        transferImage.destroy();
+        super.onDestroy();
     }
 }

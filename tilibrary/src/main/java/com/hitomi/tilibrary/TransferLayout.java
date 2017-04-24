@@ -1,6 +1,5 @@
 package com.hitomi.tilibrary;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -13,9 +12,8 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
-import com.hitomi.tilibrary.view.fleximage.FlexImageView;
+import com.hitomi.tilibrary.view.image.TransferImage;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,20 +21,21 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
 
 /**
- * android.R.style.Theme_Translucent_NoTitleBar_Fullscreen
+ * TransferImage 中 Dialog 显示的内容
  * Created by Hitomis on 2017/4/23 0023.
  */
 class TransferLayout extends FrameLayout {
 
     private Context context;
-    private FlexImageView sharedImage;
+    private TransferImage sharedImage;
 
     private ViewPager transViewPager;
     private TransferAdapter transAdapter;
     private TransferConfig transConfig;
 
     private Set<Integer> loadedIndexSet;
-    private boolean added;
+
+    private OnLayoutResetListener layoutResetListener;
 
     /**
      * ViewPager 页面切换监听器 => 当页面切换时，根据相邻优先加载的规则去加载图片
@@ -66,38 +65,6 @@ class TransferLayout extends FrameLayout {
             }
         }
     };
-
-    /**
-     * FlexImageView 伸/缩动画执行完成监听器
-     */
-    private FlexImageView.OnTransferListener transferListener = new FlexImageView.OnTransferListener() {
-        @Override
-        public void onTransferComplete(int mode) {
-            switch (mode) {
-                case FlexImageView.STATE_TRANS_IN: // 伸展动画执行完毕
-                    addIndexIndicator();
-                    transViewPager.setVisibility(View.VISIBLE);
-                    removeFromParent(sharedImage);
-                    break;
-                case FlexImageView.STATE_TRANS_OUT: // 缩小动画执行完毕
-                    setOriginImageVisibility(View.VISIBLE);
-                    resetTransfer();
-                    break;
-            }
-
-        }
-    };
-
-    /**
-     * 点击 ImageView 关闭 TransferImage 的监听器
-     */
-    private TransferAdapter.OnDismissListener dismissListener = new TransferAdapter.OnDismissListener() {
-        @Override
-        public void onDismiss(final int pos) {
-            dismiss(pos);
-        }
-    };
-
     /**
      * TransferAdapter 中对应页面创建完成监听器
      */
@@ -111,6 +78,40 @@ class TransferLayout extends FrameLayout {
             transConfig.setNowShowIndex(position);
             loadSourceImage(position);
             loadedIndexSet.add(position);
+        }
+    };
+
+    /**
+     * TransferImage 伸/缩动画执行完成监听器
+     */
+    private TransferImage.OnTransferListener transferListener = new TransferImage.OnTransferListener() {
+        @Override
+        public void onTransferComplete(int mode) {
+            switch (mode) {
+                case TransferImage.STATE_TRANS_IN: // 伸展动画执行完毕
+                    addIndexIndicator();
+                    transViewPager.setVisibility(View.VISIBLE);
+                    removeFromParent(sharedImage);
+                    break;
+                case TransferImage.STATE_TRANS_OUT: // 缩小动画执行完毕
+                    setOriginImageVisibility(View.VISIBLE);
+                    resetTransfer();
+                    break;
+            }
+
+        }
+    };
+    /**
+     * 点击 ImageView 关闭 TransferImage 的监听器
+     */
+    private TransferAdapter.OnDismissListener dismissListener = new TransferAdapter.OnDismissListener() {
+        @Override
+        public void onDismiss(final int pos) {
+            if (sharedImage != null &&
+                    sharedImage.getState() == TransferImage.STATE_TRANS_OUT)
+                return ;
+
+            dismiss(pos);
         }
     };
 
@@ -137,49 +138,22 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
-     * 将 TransferImage 添加到 Window 中
-     */
-    private void addToWindow() {
-        FrameLayout.LayoutParams windowLayoutParams = new FrameLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
-        //(((LinearLayout)(LinearLayout)((ViewGroup) context.getWindow().getDecorView()).getChildAt(0))).getChildAt(0) => 状态栏
-        // ((ViewGroup) context.getWindow().getDecorView()) => 状态栏的父布局的父布局
-
-        Activity activity = (Activity) context;
-        ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
-        decorView.addView(this, windowLayoutParams);
-//        activity.getWindow().addContentView(this, windowLayoutParams);
-    }
-
-    /**
-     * 从 Window 中移除 TransferImage
-     */
-    private void removeFromWindow() {
-        ViewGroup vg = (ViewGroup) getParent();
-        if (vg != null) {
-            vg.removeView(TransferLayout.this);
-        }
-    }
-
-    /**
      * 初始化 TransferImage
      */
     private void initTransfer() {
         createTransferViewPager();
         createSharedImage(transConfig.getNowThumbnailIndex(),
-                FlexImageView.STATE_TRANS_IN);
+                TransferImage.STATE_TRANS_IN);
     }
 
     /**
-     * 重置 TransferImage
+     * 重置 TransferLayout 布局中的内容
      */
     private void resetTransfer() {
         loadedIndexSet.clear();
         removeIndexIndicator();
         removeAllViews();
-        removeFromWindow();
-        added = false;
+        layoutResetListener.onReset();
     }
 
     /**
@@ -209,7 +183,7 @@ class TransferLayout extends FrameLayout {
         int[] location = new int[2];
         originImage.getLocationInWindow(location);
 
-        sharedImage = new FlexImageView(context);
+        sharedImage = new TransferImage(context);
         sharedImage.setScaleType(FIT_CENTER);
         sharedImage.setOriginalInfo(originImage.getWidth(),
                 originImage.getHeight(), location[0], location[1]);
@@ -225,10 +199,10 @@ class TransferLayout extends FrameLayout {
                 addView(sharedImage, 1);
 
                 switch (state) {
-                    case FlexImageView.STATE_TRANS_IN:
+                    case TransferImage.STATE_TRANS_IN:
                         sharedImage.transformIn();
                         break;
-                    case FlexImageView.STATE_TRANS_OUT:
+                    case TransferImage.STATE_TRANS_OUT:
                         sharedImage.transformOut();
                         break;
                 }
@@ -250,17 +224,19 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
-     * 显示 TransferImage
+     * 初始化 TransferLayout 中的各个组件，并显示，同时开启动画
      */
     public void show() {
-        added = true;
-        addToWindow();
         initTransfer();
     }
 
+    /**
+     * 开启 transferImage 关闭动画，并隐藏 transferLayout 中的各个组件
+     *
+     * @param pos
+     */
     public void dismiss(int pos) {
-        setOriginImageVisibility(View.INVISIBLE);
-        createSharedImage(pos, FlexImageView.STATE_TRANS_OUT);
+        createSharedImage(pos, TransferImage.STATE_TRANS_OUT);
         hideIndexIndicator();
         postDelayed(new Runnable() {
             @Override
@@ -270,12 +246,22 @@ class TransferLayout extends FrameLayout {
         }, sharedImage.getDuration() / 3);
     }
 
-    public boolean isAdded() {
-        return added;
-    }
-
+    /**
+     * 配置参数
+     *
+     * @param config 参数对象
+     */
     public void apply(TransferConfig config) {
         transConfig = config;
+    }
+
+    /**
+     * 绑定 TransferLayout 内容重置时回调监听器
+     *
+     * @param listener 重置回调监听器
+     */
+    public void setOnLayoutResetListener(OnLayoutResetListener listener) {
+        layoutResetListener = listener;
     }
 
     /**
@@ -312,7 +298,7 @@ class TransferLayout extends FrameLayout {
     /**
      * 加载高清图
      *
-     * @param position
+     * @param position 图片下标
      */
     private void loadSourceImage(final int position) {
         final String imgUrl = transConfig.getSourceImageList().get(position);
@@ -347,20 +333,13 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
-     * 获取状态栏高度
-     *
-     * @return 状态栏高度值 unit ：px
+     * TransferLayout 中内容重置时监听器
      */
-    private int getStatusBarHeight() {
-        try {
-            Class<?> c = Class.forName("com.android.internal.R$dimen");
-            Object object = c.newInstance();
-            Field field = c.getField("status_bar_height");
-            int x = (Integer) field.get(object);
-            return context.getResources().getDimensionPixelSize(x);
-        } catch (Exception e) {
-            return 0;
-        }
+    interface OnLayoutResetListener {
+        /**
+         * 调用于：当关闭动画执行完毕，TransferLayout 中所有内容已经重置（清空）时
+         */
+        void onReset();
     }
 
 }

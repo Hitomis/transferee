@@ -27,8 +27,8 @@ import static android.widget.ImageView.ScaleType.FIT_CENTER;
 class TransferLayout extends FrameLayout {
 
     private Context context;
-    private TransferImage sharedImage;
 
+    private TransferImage transImage;
     private ViewPager transViewPager;
     private TransferAdapter transAdapter;
     private TransferConfig transConfig;
@@ -91,7 +91,7 @@ class TransferLayout extends FrameLayout {
                 case TransferImage.STATE_TRANS_IN: // 伸展动画执行完毕
                     addIndexIndicator();
                     transViewPager.setVisibility(View.VISIBLE);
-                    removeFromParent(sharedImage);
+                    removeFromParent(transImage);
                     break;
                 case TransferImage.STATE_TRANS_OUT: // 缩小动画执行完毕
                     setOriginImageVisibility(View.VISIBLE);
@@ -107,8 +107,8 @@ class TransferLayout extends FrameLayout {
     private TransferAdapter.OnDismissListener dismissListener = new TransferAdapter.OnDismissListener() {
         @Override
         public void onDismiss(final int pos) {
-            if (sharedImage != null &&
-                    sharedImage.getState() == TransferImage.STATE_TRANS_OUT)
+            if (transImage != null &&
+                    transImage.getState() == TransferImage.STATE_TRANS_OUT)
                 return ;
 
             dismiss(pos);
@@ -142,7 +142,7 @@ class TransferLayout extends FrameLayout {
      */
     private void initTransfer() {
         createTransferViewPager();
-        createSharedImage(transConfig.getNowThumbnailIndex(),
+        createTransferImage(transConfig.getNowThumbnailIndex(),
                 TransferImage.STATE_TRANS_IN);
     }
 
@@ -176,34 +176,35 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
-     * 创建 SharedImage 模拟图片扩大的过渡动画
+     * 创建 TransferImage 模拟图片扩大的过渡动画
      */
-    private void createSharedImage(final int pos, final int state) {
+    private void createTransferImage(final int pos, final int state) {
         ImageView originImage = transConfig.getOriginImageList().get(pos);
         int[] location = new int[2];
         originImage.getLocationInWindow(location);
 
-        sharedImage = new TransferImage(context);
-        sharedImage.setScaleType(FIT_CENTER);
-        sharedImage.setOriginalInfo(originImage.getWidth(),
+        transImage = new TransferImage(context);
+        transImage.setScaleType(FIT_CENTER);
+        transImage.setOriginalInfo(originImage.getWidth(),
                 originImage.getHeight(), location[0], location[1]);
-        sharedImage.setLayoutParams(new FrameLayout.LayoutParams(
+        transImage.setDuration(transConfig.getDuration());
+        transImage.setLayoutParams(new FrameLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        sharedImage.setOnTransferListener(transferListener);
+        transImage.setOnTransferListener(transferListener);
 
-        String sharedUrl = transConfig.getThumbnailImageList().get(transConfig.getNowThumbnailIndex());
-        transConfig.getImageLoader().displayThumbnailImage(sharedUrl, new ImageLoader.ThumbnailCallback() {
+        String transUrl = transConfig.getThumbnailImageList().get(transConfig.getNowThumbnailIndex());
+        transConfig.getImageLoader().displayThumbnailImage(transUrl, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
-                sharedImage.setImageDrawable(drawable);
-                addView(sharedImage, 1);
+                transImage.setImageDrawable(drawable);
+                addView(transImage, 1);
 
                 switch (state) {
                     case TransferImage.STATE_TRANS_IN:
-                        sharedImage.transformIn();
+                        transImage.transformIn();
                         break;
                     case TransferImage.STATE_TRANS_OUT:
-                        sharedImage.transformOut();
+                        transImage.transformOut();
                         break;
                 }
             }
@@ -236,14 +237,14 @@ class TransferLayout extends FrameLayout {
      * @param pos
      */
     public void dismiss(int pos) {
-        createSharedImage(pos, TransferImage.STATE_TRANS_OUT);
+        createTransferImage(pos, TransferImage.STATE_TRANS_OUT);
         hideIndexIndicator();
         postDelayed(new Runnable() {
             @Override
             public void run() {
                 transViewPager.setVisibility(View.INVISIBLE);
             }
-        }, sharedImage.getDuration() / 3);
+        }, transImage.getDuration() / 3);
     }
 
     /**

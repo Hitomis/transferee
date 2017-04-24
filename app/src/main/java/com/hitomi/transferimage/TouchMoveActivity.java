@@ -32,7 +32,6 @@ public class TouchMoveActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_touch_move);
-        updateStatusBar();
 
         transferee = Transferee.getDefault(this);
 

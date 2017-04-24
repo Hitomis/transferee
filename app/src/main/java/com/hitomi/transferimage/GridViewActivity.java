@@ -38,7 +38,6 @@ public class GridViewActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_view);
-        updateStatusBar();
 
         transferee = Transferee.getDefault(this);
         gvImages = (GridView) findViewById(R.id.gv_images);

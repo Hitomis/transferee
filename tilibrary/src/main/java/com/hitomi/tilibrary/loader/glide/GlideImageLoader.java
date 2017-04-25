@@ -31,8 +31,8 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void displaySourceImage(String url, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
-        ProgressTarget<String, Bitmap> progressTarget = new ProgressTarget<String, Bitmap>(url, new BitmapImageViewTarget(imageView)) {
+    public void displaySourceImage(String srcUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
+        ProgressTarget<String, Bitmap> progressTarget = new ProgressTarget<String, Bitmap>(srcUrl, new BitmapImageViewTarget(imageView)) {
 
             @Override
             protected void onStartDownload() {
@@ -55,7 +55,7 @@ public class GlideImageLoader implements ImageLoader {
         };
 
         Glide.with(context)
-                .load(url)
+                .load(srcUrl)
                 .asBitmap()
                 .dontAnimate()
                 .placeholder(placeholder)
@@ -63,9 +63,9 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void displayThumbnailImage(String url, final ThumbnailCallback callback) {
+    public void displayThumbnailImageAsync(String thumbUrl, final ThumbnailCallback callback) {
         Glide.with(context)
-                .load(url)
+                .load(thumbUrl)
                 .dontAnimate()
                 .override(100, 100)
                 .into(new SimpleTarget<GlideDrawable>() {

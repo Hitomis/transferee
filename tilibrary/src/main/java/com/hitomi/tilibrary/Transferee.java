@@ -3,6 +3,7 @@ package com.hitomi.tilibrary;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 
@@ -65,12 +66,21 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     private void createDialog() {
-        transDialog = new AlertDialog.Builder(context,
-                android.R.style.Theme_Translucent_NoTitleBar_Fullscreen)
+        transDialog = new AlertDialog.Builder(context, getDialogStyle())
                 .setView(transLayout)
                 .create();
         transDialog.setOnShowListener(this);
         transDialog.setOnKeyListener(this);
+    }
+
+    private int getDialogStyle() {
+        int dialogStyle;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            dialogStyle = android.R.style.Theme_Translucent_NoTitleBar_Fullscreen;
+        } else {
+            dialogStyle = android.R.style.Theme_Translucent_NoTitleBar;
+        }
+        return dialogStyle;
     }
 
     /**

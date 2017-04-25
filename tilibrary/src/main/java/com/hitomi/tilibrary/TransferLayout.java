@@ -3,6 +3,7 @@ package com.hitomi.tilibrary;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -191,7 +193,7 @@ class TransferLayout extends FrameLayout {
         transImage = new TransferImage(context);
         transImage.setScaleType(FIT_CENTER);
         transImage.setOriginalInfo(originImage.getWidth(),
-                originImage.getHeight(), location[0], location[1]);
+                originImage.getHeight(), location[0], getTransImageLocalY(location[1]));
         transImage.setDuration(transConfig.getDuration());
         transImage.setLayoutParams(new FrameLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -199,7 +201,7 @@ class TransferLayout extends FrameLayout {
         addView(transImage, 1);
 
         String transUrl = transConfig.getThumbnailImageList().get(transConfig.getNowThumbnailIndex());
-        transConfig.getImageLoader().displayThumbnailImage(transUrl, new ImageLoader.ThumbnailCallback() {
+        transConfig.getImageLoader().displayThumbnailImageAsync(transUrl, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
                 transImage.setImageDrawable(drawable);
@@ -220,6 +222,13 @@ class TransferLayout extends FrameLayout {
                 }
             }
         });
+    }
+
+    private int getTransImageLocalY(int oldY){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            return oldY;
+        }
+        return oldY - getStatusBarHeight();
     }
 
     private void removeFromParent(View view) {
@@ -314,7 +323,7 @@ class TransferLayout extends FrameLayout {
      */
     private void loadSourceImage(final int position) {
         final String imgUrl = transConfig.getSourceImageList().get(position);
-        transConfig.getImageLoader().displayThumbnailImage(imgUrl, new ImageLoader.ThumbnailCallback() {
+        transConfig.getImageLoader().displayThumbnailImageAsync(imgUrl, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
                 transConfig.getImageLoader().displaySourceImage(imgUrl, transAdapter.getImageItem(position), drawable, new ImageLoader.SourceCallback() {
@@ -342,6 +351,23 @@ class TransferLayout extends FrameLayout {
                 });
             }
         });
+    }
+
+    /**
+     * 获取状态栏高度
+     *
+     * @return
+     */
+    private int getStatusBarHeight() {
+        try {
+            Class<?> c = Class.forName("com.android.internal.R$dimen");
+            Object object = c.newInstance();
+            Field field = c.getField("status_bar_height");
+            int x = (Integer) field.get(object);
+            return context.getResources().getDimensionPixelSize(x);
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     /**

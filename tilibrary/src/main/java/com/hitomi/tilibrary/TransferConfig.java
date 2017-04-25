@@ -156,6 +156,9 @@ public class TransferConfig {
         this.imageLoader = imageLoader;
     }
 
+    public boolean isThumbnailEmpty(){
+        return thumbnailImageList == null || thumbnailImageList.isEmpty();
+    }
 
     public static class Builder {
         private int nowThumbnailIndex;

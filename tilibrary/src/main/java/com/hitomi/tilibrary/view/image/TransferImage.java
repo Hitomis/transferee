@@ -24,8 +24,18 @@ public class TransferImage extends PhotoView {
     public static final int STATE_TRANS_IN = 1; // 从缩略图到大图状态
     public static final int STATE_TRANS_OUT = 2; // 从大图到缩略图状态
 
+    public static final int ANIMA_CATE_TOGETHER = 100; // 动画类型：位移和缩放同时进行
+    public static final int ANIMA_CATE_APART = 200; // 动画类型：位移和缩放分开进行
+
+    public static final int APART_TRANSLATE = 201; // 平移
+    public static final int APART_SCALE = 202; // 缩放
+
     private final int backgroundColor = 0xFF000000;
-    private int state = STATE_TRANS_NORMAL;
+
+    private int state = STATE_TRANS_NORMAL; // 当前动画状态
+    private int cate = ANIMA_CATE_TOGETHER; // 当前动画类型
+    private int stage = APART_TRANSLATE; // 针对 ANIMA_CATE_APART 类型对话而言：当前动画的阶段
+
     private int originalWidth;
     private int originalHeight;
     private int originalLocationX;
@@ -217,20 +227,83 @@ public class TransferImage extends PhotoView {
             canvas.restoreToCount(saveCount);
             if (transformStart) {
                 transformStart = false;
-                startTransform(state);
+
+                switch (cate) {
+                    case ANIMA_CATE_TOGETHER:
+                        startTogetherTrans();
+                        break;
+                    case ANIMA_CATE_APART:
+                        startApartTrans();
+                        break;
+                }
             }
         } else {
-            //当Transform In变化完成后，把背景改为黑色，使得Activity不透明
+            //当Transform In变化完成后，把背景改为黑色，使得 TransferImage 不透明
             paint.setAlpha(255);
             canvas.drawPaint(paint);
             super.onDraw(canvas);
         }
     }
 
-    private void startTransform(final int state) {
-        if (transfrom == null) {
-            return;
+    private void startApartTrans() {
+        if (transfrom == null) return;
+
+        ValueAnimator valueAnimator = new ValueAnimator();
+        valueAnimator.setDuration(duration);
+        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        if (state == STATE_TRANS_IN) {
+            if (stage == APART_TRANSLATE) { // 平移动画
+                PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transfrom.startRect.left, transfrom.endRect.left);
+                PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transfrom.startRect.top, transfrom.endRect.top);
+                PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transfrom.startRect.width, transfrom.endRect.width);
+                PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transfrom.startRect.height, transfrom.endRect.height);
+                PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofInt("alpha", 0, 255);
+                valueAnimator.setValues(leftHolder, topHolder, widthHolder, heightHolder, alphaHolder);
+            } else { // 缩放动画
+                PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transfrom.startScale, transfrom.endScale);
+                valueAnimator.setValues(scaleHolder);
+            }
+
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public synchronized void onAnimationUpdate(ValueAnimator animation) {
+                    transfrom.rect.left = (Float) animation.getAnimatedValue("left");
+                    transfrom.rect.top = (Float) animation.getAnimatedValue("top");
+                    transfrom.rect.width = (Float) animation.getAnimatedValue("width");
+                    transfrom.rect.height = (Float) animation.getAnimatedValue("height");
+                    backgroundAlpha = (Integer) animation.getAnimatedValue("alpha");
+                    invalidate();
+                }
+            });
+        } else {
+            if (stage == APART_TRANSLATE) { // 平移动画
+                PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transfrom.endRect.left, transfrom.startRect.left);
+                PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transfrom.endRect.top, transfrom.startRect.top);
+                PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transfrom.endRect.width, transfrom.startRect.width);
+                PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transfrom.endRect.height, transfrom.startRect.height);
+                PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofInt("alpha", 255, 0);
+                valueAnimator.setValues(leftHolder, topHolder, widthHolder, heightHolder, alphaHolder);
+            } else { // 缩放动画
+                PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transfrom.endScale, transfrom.startScale);
+                valueAnimator.setValues(scaleHolder);
+            }
+
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public synchronized void onAnimationUpdate(ValueAnimator animation) {
+                    transfrom.scale = (Float) animation.getAnimatedValue("scale");
+                    invalidate();
+                }
+            });
         }
+
+        valueAnimator.start();
+    }
+
+    private void startTogetherTrans() {
+        if (transfrom == null) return;
+
         ValueAnimator valueAnimator = new ValueAnimator();
         valueAnimator.setDuration(duration);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -279,6 +352,7 @@ public class TransferImage extends PhotoView {
 
             }
         });
+
         valueAnimator.start();
     }
 

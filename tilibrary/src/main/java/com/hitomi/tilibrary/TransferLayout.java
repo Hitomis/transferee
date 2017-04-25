@@ -150,8 +150,29 @@ class TransferLayout extends FrameLayout {
      */
     private void initTransfer() {
         createTransferViewPager();
-        createTransferImage(transConfig.getNowThumbnailIndex(),
-                TransferImage.STATE_TRANS_IN);
+        if (transConfig.isThumbnailEmpty()) {
+
+//            ImageView originImage = transConfig.getOriginImageList().get(
+//                    transConfig.getNowThumbnailIndex());
+//            int[] location = new int[2];
+//            originImage.getLocationInWindow(location);
+//
+//            transImage = new TransferImage(context);
+//            transImage.setScaleType(CENTER_CROP);
+//            transImage.setImageDrawable(originImage.getDrawable());
+//            transImage.setOriginalInfo(originImage.getWidth(),
+//                    originImage.getHeight(), location[0], getTransImageLocalY(location[1]));
+//            transImage.setDuration(transConfig.getDuration());
+//            transImage.setLayoutParams(new FrameLayout.LayoutParams(
+//                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+//            transImage.setOnTransferListener(transferListener);
+//            addView(transImage, 1);
+//            transImage.transformIn();
+
+        } else {
+            createTransferImage(transConfig.getNowThumbnailIndex(),
+                    TransferImage.STATE_TRANS_IN);
+        }
     }
 
     /**

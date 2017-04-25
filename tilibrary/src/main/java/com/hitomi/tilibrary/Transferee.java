@@ -104,9 +104,6 @@ public class Transferee implements DialogInterface.OnShowListener,
 
         transConfig.setImageLoader(transConfig.getImageLoader() == null
                 ? GlideImageLoader.with(context) : transConfig.getImageLoader());
-
-        if (transConfig.getThumbnailImageList() == null || transConfig.getThumbnailImageList().isEmpty())
-            transConfig.setThumbnailImageList(transConfig.getSourceImageList());
     }
 
     /**

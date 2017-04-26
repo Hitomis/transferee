@@ -23,6 +23,7 @@ public class TransferImage extends PhotoView {
     public static final int STATE_TRANS_NORMAL = 0;
     public static final int STATE_TRANS_IN = 1; // 从缩略图到大图状态
     public static final int STATE_TRANS_OUT = 2; // 从大图到缩略图状态
+    public static final int STATE_TRANS_CLIP = 3; // 裁剪状态
 
     public static final int CATE_ANIMA_TOGETHER = 100; // 动画类型：位移和缩放同时进行
     public static final int CATE_ANIMA_APART = 200; // 动画类型：位移和缩放分开进行
@@ -90,6 +91,11 @@ public class TransferImage extends PhotoView {
         invalidate();
     }
 
+    public void transClip(){
+        state = STATE_TRANS_CLIP;
+        transformStart = true;
+    }
+
     /**
      * 用于开始进入的方法(平移和放大动画分离)。 调用此方前，需已经调用过setOriginalInfo
      *
@@ -147,7 +153,7 @@ public class TransferImage extends PhotoView {
         if (getDrawable() == null) return;
         if (getWidth() == 0 || getHeight() == 0) return;
 
-        if (transDrawable == null) transDrawable = getDrawable();
+        transDrawable = getDrawable();
         transfrom = new Transfrom();
 
         /** 下面为缩放的计算 */
@@ -192,9 +198,7 @@ public class TransferImage extends PhotoView {
 
     private void calcBmpMatrix() {
         if (getDrawable() == null || transfrom == null) return;
-        if (transDrawable == null) {
-            transDrawable = getDrawable();
-        }
+        transDrawable = getDrawable();
 
 		/* 下面实现了CENTER_CROP的功能 */
         transMatrix.setScale(transfrom.scale, transfrom.scale);
@@ -206,7 +210,7 @@ public class TransferImage extends PhotoView {
     protected void onDraw(Canvas canvas) {
         if (getDrawable() == null) return;
 
-        if (state == STATE_TRANS_IN || state == STATE_TRANS_OUT) {
+        if (state != STATE_TRANS_NORMAL) {
             if (transformStart) {
                 initTransform();
             }
@@ -216,7 +220,7 @@ public class TransferImage extends PhotoView {
             }
 
             if (transformStart) {
-                if (state == STATE_TRANS_IN) {
+                if (state == STATE_TRANS_IN || state == STATE_TRANS_CLIP) {
                     transfrom.initStartIn();
                 } else {
                     transfrom.initStartOut();
@@ -235,7 +239,7 @@ public class TransferImage extends PhotoView {
             canvas.concat(transMatrix);
             getDrawable().draw(canvas);
             canvas.restoreToCount(saveCount);
-            if (transformStart) {
+            if (transformStart && state != STATE_TRANS_CLIP) {
                 transformStart = false;
 
                 switch (cate) {
@@ -383,7 +387,7 @@ public class TransferImage extends PhotoView {
 
     public interface OnTransferListener {
         /**
-         * @param state  {@link #STATE_TRANS_IN} {@link #STATE_TRANS_OUT}
+         * @param state {@link #STATE_TRANS_IN} {@link #STATE_TRANS_OUT}
          * @param cate  {@link #CATE_ANIMA_TOGETHER} {@link #CATE_ANIMA_APART}
          * @param stage {@link #STAGE_IN_TRANSLATE} {@link #STAGE_IN_SCALE}
          */

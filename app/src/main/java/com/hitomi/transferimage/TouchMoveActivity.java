@@ -75,7 +75,6 @@ public class TouchMoveActivity extends BaseActivity {
             transferee.apply(TransferConfig.build()
                     .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                     .setOriginImageList(imageViewList)
-                    .setThumbnailImageList(imageStrList)
                     .setSourceImageList(imageStrList)
                     .setNowThumbnailIndex(imageViewList.indexOf(v))
                     .setOffscreenPageLimit(1)

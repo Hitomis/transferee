@@ -78,10 +78,14 @@ class TransferLayout extends FrameLayout {
         public void onComplete() {
             transViewPager.addOnPageChangeListener(transChangeListener);
 
-            // 初始加载第一张原图
+            // 初始加载第一张原图 TODO：加载左右各一张
             int position = transConfig.getNowThumbnailIndex();
-            loadNotThumbnailSourceImage(position);
             loadedIndexSet.add(position);
+
+            if (transConfig.isThumbnailEmpty())
+                loadNotThumbnailSourceImage(position);
+            else
+                loadSourceImage(position);
         }
     };
 
@@ -114,8 +118,6 @@ class TransferLayout extends FrameLayout {
                     addIndexIndicator();
                     transViewPager.setVisibility(View.VISIBLE);
                     removeFromParent(transImage);
-                } else {
-                    System.out.println(222);
                 }
             }
         }
@@ -162,28 +164,31 @@ class TransferLayout extends FrameLayout {
     private void initTransfer() {
         createTransferViewPager();
         if (transConfig.isThumbnailEmpty()) {
-
-            ImageView originImage = transConfig.getOriginImageList().get(
-                    transConfig.getNowThumbnailIndex());
-            int[] location = new int[2];
-            originImage.getLocationInWindow(location);
-
-            transImage = new TransferImage(context);
-            transImage.setScaleType(CENTER_CROP);
-            transImage.setImageDrawable(originImage.getDrawable());
-            transImage.setOriginalInfo(originImage.getWidth(),
-                    originImage.getHeight(), location[0], getTransImageLocalY(location[1]));
-            transImage.setDuration(transConfig.getDuration());
-            transImage.setLayoutParams(new FrameLayout.LayoutParams(
-                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-            transImage.setOnTransferListener(transferListener);
-            addView(transImage, 1);
-            transImage.transformIn(TransferImage.STAGE_IN_TRANSLATE);
-
+            createTransferImage();
         } else {
             createTransferImage(transConfig.getNowThumbnailIndex(),
                     TransferImage.STATE_TRANS_IN);
         }
+    }
+
+    private void createTransferImage() {
+        ImageView originImage = transConfig.getOriginImageList().get(
+                transConfig.getNowThumbnailIndex());
+        int[] location = new int[2];
+        originImage.getLocationInWindow(location);
+
+        transImage = new TransferImage(context);
+        transImage.setScaleType(CENTER_CROP);
+        transImage.setImageDrawable(originImage.getDrawable());
+        transImage.setOriginalInfo(location[0], getTransImageLocalY(location[1]),
+                originImage.getWidth(), originImage.getHeight());
+        transImage.setDuration(transConfig.getDuration());
+        transImage.setLayoutParams(new LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        transImage.setOnTransferListener(transferListener);
+        transImage.transformIn(TransferImage.STAGE_IN_TRANSLATE);
+
+        addView(transImage, 1);
     }
 
     /**
@@ -200,11 +205,7 @@ class TransferLayout extends FrameLayout {
      * 创建 ViewPager
      */
     private void createTransferViewPager() {
-        ImageView originImage = transConfig.getOriginImageList().get(
-                transConfig.getNowThumbnailIndex());
-        transAdapter = new TransferAdapter(transConfig.getNowThumbnailIndex(),
-                transConfig.getSourceImageList().size(),
-                originImage.getDrawable());
+        transAdapter = new TransferAdapter(context, transConfig);
         transAdapter.setOnDismissListener(dismissListener);
         transAdapter.setOnInstantListener(instantListener);
 
@@ -229,36 +230,61 @@ class TransferLayout extends FrameLayout {
 
         transImage = new TransferImage(context);
         transImage.setScaleType(FIT_CENTER);
-        transImage.setOriginalInfo(originImage.getWidth(),
-                originImage.getHeight(), location[0], getTransImageLocalY(location[1]));
+        transImage.setOriginalInfo(location[0], getTransImageLocalY(location[1]),
+                originImage.getWidth(), originImage.getHeight());
         transImage.setDuration(transConfig.getDuration());
         transImage.setLayoutParams(new FrameLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         transImage.setOnTransferListener(transferListener);
         addView(transImage, 1);
 
-        final String transUrl = transConfig.getThumbnailImageList().get(transConfig.getNowThumbnailIndex());
-        transConfig.getImageLoader().displayThumbnailImageAsync(transUrl, new ImageLoader.ThumbnailCallback() {
-            @Override
-            public void onFinish(Drawable drawable) {
-                transImage.setImageDrawable(drawable);
+        String transUrl;
+        if (transConfig.isThumbnailEmpty()) {
+            transUrl = transConfig.getSourceImageList().get(transConfig.getNowThumbnailIndex());
+        } else {
+            transUrl = transConfig.getThumbnailImageList().get(transConfig.getNowThumbnailIndex());
+        }
 
-                switch (state) {
-                    case TransferImage.STATE_TRANS_IN:
-                        transImage.transformIn();
-                        postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                setOriginImageVisibility(View.INVISIBLE);
-                            }
-                        }, 20);
-                        break;
-                    case TransferImage.STATE_TRANS_OUT:
-                        transImage.transformOut();
-                        break;
-                }
-            }
-        });
+        transImage.setImageDrawable(transAdapter.getImageItem(transConfig.getNowThumbnailIndex()).getDrawable());
+
+        switch (state) {
+            case TransferImage.STATE_TRANS_IN:
+                transImage.transformIn();
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setOriginImageVisibility(View.INVISIBLE);
+                    }
+                }, 20);
+                break;
+            case TransferImage.STATE_TRANS_OUT:
+                transImage.transformOut();
+                break;
+        }
+
+
+//        transConfig.getImageLoader().displayThumbnailImageAsync(transUrl, new ImageLoader.ThumbnailCallback() {
+//            @Override
+//            public void onFinish(Drawable drawable) {
+//                transImage.setImageDrawable(drawable);
+//
+//                switch (state) {
+//                    case TransferImage.STATE_TRANS_IN:
+//                        transImage.transformIn();
+//                        postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                setOriginImageVisibility(View.INVISIBLE);
+//                            }
+//                        }, 20);
+//                        break;
+//                    case TransferImage.STATE_TRANS_OUT:
+//                        transImage.transformOut();
+//                        break;
+//                }
+//            }
+//        });
+
     }
 
     private int getTransImageLocalY(int oldY) {
@@ -296,6 +322,7 @@ class TransferLayout extends FrameLayout {
     public void dismiss(int pos) {
         createTransferImage(pos, TransferImage.STATE_TRANS_OUT);
         hideIndexIndicator();
+        // TODO: 可以等 drawable 设置好了，再隐藏
         postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -355,8 +382,8 @@ class TransferLayout extends FrameLayout {
 
     private void loadNotThumbnailSourceImage(final int position) {
         final String imgUrl = transConfig.getSourceImageList().get(position);
-        ImageView originImage = transConfig.getOriginImageList().get(
-                transConfig.getNowThumbnailIndex());
+        ImageView originImage = transConfig.getOriginImageList().get(position);
+
         transConfig.getImageLoader().displaySourceImage(imgUrl,
                 transAdapter.getImageItem(position), originImage.getDrawable(), new ImageLoader.SourceCallback() {
 
@@ -377,8 +404,6 @@ class TransferLayout extends FrameLayout {
 
                     @Override
                     public void onFinish() {
-
-//                        transAdapter.getImageItem(position).enable();
                     }
 
                     @Override

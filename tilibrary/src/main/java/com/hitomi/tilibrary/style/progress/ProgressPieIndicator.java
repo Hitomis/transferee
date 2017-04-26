@@ -73,6 +73,8 @@ public class ProgressPieIndicator implements IProgressIndicator {
     @Override
     public void onFinish(int position) {
         ProgressPieView progressPieView = progressPieViewMap.get(position);
+        if (progressPieView == null) return;
+
         ViewGroup vg = (ViewGroup) progressPieView.getParent();;
         if (vg != null) {
             vg.removeView(progressPieView);

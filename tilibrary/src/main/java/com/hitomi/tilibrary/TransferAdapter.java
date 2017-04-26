@@ -23,24 +23,24 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 class TransferAdapter extends PagerAdapter {
 
     private int showIndex;
-    private int imageSize;
     private Drawable placeHolder;
+    private TransferConfig config;
 
     private OnDismissListener onDismissListener;
     private OnInstantiateItemListener onInstantListener;
 
     private Map<Integer, FrameLayout> containnerLayoutMap;
 
-    public TransferAdapter(int showIndex, int imageSize, Drawable placeHolder) {
-        this.showIndex = showIndex == 0 ? 1 : showIndex;
-        this.imageSize = imageSize;
-        this.placeHolder = placeHolder;
+    public TransferAdapter(Context context, TransferConfig config) {
+        this.showIndex = config.getNowThumbnailIndex() == 0 ? 1 : config.getNowThumbnailIndex();
+        this.placeHolder = config.getMissDrawable(context);
+        this.config = config;
         containnerLayoutMap = new WeakHashMap<>();
     }
 
     @Override
     public int getCount() {
-        return imageSize;
+        return config.getSourceImageList().size();
     }
 
     @Override
@@ -90,7 +90,7 @@ class TransferAdapter extends PagerAdapter {
         // ViewPager instantiateItem 顺序：从 position 开始递减到0位置，再从 positon 递增到 getCount() - 1
         FrameLayout parentLayout = containnerLayoutMap.get(position);
         if (parentLayout == null) {
-            parentLayout = newParentLayout(container.getContext(), position);
+            parentLayout = newParentLayout(container, position);
             containnerLayoutMap.put(position, parentLayout);
         }
         container.addView(parentLayout);
@@ -100,17 +100,27 @@ class TransferAdapter extends PagerAdapter {
     }
 
     @NonNull
-    private FrameLayout newParentLayout(Context context, final int pos) {
+    private FrameLayout newParentLayout(ViewGroup container, final int pos) {
         // create inner ImageView
-        TransferImage imageView = new TransferImage(context);
-        imageView.setOriginalInfo(200, 200, 260, 515);
-        imageView.setImageDrawable(placeHolder);
-        imageView.transClip();
+        TransferImage imageView = new TransferImage(container.getContext());
+        if (config.isThumbnailEmpty()) {
+            Drawable originDrawable = config.getOriginImageList()
+                    .get(pos).getDrawable();
+            int locationX = (container.getMeasuredWidth() - originDrawable.getIntrinsicWidth()) / 2;
+            int locationY = (container.getMeasuredHeight() - originDrawable.getIntrinsicHeight()) / 2;
+            imageView.setOriginalInfo(locationX, locationY,
+                    originDrawable.getIntrinsicWidth(), originDrawable.getIntrinsicHeight());
+            imageView.setImageDrawable(originDrawable);
+            imageView.transClip();
+            imageView.setImageDrawable(placeHolder);
+        } else {
+            imageView.setImageDrawable(placeHolder);
+        }
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
 
         // create outer ParentLayout
-        FrameLayout parentLayout = new FrameLayout(context);
+        FrameLayout parentLayout = new FrameLayout(container.getContext());
         parentLayout.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         parentLayout.addView(imageView);
 

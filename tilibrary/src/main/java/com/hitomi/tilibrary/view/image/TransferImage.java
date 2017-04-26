@@ -47,9 +47,8 @@ public class TransferImage extends PhotoView {
 
     private Paint paint;
     private Matrix transMatrix;
-    private Drawable transDrawable;
 
-    private Transfrom transfrom;
+    private Transfrom transform;
     private OnTransferListener transformListener;
 
     public TransferImage(Context context) {
@@ -72,7 +71,7 @@ public class TransferImage extends PhotoView {
         paint.setStyle(Style.FILL);
     }
 
-    public void setOriginalInfo(int width, int height, int locationX, int locationY) {
+    public void setOriginalInfo(int locationX, int locationY, int width, int height) {
         originalWidth = width;
         originalHeight = height;
         originalLocationX = locationX;
@@ -147,29 +146,37 @@ public class TransferImage extends PhotoView {
     }
 
     /**
+     * 获取 TransferImage 图片相关参数对象
+     * @return {@link #transform}
+     */
+    public Transfrom getTransform() {
+        return transform;
+    }
+
+    /**
      * 初始化进入的变量信息
      */
     private void initTransform() {
-        if (getDrawable() == null) return;
+        Drawable transDrawable = getDrawable();
+        if (transDrawable == null) return;
         if (getWidth() == 0 || getHeight() == 0) return;
 
-        transDrawable = getDrawable();
-        transfrom = new Transfrom();
+        transform = new Transfrom();
 
         /** 下面为缩放的计算 */
         /* 计算初始的缩放值，初始值因为是CENTR_CROP效果，所以要保证图片的宽和高至少1个能匹配原始的宽和高，另1个大于 */
         float xSScale = originalWidth / ((float) transDrawable.getIntrinsicWidth());
         float ySScale = originalHeight / ((float) transDrawable.getIntrinsicHeight());
         float startScale = xSScale > ySScale ? xSScale : ySScale;
-        transfrom.startScale = startScale;
+        transform.startScale = startScale;
         /* 计算结束时候的缩放值，结束值因为要达到FIT_CENTER效果，所以要保证图片的宽和高至少1个能匹配原始的宽和高，另1个小于 */
         float xEScale = getWidth() / ((float) transDrawable.getIntrinsicWidth());
         float yEScale = getHeight() / ((float) transDrawable.getIntrinsicHeight());
         float endScale = xEScale < yEScale ? xEScale : yEScale;
         if (cate == CATE_ANIMA_APART && stage == STAGE_IN_TRANSLATE) { // 平移阶段的动画，不缩放
-            transfrom.endScale = startScale;
+            transform.endScale = startScale;
         } else {
-            transfrom.endScale = endScale;
+            transform.endScale = endScale;
         }
 
         /**
@@ -179,31 +186,31 @@ public class TransferImage extends PhotoView {
          * ，他就包括左上顶点坐标，和宽高，最后转为Canvas裁减的Rect.
          */
         /* 开始区域 */
-        transfrom.startRect = new LocationSizeF();
-        transfrom.startRect.left = originalLocationX;
-        transfrom.startRect.top = originalLocationY;
-        transfrom.startRect.width = originalWidth;
-        transfrom.startRect.height = originalHeight;
+        transform.startRect = new LocationSizeF();
+        transform.startRect.left = originalLocationX;
+        transform.startRect.top = originalLocationY;
+        transform.startRect.width = originalWidth;
+        transform.startRect.height = originalHeight;
         /* 结束区域 */
-        transfrom.endRect = new LocationSizeF();
-        float bitmapEndWidth = transDrawable.getIntrinsicWidth() * transfrom.endScale;// 图片最终的宽度
-        float bitmapEndHeight = transDrawable.getIntrinsicHeight() * transfrom.endScale;// 图片最终的高度
-        transfrom.endRect.left = (getWidth() - bitmapEndWidth) / 2;
-        transfrom.endRect.top = (getHeight() - bitmapEndHeight) / 2;
-        transfrom.endRect.width = bitmapEndWidth;
-        transfrom.endRect.height = bitmapEndHeight;
+        transform.endRect = new LocationSizeF();
+        float bitmapEndWidth = transDrawable.getIntrinsicWidth() * transform.endScale;// 图片最终的宽度
+        float bitmapEndHeight = transDrawable.getIntrinsicHeight() * transform.endScale;// 图片最终的高度
+        transform.endRect.left = (getWidth() - bitmapEndWidth) / 2;
+        transform.endRect.top = (getHeight() - bitmapEndHeight) / 2;
+        transform.endRect.width = bitmapEndWidth;
+        transform.endRect.height = bitmapEndHeight;
 
-        transfrom.rect = new LocationSizeF();
+        transform.rect = new LocationSizeF();
     }
 
     private void calcBmpMatrix() {
-        if (getDrawable() == null || transfrom == null) return;
-        transDrawable = getDrawable();
+        Drawable transDrawable = getDrawable();
+        if (transDrawable == null || transform == null) return;
 
 		/* 下面实现了CENTER_CROP的功能 */
-        transMatrix.setScale(transfrom.scale, transfrom.scale);
-        transMatrix.postTranslate(-(transfrom.scale * transDrawable.getIntrinsicWidth() / 2 - transfrom.rect.width / 2),
-                -(transfrom.scale * transDrawable.getIntrinsicHeight() / 2 - transfrom.rect.height / 2));
+        transMatrix.setScale(transform.scale, transform.scale);
+        transMatrix.postTranslate(-(transform.scale * transDrawable.getIntrinsicWidth() / 2 - transform.rect.width / 2),
+                -(transform.scale * transDrawable.getIntrinsicHeight() / 2 - transform.rect.height / 2));
     }
 
     @Override
@@ -214,16 +221,16 @@ public class TransferImage extends PhotoView {
             if (transformStart) {
                 initTransform();
             }
-            if (transfrom == null) {
+            if (transform == null) {
                 super.onDraw(canvas);
                 return;
             }
 
             if (transformStart) {
                 if (state == STATE_TRANS_IN || state == STATE_TRANS_CLIP) {
-                    transfrom.initStartIn();
+                    transform.initStartIn();
                 } else {
-                    transfrom.initStartOut();
+                    transform.initStartOut();
                 }
             }
 
@@ -234,8 +241,8 @@ public class TransferImage extends PhotoView {
             canvas.save();
             // 先得到图片在此刻的图像Matrix矩阵
             calcBmpMatrix();
-            canvas.translate(transfrom.rect.left, transfrom.rect.top);
-            canvas.clipRect(0, 0, transfrom.rect.width, transfrom.rect.height);
+            canvas.translate(transform.rect.left, transform.rect.top);
+            canvas.clipRect(0, 0, transform.rect.width, transform.rect.height);
             canvas.concat(transMatrix);
             getDrawable().draw(canvas);
             canvas.restoreToCount(saveCount);
@@ -260,45 +267,45 @@ public class TransferImage extends PhotoView {
     }
 
     private void startApartTrans() {
-        if (transfrom == null) return;
+        if (transform == null) return;
 
         ValueAnimator valueAnimator = new ValueAnimator();
         valueAnimator.setDuration(duration);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
 
         if (stage == STAGE_IN_TRANSLATE) { // 平移动画
-            PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transfrom.startRect.left, transfrom.endRect.left);
-            PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transfrom.startRect.top, transfrom.endRect.top);
-            PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transfrom.startRect.width, transfrom.endRect.width);
-            PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transfrom.startRect.height, transfrom.endRect.height);
+            PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transform.startRect.left, transform.endRect.left);
+            PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transform.startRect.top, transform.endRect.top);
+            PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transform.startRect.width, transform.endRect.width);
+            PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transform.startRect.height, transform.endRect.height);
             PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofInt("alpha", 0, 255);
             valueAnimator.setValues(leftHolder, topHolder, widthHolder, heightHolder, alphaHolder);
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public synchronized void onAnimationUpdate(ValueAnimator animation) {
-                    transfrom.rect.left = (Float) animation.getAnimatedValue("left");
-                    transfrom.rect.top = (Float) animation.getAnimatedValue("top");
-                    transfrom.rect.width = (Float) animation.getAnimatedValue("width");
-                    transfrom.rect.height = (Float) animation.getAnimatedValue("height");
+                    transform.rect.left = (Float) animation.getAnimatedValue("left");
+                    transform.rect.top = (Float) animation.getAnimatedValue("top");
+                    transform.rect.width = (Float) animation.getAnimatedValue("width");
+                    transform.rect.height = (Float) animation.getAnimatedValue("height");
                     backgroundAlpha = (Integer) animation.getAnimatedValue("alpha");
                     invalidate();
                 }
             });
         } else { // 缩放动画
-            PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transfrom.startRect.left, transfrom.endRect.left);
-            PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transfrom.startRect.top, transfrom.endRect.top);
-            PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transfrom.startRect.width, transfrom.endRect.width);
-            PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transfrom.startRect.height, transfrom.endRect.height);
-            PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transfrom.startScale, transfrom.endScale);
+            PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transform.startRect.left, transform.endRect.left);
+            PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transform.startRect.top, transform.endRect.top);
+            PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transform.startRect.width, transform.endRect.width);
+            PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transform.startRect.height, transform.endRect.height);
+            PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transform.startScale, transform.endScale);
             valueAnimator.setValues(scaleHolder, leftHolder, topHolder, widthHolder, heightHolder);
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public synchronized void onAnimationUpdate(ValueAnimator animation) {
-                    transfrom.rect.left = (Float) animation.getAnimatedValue("left");
-                    transfrom.rect.top = (Float) animation.getAnimatedValue("top");
-                    transfrom.rect.width = (Float) animation.getAnimatedValue("width");
-                    transfrom.rect.height = (Float) animation.getAnimatedValue("height");
-                    transfrom.scale = (Float) animation.getAnimatedValue("scale");
+                    transform.rect.left = (Float) animation.getAnimatedValue("left");
+                    transform.rect.top = (Float) animation.getAnimatedValue("top");
+                    transform.rect.width = (Float) animation.getAnimatedValue("width");
+                    transform.rect.height = (Float) animation.getAnimatedValue("height");
+                    transform.scale = (Float) animation.getAnimatedValue("scale");
                     invalidate();
                 }
             });
@@ -308,10 +315,10 @@ public class TransferImage extends PhotoView {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (stage == STAGE_IN_TRANSLATE) {
-                    originalLocationX = (int) transfrom.endRect.left;
-                    originalLocationY = (int) transfrom.endRect.top;
-                    originalWidth = (int) transfrom.endRect.width;
-                    originalHeight = (int) transfrom.endRect.height;
+                    originalLocationX = (int) transform.endRect.left;
+                    originalLocationY = (int) transform.endRect.top;
+                    originalWidth = (int) transform.endRect.width;
+                    originalHeight = (int) transform.endRect.height;
                 }
 
                 if (state == STATE_TRANS_IN && stage == STAGE_IN_SCALE)
@@ -327,25 +334,25 @@ public class TransferImage extends PhotoView {
     }
 
     private void startTogetherTrans() {
-        if (transfrom == null) return;
+        if (transform == null) return;
 
         ValueAnimator valueAnimator = new ValueAnimator();
         valueAnimator.setDuration(duration);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         if (state == STATE_TRANS_IN) {
-            PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transfrom.startScale, transfrom.endScale);
-            PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transfrom.startRect.left, transfrom.endRect.left);
-            PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transfrom.startRect.top, transfrom.endRect.top);
-            PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transfrom.startRect.width, transfrom.endRect.width);
-            PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transfrom.startRect.height, transfrom.endRect.height);
+            PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transform.startScale, transform.endScale);
+            PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transform.startRect.left, transform.endRect.left);
+            PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transform.startRect.top, transform.endRect.top);
+            PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transform.startRect.width, transform.endRect.width);
+            PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transform.startRect.height, transform.endRect.height);
             PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofInt("alpha", 0, 255);
             valueAnimator.setValues(scaleHolder, leftHolder, topHolder, widthHolder, heightHolder, alphaHolder);
         } else {
-            PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transfrom.endScale, transfrom.startScale);
-            PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transfrom.endRect.left, transfrom.startRect.left);
-            PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transfrom.endRect.top, transfrom.startRect.top);
-            PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transfrom.endRect.width, transfrom.startRect.width);
-            PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transfrom.endRect.height, transfrom.startRect.height);
+            PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transform.endScale, transform.startScale);
+            PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transform.endRect.left, transform.startRect.left);
+            PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transform.endRect.top, transform.startRect.top);
+            PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transform.endRect.width, transform.startRect.width);
+            PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transform.endRect.height, transform.startRect.height);
             PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofInt("alpha", 255, 0);
             valueAnimator.setValues(scaleHolder, leftHolder, topHolder, widthHolder, heightHolder, alphaHolder);
         }
@@ -353,11 +360,11 @@ public class TransferImage extends PhotoView {
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public synchronized void onAnimationUpdate(ValueAnimator animation) {
-                transfrom.scale = (Float) animation.getAnimatedValue("scale");
-                transfrom.rect.left = (Float) animation.getAnimatedValue("left");
-                transfrom.rect.top = (Float) animation.getAnimatedValue("top");
-                transfrom.rect.width = (Float) animation.getAnimatedValue("width");
-                transfrom.rect.height = (Float) animation.getAnimatedValue("height");
+                transform.scale = (Float) animation.getAnimatedValue("scale");
+                transform.rect.left = (Float) animation.getAnimatedValue("left");
+                transform.rect.top = (Float) animation.getAnimatedValue("top");
+                transform.rect.width = (Float) animation.getAnimatedValue("width");
+                transform.rect.height = (Float) animation.getAnimatedValue("height");
                 backgroundAlpha = (Integer) animation.getAnimatedValue("alpha");
                 invalidate();
             }

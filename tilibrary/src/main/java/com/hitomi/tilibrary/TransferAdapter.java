@@ -1,6 +1,5 @@
 package com.hitomi.tilibrary;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
@@ -23,7 +22,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 class TransferAdapter extends PagerAdapter {
 
     private int showIndex;
-    private Drawable placeHolder;
+    private int imageSize;
     private TransferConfig config;
 
     private OnDismissListener onDismissListener;
@@ -31,16 +30,17 @@ class TransferAdapter extends PagerAdapter {
 
     private Map<Integer, FrameLayout> containnerLayoutMap;
 
-    public TransferAdapter(Context context, TransferConfig config) {
-        this.showIndex = config.getNowThumbnailIndex() == 0 ? 1 : config.getNowThumbnailIndex();
-        this.placeHolder = config.getMissDrawable(context);
+    public TransferAdapter(TransferConfig config) {
+        this.imageSize = config.getSourceImageList().size();
+        this.showIndex = config.getNowThumbnailIndex() + 1 == imageSize
+                ? config.getNowThumbnailIndex() - 1 : config.getNowThumbnailIndex() + 1;
         this.config = config;
         containnerLayoutMap = new WeakHashMap<>();
     }
 
     @Override
     public int getCount() {
-        return config.getSourceImageList().size();
+        return imageSize;
     }
 
     @Override
@@ -110,11 +110,7 @@ class TransferAdapter extends PagerAdapter {
             int locationY = (container.getMeasuredHeight() - originDrawable.getIntrinsicHeight()) / 2;
             imageView.setOriginalInfo(locationX, locationY,
                     originDrawable.getIntrinsicWidth(), originDrawable.getIntrinsicHeight());
-            imageView.setImageDrawable(originDrawable);
             imageView.transClip();
-            imageView.setImageDrawable(placeHolder);
-        } else {
-            imageView.setImageDrawable(placeHolder);
         }
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));

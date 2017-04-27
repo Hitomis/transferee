@@ -146,14 +146,6 @@ public class TransferImage extends PhotoView {
     }
 
     /**
-     * 获取 TransferImage 图片相关参数对象
-     * @return {@link #transform}
-     */
-    public Transfrom getTransform() {
-        return transform;
-    }
-
-    /**
      * 初始化进入的变量信息
      */
     private void initTransform() {

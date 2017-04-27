@@ -45,8 +45,8 @@ public class CircleIndexIndicator implements IIndexIndicator {
 
     @Override
     public void onRemove() {
+        if (circleIndicator == null) return ;
         ViewGroup vg = (ViewGroup) circleIndicator.getParent();
-
         if (vg != null) {
             vg.removeView(circleIndicator);
         }

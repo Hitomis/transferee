@@ -13,8 +13,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.loader.glide.GlideProgressSupport.ProgressTarget;
 
-import java.io.File;
-
 
 /**
  * Created by hitomi on 2017/1/25.
@@ -77,16 +75,13 @@ public class GlideImageLoader implements ImageLoader {
                 });
     }
 
-    @Override
-    public void preFetch(String url) {
-        Glide.with(context)
-                .load(url)
-                .downloadOnly(new SimpleTarget<File>() {
-                    @Override
-                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                        // Don't do anything
-                    }
-                });
+    public void stayRequests(Context context, boolean stay) {
+        if (stay) {
+            Glide.with(context).pauseRequests();
+        } else {
+            Glide.with(context).resumeRequests();
+        }
     }
+
 
 }

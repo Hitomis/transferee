@@ -49,6 +49,7 @@ public class GridViewActivity extends BaseActivity {
                 imageView.setClickable(true);
                 Glide.with(GridViewActivity.this)
                         .load(item)
+                        .centerCrop()
                         .placeholder(R.mipmap.ic_empty_photo)
                         .into(imageView);
 
@@ -58,7 +59,6 @@ public class GridViewActivity extends BaseActivity {
                         TransferConfig config = TransferConfig.build()
                                 .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                                 .setOriginImageList(wrapOriginImageViewList())
-                                .setThumbnailImageList(imageStrList)
                                 .setSourceImageList(imageStrList)
                                 .setNowThumbnailIndex(position)
                                 .create();

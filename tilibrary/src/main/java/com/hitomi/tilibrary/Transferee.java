@@ -103,7 +103,7 @@ public class Transferee implements DialogInterface.OnShowListener,
                 ? new CircleIndexIndicator() : transConfig.getIndexIndicator());
 
         transConfig.setImageLoader(transConfig.getImageLoader() == null
-                ? GlideImageLoader.with(context) : transConfig.getImageLoader());
+                ? GlideImageLoader.with(context.getApplicationContext()) : transConfig.getImageLoader());
     }
 
     /**
@@ -136,6 +136,7 @@ public class Transferee implements DialogInterface.OnShowListener,
     public void show() {
         if (shown) return;
         transDialog.show();
+        stayRequest(true);
         shown = true;
     }
 
@@ -163,7 +164,15 @@ public class Transferee implements DialogInterface.OnShowListener,
     @Override
     public void onReset() {
         transDialog.dismiss();
+        stayRequest(false);
         shown = false;
+    }
+
+    private void stayRequest(boolean stay) {
+        if (transConfig.getImageLoader() instanceof GlideImageLoader) {
+            GlideImageLoader imageLoader = (GlideImageLoader) transConfig.getImageLoader();
+            imageLoader.stayRequests(context, stay);
+        }
     }
 
     @Override

@@ -40,13 +40,6 @@ public interface ImageLoader {
      */
     void displayThumbnailImageAsync(String thumbUrl, final ThumbnailCallback callback);
 
-    /**
-     * 后台预加载图片资源
-     *
-     * @param url
-     */
-    void preFetch(String url);
-
     interface SourceCallback {
         @UiThread
         void onStart();

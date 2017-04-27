@@ -60,16 +60,20 @@ class TransferAdapter extends PagerAdapter {
      * @return
      */
     public TransferImage getImageItem(int position) {
-        FrameLayout parentLayout = containnerLayoutMap.get(position);
-        int childCount = parentLayout.getChildCount();
         TransferImage transImage = null;
-        for (int i = 0; i < childCount; i++) {
-            View view = parentLayout.getChildAt(i);
-            if (view instanceof ImageView) {
-                transImage = (TransferImage) view;
-                break;
+
+        FrameLayout parentLayout = containnerLayoutMap.get(position);
+        if (parentLayout != null) {
+            int childCount = parentLayout.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View view = parentLayout.getChildAt(i);
+                if (view instanceof ImageView) {
+                    transImage = (TransferImage) view;
+                    break;
+                }
             }
         }
+
         return transImage;
     }
 

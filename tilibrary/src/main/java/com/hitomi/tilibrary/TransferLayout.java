@@ -82,7 +82,6 @@ class TransferLayout extends FrameLayout {
         public void onComplete() {
             transViewPager.addOnPageChangeListener(transChangeListener);
 
-            // 初始加载第一张原图 TODO：加载左右各一张
             int position = transConfig.getNowThumbnailIndex();
             loadSourceImageOffset(position, 1);
         }
@@ -162,18 +161,6 @@ class TransferLayout extends FrameLayout {
         originImage.setVisibility(visibility);
     }
 
-    /**
-     * 初始化 TransferImage
-     */
-    private void initTransfer() {
-        createTransferViewPager();
-        if (transConfig.isThumbnailEmpty()) {
-            createTransferImage();
-        } else {
-            createTransferImage(transConfig.getNowThumbnailIndex(),
-                    TransferImage.STATE_TRANS_IN);
-        }
-    }
 
     private void createTransferImage() {
         ImageView originImage = transConfig.getOriginImageList().get(
@@ -308,7 +295,13 @@ class TransferLayout extends FrameLayout {
      * 初始化 TransferLayout 中的各个组件，并显示，同时开启动画
      */
     public void show() {
-        initTransfer();
+        createTransferViewPager();
+        if (transConfig.isThumbnailEmpty()) {
+            createTransferImage();
+        } else {
+            createTransferImage(transConfig.getNowThumbnailIndex(),
+                    TransferImage.STATE_TRANS_IN);
+        }
     }
 
     /**
@@ -396,6 +389,7 @@ class TransferLayout extends FrameLayout {
                     public void onProgress(int progress) {
                         if (progressIndicator == null) return;
                         progressIndicator.onProgress(position, progress);
+                        System.out.println("progress:" + progress + "----------pos:" + position);
                     }
 
                     @Override
@@ -410,7 +404,7 @@ class TransferLayout extends FrameLayout {
                                     progressIndicator.onFinish(position);
 
                                 imageView = transAdapter.getImageItem(position);
-                                imageView.transformIn();
+                                imageView.transformIn(TransferImage.STAGE_IN_SCALE);
                                 imageView.enable();
                                 break;
                             case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图

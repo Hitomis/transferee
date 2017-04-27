@@ -1,6 +1,7 @@
 package com.hitomi.tilibrary;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -28,6 +29,8 @@ import static android.widget.ImageView.ScaleType.FIT_CENTER;
  * Created by Hitomis on 2017/4/23 0023.
  */
 class TransferLayout extends FrameLayout {
+    static final String SP_FILE = "transferee";
+    static final String SP_LOAD_SET = "load_set";
 
     private Context context;
 
@@ -55,25 +58,6 @@ class TransferLayout extends FrameLayout {
             }
         }
     };
-
-    private void loadSourceImageOffset(int position, int offset) {
-        int left = position - offset;
-        int right = position + offset;
-
-        if (!loadedIndexSet.contains(position)) {
-            loadSourceImage(position);
-            loadedIndexSet.add(position);
-        }
-        if (left >= 0 && !loadedIndexSet.contains(left)) {
-            loadSourceImage(left);
-            loadedIndexSet.add(left);
-        }
-        if (right < transConfig.getSourceImageList().size() && !loadedIndexSet.contains(right)) {
-            loadSourceImage(right);
-            loadedIndexSet.add(right);
-        }
-    }
-
     /**
      * TransferAdapter 中对应页面创建完成监听器
      */
@@ -141,6 +125,24 @@ class TransferLayout extends FrameLayout {
         super(context);
         this.context = context;
         this.loadedIndexSet = new HashSet<>();
+    }
+
+    private void loadSourceImageOffset(int position, int offset) {
+        int left = position - offset;
+        int right = position + offset;
+
+        if (!loadedIndexSet.contains(position)) {
+            loadSourceImage(position);
+            loadedIndexSet.add(position);
+        }
+        if (left >= 0 && !loadedIndexSet.contains(left)) {
+            loadSourceImage(left);
+            loadedIndexSet.add(left);
+        }
+        if (right < transConfig.getSourceImageList().size() && !loadedIndexSet.contains(right)) {
+            loadSourceImage(right);
+            loadedIndexSet.add(right);
+        }
     }
 
     private void loadSourceImage(int position) {
@@ -296,12 +298,21 @@ class TransferLayout extends FrameLayout {
      */
     public void show() {
         createTransferViewPager();
+
         if (transConfig.isThumbnailEmpty()) {
             createTransferImage();
         } else {
             createTransferImage(transConfig.getNowThumbnailIndex(),
                     TransferImage.STATE_TRANS_IN);
         }
+
+    }
+
+    private boolean containsSourceImageUrl(String url) {
+        SharedPreferences loadSharedPref = context.getSharedPreferences(SP_FILE, Context.MODE_PRIVATE);
+        Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
+        return loadedSet.contains(url);
+
     }
 
     /**
@@ -392,7 +403,8 @@ class TransferLayout extends FrameLayout {
                     }
 
                     @Override
-                    public void onFinish() {}
+                    public void onFinish() {
+                    }
 
                     @Override
                     public void onDelivered(int status) {
@@ -402,6 +414,7 @@ class TransferLayout extends FrameLayout {
                                 if (progressIndicator != null)
                                     progressIndicator.onFinish(position);
 
+                                cacheLoadedImageUrl(imgUrl);
                                 imageView = transAdapter.getImageItem(position);
                                 imageView.transformIn(TransferImage.STAGE_IN_SCALE);
                                 imageView.enable();
@@ -414,6 +427,16 @@ class TransferLayout extends FrameLayout {
                     }
                 });
 
+    }
+
+    private void cacheLoadedImageUrl(String url) {
+        SharedPreferences loadSharedPref = context.getSharedPreferences(SP_FILE, Context.MODE_PRIVATE);
+        Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
+        loadedSet.add(url);
+
+        loadSharedPref.edit()
+                .putStringSet(SP_LOAD_SET, loadedSet)
+                .commit();
     }
 
     /**
@@ -456,6 +479,7 @@ class TransferLayout extends FrameLayout {
                                 TransferImage imageView;
                                 switch (status) {
                                     case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功，启用 TransferImage 的手势缩放功能
+                                        cacheLoadedImageUrl(imgUrl);
                                         imageView = transAdapter.getImageItem(position);
                                         imageView.enable();
                                         break;

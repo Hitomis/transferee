@@ -6,6 +6,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -20,7 +21,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
  */
 public class TransferImage extends PhotoView {
 
-    public static final int STATE_TRANS_NORMAL = 0;
+    public static final int STATE_TRANS_NORMAL = 0; // 普通状态
     public static final int STATE_TRANS_IN = 1; // 从缩略图到大图状态
     public static final int STATE_TRANS_OUT = 2; // 从大图到缩略图状态
     public static final int STATE_TRANS_CLIP = 3; // 裁剪状态
@@ -30,8 +31,6 @@ public class TransferImage extends PhotoView {
 
     public static final int STAGE_IN_TRANSLATE = 201; // 平移
     public static final int STAGE_IN_SCALE = 202; // 缩放
-
-    private final int backgroundColor = 0xFF000000;
 
     private int state = STATE_TRANS_NORMAL; // 当前动画状态
     private int cate = CATE_ANIMA_TOGETHER; // 当前动画类型
@@ -67,7 +66,7 @@ public class TransferImage extends PhotoView {
     private void init() {
         transMatrix = new Matrix();
         paint = new Paint();
-        paint.setColor(backgroundColor);
+        paint.setColor(Color.BLACK);
         paint.setStyle(Style.FILL);
     }
 
@@ -76,8 +75,9 @@ public class TransferImage extends PhotoView {
         originalHeight = height;
         originalLocationX = locationX;
         originalLocationY = locationY;
-        // 因为是屏幕坐标，所以要转换为该视图内的坐标，因为我所用的该视图是MATCH_PARENT，所以不用定位该视图的位置,如果不是的话，还需要定位视图的位置，然后计算mOriginalLocationX和mOriginalLocationY
-//		originalLocationY = mOriginalLocationY - getStatusBarHeight(getContext());
+        // 因为是屏幕坐标，所以要转换为该视图内的坐标，因为我所用的该视图是MATCH_PARENT，所以不用定位该视图的位置,
+        // 如果不是的话，还需要定位视图的位置，然后计算mOriginalLocationX和mOriginalLocationY
+        //originalLocationY = mOriginalLocationY - getStatusBarHeight(getContext());
     }
 
     /**
@@ -90,7 +90,10 @@ public class TransferImage extends PhotoView {
         invalidate();
     }
 
-    public void transClip(){
+    /**
+     * 按 {@link #setOriginalInfo(int, int, int, int)} 方法指定的的参数裁剪显示的图片
+     */
+    public void transClip() {
         state = STATE_TRANS_CLIP;
         transformStart = true;
     }
@@ -172,7 +175,7 @@ public class TransferImage extends PhotoView {
         }
 
         /**
-         * 下面计算Canvas Clip的范围，也就是图片的显示的范围，因为图片是慢慢变大，并且是等比例的，所以这个效果还需要裁减图片显示的区域
+         * 计算Canvas Clip的范围，也就是图片的显示的范围，因为图片是慢慢变大，并且是等比例的，所以这个效果还需要裁减图片显示的区域
          * ，而显示区域的变化范围是在原始CENTER_CROP效果的范围区域
          * ，到最终的FIT_CENTER的范围之间的，区域我用LocationSizeF更好计算
          * ，他就包括左上顶点坐标，和宽高，最后转为Canvas裁减的Rect.

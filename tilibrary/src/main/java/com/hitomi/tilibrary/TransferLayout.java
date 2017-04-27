@@ -389,7 +389,6 @@ class TransferLayout extends FrameLayout {
                     public void onProgress(int progress) {
                         if (progressIndicator == null) return;
                         progressIndicator.onProgress(position, progress);
-                        System.out.println("progress:" + progress + "----------pos:" + position);
                     }
 
                     @Override

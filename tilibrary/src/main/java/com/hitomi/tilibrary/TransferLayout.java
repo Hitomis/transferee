@@ -19,7 +19,6 @@ import com.hitomi.tilibrary.view.image.TransferImage;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Executors;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
@@ -538,17 +537,12 @@ class TransferLayout extends FrameLayout {
     }
 
     private void cacheLoadedImageUrl(final String url) {
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
-            @Override
-            public void run() {
-                Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
-                loadedSet.add(url);
+        Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
+        loadedSet.add(url);
 
-                loadSharedPref.edit()
-                        .putStringSet(SP_LOAD_SET, loadedSet)
-                        .apply();
-            }
-        });
+        loadSharedPref.edit()
+                .putStringSet(SP_LOAD_SET, loadedSet)
+                .apply();
     }
 
     private boolean containsSourceImageUrl(String url) {

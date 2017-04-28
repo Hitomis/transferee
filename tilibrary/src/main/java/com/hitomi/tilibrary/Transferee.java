@@ -3,6 +3,7 @@ package com.hitomi.tilibrary;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
@@ -47,7 +48,7 @@ public class Transferee implements DialogInterface.OnShowListener,
 
     /**
      * @param context
-     * @return
+     * @return {@link Transferee}
      */
     public static Transferee getDefault(Context context) {
         if (defaultInstance == null) {
@@ -73,6 +74,11 @@ public class Transferee implements DialogInterface.OnShowListener,
         transDialog.setOnKeyListener(this);
     }
 
+    /**
+     * 兼容4.4以下的全屏 Dialog 样式
+     *
+     * @return The style of the dialog
+     */
     private int getDialogStyle() {
         int dialogStyle;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
@@ -105,6 +111,21 @@ public class Transferee implements DialogInterface.OnShowListener,
         transConfig.setImageLoader(transConfig.getImageLoader() == null
                 ? GlideImageLoader.with(context.getApplicationContext()) : transConfig.getImageLoader());
     }
+
+    /**
+     * 如果 Transferee 使用的是 Glide 作为图片加载器，那么需要暂停<br/>
+     * {@link #context} 环境下的的 Glide 加载请求，否则多个 Glide 加载 <br/>
+     * 资源线程的进度会彼此冲突
+     *
+     * @param stay true : pause, false : resume
+     */
+    private void stayRequest(boolean stay) {
+        if (transConfig.getImageLoader() instanceof GlideImageLoader) {
+            GlideImageLoader imageLoader = (GlideImageLoader) transConfig.getImageLoader();
+            imageLoader.stayRequests(context, stay);
+        }
+    }
+
 
     /**
      * 配置 TransferImage 参数对象
@@ -156,6 +177,17 @@ public class Transferee implements DialogInterface.OnShowListener,
         defaultInstance = null;
     }
 
+    /**
+     * 清除 TransferImage 缓存
+     */
+    public static void clear(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                TransferLayout.SP_FILE, Context.MODE_PRIVATE);
+        sharedPref.edit()
+                .remove(TransferLayout.SP_LOAD_SET)
+                .apply();
+    }
+
     @Override
     public void onShow(DialogInterface dialog) {
         transLayout.show();
@@ -168,13 +200,6 @@ public class Transferee implements DialogInterface.OnShowListener,
         shown = false;
     }
 
-    private void stayRequest(boolean stay) {
-        if (transConfig.getImageLoader() instanceof GlideImageLoader) {
-            GlideImageLoader imageLoader = (GlideImageLoader) transConfig.getImageLoader();
-            imageLoader.stayRequests(context, stay);
-        }
-    }
-
     @Override
     public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK &&
@@ -184,6 +209,5 @@ public class Transferee implements DialogInterface.OnShowListener,
         }
         return true;
     }
-
 
 }

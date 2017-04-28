@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static com.hitomi.tilibrary.TransferLayout.MODE_EMPTY_THUMBNAIL;
 
 /**
  * 展示高清图的图片数据适配器
@@ -24,17 +25,19 @@ class TransferAdapter extends PagerAdapter {
     private int showIndex;
     private int imageSize;
     private TransferConfig config;
+    private int mode;
 
     private OnDismissListener onDismissListener;
     private OnInstantiateItemListener onInstantListener;
 
     private Map<Integer, FrameLayout> containnerLayoutMap;
 
-    public TransferAdapter(TransferConfig config) {
+    public TransferAdapter(TransferConfig config, int thumbMode) {
         this.imageSize = config.getSourceImageList().size();
         this.showIndex = config.getNowThumbnailIndex() + 1 == imageSize
                 ? config.getNowThumbnailIndex() - 1 : config.getNowThumbnailIndex() + 1;
         this.config = config;
+        this.mode = thumbMode;
         containnerLayoutMap = new WeakHashMap<>();
     }
 
@@ -107,7 +110,7 @@ class TransferAdapter extends PagerAdapter {
     private FrameLayout newParentLayout(ViewGroup container, final int pos) {
         // create inner ImageView
         TransferImage imageView = new TransferImage(container.getContext());
-        if (config.isThumbnailEmpty()) {
+        if (mode == MODE_EMPTY_THUMBNAIL) {
             Drawable originDrawable = config.getOriginImageList()
                     .get(pos).getDrawable();
             int locationX = (container.getMeasuredWidth() - originDrawable.getIntrinsicWidth()) / 2;

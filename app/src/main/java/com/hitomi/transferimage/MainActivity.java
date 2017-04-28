@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.bumptech.glide.Glide;
+import com.hitomi.tilibrary.Transferee;
 
 import java.util.concurrent.Executors;
 
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         btnClearGlide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Transferee.clear(MainActivity.this);
                 Executors.newSingleThreadExecutor().submit(new Runnable() {
                     @Override
                     public void run() {

@@ -19,9 +19,9 @@ import com.hitomi.tilibrary.view.image.TransferImage;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.widget.ImageView.ScaleType.CENTER_CROP;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
 
 /**
@@ -32,6 +32,19 @@ class TransferLayout extends FrameLayout {
     static final String SP_FILE = "transferee";
     static final String SP_LOAD_SET = "load_set";
 
+    /**
+     * 高清图图片已经加载过了，直接使用 {@link TransferImage#CATE_ANIMA_TOGETHER} 动画类型展示图片
+     */
+    static final int MODE_LOCAL_THUMBNAIL = 1;
+    /**
+     * 高清图尚未加载，使用 {@link TransferImage#CATE_ANIMA_APART} 动画类型展示图片
+     */
+    static final int MODE_EMPTY_THUMBNAIL = 1 << 1;
+    /**
+     * 用户指定了缩略图路径，使用该路径加载缩略图，并使用 {@link TransferImage#CATE_ANIMA_TOGETHER} 动画类型展示图片
+     */
+    static final int MODE_REMOTE_THUMBNAIL = 1 << 2;
+
     private Context context;
 
     private TransferImage transImage;
@@ -39,9 +52,11 @@ class TransferLayout extends FrameLayout {
     private TransferAdapter transAdapter;
     private TransferConfig transConfig;
 
-    private Set<Integer> loadedIndexSet;
-
     private OnLayoutResetListener layoutResetListener;
+    private SharedPreferences loadSharedPref;
+
+    private Set<Integer> loadedIndexSet;
+    private int thumbMode;
 
     /**
      * ViewPager 页面切换监听器 => 当页面切换时，根据相邻优先加载的规则去加载图片
@@ -103,6 +118,7 @@ class TransferLayout extends FrameLayout {
             }
         }
     };
+
     /**
      * 点击 ImageView 关闭 TransferImage 的监听器
      */
@@ -116,6 +132,7 @@ class TransferLayout extends FrameLayout {
             dismiss(pos);
         }
     };
+
     /**
      * 构造方法
      *
@@ -123,8 +140,12 @@ class TransferLayout extends FrameLayout {
      */
     TransferLayout(Context context) {
         super(context);
+
         this.context = context;
         this.loadedIndexSet = new HashSet<>();
+
+        loadSharedPref = context.getSharedPreferences(
+                SP_FILE, Context.MODE_PRIVATE);
     }
 
     private void loadSourceImageOffset(int position, int offset) {
@@ -146,10 +167,17 @@ class TransferLayout extends FrameLayout {
     }
 
     private void loadSourceImage(int position) {
-        if (transConfig.isThumbnailEmpty())
-            loadLocalThumbnailSourceImage(position);
-        else
-            loadRemoteThumbnailSourceImage(position);
+        switch (thumbMode) {
+            case MODE_EMPTY_THUMBNAIL:
+                loadSourceImageByEmptyThumbnail(position);
+                break;
+            case MODE_LOCAL_THUMBNAIL:
+                loadSourceImageByLoadedThumbnail(position);
+                break;
+            case MODE_REMOTE_THUMBNAIL:
+                loadSourceImageByLoadedThumbnail(position);
+                break;
+        }
     }
 
     /**
@@ -161,27 +189,6 @@ class TransferLayout extends FrameLayout {
         int showIndex = transConfig.getNowThumbnailIndex();
         ImageView originImage = transConfig.getOriginImageList().get(showIndex);
         originImage.setVisibility(visibility);
-    }
-
-
-    private void createTransferImage() {
-        ImageView originImage = transConfig.getOriginImageList().get(
-                transConfig.getNowThumbnailIndex());
-        int[] location = new int[2];
-        originImage.getLocationInWindow(location);
-
-        transImage = new TransferImage(context);
-        transImage.setScaleType(CENTER_CROP);
-        transImage.setImageDrawable(originImage.getDrawable());
-        transImage.setOriginalInfo(location[0], getTransImageLocalY(location[1]),
-                originImage.getWidth(), originImage.getHeight());
-        transImage.setDuration(transConfig.getDuration());
-        transImage.setLayoutParams(new LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        transImage.setOnTransferListener(transferListener);
-        transImage.transformIn(TransferImage.STAGE_IN_TRANSLATE);
-
-        addView(transImage, 1);
     }
 
     /**
@@ -198,7 +205,7 @@ class TransferLayout extends FrameLayout {
      * 创建 ViewPager
      */
     private void createTransferViewPager() {
-        transAdapter = new TransferAdapter(transConfig);
+        transAdapter = new TransferAdapter(transConfig, thumbMode);
         transAdapter.setOnDismissListener(dismissListener);
         transAdapter.setOnInstantListener(instantListener);
 
@@ -211,6 +218,26 @@ class TransferLayout extends FrameLayout {
         transViewPager.setCurrentItem(transConfig.getNowThumbnailIndex());
 
         addView(transViewPager, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
+    }
+
+    private void createTransferImage() {
+        ImageView originImage = transConfig.getOriginImageList().get(
+                transConfig.getNowThumbnailIndex());
+        int[] location = new int[2];
+        originImage.getLocationInWindow(location);
+
+        transImage = new TransferImage(context);
+        transImage.setScaleType(FIT_CENTER);
+        transImage.setImageDrawable(originImage.getDrawable());
+        transImage.setOriginalInfo(location[0], getTransImageLocalY(location[1]),
+                originImage.getWidth(), originImage.getHeight());
+        transImage.setDuration(transConfig.getDuration());
+        transImage.setLayoutParams(new LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        transImage.setOnTransferListener(transferListener);
+        transImage.transformIn(TransferImage.STAGE_IN_TRANSLATE);
+
+        addView(transImage, 1);
     }
 
     /**
@@ -231,8 +258,11 @@ class TransferLayout extends FrameLayout {
         transImage.setOnTransferListener(transferListener);
         addView(transImage, 1);
 
-        if (transConfig.isThumbnailEmpty()) {
-            transImage.setImageDrawable(transAdapter.getImageItem(transConfig.getNowThumbnailIndex()).getDrawable());
+        if (thumbMode == MODE_EMPTY_THUMBNAIL) {
+            Drawable thumbnailDrawable = transAdapter.getImageItem(
+                    transConfig.getNowThumbnailIndex()).getDrawable();
+            transImage.setImageDrawable(thumbnailDrawable);
+
             switch (state) {
                 case TransferImage.STATE_TRANS_IN:
                     transImage.transformIn();
@@ -247,8 +277,15 @@ class TransferLayout extends FrameLayout {
                     transImage.transformOut();
                     break;
             }
-        } else {
-            String transUrl = transConfig.getThumbnailImageList().get(transConfig.getNowThumbnailIndex());
+        } else if (thumbMode == MODE_REMOTE_THUMBNAIL || thumbMode == MODE_LOCAL_THUMBNAIL) {
+
+            String transUrl;
+            if (thumbMode == MODE_REMOTE_THUMBNAIL) {
+                transUrl = transConfig.getNowThumbnailImageUrl();
+            } else {
+                transUrl = transConfig.getNowSourceImageUrl();
+            }
+
             transConfig.getImageLoader().displayThumbnailImageAsync(transUrl, new ImageLoader.ThumbnailCallback() {
                 @Override
                 public void onFinish(Drawable drawable) {
@@ -297,22 +334,36 @@ class TransferLayout extends FrameLayout {
      * 初始化 TransferLayout 中的各个组件，并显示，同时开启动画
      */
     public void show() {
+        updateThumbMode();
         createTransferViewPager();
 
-        if (transConfig.isThumbnailEmpty()) {
-            createTransferImage();
-        } else {
-            createTransferImage(transConfig.getNowThumbnailIndex(),
-                    TransferImage.STATE_TRANS_IN);
+        switch (thumbMode) {
+            case MODE_LOCAL_THUMBNAIL:
+                createTransferImage(transConfig.getNowThumbnailIndex(),
+                        TransferImage.STATE_TRANS_IN);
+                break;
+            case MODE_EMPTY_THUMBNAIL:
+                createTransferImage();
+                break;
+            case MODE_REMOTE_THUMBNAIL:
+                createTransferImage(transConfig.getNowThumbnailIndex(),
+                        TransferImage.STATE_TRANS_IN);
+                break;
         }
 
     }
 
-    private boolean containsSourceImageUrl(String url) {
-        SharedPreferences loadSharedPref = context.getSharedPreferences(SP_FILE, Context.MODE_PRIVATE);
-        Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
-        return loadedSet.contains(url);
-
+    private void updateThumbMode() {
+        String url = transConfig.getNowSourceImageUrl();
+        if (containsSourceImageUrl(url)) {
+            thumbMode = MODE_LOCAL_THUMBNAIL;
+        } else {
+            if (transConfig.isThumbnailEmpty()) {
+                thumbMode = MODE_EMPTY_THUMBNAIL;
+            } else {
+                thumbMode = MODE_REMOTE_THUMBNAIL;
+            }
+        }
     }
 
     /**
@@ -321,6 +372,7 @@ class TransferLayout extends FrameLayout {
      * @param pos
      */
     public void dismiss(int pos) {
+//        updateThumbMode();
         createTransferImage(pos, TransferImage.STATE_TRANS_OUT);
         hideIndexIndicator();
         postDelayed(new Runnable() {
@@ -380,12 +432,13 @@ class TransferLayout extends FrameLayout {
         }
     }
 
-    private void loadLocalThumbnailSourceImage(final int position) {
+    private void loadSourceImageByEmptyThumbnail(final int position) {
         final String imgUrl = transConfig.getSourceImageList().get(position);
         ImageView originImage = transConfig.getOriginImageList().get(position);
+        ImageView targetImage = transAdapter.getImageItem(position);
 
         transConfig.getImageLoader().displaySourceImage(imgUrl,
-                transAdapter.getImageItem(position), originImage.getDrawable(), new ImageLoader.SourceCallback() {
+                targetImage, originImage.getDrawable(), new ImageLoader.SourceCallback() {
 
                     private IProgressIndicator progressIndicator = transConfig.getProgressIndicator();
 
@@ -429,23 +482,14 @@ class TransferLayout extends FrameLayout {
 
     }
 
-    private void cacheLoadedImageUrl(String url) {
-        SharedPreferences loadSharedPref = context.getSharedPreferences(SP_FILE, Context.MODE_PRIVATE);
-        Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
-        loadedSet.add(url);
-
-        loadSharedPref.edit()
-                .putStringSet(SP_LOAD_SET, loadedSet)
-                .commit();
-    }
-
     /**
      * 加载高清图
      *
      * @param position 图片下标
      */
-    private void loadRemoteThumbnailSourceImage(final int position) {
+    private void loadSourceImageByLoadedThumbnail(final int position) {
         final String imgUrl = transConfig.getSourceImageList().get(position);
+
         transConfig.getImageLoader().displayThumbnailImageAsync(imgUrl, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
@@ -494,10 +538,30 @@ class TransferLayout extends FrameLayout {
         });
     }
 
+    private void cacheLoadedImageUrl(final String url) {
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+            @Override
+            public void run() {
+                Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
+                loadedSet.add(url);
+
+                loadSharedPref.edit()
+                        .putStringSet(SP_LOAD_SET, loadedSet)
+                        .apply();
+            }
+        });
+    }
+
+    private boolean containsSourceImageUrl(String url) {
+        Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
+        return loadedSet.contains(url);
+
+    }
+
     /**
      * 获取状态栏高度
      *
-     * @return
+     * @return 状态栏高度
      */
     private int getStatusBarHeight() {
         try {

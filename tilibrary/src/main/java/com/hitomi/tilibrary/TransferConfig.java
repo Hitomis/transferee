@@ -160,6 +160,14 @@ public class TransferConfig {
         return thumbnailImageList == null || thumbnailImageList.isEmpty();
     }
 
+    public String getNowSourceImageUrl(){
+        return sourceImageList.get(nowThumbnailIndex);
+    }
+
+    public String getNowThumbnailImageUrl() {
+        return thumbnailImageList.get(nowThumbnailIndex);
+    }
+
     public static class Builder {
         private int nowThumbnailIndex;
         private int offscreenPageLimit;

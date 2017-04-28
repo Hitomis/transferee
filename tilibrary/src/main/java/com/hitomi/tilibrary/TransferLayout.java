@@ -529,6 +529,7 @@ class TransferLayout extends FrameLayout {
         loadedSet.add(url);
 
         loadSharedPref.edit()
+                .clear() // SharedPreferences 关于 putStringSet 的 bug 修复方案
                 .putStringSet(SP_LOAD_SET, loadedSet)
                 .apply();
     }

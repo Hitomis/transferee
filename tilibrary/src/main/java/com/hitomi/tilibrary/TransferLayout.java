@@ -63,9 +63,9 @@ class TransferLayout extends FrameLayout {
     private ViewPager.OnPageChangeListener transChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
-            setOriginImageVisibility(View.VISIBLE); // 显示出之前的缩略图
+//            setOriginImageVisibility(View.VISIBLE); // 显示出之前的缩略图
             transConfig.setNowThumbnailIndex(position);
-            setOriginImageVisibility(View.INVISIBLE); // 隐藏当前的缩略图
+//            setOriginImageVisibility(View.INVISIBLE); // 隐藏当前的缩略图
 
             for (int i = 1; i <= transConfig.getOffscreenPageLimit(); i++) {
                 loadSourceImageOffset(position, i);
@@ -98,7 +98,7 @@ class TransferLayout extends FrameLayout {
                         removeFromParent(transImage);
                         break;
                     case TransferImage.STATE_TRANS_OUT: // 缩小动画执行完毕
-                        setOriginImageVisibility(View.VISIBLE);
+//                        setOriginImageVisibility(View.VISIBLE);
                         postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -265,12 +265,6 @@ class TransferLayout extends FrameLayout {
             switch (state) {
                 case TransferImage.STATE_TRANS_IN:
                     transImage.transformIn();
-                    postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setOriginImageVisibility(View.INVISIBLE);
-                        }
-                    }, 20);
                     break;
                 case TransferImage.STATE_TRANS_OUT:
                     transImage.transformOut();
@@ -293,12 +287,6 @@ class TransferLayout extends FrameLayout {
                     switch (state) {
                         case TransferImage.STATE_TRANS_IN:
                             transImage.transformIn();
-                            postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setOriginImageVisibility(View.INVISIBLE);
-                                }
-                            }, 30);
                             break;
                         case TransferImage.STATE_TRANS_OUT:
                             transImage.transformOut();

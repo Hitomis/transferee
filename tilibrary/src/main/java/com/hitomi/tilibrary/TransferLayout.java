@@ -299,7 +299,7 @@ class TransferLayout extends FrameLayout {
                                 public void run() {
                                     setOriginImageVisibility(View.INVISIBLE);
                                 }
-                            }, 20);
+                            }, 30);
                             break;
                         case TransferImage.STATE_TRANS_OUT:
                             transImage.transformOut();
@@ -372,7 +372,6 @@ class TransferLayout extends FrameLayout {
      * @param pos
      */
     public void dismiss(int pos) {
-//        updateThumbMode();
         createTransferImage(pos, TransferImage.STATE_TRANS_OUT);
         hideIndexIndicator();
         postDelayed(new Runnable() {

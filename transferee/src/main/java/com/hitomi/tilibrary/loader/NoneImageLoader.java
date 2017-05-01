@@ -10,9 +10,11 @@ import android.widget.ImageView;
 public class NoneImageLoader implements ImageLoader {
 
     @Override
-    public void showSourceImage(String srcUrl, ImageView imageView, Drawable placeholder, SourceCallback sourceCallback) {}
+    public void showSourceImage(String srcUrl, ImageView imageView,
+                                Drawable placeholder, SourceCallback sourceCallback) {}
 
     @Override
-    public void loadThumbnailAsync(String thumbUrl, ImageView imageView, ThumbnailCallback callback) {}
+    public void loadThumbnailAsync(String thumbUrl,
+                                   ImageView imageView, ThumbnailCallback callback) {}
 
 }

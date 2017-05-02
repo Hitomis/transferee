@@ -131,20 +131,6 @@ class TransferLayout extends FrameLayout {
     };
 
     /**
-     * 点击 ImageView 关闭 TransferImage 的监听器
-     */
-    private TransferAdapter.OnDismissListener dismissListener = new TransferAdapter.OnDismissListener() {
-        @Override
-        public void onDismiss(final int pos) {
-            if (transImage != null &&
-                    transImage.getState() == TransferImage.STATE_TRANS_OUT) // 防止双击
-                return;
-
-            dismiss(pos);
-        }
-    };
-
-    /**
      * 构造方法
      *
      * @param context 上下文环境
@@ -218,7 +204,6 @@ class TransferLayout extends FrameLayout {
      */
     private void createTransferViewPager() {
         transAdapter = new TransferAdapter(transConfig, thumbMode);
-        transAdapter.setOnDismissListener(dismissListener);
         transAdapter.setOnInstantListener(instantListener);
 
         transViewPager = new ViewPager(context);
@@ -376,6 +361,10 @@ class TransferLayout extends FrameLayout {
      * @param pos
      */
     public void dismiss(int pos) {
+        if (transImage != null && transImage.getState()
+                == TransferImage.STATE_TRANS_OUT) // 防止双击
+            return;
+
         createTransferImage(pos, TransferImage.STATE_TRANS_OUT);
         hideIndexIndicator();
         postDelayed(new Runnable() {
@@ -435,6 +424,15 @@ class TransferLayout extends FrameLayout {
         }
     }
 
+    private void bindOnDismissListener(ImageView imageView, final int pos){
+        imageView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss(pos);
+            }
+        });
+    }
+
     private void loadSourceImageByEmptyThumbnail(final int position) {
         final String imgUrl = transConfig.getSourceImageList().get(position);
         ImageView originImage = transConfig.getOriginImageList().get(position);
@@ -474,6 +472,7 @@ class TransferLayout extends FrameLayout {
                                 imageView = transAdapter.getImageItem(position);
                                 imageView.transformIn(TransferImage.STAGE_SCALE);
                                 imageView.enable();
+                                bindOnDismissListener(imageView, position);
                                 loadedArray.put(position, true);
                                 break;
                             case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
@@ -532,6 +531,7 @@ class TransferLayout extends FrameLayout {
                                         cacheLoadedImageUrl(imgUrl);
                                         imageView = imageItem;
                                         imageView.enable();
+                                        bindOnDismissListener(imageView, position);
                                         break;
                                     case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
                                         imageView = imageItem;

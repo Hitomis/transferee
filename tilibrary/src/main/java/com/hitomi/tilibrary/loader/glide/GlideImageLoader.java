@@ -78,6 +78,7 @@ public class GlideImageLoader implements ImageLoader {
 
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                        super.onResourceReady(resource, animation);
                         callback.onFinish(resource);
                     }
                 };

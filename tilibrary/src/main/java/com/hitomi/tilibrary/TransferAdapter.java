@@ -21,10 +21,9 @@ class TransferAdapter extends PagerAdapter {
 
     private int showIndex;
     private int imageSize;
-    private TransferConfig config;
     private int mode;
+    private TransferConfig config;
 
-    private OnDismissListener onDismissListener;
     private OnInstantiateItemListener onInstantListener;
 
     private SparseArray<FrameLayout> containLayoutArray;
@@ -81,10 +80,6 @@ class TransferAdapter extends PagerAdapter {
         return containLayoutArray.get(position);
     }
 
-    public void setOnDismissListener(OnDismissListener listener) {
-        this.onDismissListener = listener;
-    }
-
     public void setOnInstantListener(OnInstantiateItemListener listener) {
         this.onInstantListener = listener;
     }
@@ -123,19 +118,7 @@ class TransferAdapter extends PagerAdapter {
         parentLayout.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         parentLayout.addView(imageView);
 
-        // add listener to parentLayout
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onDismissListener.onDismiss(pos);
-            }
-        });
-
         return parentLayout;
-    }
-
-    interface OnDismissListener {
-        void onDismiss(int pos);
     }
 
     interface OnInstantiateItemListener {

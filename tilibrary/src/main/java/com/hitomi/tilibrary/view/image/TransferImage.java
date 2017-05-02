@@ -29,12 +29,12 @@ public class TransferImage extends PhotoView {
     public static final int CATE_ANIMA_TOGETHER = 100; // 动画类型：位移和缩放同时进行
     public static final int CATE_ANIMA_APART = 200; // 动画类型：位移和缩放分开进行
 
-    public static final int STAGE_IN_TRANSLATE = 201; // 平移
-    public static final int STAGE_IN_SCALE = 202; // 缩放
+    public static final int STAGE_TRANSLATE = 201; // 平移
+    public static final int STAGE_SCALE = 202; // 缩放
 
     private int state = STATE_TRANS_NORMAL; // 当前动画状态
     private int cate = CATE_ANIMA_TOGETHER; // 当前动画类型
-    private int stage = STAGE_IN_TRANSLATE; // 针对 CATE_ANIMA_APART 类型对话而言：当前动画的阶段
+    private int stage = STAGE_TRANSLATE; // 针对 CATE_ANIMA_APART 类型对话而言：当前动画的阶段
 
     private int originalWidth;
     private int originalHeight;
@@ -71,13 +71,21 @@ public class TransferImage extends PhotoView {
     }
 
     public void setOriginalInfo(int locationX, int locationY, int width, int height) {
-        originalWidth = width;
-        originalHeight = height;
         originalLocationX = locationX;
         originalLocationY = locationY;
+        originalWidth = width;
+        originalHeight = height;
         // 因为是屏幕坐标，所以要转换为该视图内的坐标，因为我所用的该视图是MATCH_PARENT，所以不用定位该视图的位置,
         // 如果不是的话，还需要定位视图的位置，然后计算mOriginalLocationX和mOriginalLocationY
         //originalLocationY = mOriginalLocationY - getStatusBarHeight(getContext());
+    }
+
+    /**
+     * 按 {@link #setOriginalInfo(int, int, int, int)} 方法指定的的参数裁剪显示的图片
+     */
+    public void transClip() {
+        state = STATE_TRANS_CLIP;
+        transformStart = true;
     }
 
     /**
@@ -91,17 +99,9 @@ public class TransferImage extends PhotoView {
     }
 
     /**
-     * 按 {@link #setOriginalInfo(int, int, int, int)} 方法指定的的参数裁剪显示的图片
-     */
-    public void transClip() {
-        state = STATE_TRANS_CLIP;
-        transformStart = true;
-    }
-
-    /**
      * 用于开始进入的方法(平移和放大动画分离)。 调用此方前，需已经调用过setOriginalInfo
      *
-     * @param animaStage 动画阶段 :{@link #STAGE_IN_TRANSLATE} 平移，{@link #STAGE_IN_SCALE}
+     * @param animaStage 动画阶段 :{@link #STAGE_TRANSLATE} 平移，{@link #STAGE_SCALE}
      */
     public void transformIn(int animaStage) {
         cate = CATE_ANIMA_APART;
@@ -117,6 +117,19 @@ public class TransferImage extends PhotoView {
     public void transformOut() {
         cate = CATE_ANIMA_TOGETHER;
         state = STATE_TRANS_OUT;
+        transformStart = true;
+        invalidate();
+    }
+
+    /**
+     * 用于开始退出的方法(平移和放大动画分离)。 调用此方前，需已经调用过setOriginalInfo
+     *
+     * @param animaStage 动画阶段 :{@link #STAGE_TRANSLATE} 平移，{@link #STAGE_SCALE}
+     */
+    public void transformOut(int animaStage) {
+        cate = CATE_ANIMA_APART;
+        state = STATE_TRANS_OUT;
+        stage = animaStage;
         transformStart = true;
         invalidate();
     }
@@ -168,7 +181,7 @@ public class TransferImage extends PhotoView {
         float xEScale = getWidth() / ((float) transDrawable.getIntrinsicWidth());
         float yEScale = getHeight() / ((float) transDrawable.getIntrinsicHeight());
         float endScale = xEScale < yEScale ? xEScale : yEScale;
-        if (cate == CATE_ANIMA_APART && stage == STAGE_IN_TRANSLATE) { // 平移阶段的动画，不缩放
+        if (cate == CATE_ANIMA_APART && stage == STAGE_TRANSLATE) { // 平移阶段的动画，不缩放
             transform.endScale = startScale;
         } else {
             transform.endScale = endScale;
@@ -222,10 +235,16 @@ public class TransferImage extends PhotoView {
             }
 
             if (transformStart) {
-                if (state == STATE_TRANS_IN || state == STATE_TRANS_CLIP) {
-                    transform.initStartIn();
-                } else {
-                    transform.initStartOut();
+                switch (state) {
+                    case STATE_TRANS_IN:
+                        transform.initStartIn();
+                        break;
+                    case STATE_TRANS_OUT:
+                        transform.initStartOut();
+                        break;
+                    case STATE_TRANS_CLIP:
+                        transform.initStartClip();
+                        break;
                 }
             }
 
@@ -268,7 +287,7 @@ public class TransferImage extends PhotoView {
         valueAnimator.setDuration(duration);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
 
-        if (stage == STAGE_IN_TRANSLATE) { // 平移动画
+        if (stage == STAGE_TRANSLATE) { // 平移动画
             PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transform.startRect.left, transform.endRect.left);
             PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transform.startRect.top, transform.endRect.top);
             PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transform.startRect.width, transform.endRect.width);
@@ -309,14 +328,14 @@ public class TransferImage extends PhotoView {
         valueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (stage == STAGE_IN_TRANSLATE) {
+                if (stage == STAGE_TRANSLATE) {
                     originalLocationX = (int) transform.endRect.left;
                     originalLocationY = (int) transform.endRect.top;
                     originalWidth = (int) transform.endRect.width;
                     originalHeight = (int) transform.endRect.height;
                 }
 
-                if (state == STATE_TRANS_IN && stage == STAGE_IN_SCALE)
+                if (state == STATE_TRANS_IN && stage == STAGE_SCALE)
                     TransferImage.this.state = STATE_TRANS_NORMAL;
 
                 if (transformListener != null)
@@ -325,7 +344,10 @@ public class TransferImage extends PhotoView {
             }
         });
 
-        valueAnimator.start();
+        if (state == STATE_TRANS_IN)
+            valueAnimator.start();
+        else
+            valueAnimator.reverse();
     }
 
     private void startTogetherTrans() {
@@ -334,24 +356,13 @@ public class TransferImage extends PhotoView {
         ValueAnimator valueAnimator = new ValueAnimator();
         valueAnimator.setDuration(duration);
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        if (state == STATE_TRANS_IN) {
-            PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transform.startScale, transform.endScale);
-            PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transform.startRect.left, transform.endRect.left);
-            PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transform.startRect.top, transform.endRect.top);
-            PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transform.startRect.width, transform.endRect.width);
-            PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transform.startRect.height, transform.endRect.height);
-            PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofInt("alpha", 0, 255);
-            valueAnimator.setValues(scaleHolder, leftHolder, topHolder, widthHolder, heightHolder, alphaHolder);
-        } else {
-            PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transform.endScale, transform.startScale);
-            PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transform.endRect.left, transform.startRect.left);
-            PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transform.endRect.top, transform.startRect.top);
-            PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transform.endRect.width, transform.startRect.width);
-            PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transform.endRect.height, transform.startRect.height);
-            PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofInt("alpha", 255, 0);
-            valueAnimator.setValues(scaleHolder, leftHolder, topHolder, widthHolder, heightHolder, alphaHolder);
-        }
-
+        PropertyValuesHolder scaleHolder = PropertyValuesHolder.ofFloat("scale", transform.startScale, transform.endScale);
+        PropertyValuesHolder leftHolder = PropertyValuesHolder.ofFloat("left", transform.startRect.left, transform.endRect.left);
+        PropertyValuesHolder topHolder = PropertyValuesHolder.ofFloat("top", transform.startRect.top, transform.endRect.top);
+        PropertyValuesHolder widthHolder = PropertyValuesHolder.ofFloat("width", transform.startRect.width, transform.endRect.width);
+        PropertyValuesHolder heightHolder = PropertyValuesHolder.ofFloat("height", transform.startRect.height, transform.endRect.height);
+        PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofInt("alpha", 0, 255);
+        valueAnimator.setValues(scaleHolder, leftHolder, topHolder, widthHolder, heightHolder, alphaHolder);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public synchronized void onAnimationUpdate(ValueAnimator animation) {
@@ -380,7 +391,11 @@ public class TransferImage extends PhotoView {
             }
         });
 
-        valueAnimator.start();
+        if (state == STATE_TRANS_IN)
+            valueAnimator.start();
+        else
+            valueAnimator.reverse();
+
     }
 
     public void setOnTransferListener(OnTransferListener listener) {
@@ -391,7 +406,7 @@ public class TransferImage extends PhotoView {
         /**
          * @param state {@link #STATE_TRANS_IN} {@link #STATE_TRANS_OUT}
          * @param cate  {@link #CATE_ANIMA_TOGETHER} {@link #CATE_ANIMA_APART}
-         * @param stage {@link #STAGE_IN_TRANSLATE} {@link #STAGE_IN_SCALE}
+         * @param stage {@link #STAGE_TRANSLATE} {@link #STAGE_SCALE}
          */
         void onTransferComplete(int state, int cate, int stage);
     }
@@ -415,6 +430,15 @@ public class TransferImage extends PhotoView {
 
         void initStartOut() {
             scale = endScale;
+            try {
+                rect = (LocationSizeF) endRect.clone();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        void initStartClip() {
+            scale = startScale;
             try {
                 rect = (LocationSizeF) endRect.clone();
             } catch (CloneNotSupportedException e) {

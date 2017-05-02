@@ -1,17 +1,14 @@
 package com.hitomi.tilibrary;
 
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.view.image.TransferImage;
-
-import java.util.Map;
-import java.util.WeakHashMap;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static com.hitomi.tilibrary.TransferLayout.MODE_EMPTY_THUMBNAIL;
@@ -30,7 +27,7 @@ class TransferAdapter extends PagerAdapter {
     private OnDismissListener onDismissListener;
     private OnInstantiateItemListener onInstantListener;
 
-    private Map<Integer, FrameLayout> containnerLayoutMap;
+    private SparseArray<FrameLayout> containLayoutArray;
 
     public TransferAdapter(TransferConfig config, int thumbMode) {
         this.imageSize = config.getSourceImageList().size();
@@ -38,7 +35,7 @@ class TransferAdapter extends PagerAdapter {
                 ? config.getNowThumbnailIndex() - 1 : config.getNowThumbnailIndex() + 1;
         this.config = config;
         this.mode = thumbMode;
-        containnerLayoutMap = new WeakHashMap<>();
+        containLayoutArray = new SparseArray<>();
     }
 
     @Override
@@ -65,7 +62,7 @@ class TransferAdapter extends PagerAdapter {
     public TransferImage getImageItem(int position) {
         TransferImage transImage = null;
 
-        FrameLayout parentLayout = containnerLayoutMap.get(position);
+        FrameLayout parentLayout = containLayoutArray.get(position);
         if (parentLayout != null) {
             int childCount = parentLayout.getChildCount();
             for (int i = 0; i < childCount; i++) {
@@ -81,7 +78,7 @@ class TransferAdapter extends PagerAdapter {
     }
 
     public FrameLayout getParentItem(int position) {
-        return containnerLayoutMap.get(position);
+        return containLayoutArray.get(position);
     }
 
     public void setOnDismissListener(OnDismissListener listener) {
@@ -95,10 +92,10 @@ class TransferAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         // ViewPager instantiateItem 顺序：从 position 开始递减到0位置，再从 positon 递增到 getCount() - 1
-        FrameLayout parentLayout = containnerLayoutMap.get(position);
+        FrameLayout parentLayout = containLayoutArray.get(position);
         if (parentLayout == null) {
             parentLayout = newParentLayout(container, position);
-            containnerLayoutMap.put(position, parentLayout);
+            containLayoutArray.put(position, parentLayout);
         }
         container.addView(parentLayout);
         if (position == showIndex && onInstantListener != null)
@@ -111,12 +108,11 @@ class TransferAdapter extends PagerAdapter {
         // create inner ImageView
         TransferImage imageView = new TransferImage(container.getContext());
         if (mode == MODE_EMPTY_THUMBNAIL) {
-            Drawable originDrawable = config.getOriginImageList()
-                    .get(pos).getDrawable();
-            int locationX = (container.getMeasuredWidth() - originDrawable.getIntrinsicWidth()) / 2;
-            int locationY = (container.getMeasuredHeight() - originDrawable.getIntrinsicHeight()) / 2;
+            ImageView originImage = config.getOriginImageList().get(pos);
+            int locationX = (container.getMeasuredWidth() - originImage.getWidth()) / 2;
+            int locationY = (container.getMeasuredHeight() - originImage.getHeight()) / 2;
             imageView.setOriginalInfo(locationX, locationY,
-                    originDrawable.getIntrinsicWidth(), originDrawable.getIntrinsicHeight());
+                    originImage.getWidth(), originImage.getHeight());
             imageView.transClip();
         }
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -134,6 +130,7 @@ class TransferAdapter extends PagerAdapter {
                 onDismissListener.onDismiss(pos);
             }
         });
+
         return parentLayout;
     }
 

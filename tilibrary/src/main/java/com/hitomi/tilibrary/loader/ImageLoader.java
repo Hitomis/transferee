@@ -38,7 +38,7 @@ public interface ImageLoader {
      * @param thumbUrl 缩略图图片地址
      * @param callback 缩略图片加载完成的回调
      */
-    void displayThumbnailImageAsync(String thumbUrl, final ThumbnailCallback callback);
+    void displayThumbnailImageAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback);
 
     interface SourceCallback {
         @UiThread

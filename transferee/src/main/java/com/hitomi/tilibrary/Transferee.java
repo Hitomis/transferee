@@ -9,7 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
-import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
+import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 
 /**
  * Main workflow: <br/>
@@ -102,7 +102,7 @@ public class Transferee implements DialogInterface.OnShowListener,
                 ? 300 : transConfig.getDuration());
 
         transConfig.setProgressIndicator(transConfig.getProgressIndicator() == null
-                ? new ProgressPieIndicator() : transConfig.getProgressIndicator());
+                ? new ProgressBarIndicator() : transConfig.getProgressIndicator());
 
         transConfig.setIndexIndicator(transConfig.getIndexIndicator() == null
                 ? new CircleIndexIndicator() : transConfig.getIndexIndicator());

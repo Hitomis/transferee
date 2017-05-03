@@ -76,7 +76,6 @@ public class GridViewActivity extends BaseActivity {
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             ImageView imageView = viewHolder.getView(R.id.image_view);
-            ImageLoader.getInstance().displayImage(item, imageView);
 
             Glide.with(GridViewActivity.this)
                     .load(item)
@@ -89,7 +88,6 @@ public class GridViewActivity extends BaseActivity {
                 public void onClick(View v) {
                     TransferConfig config = TransferConfig.build()
                             .setNowThumbnailIndex(position)
-                            .setThumbnailImageList(imageStrList)
                             .setSourceImageList(imageStrList)
                             .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                             .setOriginImageList(wrapOriginImageViewList())

@@ -178,6 +178,15 @@ public class TransferConfig {
     }
 
     /**
+     * 原图路径集合是否为空
+     *
+     * @return true : 空
+     */
+    public boolean isSourceEmpty() {
+        return sourceImageList == null || sourceImageList.isEmpty();
+    }
+
+    /**
      * 缩略图路径集合是否为空
      *
      * @return true : 空

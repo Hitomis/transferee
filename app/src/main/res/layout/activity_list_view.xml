@@ -4,7 +4,7 @@
     android:id="@+id/activity_list_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hitomi.transferimage.ListViewActivity">
+    tools:context="com.hitomi.transferimage.activity.styletest.ListViewActivity">
 
     <ListView
         android:id="@+id/list_view"

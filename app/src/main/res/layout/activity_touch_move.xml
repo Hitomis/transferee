@@ -10,15 +10,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@color/colorPrimary"
-            android:gravity="center"
-            android:text="高清图测试"
-            android:textColor="#FFF"
-            android:textSize="18sp" />
-
         <ImageView
             android:id="@+id/image_view1"
             android:layout_width="100dp"
@@ -38,6 +29,7 @@
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
             android:scaleType="centerCrop" />
+
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,12 +1,12 @@
-package com.hitomi.transferimage;
+package com.hitomi.transferimage.activity.styletest;
 
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
-import com.hitomi.tilibrary.Transferee;
+import com.hitomi.transferimage.R;
+import com.hitomi.transferimage.activity.BaseActivity;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -35,37 +35,40 @@ public class ListViewActivity extends BaseActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_view);
+    protected int getContentView() {
+        return R.layout.activity_list_view;
+    }
 
-        transferee = Transferee.getDefault(this);
-
+    @Override
+    protected void initView() {
         listView = (ListView) findViewById(R.id.list_view);
-        listView.setAdapter(new CommonAdapter<String>(this, R.layout.item_list_image, imageStrList) {
+    }
 
-            @Override
-            protected void convert(ViewHolder viewHolder, String item, final int position) {
-                final ImageView imageView = viewHolder.getView(R.id.image_view);
-                imageView.setClickable(true);
-                Glide.with(ListViewActivity.this)
-                        .load(item)
-                        .placeholder(R.mipmap.ic_launcher)
-                        .into(imageView);
+    @Override
+    protected void testTransferee() {
+        listView.setAdapter(new ListAdapter());
+    }
 
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-//                        new TransferImage.Builder(ListViewActivity.this)
-//                                .setBackgroundColor(Color.parseColor("#2f008d"))
-//                                .setImageUrls(imageStrList.get(position))
-//                                .setOriginImages(imageView)
-//                                .setup(transferImage)
-//                                .show();
-                    }
-                });
-            }
-        });
+    private class ListAdapter extends CommonAdapter<String> {
+
+        public ListAdapter() {
+            super(ListViewActivity.this, R.layout.item_list_image, imageStrList);
+        }
+
+        @Override
+        protected void convert(ViewHolder viewHolder, String item, int position) {
+            ImageView imageView = viewHolder.getView(R.id.image_view);
+            Glide.with(ListViewActivity.this)
+                    .load(item)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .into(imageView);
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                }
+            });
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-package com.hitomi.transferimage;
+package com.hitomi.transferimage.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,12 +8,19 @@ import android.widget.Button;
 
 import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.Transferee;
+import com.hitomi.transferimage.R;
+import com.hitomi.transferimage.activity.loadertest.UniversalLoaderActivity;
+import com.hitomi.transferimage.activity.styletest.GridViewActivity;
+import com.hitomi.transferimage.activity.styletest.ListViewActivity;
+import com.hitomi.transferimage.activity.styletest.TouchMoveActivity;
+import com.hitomi.universalloader.UniversalImageLoader;
 
 import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button btnList, btnGrid, btnGoTouchMove, btnClearGlide;
+    private Button btnUniversal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,11 +31,12 @@ public class MainActivity extends AppCompatActivity {
         btnGrid = (Button) findViewById(R.id.btn_grid);
         btnGoTouchMove = (Button) findViewById(R.id.btn_touch_move);
         btnClearGlide = (Button) findViewById(R.id.btn_clear_glide);
+        btnUniversal = (Button) findViewById(R.id.btn_universal);
 
         btnList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, TestGlideActivity.class));
+                startActivity(new Intent(MainActivity.this, ListViewActivity.class));
             }
         });
 
@@ -43,6 +51,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, TouchMoveActivity.class));
+            }
+        });
+
+        btnUniversal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, UniversalLoaderActivity.class));
             }
         });
 

@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 
+import com.hitomi.tilibrary.loader.NoneImageLoader;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 
@@ -92,9 +93,12 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     /**
-     * 检查参数，如果必须参数缺少，就使用缺省参数
+     * 检查参数，如果必须参数缺少，就使用缺省参数或者抛出异常
      */
     private void checkConfig() {
+        if (transConfig.isSourceEmpty())
+            throw new IllegalArgumentException("the parameter sourceImageList can't be empty");
+
         transConfig.setNowThumbnailIndex(transConfig.getNowThumbnailIndex() < 0
                 ? 0 : transConfig.getNowThumbnailIndex());
 
@@ -110,8 +114,8 @@ public class Transferee implements DialogInterface.OnShowListener,
         transConfig.setIndexIndicator(transConfig.getIndexIndicator() == null
                 ? new CircleIndexIndicator() : transConfig.getIndexIndicator());
 
-//        transConfig.setImageLoader(transConfig.getImageLoader() == null
-//                ? GlideImageLoader.with(context.getApplicationContext()) : transConfig.getImageLoader());
+        transConfig.setImageLoader(transConfig.getImageLoader() == null
+                ? new NoneImageLoader() : transConfig.getImageLoader());
     }
 
     /**

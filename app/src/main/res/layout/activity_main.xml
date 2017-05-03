@@ -9,30 +9,38 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.hitomi.transferimage.MainActivity">
+    tools:context="com.hitomi.transferimage.activity.MainActivity">
 
     <Button
         android:id="@+id/btn_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go ListViewActivity"
+        android:text="列表测试"
         android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_grid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go GridViewActivity"
+        android:text="九宫格测试"
         android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_touch_move"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go TouchMoveActivity"
+        android:text="高清图测试"
         android:textAllCaps="false" />
 
     <Button
+        android:id="@+id/btn_universal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="UniversalLoader 测试"
+        android:textAllCaps="false" />
+
+    <Button
+        android:layout_gravity="bottom"
         android:id="@+id/btn_clear_glide"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

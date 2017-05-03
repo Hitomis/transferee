@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,15 +22,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ListViewActivity"
+            android:name=".activity.styletest.ListViewActivity"
+            android:label="ListView 测试"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".TouchMoveActivity"
+            android:name=".activity.styletest.TouchMoveActivity"
+            android:label="高清图测试"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".GridViewActivity"
+            android:name=".activity.styletest.GridViewActivity"
+            android:label="九宫格测试"
             android:screenOrientation="portrait" />
-        <activity android:name=".TestGlideActivity"></activity>
+        <activity
+            android:name=".activity.loadertest.UniversalLoaderActivity"
+            android:label="UniversalLoader 测试"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

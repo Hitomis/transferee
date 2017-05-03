@@ -13,11 +13,11 @@ import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 
 /**
  * Main workflow: <br/>
- * 1、点击缩略图展示缩略图到 TransferImage 过渡动画 <br/>
+ * 1、点击缩略图展示缩略图到 transferee 过渡动画 <br/>
  * 2、显示下载高清图片进度 <br/>
  * 3、加载完成显示高清图片 <br/>
  * 4、高清图支持手势缩放 <br/>
- * 5、关闭 TransferImage 展示 TransferImage 到原缩略图的过渡动画 <br/>
+ * 5、关闭 transferee 展示 transferee 到原缩略图的过渡动画 <br/>
  * Created by hitomi on 2017/1/19.
  */
 public class Transferee implements DialogInterface.OnShowListener,
@@ -31,11 +31,11 @@ public class Transferee implements DialogInterface.OnShowListener,
     private TransferConfig transConfig;
     private Dialog transDialog;
 
-    // 因为Dialog的关闭有动画延迟，固不能使用 dialog.isShowing, 去判断 TransferImage 的显示逻辑
+    // 因为Dialog的关闭有动画延迟，固不能使用 dialog.isShowing, 去判断 transferee 的显示逻辑
     private boolean shown;
 
     /**
-     * 构造方法私有化，通过{@link #getDefault(Context)} 创建 TransferImage
+     * 构造方法私有化，通过{@link #getDefault(Context)} 创建 transferee
      *
      * @param context 上下文环境
      */
@@ -127,10 +127,10 @@ public class Transferee implements DialogInterface.OnShowListener,
 
 
     /**
-     * 配置 TransferImage 参数对象
+     * 配置 transferee 参数对象
      *
      * @param config 参数对象
-     * @return TransferImage
+     * @return transferee
      */
     public Transferee apply(TransferConfig config) {
         if (!shown) {
@@ -142,7 +142,7 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     /**
-     * TransferImage 是否显示
+     * transferee 是否显示
      *
      * @return true ：显示, false ：关闭
      */
@@ -151,7 +151,7 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     /**
-     * 显示 TransferImage
+     * 显示 transferee
      */
     public void show() {
         if (shown) return;
@@ -161,7 +161,7 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     /**
-     * 关闭 TransferImage
+     * 关闭 transferee
      */
     public void dismiss() {
         if (!shown) return;
@@ -170,14 +170,14 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     /**
-     * 销毁 TransferImage 组件
+     * 销毁 transferee 组件
      */
     public void destroy() {
         defaultInstance = null;
     }
 
     /**
-     * 清除 TransferImage 缓存
+     * 清除 transferee 缓存
      */
     public static void clear(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(

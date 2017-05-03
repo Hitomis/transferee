@@ -28,7 +28,7 @@ public class GlideImageLoader implements ImageLoader {
 
     @Override
     public void showSourceImage(String srcUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
-         ProgressTarget<String, GlideDrawable> progressTarget =
+        ProgressTarget<String, GlideDrawable> progressTarget =
                 new ProgressTarget<String, GlideDrawable>(srcUrl, new GlideDrawableImageViewTarget(imageView)) {
 
                     @Override
@@ -65,16 +65,20 @@ public class GlideImageLoader implements ImageLoader {
                 new ProgressTarget<String, GlideDrawable>(thumbUrl, new GlideDrawableImageViewTarget(imageView)) {
 
                     @Override
-                    protected void onStartDownload() {}
+                    protected void onStartDownload() {
+                    }
 
                     @Override
-                    protected void onDownloading(long bytesRead, long expectedLength) {}
+                    protected void onDownloading(long bytesRead, long expectedLength) {
+                    }
 
                     @Override
-                    protected void onDownloaded() {}
+                    protected void onDownloaded() {
+                    }
 
                     @Override
-                    protected void onDelivered(int status) {}
+                    protected void onDelivered(int status) {
+                    }
 
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {

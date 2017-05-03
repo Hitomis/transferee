@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary.loader.glide;
+package com.hitomi.glideloader;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -8,8 +8,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.hitomi.glideloader.GlideProgressSupport.ProgressTarget;
 import com.hitomi.tilibrary.loader.ImageLoader;
-import com.hitomi.tilibrary.loader.glide.GlideProgressSupport.ProgressTarget;
 
 
 /**
@@ -27,7 +27,7 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void displaySourceImage(String srcUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
+    public void showSourceImage(String srcUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
          ProgressTarget<String, GlideDrawable> progressTarget =
                 new ProgressTarget<String, GlideDrawable>(srcUrl, new GlideDrawableImageViewTarget(imageView)) {
 
@@ -60,7 +60,7 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void displayThumbnailImageAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback) {
+    public void loadThumbnailAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback) {
         ProgressTarget<String, GlideDrawable> progressTarget =
                 new ProgressTarget<String, GlideDrawable>(thumbUrl, new GlideDrawableImageViewTarget(imageView)) {
 

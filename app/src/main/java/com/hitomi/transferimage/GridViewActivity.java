@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.hitomi.glideloader.GlideImageLoader;
 import com.hitomi.tilibrary.TransferConfig;
 import com.hitomi.tilibrary.Transferee;
 import com.zhy.adapter.abslistview.CommonAdapter;
@@ -57,6 +58,7 @@ public class GridViewActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         TransferConfig config = TransferConfig.build()
+                                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                                 .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                                 .setOriginImageList(wrapOriginImageViewList())
                                 .setSourceImageList(imageStrList)

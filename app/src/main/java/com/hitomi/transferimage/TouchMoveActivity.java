@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.hitomi.glideloader.GlideImageLoader;
 import com.hitomi.tilibrary.TransferConfig;
 import com.hitomi.tilibrary.Transferee;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
@@ -74,6 +75,7 @@ public class TouchMoveActivity extends BaseActivity {
         public void onClick(View v) {
 
             transferee.apply(TransferConfig.build()
+                    .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                     .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                     .setOriginImageList(imageViewList)
                     .setSourceImageList(imageStrList)

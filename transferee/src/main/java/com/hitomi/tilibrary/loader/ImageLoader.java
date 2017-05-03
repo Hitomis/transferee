@@ -30,7 +30,7 @@ public interface ImageLoader {
      * @param placeholder    加载完成之前显示的占位图
      * @param sourceCallback 图片加载过程的回调
      */
-    void displaySourceImage(String srcUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback);
+    void showSourceImage(String srcUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback);
 
     /**
      * 异步加载缩略图
@@ -38,7 +38,7 @@ public interface ImageLoader {
      * @param thumbUrl 缩略图图片地址
      * @param callback 缩略图片加载完成的回调
      */
-    void displayThumbnailImageAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback);
+    void loadThumbnailAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback);
 
     interface SourceCallback {
         @UiThread

@@ -281,7 +281,7 @@ class TransferLayout extends FrameLayout {
                 transUrl = transConfig.getNowSourceImageUrl();
             }
 
-            transConfig.getImageLoader().displayThumbnailImageAsync(transUrl, transImage, new ImageLoader.ThumbnailCallback() {
+            transConfig.getImageLoader().loadThumbnailAsync(transUrl, transImage, new ImageLoader.ThumbnailCallback() {
                 @Override
                 public void onFinish(Drawable drawable) {
                     transImage.setImageDrawable(drawable);
@@ -438,7 +438,7 @@ class TransferLayout extends FrameLayout {
         ImageView originImage = transConfig.getOriginImageList().get(position);
         ImageView targetImage = transAdapter.getImageItem(position);
 
-        transConfig.getImageLoader().displaySourceImage(imgUrl,
+        transConfig.getImageLoader().showSourceImage(imgUrl,
                 targetImage, originImage.getDrawable(), new ImageLoader.SourceCallback() {
 
                     private IProgressIndicator progressIndicator = transConfig.getProgressIndicator();
@@ -495,10 +495,10 @@ class TransferLayout extends FrameLayout {
         final TransferImage imageItem = transAdapter.getImageItem(position);
         final ImageLoader imageLoader = transConfig.getImageLoader();
 
-        imageLoader.displayThumbnailImageAsync(imgUrl, imageItem, new ImageLoader.ThumbnailCallback() {
+        imageLoader.loadThumbnailAsync(imgUrl, imageItem, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
-                imageLoader.displaySourceImage(imgUrl,
+                imageLoader.showSourceImage(imgUrl,
                         imageItem, drawable, new ImageLoader.SourceCallback() {
 
                             private IProgressIndicator progressIndicator = transConfig.getProgressIndicator();

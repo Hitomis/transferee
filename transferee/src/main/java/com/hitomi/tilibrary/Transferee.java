@@ -8,7 +8,6 @@ import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 
-import com.hitomi.tilibrary.loader.glide.GlideImageLoader;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 
@@ -108,8 +107,8 @@ public class Transferee implements DialogInterface.OnShowListener,
         transConfig.setIndexIndicator(transConfig.getIndexIndicator() == null
                 ? new CircleIndexIndicator() : transConfig.getIndexIndicator());
 
-        transConfig.setImageLoader(transConfig.getImageLoader() == null
-                ? GlideImageLoader.with(context.getApplicationContext()) : transConfig.getImageLoader());
+//        transConfig.setImageLoader(transConfig.getImageLoader() == null
+//                ? GlideImageLoader.with(context.getApplicationContext()) : transConfig.getImageLoader());
     }
 
     /**
@@ -120,10 +119,10 @@ public class Transferee implements DialogInterface.OnShowListener,
      * @param stay true : pause, false : resume
      */
     private void stayRequest(boolean stay) {
-        if (transConfig.getImageLoader() instanceof GlideImageLoader) {
-            GlideImageLoader imageLoader = (GlideImageLoader) transConfig.getImageLoader();
-            imageLoader.stayRequests(context, stay);
-        }
+//        if (transConfig.getImageLoader() instanceof GlideImageLoader) {
+//            GlideImageLoader imageLoader = (GlideImageLoader) transConfig.getImageLoader();
+//            imageLoader.stayRequests(context, stay);
+//        }
     }
 
 

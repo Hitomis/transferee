@@ -1,12 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hitomi.tilibrary">
+    package="com.hitomi.glideloader">
 
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
 
         <meta-data
-            android:name="com.hitomi.tilibrary.loader.glide.GlideProgressSupport.OkHttpProgressGlideModule"
+            android:name="com.hitomi.glideloader.GlideProgressSupport.OkHttpProgressGlideModule"
             android:value="GlideModule" />
 
     </application>

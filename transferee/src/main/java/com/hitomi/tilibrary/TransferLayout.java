@@ -100,13 +100,7 @@ class TransferLayout extends FrameLayout {
                         removeFromParent(transImage);
                         break;
                     case TransferImage.STATE_TRANS_OUT: // 缩小动画执行完毕
-//                        setOriginImageVisibility(View.VISIBLE);
-//                        postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-                                resetTransfer();
-//                            }
-//                        }, 10);
+                        resetTransfer();
                         break;
                 }
             } else { // 如果动画是分离的
@@ -424,7 +418,7 @@ class TransferLayout extends FrameLayout {
         }
     }
 
-    private void bindOnDismissListener(ImageView imageView, final int pos){
+    private void bindOnDismissListener(ImageView imageView, final int pos) {
         imageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -433,26 +427,29 @@ class TransferLayout extends FrameLayout {
         });
     }
 
+    /**
+     * 加载高清图(高清图未缓存，使用原缩略图作为占位图)
+     *
+     * @param position 当前加载的图片索引
+     */
     private void loadSourceImageByEmptyThumbnail(final int position) {
         final String imgUrl = transConfig.getSourceImageList().get(position);
+        final TransferImage targetImage = transAdapter.getImageItem(position);
         ImageView originImage = transConfig.getOriginImageList().get(position);
-        ImageView targetImage = transAdapter.getImageItem(position);
 
-        transConfig.getImageLoader().showSourceImage(imgUrl,
-                targetImage, originImage.getDrawable(), new ImageLoader.SourceCallback() {
+        final IProgressIndicator progressIndicator = transConfig.getProgressIndicator();
+        progressIndicator.attach(position, transAdapter.getParentItem(position));
 
-                    private IProgressIndicator progressIndicator = transConfig.getProgressIndicator();
+        transConfig.getImageLoader().showSourceImage(imgUrl, targetImage,
+                originImage.getDrawable(), new ImageLoader.SourceCallback() {
 
                     @Override
                     public void onStart() {
-                        if (progressIndicator == null) return;
-                        progressIndicator.attach(position, transAdapter.getParentItem(position));
                         progressIndicator.onStart(position);
                     }
 
                     @Override
                     public void onProgress(int progress) {
-                        if (progressIndicator == null) return;
                         progressIndicator.onProgress(position, progress);
                     }
 
@@ -462,22 +459,18 @@ class TransferLayout extends FrameLayout {
 
                     @Override
                     public void onDelivered(int status) {
-                        TransferImage imageView;
                         switch (status) {
                             case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
-                                if (progressIndicator != null)
-                                    progressIndicator.onFinish(position);
+                                progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
 
                                 cacheLoadedImageUrl(imgUrl);
-                                imageView = transAdapter.getImageItem(position);
-                                imageView.transformIn(TransferImage.STAGE_SCALE);
-                                imageView.enable();
-                                bindOnDismissListener(imageView, position);
+                                targetImage.transformIn(TransferImage.STAGE_SCALE);
+                                targetImage.enable();
+                                bindOnDismissListener(targetImage, position);
                                 loadedArray.put(position, true);
                                 break;
                             case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                                imageView = transAdapter.getImageItem(position);
-                                imageView.setImageDrawable(transConfig.getErrorDrawable(context));
+                                targetImage.setImageDrawable(transConfig.getErrorDrawable(context));
                                 break;
                         }
                     }
@@ -486,56 +479,43 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
-     * 加载高清图
+     * 加载高清图（高清图已缓存，直接使用高清图作为占位图）
      *
-     * @param position 图片下标
+     * @param position 当前加载的图片索引
      */
     private void loadSourceImageByLoadedThumbnail(final int position) {
         final String imgUrl = transConfig.getSourceImageList().get(position);
-        final TransferImage imageItem = transAdapter.getImageItem(position);
+        final TransferImage targetImage = transAdapter.getImageItem(position);
         final ImageLoader imageLoader = transConfig.getImageLoader();
 
-        imageLoader.loadThumbnailAsync(imgUrl, imageItem, new ImageLoader.ThumbnailCallback() {
+        imageLoader.loadThumbnailAsync(imgUrl, targetImage, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
-                imageLoader.showSourceImage(imgUrl,
-                        imageItem, drawable, new ImageLoader.SourceCallback() {
-
-                            private IProgressIndicator progressIndicator = transConfig.getProgressIndicator();
+                imageLoader.showSourceImage(imgUrl, targetImage,
+                        drawable, new ImageLoader.SourceCallback() {
 
                             @Override
                             public void onStart() {
-                                if (progressIndicator == null) return;
-                                progressIndicator.attach(position, transAdapter.getParentItem(position));
-                                progressIndicator.onStart(position);
                             }
 
                             @Override
                             public void onProgress(int progress) {
-                                if (progressIndicator == null) return;
-                                progressIndicator.onProgress(position, progress);
                             }
 
                             @Override
                             public void onFinish() {
-                                if (progressIndicator == null) return;
-                                progressIndicator.onFinish(position);
-                                imageItem.enable();
                             }
 
                             @Override
                             public void onDelivered(int status) {
-                                TransferImage imageView;
                                 switch (status) {
                                     case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功，启用 TransferImage 的手势缩放功能
                                         cacheLoadedImageUrl(imgUrl);
-                                        imageView = imageItem;
-                                        imageView.enable();
-                                        bindOnDismissListener(imageView, position);
+                                        targetImage.enable();
+                                        bindOnDismissListener(targetImage, position);
                                         break;
                                     case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                                        imageView = imageItem;
-                                        imageView.setImageDrawable(transConfig.getErrorDrawable(context));
+                                        targetImage.setImageDrawable(transConfig.getErrorDrawable(context));
                                         break;
                                 }
                             }

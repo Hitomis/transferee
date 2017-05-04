@@ -12,7 +12,6 @@ import com.hitomi.tilibrary.TransferConfig;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -23,6 +22,7 @@ public class GridViewActivity extends BaseActivity {
 
     private GridView gvImages;
     private List<String> imageStrList;
+
     {
         imageStrList = new ArrayList<>();
         imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");

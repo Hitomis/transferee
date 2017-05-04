@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
-import com.hitomi.tilibrary.style.ITransferAnimator;
 
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +36,6 @@ public class TransferConfig {
     private List<String> sourceImageList;
     private List<String> thumbnailImageList;
 
-    private ITransferAnimator transferAnima;
     private IProgressIndicator progressIndicator;
     private IIndexIndicator indexIndicator;
     private ImageLoader imageLoader;
@@ -128,14 +126,6 @@ public class TransferConfig {
 
     public void setThumbnailImageList(List<String> thumbnailImageList) {
         this.thumbnailImageList = thumbnailImageList;
-    }
-
-    public ITransferAnimator getTransferAnima() {
-        return transferAnima;
-    }
-
-    public void setTransferAnima(ITransferAnimator transferAnima) {
-        this.transferAnima = transferAnima;
     }
 
     public IProgressIndicator getProgressIndicator() {
@@ -239,7 +229,6 @@ public class TransferConfig {
         private List<String> sourceImageList;
         private List<String> thumbnailImageList;
 
-        private ITransferAnimator transferAnima;
         private IProgressIndicator progressIndicator;
         private IIndexIndicator indexIndicator;
         private ImageLoader imageLoader;
@@ -329,14 +318,6 @@ public class TransferConfig {
         }
 
         /**
-         * 扩展动画
-         */
-        public Builder setTransferAnima(ITransferAnimator transferAnima) {
-            this.transferAnima = transferAnima;
-            return this;
-        }
-
-        /**
          * 加载高清图的进度条 (默认内置 ProgressPieIndicator), 可自实现
          * IProgressIndicator 接口定义自己的图片加载进度条
          */
@@ -379,7 +360,6 @@ public class TransferConfig {
             config.setSourceImageList(sourceImageList);
             config.setThumbnailImageList(thumbnailImageList);
 
-            config.setTransferAnima(transferAnima);
             config.setProgressIndicator(progressIndicator);
             config.setIndexIndicator(indexIndicator);
             config.setImageLoader(imageLoader);

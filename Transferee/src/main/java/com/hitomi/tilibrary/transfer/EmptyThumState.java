@@ -85,7 +85,8 @@ public class EmptyThumState extends BaseTransferState {
         Drawable thumbnailDrawable = transfer.getTransAdapter().getImageItem(
                 config.getNowThumbnailIndex()).getDrawable();
 
-        TransferImage transImage = createTransferImage(config.getOriginImageList().get(position));
+        TransferImage transImage = createTransferImage(
+                config.getOriginImageList().get(position));
         transImage.setImageDrawable(thumbnailDrawable);
         transImage.transformOut(TransferImage.STAGE_TRANSLATE);
         transfer.addView(transImage, 1);

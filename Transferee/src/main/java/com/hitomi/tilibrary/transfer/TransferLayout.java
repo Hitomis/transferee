@@ -37,9 +37,7 @@ class TransferLayout extends FrameLayout {
     private ViewPager.OnPageChangeListener transChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
-//            setOriginImageVisibility(View.VISIBLE); // 显示出之前的缩略图
             transConfig.setNowThumbnailIndex(position);
-//            setOriginImageVisibility(View.INVISIBLE); // 隐藏当前的缩略图
 
             for (int i = 1; i <= transConfig.getOffscreenPageLimit(); i++) {
                 loadSourceImageOffset(position, i);
@@ -129,17 +127,6 @@ class TransferLayout extends FrameLayout {
     private void loadSourceImage(int position) {
         BaseTransferState transferState = getTransferState(position);
         transferState.loadTransfer(position);
-    }
-
-    /**
-     * 设置当前显示大图对应的缩略图隐藏或者显示
-     *
-     * @param visibility
-     */
-    private void setOriginImageVisibility(int visibility) {
-        int showIndex = transConfig.getNowThumbnailIndex();
-        ImageView originImage = transConfig.getOriginImageList().get(showIndex);
-        originImage.setVisibility(visibility);
     }
 
     /**

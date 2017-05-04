@@ -22,7 +22,7 @@ android {
 }
 
 dependencies {
-    compile project(':Transferee')
+    compile project(':Atransferee')
 
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }

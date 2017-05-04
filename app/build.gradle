@@ -24,7 +24,7 @@ dependencies {
     compile rootProject.ext.libSupportV7
     compile rootProject.ext.libSupportDesign
 
-    compile project(':Transferee')
+    compile project(':Atransferee')
     compile project(':GlideLoader')
     compile project(':UniversalLoader')
 

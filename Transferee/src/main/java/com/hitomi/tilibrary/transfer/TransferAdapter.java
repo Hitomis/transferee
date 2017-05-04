@@ -102,7 +102,7 @@ class TransferAdapter extends PagerAdapter {
         // create inner ImageView
         TransferImage imageView = new TransferImage(context);
 
-        if (config.isSourceEmpty() && !config.containsSourceImageUrl(context, config.getSourceImageList().get(pos))) {
+        if (config.isSourceEmpty() || !config.containsSourceImageUrl(context, config.getSourceImageList().get(pos))) {
             ImageView originImage = config.getOriginImageList().get(pos);
             int locationX = (container.getMeasuredWidth() - originImage.getWidth()) / 2;
             int locationY = (container.getMeasuredHeight() - originImage.getHeight()) / 2;

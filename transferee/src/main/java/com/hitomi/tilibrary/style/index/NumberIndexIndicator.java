@@ -39,13 +39,14 @@ public class NumberIndexIndicator implements IIndexIndicator {
 
     @Override
     public void onHide() {
+        if (numberIndicator == null) return ;
         numberIndicator.setVisibility(View.GONE);
     }
 
     @Override
     public void onRemove() {
+        if (numberIndicator == null) return ;
         ViewGroup vg = (ViewGroup) numberIndicator.getParent();
-
         if (vg != null) {
             vg.removeView(numberIndicator);
         }

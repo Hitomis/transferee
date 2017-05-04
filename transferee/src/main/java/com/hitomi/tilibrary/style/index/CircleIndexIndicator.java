@@ -40,6 +40,7 @@ public class CircleIndexIndicator implements IIndexIndicator {
 
     @Override
     public void onHide() {
+        if (circleIndicator == null) return ;
         circleIndicator.setVisibility(View.GONE);
     }
 

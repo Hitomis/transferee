@@ -7,7 +7,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.TransferConfig;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.transferimage.R;
@@ -87,7 +86,7 @@ public class UniversalLoaderActivity extends BaseActivity {
 
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
-            ImageView imageView = viewHolder.getView(R.id.image_view);
+            final ImageView imageView = viewHolder.getView(R.id.image_view);
             ImageLoader.getInstance().displayImage(item, imageView, options);
 
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -98,6 +97,7 @@ public class UniversalLoaderActivity extends BaseActivity {
                             .setThumbnailImageList(imageStrList)
                             .setSourceImageList(imageStrList)
                             .setMissPlaceHolder(R.mipmap.ic_empty_photo)
+                            .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                             .setOriginImageList(wrapOriginImageViewList())
                             .setProgressIndicator(new ProgressPieIndicator())
                             .setImageLoader(UniversalImageLoader.with(getApplicationContext()))

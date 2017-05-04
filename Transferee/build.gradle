@@ -1,11 +1,10 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId rootProject.ext.applicationId
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode rootProject.ext.versionCode
@@ -22,15 +21,5 @@ android {
 
 dependencies {
     compile rootProject.ext.libSupportV7
-    compile rootProject.ext.libSupportDesign
-
-    compile project(':Transferee')
-    compile project(':GlideLoader')
-    compile project(':UniversalLoader')
-
-    compile 'com.zhy:base-adapter:3.0.3'
-
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    compile 'com.github.filippudak.progresspieview:library:1.0.4'
 }

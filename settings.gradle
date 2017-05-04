@@ -1,1 +1,1 @@
-include ':app', ':Atransferee', ':GlideLoader', ':UniversalLoader'
+include ':app', ':Transferee', ':GlideLoader', ':UniversalLoader'

@@ -22,7 +22,7 @@ android {
 }
 
 dependencies {
-    compile project(':Atransferee')
+    compile project(':Transferee')
 
     compile "com.github.bumptech.glide:glide:3.7.0"
     compile 'com.squareup.okhttp3:okhttp:3.5.0'

@@ -7,14 +7,16 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
+import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;
 import com.hitomi.universalloader.UniversalImageLoader;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -25,6 +27,7 @@ public class UniversalLoaderActivity extends BaseActivity {
     private GridView gvImages;
     private DisplayImageOptions options;
     private List<String> imageStrList;
+
     {
         imageStrList = new ArrayList<>();
         imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
@@ -87,22 +90,38 @@ public class UniversalLoaderActivity extends BaseActivity {
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             final ImageView imageView = viewHolder.getView(R.id.image_view);
-            ImageLoader.getInstance().displayImage(item, imageView, options);
-
-            imageView.setOnClickListener(new View.OnClickListener() {
+            ImageLoader.getInstance().displayImage(item, imageView, options, new ImageLoadingListener() {
                 @Override
-                public void onClick(View v) {
-                    TransferConfig config = TransferConfig.build()
-                            .setNowThumbnailIndex(position)
-                            .setThumbnailImageList(imageStrList)
-                            .setSourceImageList(imageStrList)
-                            .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-                            .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-                            .setOriginImageList(wrapOriginImageViewList())
-                            .setProgressIndicator(new ProgressPieIndicator())
-                            .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
-                            .create();
-                    transferee.apply(config).show();
+                public void onLoadingStarted(String imageUri, View view) {
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    // 如果指定了缩略图，那么缩略图一定要先加载完毕
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            TransferConfig config = TransferConfig.build()
+                                    .setNowThumbnailIndex(position)
+                                    .setThumbnailImageList(imageStrList)
+                                    .setSourceImageList(imageStrList)
+                                    .setMissPlaceHolder(R.mipmap.ic_empty_photo)
+                                    .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
+                                    .setOriginImageList(wrapOriginImageViewList())
+                                    .setProgressIndicator(new ProgressPieIndicator())
+                                    .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
+                                    .create();
+                            transferee.apply(config).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
                 }
             });
         }

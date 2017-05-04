@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary;
+package com.hitomi.tilibrary.transfer;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,10 +8,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.hitomi.tilibrary.core.BaseTransferState;
-import com.hitomi.tilibrary.core.EmptyThumState;
-import com.hitomi.tilibrary.core.LocalThumState;
-import com.hitomi.tilibrary.core.RemoteThumState;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
@@ -24,7 +20,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * TransferImage 中 Dialog 显示的内容
  * Created by Hitomis on 2017/4/23 0023.
  */
-public class TransferLayout extends FrameLayout {
+class TransferLayout extends FrameLayout {
     private Context context;
 
     private TransferImage transImage;

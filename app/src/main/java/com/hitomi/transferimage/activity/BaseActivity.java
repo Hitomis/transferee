@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.hitomi.tilibrary.Transferee;
+import com.hitomi.tilibrary.transfer.Transferee;
 
 /**
  * Created by hitomi on 2017/2/13.

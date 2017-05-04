@@ -7,7 +7,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.hitomi.tilibrary.TransferConfig;
+import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;

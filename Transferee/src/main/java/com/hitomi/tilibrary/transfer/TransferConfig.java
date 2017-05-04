@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary;
+package com.hitomi.tilibrary.transfer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,7 +9,6 @@ import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.style.ITransferAnimator;
-import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,20 +21,6 @@ import java.util.concurrent.Executors;
  * Created by hitomi on 2017/1/19.
  */
 public class TransferConfig {
-
-    /**
-     * 高清图尚未加载，使用原 ImageView 中显示的图片作为缩略图。同时使用 {@link TransferImage#CATE_ANIMA_APART} 动画类型展示图片
-     */
-    static final int MODE_EMPTY_THUMBNAIL = 1;
-    /**
-     * 高清图图片已经加载过了，使用高清图作为缩略图。同时使用 {@link TransferImage#CATE_ANIMA_TOGETHER} 动画类型展示图片
-     */
-    static final int MODE_LOCAL_THUMBNAIL = 1 << 1;
-    /**
-     * 用户指定了缩略图路径，使用该路径加载缩略图，并使用 {@link TransferImage#CATE_ANIMA_TOGETHER} 动画类型展示图片
-     */
-    static final int MODE_REMOTE_THUMBNAIL = 1 << 2;
-
     static final String SP_FILE = "transferee";
     static final String SP_LOAD_SET = "load_set";
 
@@ -211,30 +196,6 @@ public class TransferConfig {
      */
     public String getNowThumbnailImageUrl() {
         return thumbnailImageList.get(nowThumbnailIndex);
-    }
-
-    /**
-     * 获取缩略图状态
-     *
-     * @param context    上下文环境
-     * @param thumbIndex 当前在 ViewPager 中待加载（显示）的缩略图索引
-     * @return {@link #MODE_EMPTY_THUMBNAIL}, {@link #MODE_LOCAL_THUMBNAIL}, {@link #MODE_REMOTE_THUMBNAIL}
-     */
-    public int getThumbMode(Context context, int thumbIndex) {
-        int thumbMode;
-
-        if (!isThumbnailEmpty()) { // 客户端指定了缩略图路径集合
-            thumbMode = MODE_REMOTE_THUMBNAIL;
-        } else {
-            String url = sourceImageList.get(thumbIndex);
-            if (containsSourceImageUrl(context, url)) {
-                thumbMode = MODE_LOCAL_THUMBNAIL;
-            } else {
-                thumbMode = MODE_EMPTY_THUMBNAIL;
-            }
-        }
-
-        return thumbMode;
     }
 
     public boolean containsSourceImageUrl(Context context, String url) {

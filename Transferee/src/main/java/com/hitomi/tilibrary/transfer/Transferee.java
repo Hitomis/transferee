@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary;
+package com.hitomi.tilibrary.transfer;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -11,9 +11,6 @@ import android.view.KeyEvent;
 import com.hitomi.tilibrary.loader.NoneImageLoader;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
-
-import static com.hitomi.tilibrary.TransferConfig.SP_FILE;
-import static com.hitomi.tilibrary.TransferConfig.SP_LOAD_SET;
 
 /**
  * Main workflow: <br/>
@@ -188,9 +185,9 @@ public class Transferee implements DialogInterface.OnShowListener,
      */
     public static void clear(Context context) {
         SharedPreferences sharedPref = context.getSharedPreferences(
-                SP_FILE, Context.MODE_PRIVATE);
+                TransferConfig.SP_FILE, Context.MODE_PRIVATE);
         sharedPref.edit()
-                .remove(SP_LOAD_SET)
+                .remove(TransferConfig.SP_LOAD_SET)
                 .apply();
     }
 

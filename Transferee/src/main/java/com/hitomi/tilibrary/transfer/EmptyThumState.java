@@ -1,19 +1,18 @@
-package com.hitomi.tilibrary.core;
+package com.hitomi.tilibrary.transfer;
 
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
-import com.hitomi.tilibrary.TransferAdapter;
-import com.hitomi.tilibrary.TransferConfig;
-import com.hitomi.tilibrary.TransferLayout;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 /**
+ * 高清图尚未加载，使用原 ImageView 中显示的图片作为缩略图。
+ * 同时使用 {@link TransferImage#CATE_ANIMA_APART} 动画类型展示图片
+ * <p>
  * Created by hitomi on 2017/5/4.
  */
-
 public class EmptyThumState extends BaseTransferState {
 
     public EmptyThumState(TransferLayout transfer) {
@@ -22,7 +21,7 @@ public class EmptyThumState extends BaseTransferState {
 
     @Override
     public TransferImage createTransferIn(final int position) {
-        ImageView originImage =  transfer.getTransConfig()
+        ImageView originImage = transfer.getTransConfig()
                 .getOriginImageList().get(position);
 
         TransferImage transImage = createTransferImage(originImage);

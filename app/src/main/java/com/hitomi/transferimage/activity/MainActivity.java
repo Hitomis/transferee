@@ -7,13 +7,12 @@ import android.view.View;
 import android.widget.Button;
 
 import com.bumptech.glide.Glide;
-import com.hitomi.tilibrary.Transferee;
+import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.loadertest.UniversalLoaderActivity;
 import com.hitomi.transferimage.activity.styletest.GridViewActivity;
 import com.hitomi.transferimage.activity.styletest.ListViewActivity;
 import com.hitomi.transferimage.activity.styletest.TouchMoveActivity;
-import com.hitomi.universalloader.UniversalImageLoader;
 
 import java.util.concurrent.Executors;
 

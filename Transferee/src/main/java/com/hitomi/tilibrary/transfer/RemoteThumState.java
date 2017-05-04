@@ -1,16 +1,16 @@
-package com.hitomi.tilibrary.core;
+package com.hitomi.tilibrary.transfer;
 
 import android.graphics.drawable.Drawable;
 
-import com.hitomi.tilibrary.TransferConfig;
-import com.hitomi.tilibrary.TransferLayout;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 /**
+ * 用户指定了缩略图路径，使用该路径加载缩略图，
+ * 并使用 {@link TransferImage#CATE_ANIMA_TOGETHER} 动画类型展示图片
+ * <p>
  * Created by hitomi on 2017/5/4.
  */
-
 public class RemoteThumState extends BaseTransferState {
 
     public RemoteThumState(TransferLayout transfer) {

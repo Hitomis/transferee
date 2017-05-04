@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary;
+package com.hitomi.tilibrary.transfer;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,13 +12,12 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static com.hitomi.tilibrary.TransferConfig.MODE_EMPTY_THUMBNAIL;
 
 /**
  * 展示高清图的图片数据适配器
  * Created by hitomi on 2017/1/23.
  */
-public class TransferAdapter extends PagerAdapter {
+class TransferAdapter extends PagerAdapter {
 
     private int showIndex;
     private int imageSize;
@@ -28,7 +27,7 @@ public class TransferAdapter extends PagerAdapter {
 
     private SparseArray<FrameLayout> containLayoutArray;
 
-    public TransferAdapter(TransferConfig config) {
+    TransferAdapter(TransferConfig config) {
         this.imageSize = config.getSourceImageList().size();
         this.showIndex = config.getNowThumbnailIndex() + 1 == imageSize
                 ? config.getNowThumbnailIndex() - 1 : config.getNowThumbnailIndex() + 1;
@@ -57,7 +56,7 @@ public class TransferAdapter extends PagerAdapter {
      * @param position
      * @return
      */
-    public TransferImage getImageItem(int position) {
+    TransferImage getImageItem(int position) {
         TransferImage transImage = null;
 
         FrameLayout parentLayout = containLayoutArray.get(position);
@@ -75,11 +74,11 @@ public class TransferAdapter extends PagerAdapter {
         return transImage;
     }
 
-    public FrameLayout getParentItem(int position) {
+    FrameLayout getParentItem(int position) {
         return containLayoutArray.get(position);
     }
 
-    public void setOnInstantListener(OnInstantiateItemListener listener) {
+    void setOnInstantListener(OnInstantiateItemListener listener) {
         this.onInstantListener = listener;
     }
 
@@ -102,7 +101,8 @@ public class TransferAdapter extends PagerAdapter {
         Context context = container.getContext();
         // create inner ImageView
         TransferImage imageView = new TransferImage(context);
-        if (config.getThumbMode(context, pos) == MODE_EMPTY_THUMBNAIL) {
+
+        if (!config.containsSourceImageUrl(context, config.getSourceImageList().get(pos))) {
             ImageView originImage = config.getOriginImageList().get(pos);
             int locationX = (container.getMeasuredWidth() - originImage.getWidth()) / 2;
             int locationY = (container.getMeasuredHeight() - originImage.getHeight()) / 2;

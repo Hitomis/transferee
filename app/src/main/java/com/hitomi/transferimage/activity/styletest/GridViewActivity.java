@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.hitomi.glideloader.GlideImageLoader;
-import com.hitomi.tilibrary.TransferConfig;
+import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;

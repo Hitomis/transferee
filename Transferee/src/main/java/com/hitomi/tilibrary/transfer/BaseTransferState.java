@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary.core;
+package com.hitomi.tilibrary.transfer;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.hitomi.tilibrary.TransferConfig;
-import com.hitomi.tilibrary.TransferLayout;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.view.image.TransferImage;
 

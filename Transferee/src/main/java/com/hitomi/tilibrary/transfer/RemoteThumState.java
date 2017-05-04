@@ -3,6 +3,7 @@ package com.hitomi.tilibrary.transfer;
 import android.graphics.drawable.Drawable;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
+import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 /**
@@ -31,10 +32,14 @@ public class RemoteThumState extends BaseTransferState {
 
     @Override
     public void loadTransfer(final int position) {
+        TransferAdapter adapter = transfer.getTransAdapter();
         final TransferConfig config = transfer.getTransConfig();
         final String imgUrl = config.getSourceImageList().get(position);
         final TransferImage targetImage = transfer.getTransAdapter().getImageItem(position);
         final ImageLoader imageLoader = config.getImageLoader();
+
+        final IProgressIndicator progressIndicator = config.getProgressIndicator();
+        progressIndicator.attach(position, adapter.getParentItem(position));
 
         imageLoader.loadThumbnailAsync(imgUrl, targetImage, new ImageLoader.ThumbnailCallback() {
             @Override
@@ -46,10 +51,12 @@ public class RemoteThumState extends BaseTransferState {
 
                     @Override
                     public void onStart() {
+                        progressIndicator.onStart(position);
                     }
 
                     @Override
                     public void onProgress(int progress) {
+                        progressIndicator.onProgress(position, progress);
                     }
 
                     @Override
@@ -60,6 +67,7 @@ public class RemoteThumState extends BaseTransferState {
                     public void onDelivered(int status) {
                         switch (status) {
                             case ImageLoader.STATUS_DISPLAY_SUCCESS:
+                                progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
                                 // 启用 TransferImage 的手势缩放功能
                                 targetImage.enable();
                                 // 绑定点击关闭 Transferee

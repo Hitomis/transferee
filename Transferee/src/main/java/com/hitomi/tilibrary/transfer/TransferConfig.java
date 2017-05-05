@@ -169,25 +169,7 @@ public class TransferConfig {
     public boolean isThumbnailEmpty() {
         return thumbnailImageList == null || thumbnailImageList.isEmpty();
     }
-
-    /**
-     * 获取当前在 ViewPager 中待加载（显示）的原图路径
-     *
-     * @return 原图路径
-     */
-    public String getNowSourceImageUrl() {
-        return sourceImageList.get(nowThumbnailIndex);
-    }
-
-    /**
-     * 获取当前待加载（显示）的缩略图路径
-     *
-     * @return 缩略图路径
-     */
-    public String getNowThumbnailImageUrl() {
-        return thumbnailImageList.get(nowThumbnailIndex);
-    }
-
+    
     public boolean containsSourceImageUrl(Context context, String url) {
         SharedPreferences loadSharedPref = context.getSharedPreferences(
                 SP_FILE, Context.MODE_PRIVATE);

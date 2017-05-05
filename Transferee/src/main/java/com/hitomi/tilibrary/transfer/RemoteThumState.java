@@ -27,7 +27,7 @@ public class RemoteThumState extends TransferState {
 
         TransferImage transImage = createTransferImage(
                 config.getOriginImageList().get(position));
-        transformThumbnail(transImage, true);
+        transformThumbnail(config.getThumbnailImageList().get(position), transImage, true);
         transfer.addView(transImage, 1);
 
         return transImage;
@@ -37,20 +37,22 @@ public class RemoteThumState extends TransferState {
     public void transferLoad(final int position) {
         TransferAdapter adapter = transfer.getTransAdapter();
         final TransferConfig config = transfer.getTransConfig();
-        final String imgUrl = config.getSourceImageList().get(position);
         final TransferImage targetImage = transfer.getTransAdapter().getImageItem(position);
         final ImageLoader imageLoader = config.getImageLoader();
 
         final IProgressIndicator progressIndicator = config.getProgressIndicator();
         progressIndicator.attach(position, adapter.getParentItem(position));
 
-        imageLoader.loadThumbnailAsync(imgUrl, targetImage, new ImageLoader.ThumbnailCallback() {
+        imageLoader.loadThumbnailAsync(config.getThumbnailImageList().get(position),
+                targetImage, new ImageLoader.ThumbnailCallback() {
+
             @Override
             public void onFinish(Drawable drawable) {
                 if (drawable == null)
                     drawable = config.getMissDrawable(context);
 
-                imageLoader.showSourceImage(imgUrl, targetImage, drawable, new ImageLoader.SourceCallback() {
+                imageLoader.showSourceImage(config.getSourceImageList().get(position),
+                        targetImage, drawable, new ImageLoader.SourceCallback() {
 
                     @Override
                     public void onStart() {
@@ -96,7 +98,7 @@ public class RemoteThumState extends TransferState {
         if (position < originImageList.size()) {
             TransferImage transImage = createTransferImage(
                     originImageList.get(position));
-            transformThumbnail(transImage, false);
+            transformThumbnail(config.getThumbnailImageList().get(position), transImage, false);
 
             transferOut = true;
             transfer.addView(transImage, 1);

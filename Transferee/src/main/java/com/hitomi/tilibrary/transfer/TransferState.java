@@ -94,16 +94,16 @@ public abstract class TransferState {
     }
 
     /**
-     * 加载图像并启动图像的过渡动画
+     * 加载缩略图图像并启动图像的过渡动画
      *
-     * @param transImage TransferImage
-     * @param in         true : 从缩略图到高清图动画, false : 从到高清图到缩略图动画
+     * @param thumbnailUrl 当前缩略图路径
+     * @param transImage   TransferImage
+     * @param in           true : 从缩略图到高清图动画, false : 从到高清图到缩略图动画
      */
-    protected void transformThumbnail(final TransferImage transImage, final boolean in) {
+    protected void transformThumbnail(String thumbnailUrl, final TransferImage transImage, final boolean in) {
         final TransferConfig config = transfer.getTransConfig();
-        String transUrl = config.getNowSourceImageUrl();
 
-        config.getImageLoader().loadThumbnailAsync(transUrl, transImage, new ImageLoader.ThumbnailCallback() {
+        config.getImageLoader().loadThumbnailAsync(thumbnailUrl, transImage, new ImageLoader.ThumbnailCallback() {
             @Override
             public void onFinish(Drawable drawable) {
                 if (drawable == null)

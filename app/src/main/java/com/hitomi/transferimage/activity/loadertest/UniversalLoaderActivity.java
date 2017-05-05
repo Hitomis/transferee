@@ -101,23 +101,8 @@ public class UniversalLoaderActivity extends BaseActivity {
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    // 如果指定了缩略图，那么缩略图一定要先加载完毕
-                    imageView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            TransferConfig config = TransferConfig.build()
-                                    .setNowThumbnailIndex(position)
-                                    .setThumbnailImageList(imageStrList)
-                                    .setSourceImageList(imageStrList)
-                                    .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-                                    .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-                                    .setOriginImageList(wrapOriginImageViewList())
-                                    .setProgressIndicator(new ProgressPieIndicator())
-                                    .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
-                                    .create();
-                            transferee.apply(config).show();
-                        }
-                    });
+                    bindTransferee(imageView, position);
+
                 }
 
                 @Override
@@ -125,5 +110,25 @@ public class UniversalLoaderActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    private void bindTransferee(ImageView imageView, final int position) {
+        // 如果指定了缩略图，那么缩略图一定要先加载完毕
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TransferConfig config = TransferConfig.build()
+                        .setNowThumbnailIndex(position)
+                        .setThumbnailImageList(imageStrList)
+                        .setSourceImageList(imageStrList)
+                        .setMissPlaceHolder(R.mipmap.ic_empty_photo)
+                        .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
+                        .setOriginImageList(wrapOriginImageViewList())
+                        .setProgressIndicator(new ProgressPieIndicator())
+                        .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
+                        .create();
+                transferee.apply(config).show();
+            }
+        });
     }
 }

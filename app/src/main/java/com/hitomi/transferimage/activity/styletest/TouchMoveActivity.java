@@ -20,6 +20,7 @@ public class TouchMoveActivity extends BaseActivity {
     private List<ImageView> imageViewList;
 
     private List<String> imageStrList;
+
     {
         imageStrList = new ArrayList<>();
         imageStrList.add("http://c.hiphotos.baidu.com/zhidao/pic/item/b7003af33a87e950e7d5403816385343faf2b4a0.jpg");

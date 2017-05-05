@@ -1,6 +1,7 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
@@ -40,6 +41,8 @@ public class EmptyThumState extends BaseTransferState {
         final TransferImage targetImage = adapter.getImageItem(position);
         ImageView originImage = config.getOriginImageList().get(position);
 
+        clipTargetImageByOriginImage(targetImage, originImage);
+
         final IProgressIndicator progressIndicator = config.getProgressIndicator();
         progressIndicator.attach(position, adapter.getParentItem(position));
 
@@ -77,6 +80,21 @@ public class EmptyThumState extends BaseTransferState {
                         }
                     }
                 });
+    }
+
+    /**
+     * 按照 OriginImage 的大小裁剪 TransferImage 中图片显示的区域
+     *
+     * @param targetImage TransferImage
+     * @param originImage OriginImage
+     */
+    private void clipTargetImageByOriginImage(TransferImage targetImage, ImageView originImage) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int locationX = (displayMetrics.widthPixels - originImage.getWidth()) / 2;
+        int locationY = (getTransImageLocalY(displayMetrics.heightPixels) - originImage.getHeight()) / 2;
+        targetImage.setOriginalInfo(locationX, locationY,
+                originImage.getWidth(), originImage.getHeight());
+        targetImage.transClip();
     }
 
     @Override

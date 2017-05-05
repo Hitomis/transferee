@@ -13,6 +13,9 @@ import com.hitomi.tilibrary.loader.ImageLoader;
 
 
 /**
+ * 使用 <a href="https://github.com/bumptech/glide">Glide</a>
+ * 作为 Transferee 的图片加载器
+ * <p>
  * Created by hitomi on 2017/1/25.
  */
 public class GlideImageLoader implements ImageLoader {

@@ -4,9 +4,8 @@ import android.support.v4.view.ViewPager;
 import android.widget.FrameLayout;
 
 /**
- * Created by hitomi on 2017/2/4.
+ * 图片索引指示器接口，实现 IIndexIndicator 可扩展自己的图片指示器组件
  */
-
 public interface IIndexIndicator {
 
     /**

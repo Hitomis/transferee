@@ -13,6 +13,10 @@ import com.hitomi.tilibrary.style.IProgressIndicator;
 
 import java.util.Locale;
 
+/**
+ * 图片加载时使用饼状并带进度百分比显示的进度组件
+ * <a href= "https://github.com/FilipPudak/ProgressPieView">ProgressPieView</a>
+ */
 public class ProgressPieIndicator implements IProgressIndicator {
 
     private SparseArray<ProgressPieView> progressPieArray = new SparseArray<>();

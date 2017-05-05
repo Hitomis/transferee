@@ -10,6 +10,9 @@ import android.widget.ProgressBar;
 
 import com.hitomi.tilibrary.style.IProgressIndicator;
 
+/**
+ * 图片加载时使用 Android 默认的 ProgressBar
+ */
 public class ProgressBarIndicator implements IProgressIndicator {
 
     private SparseArray<ProgressBar> progressBarArray = new SparseArray<>();
@@ -43,10 +46,12 @@ public class ProgressBarIndicator implements IProgressIndicator {
     }
 
     @Override
-    public void onStart(int position) {}
+    public void onStart(int position) {
+    }
 
     @Override
-    public void onProgress(int position, int progress) {}
+    public void onProgress(int position, int progress) {
+    }
 
     @Override
     public void onFinish(int position) {

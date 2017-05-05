@@ -9,6 +9,8 @@ import android.widget.TextView;
 import java.util.Locale;
 
 /**
+ * 数字索引指示器
+ * <p>
  * Created by Hitomis on 2017/4/23 0023.
  */
 public class NumberIndicator extends TextView {

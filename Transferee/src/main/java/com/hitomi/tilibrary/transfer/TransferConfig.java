@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 
 /**
- * Attributes <br/>
+ * Transferee Attributes <br/>
  * <p>
  * Created by hitomi on 2017/1/19.
  */
@@ -169,7 +169,14 @@ public class TransferConfig {
     public boolean isThumbnailEmpty() {
         return thumbnailImageList == null || thumbnailImageList.isEmpty();
     }
-    
+
+    /**
+     * 检测 SharedPreferences 中是否包含此图片 url
+     *
+     * @param context 上下文环境
+     * @param url     图片Url
+     * @return
+     */
     public boolean containsSourceImageUrl(Context context, String url) {
         SharedPreferences loadSharedPref = context.getSharedPreferences(
                 SP_FILE, Context.MODE_PRIVATE);
@@ -178,6 +185,12 @@ public class TransferConfig {
 
     }
 
+    /**
+     * 使用 GlideImageLoader 时，需要缓存已加载完成的图片Url
+     *
+     * @param context 上下文环境
+     * @param url     加载完成的图片Url
+     */
     public void cacheLoadedImageUrl(final Context context, final String url) {
         Executors.newSingleThreadExecutor().submit(new Runnable() {
             @Override
@@ -224,7 +237,7 @@ public class TransferConfig {
         }
 
         /**
-         * <p>ViewPager 中进行初始化并保留的页面设置为当前页面加上当前页面两侧的页面</p>
+         * <p>ViewPager 中进行初始化并创建的页面 : 设置为当前页面加上当前页面两侧的页面</p>
          * <p>默认为1, 表示第一次加载3张(nowThumbnailIndex, nowThumbnailIndex
          * + 1, nowThumbnailIndex - 1);值为 2, 表示加载5张。依次类推</p>
          * <p>这个参数是为了优化而提供的，值越大，初始化创建的页面越多，保留的页面也

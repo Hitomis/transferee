@@ -15,9 +15,9 @@ import java.util.List;
  * <p>
  * Created by hitomi on 2017/5/4.
  */
-public class RemoteThumState extends TransferState {
+class RemoteThumState extends TransferState {
 
-    public RemoteThumState(TransferLayout transfer) {
+    RemoteThumState(TransferLayout transfer) {
         super(transfer);
     }
 

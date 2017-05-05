@@ -5,9 +5,9 @@ import android.support.annotation.UiThread;
 import android.widget.ImageView;
 
 /**
+ * 图片加载器接口，实现 ImageLoader 可扩展自己的图片加载器
  * Created by hitomi on 2017/1/20.
  */
-
 public interface ImageLoader {
     /**
      * 状态码，取消加载高清图

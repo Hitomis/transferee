@@ -14,7 +14,8 @@ import com.hitomi.tilibrary.view.image.TransferImage;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 /**
- * 展示高清图的图片数据适配器
+ * 展示大图组件 ViewPager 的图片数据适配器
+ * <p>
  * Created by hitomi on 2017/1/23.
  */
 class TransferAdapter extends PagerAdapter {

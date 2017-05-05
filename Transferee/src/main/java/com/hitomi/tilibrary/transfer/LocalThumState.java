@@ -14,9 +14,9 @@ import java.util.List;
  * <p>
  * Created by hitomi on 2017/5/4.
  */
-public class LocalThumState extends TransferState {
+class LocalThumState extends TransferState {
 
-    public LocalThumState(TransferLayout transfer) {
+    LocalThumState(TransferLayout transfer) {
         super(transfer);
     }
 

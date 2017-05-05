@@ -113,6 +113,12 @@ class TransferLayout extends FrameLayout {
         this.loadedIndexSet = new HashSet<>();
     }
 
+    /**
+     * 加载 [position - offset] 到 [position + offset] 范围内有效索引位置的图片
+     *
+     * @param position 当前显示图片的索引
+     * @param offset   postion 左右便宜量
+     */
     private void loadSourceImageOffset(int position, int offset) {
         int left = position - offset;
         int right = position + offset;
@@ -131,6 +137,11 @@ class TransferLayout extends FrameLayout {
         }
     }
 
+    /**
+     * 加载索引位置为 position 处的图片
+     *
+     * @param position 当前有效的索引
+     */
     private void loadSourceImage(int position) {
         getTransferState(position).transferLoad(position);
     }
@@ -146,7 +157,7 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
-     * 创建 ViewPager
+     * 创建 ViewPager 并添加到 TransferLayout 中
      */
     private void createTransferViewPager() {
         transAdapter = new TransferAdapter(transConfig.getSourceImageList().size(),
@@ -163,6 +174,11 @@ class TransferLayout extends FrameLayout {
         addView(transViewPager, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
     }
 
+    /**
+     * 将 view 从 view 的父布局中移除
+     *
+     * @param view 待移除的 view
+     */
     private void removeFromParent(View view) {
         ViewGroup vg = (ViewGroup) view.getParent();
         if (vg != null)
@@ -189,7 +205,7 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
-     * 初始化 TransferLayout 中的各个组件，并显示，同时开启动画
+     * 初始化 TransferLayout 中的各个组件，并执行图片从缩略图到 Transferee 进入动画
      */
     public void show() {
         createTransferViewPager();
@@ -199,6 +215,12 @@ class TransferLayout extends FrameLayout {
         transImage = transferState.createTransferIn(nowThumbnailIndex);
     }
 
+    /**
+     * 依据当前有效索引 position 创建并返回一个 {@link TransferState}
+     *
+     * @param position 前有效索引
+     * @return {@link TransferState}
+     */
     private TransferState getTransferState(int position) {
         TransferState transferState;
 
@@ -218,9 +240,23 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
-     * 开启 transferImage 关闭动画，并隐藏 transferLayout 中的各个组件
+     * 为加载完的成图片ImageView 绑定点击关闭 Transferee 的点击事件
+     * @param imageView 加载完成的 ImageView
+     * @param pos 关闭 Transferee 时图片所在的索引
+     */
+    public void bindOnDismissListener(ImageView imageView, final int pos) {
+        imageView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss(pos);
+            }
+        });
+    }
+
+    /**
+     * 开启 Transferee 关闭动画，并隐藏 transferLayout 中的各个组件
      *
-     * @param pos
+     * @param pos 关闭 Transferee 时图片所在的索引
      */
     public void dismiss(int pos) {
         if (transImage != null && transImage.getState()
@@ -235,7 +271,7 @@ class TransferLayout extends FrameLayout {
     /**
      * 扩散消失动画
      *
-     * @param pos 动画作用于 pos 索引位置的 图片
+     * @param pos 动画作用于 pos 索引位置的图片
      */
     private void diffusionTransfer(int pos) {
         final TransferImage targetImage = transAdapter.getImageItem(pos);
@@ -316,15 +352,6 @@ class TransferLayout extends FrameLayout {
         if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
             indexIndicator.onRemove();
         }
-    }
-
-    public void bindOnDismissListener(ImageView imageView, final int pos) {
-        imageView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss(pos);
-            }
-        });
     }
 
     /**

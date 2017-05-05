@@ -16,9 +16,9 @@ import java.util.List;
  * <p>
  * Created by hitomi on 2017/5/4.
  */
-public class EmptyThumState extends TransferState {
+class EmptyThumState extends TransferState {
 
-    public EmptyThumState(TransferLayout transfer) {
+    EmptyThumState(TransferLayout transfer) {
         super(transfer);
     }
 

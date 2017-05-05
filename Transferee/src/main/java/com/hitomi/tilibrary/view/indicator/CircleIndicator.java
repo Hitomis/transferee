@@ -19,6 +19,9 @@ import com.hitomi.tilibrary.R;
 
 import static android.support.v4.view.ViewPager.OnPageChangeListener;
 
+/**
+ * 圆形小点索引指示器
+ */
 public class CircleIndicator extends LinearLayout {
 
     private final static int DEFAULT_INDICATOR_WIDTH = 5;

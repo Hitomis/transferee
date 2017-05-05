@@ -2,7 +2,9 @@ package com.hitomi.tilibrary.style;
 
 import android.widget.FrameLayout;
 
-
+/**
+ * 图片加载进度组件接口，实现 IProgressIndicator 可扩展自己的图片加载进度组件
+ */
 public interface IProgressIndicator {
 
     /**
@@ -38,7 +40,7 @@ public interface IProgressIndicator {
     /**
      * 图片加载完成, 移除图片加载进度 UI 控件
      *
-     * @param position
+     * @param position 索引下标
      */
     void onFinish(int position);
 

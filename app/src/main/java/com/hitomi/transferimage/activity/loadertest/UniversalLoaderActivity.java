@@ -7,6 +7,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.transferimage.R;
@@ -137,6 +138,7 @@ public class UniversalLoaderActivity extends BaseActivity {
                         .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                         .setOriginImageList(wrapOriginImageViewList())
                         .setProgressIndicator(new ProgressPieIndicator())
+                        .setIndexIndicator(new NumberIndexIndicator())
                         .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
                         .create();
                 transferee.apply(config).show();

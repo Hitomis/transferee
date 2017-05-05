@@ -26,19 +26,31 @@ import java.util.List;
 public class UniversalLoaderActivity extends BaseActivity {
     private GridView gvImages;
     private DisplayImageOptions options;
-    private List<String> imageStrList;
+    private List<String> thumbnailImageList;
+    private List<String> sourceImageList;
 
     {
-        imageStrList = new ArrayList<>();
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
+        thumbnailImageList = new ArrayList<>();
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png@233w_160h_50q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png@233w_160h_50q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png@233w_160h_50q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png@233w_160h_50q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png@233w_160h_50q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png@233w_160h_50q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png@233w_160h_50q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png@233w_160h_50q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png@233w_160h_50q");
+
+        sourceImageList = new ArrayList<>();
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
     }
 
     @Override
@@ -74,7 +86,7 @@ public class UniversalLoaderActivity extends BaseActivity {
     @NonNull
     private List<ImageView> wrapOriginImageViewList() {
         List<ImageView> originImgList = new ArrayList<>();
-        for (int i = 0; i < imageStrList.size(); i++) {
+        for (int i = 0; i < thumbnailImageList.size(); i++) {
             ImageView thumImg = (ImageView) ((LinearLayout) gvImages.getChildAt(i)).getChildAt(0);
             originImgList.add(thumImg);
         }
@@ -84,7 +96,7 @@ public class UniversalLoaderActivity extends BaseActivity {
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
-            super(UniversalLoaderActivity.this, R.layout.item_grid_image, imageStrList);
+            super(UniversalLoaderActivity.this, R.layout.item_grid_image, thumbnailImageList);
         }
 
         @Override
@@ -119,8 +131,8 @@ public class UniversalLoaderActivity extends BaseActivity {
             public void onClick(View v) {
                 TransferConfig config = TransferConfig.build()
                         .setNowThumbnailIndex(position)
-                        .setThumbnailImageList(imageStrList)
-                        .setSourceImageList(imageStrList)
+                        .setThumbnailImageList(thumbnailImageList)
+                        .setSourceImageList(sourceImageList)
                         .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                         .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                         .setOriginImageList(wrapOriginImageViewList())

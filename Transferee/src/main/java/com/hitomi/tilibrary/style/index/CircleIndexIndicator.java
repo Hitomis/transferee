@@ -12,9 +12,10 @@ import com.hitomi.tilibrary.view.indicator.CircleIndicator;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
+ * 图片翻页时使用 {@link CircleIndicator} 去指示当前图片的位置
+ * <p>
  * Created by hitomi on 2017/2/4.
  */
-
 public class CircleIndexIndicator implements IIndexIndicator {
 
     private CircleIndicator circleIndicator;
@@ -40,13 +41,13 @@ public class CircleIndexIndicator implements IIndexIndicator {
 
     @Override
     public void onHide() {
-        if (circleIndicator == null) return ;
+        if (circleIndicator == null) return;
         circleIndicator.setVisibility(View.GONE);
     }
 
     @Override
     public void onRemove() {
-        if (circleIndicator == null) return ;
+        if (circleIndicator == null) return;
         ViewGroup vg = (ViewGroup) circleIndicator.getParent();
         if (vg != null) {
             vg.removeView(circleIndicator);

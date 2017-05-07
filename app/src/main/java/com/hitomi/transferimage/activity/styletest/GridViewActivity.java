@@ -12,6 +12,7 @@ import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;
+import com.hitomi.universalloader.UniversalImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -25,15 +26,16 @@ public class GridViewActivity extends BaseActivity {
 
     {
         imageStrList = new ArrayList<>();
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/c3e4308aa6e2074c77d343d8824179c0-1024x628.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/d86a1428bea533217c7e2b13b4e5963e-1024x736.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/5cf47d87616dba975d1e85214025c349-1024x676.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/53605f987ec71b74bb376b47a238430a-1024x734.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/dad7c7f0e646780774de0374f406014b-1024x820.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/cbdef59bd87caa712abb0f144c463101-1024x833.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/e0f944e4c73ad5b6a018029bc7ebbb37-1024x734.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/eadc61ec6a819fe8fb518f06b37b5ccf-1024x668.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/e41b862ee191d342ec80cf39f97cc067-1024x724.jpg");
+
     }
 
     @Override

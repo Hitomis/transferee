@@ -132,8 +132,8 @@ public class UniversalLoaderActivity extends BaseActivity {
             public void onClick(View v) {
                 TransferConfig config = TransferConfig.build()
                         .setNowThumbnailIndex(position)
-                        .setThumbnailImageList(thumbnailImageList)
                         .setSourceImageList(sourceImageList)
+                        .setThumbnailImageList(thumbnailImageList)
                         .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                         .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                         .setOriginImageList(wrapOriginImageViewList())

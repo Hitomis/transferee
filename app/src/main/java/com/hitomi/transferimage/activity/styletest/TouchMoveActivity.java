@@ -23,12 +23,11 @@ public class TouchMoveActivity extends BaseActivity {
 
     {
         imageStrList = new ArrayList<>();
-        imageStrList.add("http://c.hiphotos.baidu.com/zhidao/pic/item/b7003af33a87e950e7d5403816385343faf2b4a0.jpg");
-        imageStrList.add("http://e.hiphotos.baidu.com/zhidao/pic/item/7aec54e736d12f2ed5568f4c4dc2d5628535684e.jpg");
-        imageStrList.add("http://e.hiphotos.baidu.com/zhidao/pic/item/78310a55b319ebc443ac406c8726cffc1f17166a.jpg");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
-        imageStrList.add("http://www.1tong.com/uploads/wallpaper/anime/105-2-1680x1050.jpg");
-        imageStrList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/7d635b455733338d4d6c13c2b2dda0b0-1024x665.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/83fbe92159108b49ca13d187c5c8bcec-1024x785.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/ce0ee71099e9b79cbb5996265cd2e6cd-758x1024.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/ccf1baf0694d0f8beed24597ad761987-1024x637.jpg");
+        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/09e67a0760fc22370c890bdc3954382b-827x1024.jpg");
     }
 
     @Override
@@ -84,7 +83,6 @@ public class TouchMoveActivity extends BaseActivity {
                     .setOriginImageList(imageViewList)
                     .setSourceImageList(imageStrList)
                     .setNowThumbnailIndex(imageViewList.indexOf(v))
-                    .setOffscreenPageLimit(1)
                     .setProgressIndicator(new ProgressBarIndicator())
                     .setJustLoadHitImage(true)
                     .create())

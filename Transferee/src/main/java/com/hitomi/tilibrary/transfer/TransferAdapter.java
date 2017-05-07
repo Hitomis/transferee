@@ -115,7 +115,8 @@ class TransferAdapter extends PagerAdapter {
         parentLayout.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         parentLayout.addView(imageView);
 
-        transfer.getTransferState(pos).prepareTransfer(imageView, pos);
+        if (transfer.getTransConfig().isJustLoadHitImage())
+            transfer.getTransferState(pos).prepareTransfer(imageView, pos);
 
         return parentLayout;
     }

@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide;
 import com.hitomi.glideloader.GlideImageLoader;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
+import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;
 
@@ -86,7 +87,17 @@ public class TouchMoveActivity extends BaseActivity {
                     .setProgressIndicator(new ProgressBarIndicator())
                     .setJustLoadHitImage(true)
                     .create())
-                    .show();
+                    .show(new Transferee.OnTransfereeChangeListener() {
+                        @Override
+                        public void onShow() {
+                            Glide.with(TouchMoveActivity.this).pauseRequests();
+                        }
+
+                        @Override
+                        public void onDismiss() {
+                            Glide.with(TouchMoveActivity.this).resumeRequests();
+                        }
+                    });
         }
     }
 

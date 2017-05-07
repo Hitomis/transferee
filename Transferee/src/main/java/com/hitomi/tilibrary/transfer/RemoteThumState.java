@@ -28,6 +28,7 @@ class RemoteThumState extends TransferState {
         ImageLoader imageLoader = config.getImageLoader();
         String imgUrl = config.getThumbnailImageList().get(position);
 
+        // todo bug: 当前点击的已经加载，但是其他的没有加载，这里可能长时间阻塞
         imageLoader.loadThumbnailAsync(imgUrl, transImage, new ImageLoader.ThumbnailCallback() {
 
             @Override

@@ -327,10 +327,11 @@ public class TransferImage extends PhotoView {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (stage == STAGE_TRANSLATE) {
+                    // todo : originalLocationX 值有問題
                     originalLocationX = (int) transform.endRect.left;
                     originalLocationY = (int) transform.endRect.top;
-                    originalWidth = (int) transform.endRect.width;
-                    originalHeight = (int) transform.endRect.height;
+                    originalWidth = (int) transform.startRect.width;
+                    originalHeight = (int) transform.startRect.height;
                 }
 
                 if (state == STATE_TRANS_IN && stage == STAGE_SCALE)

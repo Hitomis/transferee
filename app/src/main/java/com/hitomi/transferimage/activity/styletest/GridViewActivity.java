@@ -95,7 +95,6 @@ public class GridViewActivity extends BaseActivity {
                             .setOriginImageList(wrapOriginImageViewList())
                             .setProgressIndicator(new ProgressPieIndicator())
                             .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                            .setDuration(2000)
                             .create();
                     transferee.apply(config).show(new Transferee.OnTransfereeChangeListener() {
                         @Override

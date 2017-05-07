@@ -40,6 +40,13 @@
         android:textAllCaps="false" />
 
     <Button
+        android:id="@+id/btn_universal_npo_thum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="UniversalLoader 测试(无缩略图)"
+        android:textAllCaps="false" />
+
+    <Button
         android:layout_gravity="bottom"
         android:id="@+id/btn_clear_glide"
         android:layout_width="match_parent"

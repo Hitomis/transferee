@@ -128,24 +128,23 @@ class EmptyThumState extends TransferState {
     }
 
     @Override
-    public boolean transferOut(final int position) {
-        boolean transferOut = false;
+    public TransferImage transferOut(final int position) {
+        TransferImage transImage = null;
 
         TransferConfig config = transfer.getTransConfig();
         List<ImageView> originImageList = config.getOriginImageList();
 
         if (position < originImageList.size()) {
-            TransferImage transImage = createTransferImage(
+            transImage = createTransferImage(
                     originImageList.get(position));
             Drawable thumbnailDrawable = transfer.getTransAdapter().getImageItem(
                     config.getNowThumbnailIndex()).getDrawable();
             transImage.setImageDrawable(thumbnailDrawable);
             transImage.transformOut(TransferImage.STAGE_TRANSLATE);
 
-            transferOut = true;
             transfer.addView(transImage, 1);
         }
 
-        return transferOut;
+        return transImage;
     }
 }

@@ -132,6 +132,6 @@ abstract class TransferState {
 
     public abstract void transferLoad(final int position);
 
-    public abstract boolean transferOut(final int position);
+    public abstract TransferImage transferOut(final int position);
 
 }

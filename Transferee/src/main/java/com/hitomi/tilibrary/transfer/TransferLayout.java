@@ -274,7 +274,8 @@ class TransferLayout extends FrameLayout {
             return;
 
         hideIndexIndicator();
-        if (!getTransferState(pos).transferOut(pos))
+        transImage = getTransferState(pos).transferOut(pos);
+        if (transImage == null)
             diffusionTransfer(pos);
     }
 

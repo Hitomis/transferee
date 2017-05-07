@@ -86,6 +86,7 @@ public class TouchMoveActivity extends BaseActivity {
                     .setNowThumbnailIndex(imageViewList.indexOf(v))
                     .setOffscreenPageLimit(1)
                     .setProgressIndicator(new ProgressBarIndicator())
+                    .setJustLoadHitImage(true)
                     .create())
                     .show();
         }

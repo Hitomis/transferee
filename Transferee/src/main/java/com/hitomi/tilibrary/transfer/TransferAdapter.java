@@ -86,15 +86,19 @@ class TransferAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        // ViewPager instantiateItem 顺序：从 position 开始递减到0位置，再从 positon 递增到 getCount() - 1
+        // ViewPager instantiateItem 顺序：按 position 递减 OffscreenPageLimit，
+        // 再从 positon 递增 OffscreenPageLimit 的次序创建页面
         FrameLayout parentLayout = containLayoutArray.get(position);
+
         if (parentLayout == null) {
             parentLayout = newParentLayout(container, position);
             containLayoutArray.put(position, parentLayout);
+
+            if (position == showIndex && onInstantListener != null)
+                onInstantListener.onComplete();
         }
+
         container.addView(parentLayout);
-        if (position == showIndex && onInstantListener != null)
-            onInstantListener.onComplete();
         return parentLayout;
     }
 

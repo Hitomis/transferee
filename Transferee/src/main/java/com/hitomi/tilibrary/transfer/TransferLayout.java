@@ -177,8 +177,7 @@ class TransferLayout extends FrameLayout {
         transViewPager = new ViewPager(context);
         // 先隐藏，待 ViewPager 下标为 config.getCurrOriginIndex() 的页面创建完毕再显示
         transViewPager.setVisibility(View.INVISIBLE);
-        transViewPager.setOffscreenPageLimit(transConfig.isJustLoadHitImage()
-                ? 1 : transConfig. getOffscreenPageLimit() + 1);
+        transViewPager.setOffscreenPageLimit(transConfig. getOffscreenPageLimit() + 1);
         transViewPager.setAdapter(transAdapter);
         transViewPager.setCurrentItem(transConfig.getNowThumbnailIndex());
 

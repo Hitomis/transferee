@@ -10,9 +10,9 @@ import com.bumptech.glide.Glide;
 import com.hitomi.glideloader.GlideImageLoader;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
+import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;
-import com.hitomi.universalloader.UniversalImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -96,7 +96,17 @@ public class GridViewActivity extends BaseActivity {
                             .setProgressIndicator(new ProgressPieIndicator())
                             .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                             .create();
-                    transferee.apply(config).show();
+                    transferee.apply(config).show(new Transferee.OnTransfereeChangeListener() {
+                        @Override
+                        public void onShow() {
+                            Glide.with(GridViewActivity.this).pauseRequests();
+                        }
+
+                        @Override
+                        public void onDismiss() {
+                            Glide.with(GridViewActivity.this).resumeRequests();
+                        }
+                    });
                 }
             });
         }

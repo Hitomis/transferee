@@ -28,9 +28,11 @@ public class Transferee implements DialogInterface.OnShowListener,
     static volatile Transferee defaultInstance;
 
     private Context context;
+    private Dialog transDialog;
+
     private TransferLayout transLayout;
     private TransferConfig transConfig;
-    private Dialog transDialog;
+    private OnTransfereeChangeListener transListener;
 
     // 因为Dialog的关闭有动画延迟，固不能使用 dialog.isShowing, 去判断 transferee 的显示逻辑
     private boolean shown;
@@ -116,21 +118,6 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     /**
-     * 如果 Transferee 使用的是 Glide 作为图片加载器，那么需要暂停<br/>
-     * {@link #context} 环境下的的 Glide 加载请求，否则多个 Glide 加载 <br/>
-     * 资源线程的进度会彼此冲突
-     *
-     * @param stay true : pause, false : resume
-     */
-    private void stayRequest(boolean stay) {
-//        if (transConfig.getImageLoader() instanceof GlideImageLoader) {
-//            GlideImageLoader imageLoader = (GlideImageLoader) transConfig.getImageLoader();
-//            imageLoader.stayRequests(context, stay);
-//        }
-    }
-
-
-    /**
      * 配置 transferee 参数对象
      *
      * @param config 参数对象
@@ -160,7 +147,23 @@ public class Transferee implements DialogInterface.OnShowListener,
     public void show() {
         if (shown) return;
         transDialog.show();
-        stayRequest(true);
+        if (transListener != null)
+            transListener.onShow();
+
+        shown = true;
+    }
+
+    /**
+     * 显示 transferee, 并设置 OnTransfereeChangeListener
+     *
+     * @param listener {@link OnTransfereeChangeListener}
+     */
+    public void show(OnTransfereeChangeListener listener) {
+        if (shown) return;
+        transDialog.show();
+        transListener = listener;
+        transListener.onShow();
+
         shown = true;
     }
 
@@ -199,7 +202,9 @@ public class Transferee implements DialogInterface.OnShowListener,
     @Override
     public void onReset() {
         transDialog.dismiss();
-        stayRequest(false);
+        if (transListener != null)
+            transListener.onDismiss();
+
         shown = false;
     }
 
@@ -211,6 +216,26 @@ public class Transferee implements DialogInterface.OnShowListener,
             dismiss();
         }
         return true;
+    }
+
+    /**
+     * 设置 Transferee 显示和关闭的监听器
+     *
+     * @param listener {@link OnTransfereeChangeListener}
+     */
+    public void setOnTransfereeChangeListener(OnTransfereeChangeListener listener) {
+        transListener = listener;
+    }
+
+    /**
+     * Transferee 显示的时候调用 {@link OnTransfereeChangeListener#onShow()}
+     * <p>
+     * Transferee 关闭的时候调用 {@link OnTransfereeChangeListener#onDismiss()}
+     */
+    public interface OnTransfereeChangeListener {
+        void onShow();
+
+        void onDismiss();
     }
 
 }

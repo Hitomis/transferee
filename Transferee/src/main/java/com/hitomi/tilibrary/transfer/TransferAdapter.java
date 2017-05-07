@@ -105,17 +105,20 @@ class TransferAdapter extends PagerAdapter {
     @NonNull
     private FrameLayout newParentLayout(ViewGroup container, final int pos) {
         Context context = container.getContext();
+        TransferConfig config = transfer.getTransConfig();
+
         // create inner ImageView
         TransferImage imageView = new TransferImage(context);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        imageView.setDuration(config.getDuration());
 
         // create outer ParentLayout
         FrameLayout parentLayout = new FrameLayout(context);
         parentLayout.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         parentLayout.addView(imageView);
 
-        if (transfer.getTransConfig().isJustLoadHitImage())
+        if (config.isJustLoadHitImage())
             transfer.getTransferState(pos).prepareTransfer(imageView, pos);
 
         return parentLayout;

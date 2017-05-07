@@ -28,6 +28,7 @@ public class TransferConfig {
     private int missPlaceHolder;
     private int errorPlaceHolder;
     private long duration;
+    private boolean justLoadHitImage;
 
     private Drawable missDrawable;
     private Drawable errorDrawable;
@@ -82,6 +83,14 @@ public class TransferConfig {
 
     public void setDuration(long duration) {
         this.duration = duration;
+    }
+
+    public boolean isJustLoadHitImage() {
+        return justLoadHitImage;
+    }
+
+    public void setJustLoadHitImage(boolean justLoadHitImage) {
+        this.justLoadHitImage = justLoadHitImage;
     }
 
     public Drawable getMissDrawable(Context context) {
@@ -216,6 +225,7 @@ public class TransferConfig {
         private int missPlaceHolder;
         private int errorPlaceHolder;
         private long duration;
+        private boolean justLoadHitImage;
 
         private Drawable missDrawable;
         private Drawable errorDrawable;
@@ -269,6 +279,14 @@ public class TransferConfig {
          */
         public Builder setDuration(long duration) {
             this.duration = duration;
+            return this;
+        }
+
+        /**
+         * 仅仅只加载当前显示的图片
+         */
+        public Builder setJustLoadHitImage(boolean justLoadHitImage) {
+            this.justLoadHitImage = justLoadHitImage;
             return this;
         }
 
@@ -347,6 +365,7 @@ public class TransferConfig {
             config.setMissPlaceHolder(missPlaceHolder);
             config.setErrorPlaceHolder(errorPlaceHolder);
             config.setDuration(duration);
+            config.setJustLoadHitImage(justLoadHitImage);
 
             config.setMissDrawable(missDrawable);
             config.setErrorDrawable(errorDrawable);

@@ -20,14 +20,15 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  */
 class TransferAdapter extends PagerAdapter {
 
+    private TransferLayout transfer;
     private int showIndex;
     private int imageSize;
 
     private OnInstantiateItemListener onInstantListener;
-
     private SparseArray<FrameLayout> containLayoutArray;
 
-    TransferAdapter(int imageSize, int nowThumbnailIndex) {
+    TransferAdapter(TransferLayout transfer, int imageSize, int nowThumbnailIndex) {
+        this.transfer = transfer;
         this.imageSize = imageSize;
         this.showIndex = nowThumbnailIndex + 1 == imageSize
                 ? nowThumbnailIndex - 1 : nowThumbnailIndex + 1;
@@ -109,6 +110,8 @@ class TransferAdapter extends PagerAdapter {
         FrameLayout parentLayout = new FrameLayout(context);
         parentLayout.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         parentLayout.addView(imageView);
+
+        transfer.getTransferState(pos).prepareTransfer(imageView, pos);
 
         return parentLayout;
     }

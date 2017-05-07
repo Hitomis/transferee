@@ -46,8 +46,12 @@ class TransferLayout extends FrameLayout {
         public void onPageSelected(int position) {
             transConfig.setNowThumbnailIndex(position);
 
-            for (int i = 1; i <= transConfig.getOffscreenPageLimit(); i++) {
-                loadSourceImageOffset(position, i);
+            if (transConfig.isJustLoadHitImage()) {
+                loadSourceImageOffset(position, 0);
+            } else {
+                for (int i = 1; i <= transConfig.getOffscreenPageLimit(); i++) {
+                    loadSourceImageOffset(position, i);
+                }
             }
         }
     };
@@ -60,7 +64,12 @@ class TransferLayout extends FrameLayout {
             transViewPager.addOnPageChangeListener(transChangeListener);
 
             int position = transConfig.getNowThumbnailIndex();
-            loadSourceImageOffset(position, 1);
+            if (transConfig.isJustLoadHitImage()) {
+                loadSourceImageOffset(position, 0);
+            } else {
+                loadSourceImageOffset(position, 1);
+            }
+
         }
     };
     /**
@@ -160,14 +169,16 @@ class TransferLayout extends FrameLayout {
      * 创建 ViewPager 并添加到 TransferLayout 中
      */
     private void createTransferViewPager() {
-        transAdapter = new TransferAdapter(transConfig.getSourceImageList().size(),
+        transAdapter = new TransferAdapter(this,
+                transConfig.getSourceImageList().size(),
                 transConfig.getNowThumbnailIndex());
         transAdapter.setOnInstantListener(instantListener);
 
         transViewPager = new ViewPager(context);
         // 先隐藏，待 ViewPager 下标为 config.getCurrOriginIndex() 的页面创建完毕再显示
         transViewPager.setVisibility(View.INVISIBLE);
-        transViewPager.setOffscreenPageLimit(transConfig.getOffscreenPageLimit() + 1);
+        transViewPager.setOffscreenPageLimit(transConfig.isJustLoadHitImage()
+                ? 1 : transConfig. getOffscreenPageLimit() + 1);
         transViewPager.setAdapter(transAdapter);
         transViewPager.setCurrentItem(transConfig.getNowThumbnailIndex());
 
@@ -221,7 +232,7 @@ class TransferLayout extends FrameLayout {
      * @param position 前有效索引
      * @return {@link TransferState}
      */
-    private TransferState getTransferState(int position) {
+    TransferState getTransferState(int position) {
         TransferState transferState;
 
         if (!transConfig.isThumbnailEmpty()) { // 客户端指定了缩略图路径集合

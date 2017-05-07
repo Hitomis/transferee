@@ -126,6 +126,8 @@ abstract class TransferState {
         });
     }
 
+    public abstract void prepareTransfer(TransferImage transImage, final int position);
+
     public abstract TransferImage createTransferIn(final int position);
 
     public abstract void transferLoad(final int position);

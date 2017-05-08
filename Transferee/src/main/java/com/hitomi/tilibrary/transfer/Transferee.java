@@ -3,11 +3,11 @@ package com.hitomi.tilibrary.transfer;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 
+import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.loader.NoneImageLoader;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
@@ -186,12 +186,8 @@ public class Transferee implements DialogInterface.OnShowListener,
     /**
      * 清除 transferee 缓存
      */
-    public static void clear(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(
-                TransferConfig.SP_FILE, Context.MODE_PRIVATE);
-        sharedPref.edit()
-                .remove(TransferConfig.SP_LOAD_SET)
-                .apply();
+    public static void clear(ImageLoader imageLoader) {
+        imageLoader.clearCache();
     }
 
     @Override

@@ -82,7 +82,6 @@ class EmptyThumState extends TransferState {
                         switch (status) {
                             case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
                                 progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
-                                config.cacheLoadedImageUrl(context, imgUrl);
 
                                 targetImage.transformIn(TransferImage.STAGE_SCALE);
                                 targetImage.enable();

@@ -239,7 +239,7 @@ class TransferLayout extends FrameLayout {
         } else {
             String url = transConfig.getSourceImageList().get(position);
 
-            if (transConfig.containsSourceImageUrl(context, url)) {
+            if (transConfig.getImageLoader().isLoaded(url)) {
                 transferState = new LocalThumState(this);
             } else {
                 transferState = new EmptyThumState(this);

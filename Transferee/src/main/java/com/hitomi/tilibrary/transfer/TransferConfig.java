@@ -1,7 +1,6 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
@@ -9,10 +8,7 @@ import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Executors;
 
 /**
  * Transferee Attributes <br/>
@@ -20,9 +16,6 @@ import java.util.concurrent.Executors;
  * Created by hitomi on 2017/1/19.
  */
 public class TransferConfig {
-    static final String SP_FILE = "transferee";
-    static final String SP_LOAD_SET = "load_set";
-
     private int nowThumbnailIndex;
     private int offscreenPageLimit;
     private int missPlaceHolder;
@@ -177,46 +170,6 @@ public class TransferConfig {
      */
     public boolean isThumbnailEmpty() {
         return thumbnailImageList == null || thumbnailImageList.isEmpty();
-    }
-
-    /**
-     * 检测 SharedPreferences 中是否包含此图片 url
-     *
-     * @param context 上下文环境
-     * @param url     图片Url
-     * @return
-     */
-    public boolean containsSourceImageUrl(Context context, String url) {
-        SharedPreferences loadSharedPref = context.getSharedPreferences(
-                SP_FILE, Context.MODE_PRIVATE);
-        Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
-        return loadedSet.contains(url);
-
-    }
-
-    /**
-     * 使用 GlideImageLoader 时，需要缓存已加载完成的图片Url
-     *
-     * @param context 上下文环境
-     * @param url     加载完成的图片Url
-     */
-    public void cacheLoadedImageUrl(final Context context, final String url) {
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
-            @Override
-            public void run() {
-                SharedPreferences loadSharedPref = context.getSharedPreferences(
-                        SP_FILE, Context.MODE_PRIVATE);
-                Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
-                if (!loadedSet.contains(url)) {
-                    loadedSet.add(url);
-
-                    loadSharedPref.edit()
-                            .clear() // SharedPreferences 关于 putStringSet 的 bug 修复方案
-                            .putStringSet(SP_LOAD_SET, loadedSet)
-                            .apply();
-                }
-            }
-        });
     }
 
     public static class Builder {

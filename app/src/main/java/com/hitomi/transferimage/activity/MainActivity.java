@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.bumptech.glide.Glide;
+import com.hitomi.glideloader.GlideImageLoader;
 import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.loadertest.UniversalLoaderActivity;
@@ -14,10 +14,7 @@ import com.hitomi.transferimage.activity.loadertest.UniversalNoThumActivity;
 import com.hitomi.transferimage.activity.styletest.GridViewActivity;
 import com.hitomi.transferimage.activity.styletest.ListViewActivity;
 import com.hitomi.transferimage.activity.styletest.TouchMoveActivity;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
-import java.util.concurrent.Executors;
+import com.hitomi.universalloader.UniversalImageLoader;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,8 +25,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
 
         btnList = (Button) findViewById(R.id.btn_list);
         btnGrid = (Button) findViewById(R.id.btn_grid);
@@ -77,24 +72,14 @@ public class MainActivity extends AppCompatActivity {
         btnClearGlide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Transferee.clear(MainActivity.this);
-                Executors.newSingleThreadExecutor().submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        Glide.get(getApplicationContext()).clearDiskCache();
-                        Glide.get(getApplicationContext()).clearMemory();
-                        ImageLoader.getInstance().getMemoryCache().clear();
-                        ImageLoader.getInstance().getDiskCache().clear();
-                    }
-                });
+                Transferee.clear(GlideImageLoader.with(getApplicationContext()));
             }
         });
 
         btnClearUniversal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageLoader.getInstance().getMemoryCache().clear();
-                ImageLoader.getInstance().getDiskCache().clear();
+                Transferee.clear(UniversalImageLoader.with(getApplicationContext()));
             }
         });
 

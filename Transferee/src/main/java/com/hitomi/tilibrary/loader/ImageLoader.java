@@ -10,22 +10,22 @@ import android.widget.ImageView;
  */
 public interface ImageLoader {
     /**
-     * 状态码，取消加载高清图
+     * 状态码，取消加载原图
      */
     int STATUS_DISPLAY_CANCEL = -1;
     /**
-     * 状态码，加载高清图失败
+     * 状态码，加载原图失败
      */
     int STATUS_DISPLAY_FAILED = 0;
     /**
-     * 状态码，加载高清图成功
+     * 状态码，加载原图成功
      */
     int STATUS_DISPLAY_SUCCESS = 1;
 
     /**
-     * 加载并显示原高清图
+     * 加载并显示原图
      *
-     * @param srcUrl         高清图图片地址
+     * @param srcUrl         原图图片地址
      * @param imageView      用于图片加载成功后显示的 ImageView
      * @param placeholder    加载完成之前显示的占位图
      * @param sourceCallback 图片加载过程的回调
@@ -40,7 +40,18 @@ public interface ImageLoader {
      */
     void loadThumbnailAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback);
 
+    /**
+     * 检查本地磁盘缓存中是否已经存在此路径所关联的图片
+     *
+     * @param url 图片路径
+     * @return true: 已加载, false: 未加载
+     */
     boolean isLoaded(String url);
+
+    /**
+     * 清除 ImageLoader 缓存
+     */
+    void clearCache();
 
     interface SourceCallback {
         @UiThread

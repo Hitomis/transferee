@@ -24,4 +24,8 @@ public class NoneImageLoader implements ImageLoader {
         return false;
     }
 
+    @Override
+    public void clearCache() {
+    }
+
 }

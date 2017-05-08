@@ -1,6 +1,7 @@
 package com.hitomi.glideloader;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
@@ -11,6 +12,10 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.hitomi.glideloader.support.ProgressTarget;
 import com.hitomi.tilibrary.loader.ImageLoader;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Executors;
+
 
 /**
  * 使用 <a href="https://github.com/bumptech/glide">Glide</a>
@@ -19,10 +24,16 @@ import com.hitomi.tilibrary.loader.ImageLoader;
  * Created by hitomi on 2017/1/25.
  */
 public class GlideImageLoader implements ImageLoader {
+    private static final String SP_FILE = "transferee";
+    private static final String SP_LOAD_SET = "load_set";
+
     private Context context;
+    private SharedPreferences loadSharedPref;
 
     private GlideImageLoader(Context context) {
         this.context = context;
+        loadSharedPref = context.getSharedPreferences(
+                SP_FILE, Context.MODE_PRIVATE);
     }
 
     public static GlideImageLoader with(Context context) {
@@ -30,7 +41,7 @@ public class GlideImageLoader implements ImageLoader {
     }
 
     @Override
-    public void showSourceImage(String srcUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
+    public void showSourceImage(final String srcUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
         ProgressTarget<String, GlideDrawable> progressTarget =
                 new ProgressTarget<String, GlideDrawable>(srcUrl, new GlideDrawableImageViewTarget(imageView)) {
 
@@ -51,6 +62,8 @@ public class GlideImageLoader implements ImageLoader {
 
                     @Override
                     protected void onDelivered(int status) {
+                        if (status == STATUS_DISPLAY_SUCCESS)
+                            cacheLoadedImageUrl(srcUrl);
                         sourceCallback.onDelivered(status);
                     }
                 };
@@ -98,15 +111,45 @@ public class GlideImageLoader implements ImageLoader {
 
     @Override
     public boolean isLoaded(String url) {
-        return false;
+        Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
+        return loadedSet.contains(url);
     }
 
-    public void stayRequests(Context context, boolean stay) {
-        if (stay) {
-            Glide.with(context).pauseRequests();
-        } else {
-            Glide.with(context).resumeRequests();
-        }
+    @Override
+    public void clearCache() {
+        loadSharedPref.edit()
+                .remove(SP_LOAD_SET)
+                .apply();
+
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+            @Override
+            public void run() {
+                Glide.get(context).clearDiskCache();
+                Glide.get(context).clearMemory();
+            }
+        });
+    }
+
+    /**
+     * 使用 GlideImageLoader 时，需要缓存已加载完成的图片Url
+     *
+     * @param url 加载完成的图片Url
+     */
+    public void cacheLoadedImageUrl(final String url) {
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+            @Override
+            public void run() {
+                Set<String> loadedSet = loadSharedPref.getStringSet(SP_LOAD_SET, new HashSet<String>());
+                if (!loadedSet.contains(url)) {
+                    loadedSet.add(url);
+
+                    loadSharedPref.edit()
+                            .clear() // SharedPreferences 关于 putStringSet 的 bug 修复方案
+                            .putStringSet(SP_LOAD_SET, loadedSet)
+                            .apply();
+                }
+            }
+        });
     }
 
 

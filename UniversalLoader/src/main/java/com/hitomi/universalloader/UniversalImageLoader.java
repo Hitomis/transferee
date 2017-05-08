@@ -112,7 +112,6 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
 
     @Override
     public void loadThumbnailAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback) {
-        System.out.println("debug");
         ImageLoader.getInstance().loadImage(thumbUrl, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -139,5 +138,11 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     public boolean isLoaded(String url) {
         File cache = ImageLoader.getInstance().getDiskCache().get(url);
         return cache != null && cache.exists();
+    }
+
+    @Override
+    public void clearCache() {
+        ImageLoader.getInstance().getMemoryCache().clear();
+        ImageLoader.getInstance().getDiskCache().clear();
     }
 }

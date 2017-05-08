@@ -96,6 +96,11 @@ public class GlideImageLoader implements ImageLoader {
                 .into(progressTarget);
     }
 
+    @Override
+    public boolean isLoaded(String url) {
+        return false;
+    }
+
     public void stayRequests(Context context, boolean stay) {
         if (stay) {
             Glide.with(context).pauseRequests();

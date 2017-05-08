@@ -19,6 +19,8 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
+import java.io.File;
+
 /**
  * 使用 <a href="https://github.com/nostra13/Android-Universal-Image-Loader">
  * Android-Universal-Image-Loader</a>作为 Transferee 的图片加载器
@@ -110,8 +112,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
 
     @Override
     public void loadThumbnailAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback) {
-        // TODO: 2017/5/7 0007 可以通过下面这行代码来查找缓存
-//        ImageLoader.getInstance().getDiskCache().get(thumbUrl);
+        System.out.println("debug");
         ImageLoader.getInstance().loadImage(thumbUrl, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
@@ -132,5 +133,11 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
                 callback.onFinish(null);
             }
         });
+    }
+
+    @Override
+    public boolean isLoaded(String url) {
+        File cache = ImageLoader.getInstance().getDiskCache().get(url);
+        return cache != null && cache.exists();
     }
 }

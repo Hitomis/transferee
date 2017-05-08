@@ -57,43 +57,76 @@ class LocalThumState extends TransferState {
         final TransferImage targetImage = transfer.getTransAdapter().getImageItem(position);
         final ImageLoader imageLoader = config.getImageLoader();
 
-        imageLoader.loadThumbnailAsync(imgUrl, targetImage, new ImageLoader.ThumbnailCallback() {
-            @Override
-            public void onFinish(Drawable drawable) {
-                if (drawable == null)
-                    drawable = config.getMissDrawable(context);
+        if (config.isJustLoadHitImage()) {
+            imageLoader.showSourceImage(imgUrl, targetImage, targetImage.getDrawable(), new ImageLoader.SourceCallback() {
 
-                imageLoader.showSourceImage(imgUrl, targetImage, drawable, new ImageLoader.SourceCallback() {
+                @Override
+                public void onStart() {
+                }
 
-                    @Override
-                    public void onStart() {
+                @Override
+                public void onProgress(int progress) {
+                }
+
+                @Override
+                public void onFinish() {
+                }
+
+                @Override
+                public void onDelivered(int status) {
+                    switch (status) {
+                        case ImageLoader.STATUS_DISPLAY_SUCCESS:
+                            // 启用 TransferImage 的手势缩放功能
+                            targetImage.enable();
+                            // 绑定点击关闭 Transferee
+                            transfer.bindOnDismissListener(targetImage, position);
+                            break;
+                        case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
+                            targetImage.setImageDrawable(config.getErrorDrawable(context));
+                            break;
                     }
+                }
+            });
+        } else {
+            imageLoader.loadThumbnailAsync(imgUrl, targetImage, new ImageLoader.ThumbnailCallback() {
+                @Override
+                public void onFinish(Drawable drawable) {
+                    if (drawable == null)
+                        drawable = config.getMissDrawable(context);
 
-                    @Override
-                    public void onProgress(int progress) {
-                    }
+                    imageLoader.showSourceImage(imgUrl, targetImage, drawable, new ImageLoader.SourceCallback() {
 
-                    @Override
-                    public void onFinish() {
-                    }
-
-                    @Override
-                    public void onDelivered(int status) {
-                        switch (status) {
-                            case ImageLoader.STATUS_DISPLAY_SUCCESS:
-                                // 启用 TransferImage 的手势缩放功能
-                                targetImage.enable();
-                                // 绑定点击关闭 Transferee
-                                transfer.bindOnDismissListener(targetImage, position);
-                                break;
-                            case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                                targetImage.setImageDrawable(config.getErrorDrawable(context));
-                                break;
+                        @Override
+                        public void onStart() {
                         }
-                    }
-                });
-            }
-        });
+
+                        @Override
+                        public void onProgress(int progress) {
+                        }
+
+                        @Override
+                        public void onFinish() {
+                        }
+
+                        @Override
+                        public void onDelivered(int status) {
+                            switch (status) {
+                                case ImageLoader.STATUS_DISPLAY_SUCCESS:
+                                    // 启用 TransferImage 的手势缩放功能
+                                    targetImage.enable();
+                                    // 绑定点击关闭 Transferee
+                                    transfer.bindOnDismissListener(targetImage, position);
+                                    break;
+                                case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
+                                    targetImage.setImageDrawable(config.getErrorDrawable(context));
+                                    break;
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
     }
 
     @Override

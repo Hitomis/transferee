@@ -19,4 +19,9 @@ public class NoneImageLoader implements ImageLoader {
                                    ImageView imageView, ThumbnailCallback callback) {
     }
 
+    @Override
+    public boolean isLoaded(String url) {
+        return false;
+    }
+
 }

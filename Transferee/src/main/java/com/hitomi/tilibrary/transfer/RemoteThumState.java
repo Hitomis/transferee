@@ -28,15 +28,18 @@ class RemoteThumState extends TransferState {
         ImageLoader imageLoader = config.getImageLoader();
         String imgUrl = config.getThumbnailImageList().get(position);
 
-        // todo bug: 当前点击的已经加载，但是其他的没有加载，这里可能长时间阻塞
-        imageLoader.loadThumbnailAsync(imgUrl, transImage, new ImageLoader.ThumbnailCallback() {
+        if (imageLoader.isLoaded(imgUrl)) {
+            imageLoader.loadThumbnailAsync(imgUrl, transImage, new ImageLoader.ThumbnailCallback() {
 
-            @Override
-            public void onFinish(Drawable drawable) {
-                transImage.setImageDrawable(drawable == null
-                        ? config.getMissDrawable(context) : drawable);
-            }
-        });
+                @Override
+                public void onFinish(Drawable drawable) {
+                    transImage.setImageDrawable(drawable == null
+                            ? config.getMissDrawable(context) : drawable);
+                }
+            });
+        } else {
+            transImage.setImageDrawable(config.getMissDrawable(context));
+        }
     }
 
     @Override
@@ -61,16 +64,31 @@ class RemoteThumState extends TransferState {
         final IProgressIndicator progressIndicator = config.getProgressIndicator();
         progressIndicator.attach(position, adapter.getParentItem(position));
 
-        imageLoader.loadThumbnailAsync(config.getThumbnailImageList().get(position),
-                targetImage, new ImageLoader.ThumbnailCallback() {
+        if (config.isJustLoadHitImage()) {
+            loadSourceImage(targetImage.getDrawable(), imageLoader, config, position, targetImage, progressIndicator);
+        } else {
+            String thumUrl = config.getThumbnailImageList().get(position);
 
-            @Override
-            public void onFinish(Drawable drawable) {
-                if (drawable == null)
-                    drawable = config.getMissDrawable(context);
+            if (imageLoader.isLoaded(thumUrl)) {
+                imageLoader.loadThumbnailAsync(thumUrl, targetImage, new ImageLoader.ThumbnailCallback() {
 
-                imageLoader.showSourceImage(config.getSourceImageList().get(position),
-                        targetImage, drawable, new ImageLoader.SourceCallback() {
+                    @Override
+                    public void onFinish(Drawable drawable) {
+                        if (drawable == null)
+                            drawable = config.getMissDrawable(context);
+
+                        loadSourceImage(drawable, imageLoader, config, position, targetImage, progressIndicator);
+                    }
+                });
+            } else {
+                loadSourceImage(config.getMissDrawable(context), imageLoader, config, position, targetImage, progressIndicator);
+            }
+        }
+    }
+
+    private void loadSourceImage(Drawable drawable, ImageLoader imageLoader, final TransferConfig config, final int position, final TransferImage targetImage, final IProgressIndicator progressIndicator) {
+        imageLoader.showSourceImage(config.getSourceImageList().get(position),
+                targetImage, drawable, new ImageLoader.SourceCallback() {
 
                     @Override
                     public void onStart() {
@@ -102,8 +120,6 @@ class RemoteThumState extends TransferState {
                         }
                     }
                 });
-            }
-        });
     }
 
     @Override

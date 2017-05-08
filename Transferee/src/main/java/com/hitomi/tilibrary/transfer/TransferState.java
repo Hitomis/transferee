@@ -109,21 +109,51 @@ abstract class TransferState {
     protected void transformThumbnail(String thumbnailUrl, final TransferImage transImage, final boolean in) {
         final TransferConfig config = transfer.getTransConfig();
 
-        config.getImageLoader().loadThumbnailAsync(thumbnailUrl, transImage, new ImageLoader.ThumbnailCallback() {
-            @Override
-            public void onFinish(Drawable drawable) {
-                if (drawable == null)
-                    transImage.setImageDrawable(config.getMissDrawable(context));
-                else
-                    transImage.setImageDrawable(drawable);
+        ImageLoader imageLoader = config.getImageLoader();
+
+        if (this instanceof RemoteThumState) {
+
+            if (imageLoader.isLoaded(thumbnailUrl)) {
+                imageLoader.loadThumbnailAsync(thumbnailUrl, transImage, new ImageLoader.ThumbnailCallback() {
+                    @Override
+                    public void onFinish(Drawable drawable) {
+                        if (drawable == null)
+                            transImage.setImageDrawable(config.getMissDrawable(context));
+                        else
+                            transImage.setImageDrawable(drawable);
 
 
+                        if (in)
+                            transImage.transformIn();
+                        else
+                            transImage.transformOut();
+                    }
+                });
+            } else {
+                transImage.setImageDrawable(config.getMissDrawable(context));
                 if (in)
                     transImage.transformIn();
                 else
                     transImage.transformOut();
             }
-        });
+
+        } else {
+            imageLoader.loadThumbnailAsync(thumbnailUrl, transImage, new ImageLoader.ThumbnailCallback() {
+                @Override
+                public void onFinish(Drawable drawable) {
+                    if (drawable == null)
+                        transImage.setImageDrawable(config.getMissDrawable(context));
+                    else
+                        transImage.setImageDrawable(drawable);
+
+
+                    if (in)
+                        transImage.transformIn();
+                    else
+                        transImage.transformOut();
+                }
+            });
+        }
     }
 
     public abstract void prepareTransfer(TransferImage transImage, final int position);

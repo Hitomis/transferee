@@ -16,6 +16,8 @@ import com.hitomi.universalloader.UniversalImageLoader;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -102,25 +104,46 @@ public class UniversalNoThumActivity extends BaseActivity {
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             final ImageView imageView = viewHolder.getView(R.id.image_view);
-            ImageLoader.getInstance().displayImage(item, imageView, options);
-
-            imageView.setOnClickListener(new View.OnClickListener() {
+            ImageLoader.getInstance().displayImage(item, imageView, options, new ImageLoadingListener() {
                 @Override
-                public void onClick(View v) {
-                    TransferConfig config = TransferConfig.build()
-                            .setNowThumbnailIndex(position)
-                            .setSourceImageList(sourceImageList)
-                            .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-                            .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-                            .setOriginImageList(wrapOriginImageViewList())
-                            .setProgressIndicator(new ProgressPieIndicator())
-                            .setIndexIndicator(new NumberIndexIndicator())
-                            .setJustLoadHitImage(true)
-                            .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
-                            .create();
-                    transferee.apply(config).show();
+                public void onLoadingStarted(String imageUri, View view) {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    bindTransferee(imageView, position);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+
                 }
             });
+
+//            imageView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    TransferConfig config = TransferConfig.build()
+//                            .setNowThumbnailIndex(position)
+//                            .setThumbnailImageList(sourceImageList)
+//                            .setSourceImageList(sourceImageList)
+//                            .setMissPlaceHolder(R.mipmap.ic_empty_photo)
+//                            .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
+//                            .setOriginImageList(wrapOriginImageViewList())
+//                            .setProgressIndicator(new ProgressPieIndicator())
+//                            .setIndexIndicator(new NumberIndexIndicator())
+//                            .setJustLoadHitImage(true)
+//                            .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
+//                            .create();
+//                    transferee.apply(config).show();
+//                }
+//            });
         }
     }
 
@@ -131,13 +154,13 @@ public class UniversalNoThumActivity extends BaseActivity {
             public void onClick(View v) {
                 TransferConfig config = TransferConfig.build()
                         .setNowThumbnailIndex(position)
+                        .setThumbnailImageList(sourceImageList)
                         .setSourceImageList(sourceImageList)
                         .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                         .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                         .setOriginImageList(wrapOriginImageViewList())
                         .setProgressIndicator(new ProgressPieIndicator())
                         .setIndexIndicator(new NumberIndexIndicator())
-                        .setJustLoadHitImage(true)
                         .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
                         .create();
                 transferee.apply(config).show();

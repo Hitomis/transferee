@@ -40,6 +40,8 @@ public interface ImageLoader {
      */
     void loadThumbnailAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback);
 
+    boolean isLoaded(String url);
+
     interface SourceCallback {
         @UiThread
         void onStart();

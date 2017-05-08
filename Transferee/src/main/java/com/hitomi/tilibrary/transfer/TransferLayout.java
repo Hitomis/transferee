@@ -177,7 +177,7 @@ class TransferLayout extends FrameLayout {
         transViewPager = new ViewPager(context);
         // 先隐藏，待 ViewPager 下标为 config.getCurrOriginIndex() 的页面创建完毕再显示
         transViewPager.setVisibility(View.INVISIBLE);
-        transViewPager.setOffscreenPageLimit(transConfig. getOffscreenPageLimit() + 1);
+        transViewPager.setOffscreenPageLimit(transConfig.getOffscreenPageLimit() + 1);
         transViewPager.setAdapter(transAdapter);
         transViewPager.setCurrentItem(transConfig.getNowThumbnailIndex());
 
@@ -251,8 +251,9 @@ class TransferLayout extends FrameLayout {
 
     /**
      * 为加载完的成图片ImageView 绑定点击关闭 Transferee 的点击事件
+     *
      * @param imageView 加载完成的 ImageView
-     * @param pos 关闭 Transferee 时图片所在的索引
+     * @param pos       关闭 Transferee 时图片所在的索引
      */
     public void bindOnDismissListener(ImageView imageView, final int pos) {
         imageView.setOnClickListener(new OnClickListener() {

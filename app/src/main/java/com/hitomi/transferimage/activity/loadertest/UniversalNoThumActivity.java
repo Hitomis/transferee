@@ -103,8 +103,7 @@ public class UniversalNoThumActivity extends BaseActivity {
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             final ImageView imageView = viewHolder.getView(R.id.image_view);
             ImageLoader.getInstance().displayImage(item, imageView, options);
-            // todo: bug: aprt 动画执行有问题
-            // 如果指定了缩略图，那么缩略图一定要先加载完毕
+
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -117,7 +116,6 @@ public class UniversalNoThumActivity extends BaseActivity {
                             .setProgressIndicator(new ProgressPieIndicator())
                             .setIndexIndicator(new NumberIndexIndicator())
                             .setJustLoadHitImage(true)
-                            .setDuration(1000)
                             .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
                             .create();
                     transferee.apply(config).show();

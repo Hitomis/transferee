@@ -111,7 +111,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     @Override
     public void loadThumbnailAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback) {
         // TODO: 2017/5/7 0007 可以通过下面这行代码来查找缓存
-        ImageLoader.getInstance().getDiskCache().get(thumbUrl);
+//        ImageLoader.getInstance().getDiskCache().get(thumbUrl);
         ImageLoader.getInstance().loadImage(thumbUrl, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {

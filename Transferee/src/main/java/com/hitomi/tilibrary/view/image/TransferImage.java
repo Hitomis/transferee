@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -81,6 +82,32 @@ public class TransferImage extends PhotoView {
         originalLocationY = locationY;
         originalWidth = width;
         originalHeight = height;
+    }
+
+    public void setOriginalInfo(Drawable targetDrawable, int originWidth, int originHeight, int width, int height){
+        Rect rect = getClipOriginalInfo(targetDrawable, originWidth, originHeight, width, height);
+        originalLocationX = rect.left;
+        originalLocationY = rect.top;
+        originalWidth = rect.right;
+        originalHeight = rect.bottom;
+    }
+
+    private Rect getClipOriginalInfo(Drawable targetDrawable, int originWidth, int originHeight, int width, int height) {
+        Rect rect = new Rect();
+
+        float xSScale = originWidth / ((float) targetDrawable.getIntrinsicWidth());
+        float ySScale = originHeight / ((float) targetDrawable.getIntrinsicHeight());
+        float endScale = xSScale > ySScale ? xSScale : ySScale;
+
+        float drawableEndWidth = targetDrawable.getIntrinsicWidth() * endScale;
+        float drawableEndHeight = targetDrawable.getIntrinsicHeight() * endScale;
+
+        rect.left = (int) ((width - drawableEndWidth) / 2);
+        rect.top = (int) ((height - drawableEndHeight) / 2);
+        rect.right = (int) drawableEndWidth;
+        rect.bottom = (int) drawableEndHeight;
+
+        return rect;
     }
 
     /**
@@ -327,11 +354,10 @@ public class TransferImage extends PhotoView {
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (stage == STAGE_TRANSLATE) {
-                    // todo : originalLocationX 值有問題
                     originalLocationX = (int) transform.endRect.left;
                     originalLocationY = (int) transform.endRect.top;
-                    originalWidth = (int) transform.startRect.width;
-                    originalHeight = (int) transform.startRect.height;
+                    originalWidth = (int) transform.endRect.width;
+                    originalHeight = (int) transform.endRect.height;
                 }
 
                 if (state == STATE_TRANS_IN && stage == STAGE_SCALE)

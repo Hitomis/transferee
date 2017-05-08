@@ -65,6 +65,8 @@ class RemoteThumState extends TransferState {
         progressIndicator.attach(position, adapter.getParentItem(position));
 
         if (config.isJustLoadHitImage()) {
+            // 如果用户设置了 JustLoadHitImage 属性，说明在 prepareTransfer 中已经
+            // 对 TransferImage 裁剪且设置了占位图， 所以这里直接加载原图即可
             loadSourceImage(targetImage.getDrawable(), position, targetImage, progressIndicator);
         } else {
             String thumUrl = config.getThumbnailImageList().get(position);

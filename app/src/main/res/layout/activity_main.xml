@@ -47,8 +47,13 @@
         android:textAllCaps="false" />
 
     <Button
-        android:layout_gravity="bottom"
         android:id="@+id/btn_clear_glide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="clear glide cache" />
+
+    <Button
+        android:id="@+id/btn_clear_universal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="clear glide cache" />

@@ -162,6 +162,7 @@ public class UniversalNoThumActivity extends BaseActivity {
                         .setProgressIndicator(new ProgressPieIndicator())
                         .setIndexIndicator(new NumberIndexIndicator())
                         .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
+                        .setJustLoadHitImage(true)
                         .create();
                 transferee.apply(config).show();
             }

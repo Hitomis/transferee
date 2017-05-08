@@ -15,18 +15,21 @@ import com.hitomi.transferimage.activity.styletest.GridViewActivity;
 import com.hitomi.transferimage.activity.styletest.ListViewActivity;
 import com.hitomi.transferimage.activity.styletest.TouchMoveActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button btnList, btnGrid, btnGoTouchMove, btnClearGlide;
-    private Button btnUniversal, btnUniversalNoThum;
+    private Button btnUniversal, btnUniversalNoThum, btnClearUniversal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
 
         btnList = (Button) findViewById(R.id.btn_list);
         btnGrid = (Button) findViewById(R.id.btn_grid);
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         btnClearGlide = (Button) findViewById(R.id.btn_clear_glide);
         btnUniversal = (Button) findViewById(R.id.btn_universal);
         btnUniversalNoThum = (Button) findViewById(R.id.btn_universal_npo_thum);
+        btnClearUniversal = (Button) findViewById(R.id.btn_clear_universal);
 
         btnList.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +87,14 @@ public class MainActivity extends AppCompatActivity {
                         ImageLoader.getInstance().getDiskCache().clear();
                     }
                 });
+            }
+        });
+
+        btnClearUniversal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageLoader.getInstance().getMemoryCache().clear();
+                ImageLoader.getInstance().getDiskCache().clear();
             }
         });
 

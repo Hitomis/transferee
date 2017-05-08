@@ -86,7 +86,7 @@ public class UniversalNoThumActivity extends BaseActivity {
     @NonNull
     private List<ImageView> wrapOriginImageViewList() {
         List<ImageView> originImgList = new ArrayList<>();
-        for (int i = 0; i < thumbnailImageList.size(); i++) {
+        for (int i = 0; i < sourceImageList.size(); i++) {
             ImageView thumImg = (ImageView) ((LinearLayout) gvImages.getChildAt(i)).getChildAt(0);
             originImgList.add(thumImg);
         }
@@ -96,7 +96,7 @@ public class UniversalNoThumActivity extends BaseActivity {
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
-            super(UniversalNoThumActivity.this, R.layout.item_grid_image, thumbnailImageList);
+            super(UniversalNoThumActivity.this, R.layout.item_grid_image, sourceImageList);
         }
 
         @Override

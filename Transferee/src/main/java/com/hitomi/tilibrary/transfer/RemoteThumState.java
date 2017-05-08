@@ -65,7 +65,7 @@ class RemoteThumState extends TransferState {
         progressIndicator.attach(position, adapter.getParentItem(position));
 
         if (config.isJustLoadHitImage()) {
-            loadSourceImage(targetImage.getDrawable(), imageLoader, config, position, targetImage, progressIndicator);
+            loadSourceImage(targetImage.getDrawable(), position, targetImage, progressIndicator);
         } else {
             String thumUrl = config.getThumbnailImageList().get(position);
 
@@ -77,17 +77,19 @@ class RemoteThumState extends TransferState {
                         if (drawable == null)
                             drawable = config.getMissDrawable(context);
 
-                        loadSourceImage(drawable, imageLoader, config, position, targetImage, progressIndicator);
+                        loadSourceImage(drawable, position, targetImage, progressIndicator);
                     }
                 });
             } else {
-                loadSourceImage(config.getMissDrawable(context), imageLoader, config, position, targetImage, progressIndicator);
+                loadSourceImage(config.getMissDrawable(context), position, targetImage, progressIndicator);
             }
         }
     }
 
-    private void loadSourceImage(Drawable drawable, ImageLoader imageLoader, final TransferConfig config, final int position, final TransferImage targetImage, final IProgressIndicator progressIndicator) {
-        imageLoader.showSourceImage(config.getSourceImageList().get(position),
+    private void loadSourceImage(Drawable drawable, final int position, final TransferImage targetImage, final IProgressIndicator progressIndicator) {
+        final TransferConfig config = transfer.getTransConfig();
+
+        config.getImageLoader().showSourceImage(config.getSourceImageList().get(position),
                 targetImage, drawable, new ImageLoader.SourceCallback() {
 
                     @Override

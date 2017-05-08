@@ -100,36 +100,22 @@ abstract class TransferState {
     }
 
     /**
-     * 加载缩略图图像并启动图像的过渡动画
+     * 加载 imageUrl 所关联的图片到 TransferImage 并启动 TransferImage 中的过渡动画
      *
-     * @param thumbnailUrl 当前缩略图路径
-     * @param transImage   TransferImage
-     * @param in           true : 从缩略图到高清图动画, false : 从到高清图到缩略图动画
+     * @param imageUrl   当前缩略图路径
+     * @param transImage {@link #createTransferImage(ImageView)} 方法创建的 TransferImage
+     * @param in         true : 从缩略图到高清图动画, false : 从到高清图到缩略图动画
      */
-    protected void transformThumbnail(String thumbnailUrl, final TransferImage transImage, final boolean in) {
+    protected void transformThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
         final TransferConfig config = transfer.getTransConfig();
 
         ImageLoader imageLoader = config.getImageLoader();
 
-        if (this instanceof RemoteThumState) {
+        if (this instanceof RemoteThumState) { // RemoteThumState
 
-            if (imageLoader.isLoaded(thumbnailUrl)) {
-                imageLoader.loadThumbnailAsync(thumbnailUrl, transImage, new ImageLoader.ThumbnailCallback() {
-                    @Override
-                    public void onFinish(Drawable drawable) {
-                        if (drawable == null)
-                            transImage.setImageDrawable(config.getMissDrawable(context));
-                        else
-                            transImage.setImageDrawable(drawable);
-
-
-                        if (in)
-                            transImage.transformIn();
-                        else
-                            transImage.transformOut();
-                    }
-                });
-            } else {
+            if (imageLoader.isLoaded(imageUrl)) { // 缩略图已加载过
+                loadThunbnail(imageUrl, transImage, in);
+            } else { // 缩略图 未加载过，则使用用户配置的缺省占位图
                 transImage.setImageDrawable(config.getMissDrawable(context));
                 if (in)
                     transImage.transformIn();
@@ -137,31 +123,68 @@ abstract class TransferState {
                     transImage.transformOut();
             }
 
-        } else {
-            imageLoader.loadThumbnailAsync(thumbnailUrl, transImage, new ImageLoader.ThumbnailCallback() {
-                @Override
-                public void onFinish(Drawable drawable) {
-                    if (drawable == null)
-                        transImage.setImageDrawable(config.getMissDrawable(context));
-                    else
-                        transImage.setImageDrawable(drawable);
-
-
-                    if (in)
-                        transImage.transformIn();
-                    else
-                        transImage.transformOut();
-                }
-            });
+        } else { // LocalThumState
+            loadThunbnail(imageUrl, transImage, in);
         }
     }
 
+    /**
+     * 加载 imageUrl 所关联的图片到 TransferImage 中
+     *
+     * @param imageUrl   图片路径
+     * @param transImage
+     * @param in         true: 表示从缩略图到 Transferee, false: 从 Transferee 到缩略图
+     */
+    private void loadThunbnail(String imageUrl, final TransferImage transImage, final boolean in) {
+        final TransferConfig config = transfer.getTransConfig();
+
+        config.getImageLoader().loadThumbnailAsync(imageUrl, transImage, new ImageLoader.ThumbnailCallback() {
+            @Override
+            public void onFinish(Drawable drawable) {
+                if (drawable == null)
+                    transImage.setImageDrawable(config.getMissDrawable(context));
+                else
+                    transImage.setImageDrawable(drawable);
+
+                if (in)
+                    transImage.transformIn();
+                else
+                    transImage.transformOut();
+            }
+        });
+    }
+
+    /**
+     * 当用户使用 {@link TransferConfig#justLoadHitImage} 属
+     * 性时，需要使用 prepareTransfer 方法提前让 ViewPager 对应
+     * position 处的 TransferImage 剪裁并设置占位图
+     *
+     * @param transImage ViewPager 中 position 位置处的 TransferImage
+     * @param position   当前点击的图片索引
+     */
     public abstract void prepareTransfer(TransferImage transImage, final int position);
 
+    /**
+     * 创建一个 TransferImage 放置在 Transferee 中指定位置，并播放从缩略图到 Transferee 的过渡动画
+     *
+     * @param position 进入到 Transferee 之前，用户在图片列表中点击的图片的索引
+     * @return 创建的 TransferImage
+     */
     public abstract TransferImage createTransferIn(final int position);
 
+    /**
+     * 从网络或者从 {@link ImageLoader} 指定的缓存中加载 SourceImageList.get(position) 对应的图片
+     *
+     * @param position 原图片路径索引
+     */
     public abstract void transferLoad(final int position);
 
+    /**
+     * 创建一个 TransferImage 放置在 Transferee 中指定位置，并播放从 Transferee 到 缩略图的过渡动画
+     *
+     * @param position 当前点击的图片索引
+     * @return 创建的 TransferImage
+     */
     public abstract TransferImage transferOut(final int position);
 
 }

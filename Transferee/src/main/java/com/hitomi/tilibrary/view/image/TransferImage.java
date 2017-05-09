@@ -77,6 +77,14 @@ public class TransferImage extends PhotoView {
         paint.setStyle(Style.FILL);
     }
 
+    /**
+     * 设置 TransferImage 初始位置信息
+     *
+     * @param locationX x坐标位置
+     * @param locationY y坐标位置
+     * @param width     宽度
+     * @param height    高度
+     */
     public void setOriginalInfo(int locationX, int locationY, int width, int height) {
         originalLocationX = locationX;
         originalLocationY = locationY;
@@ -84,7 +92,16 @@ public class TransferImage extends PhotoView {
         originalHeight = height;
     }
 
-    public void setOriginalInfo(Drawable targetDrawable, int originWidth, int originHeight, int width, int height){
+    /**
+     * 设置 TransferImage 初始位置信息
+     *
+     * @param targetDrawable 初始显示的图片 Drawable
+     * @param originWidth    TransferImage 初始宽度
+     * @param originHeight   TransferImage 初始高度
+     * @param width          容器宽度
+     * @param height         容器高度
+     */
+    public void setOriginalInfo(Drawable targetDrawable, int originWidth, int originHeight, int width, int height) {
         Rect rect = getClipOriginalInfo(targetDrawable, originWidth, originHeight, width, height);
         originalLocationX = rect.left;
         originalLocationY = rect.top;
@@ -185,7 +202,7 @@ public class TransferImage extends PhotoView {
     /**
      * 获取当前的状态
      *
-     * @return {@link #STATE_TRANS_NORMAL}, {@link #STATE_TRANS_IN}, {@link #STATE_TRANS_OUT}
+     * @return {@link #STATE_TRANS_NORMAL}, {@link #STATE_TRANS_IN}, {@link #STATE_TRANS_OUT}, {@link #STATE_TRANS_CLIP}
      */
     public int getState() {
         return state;

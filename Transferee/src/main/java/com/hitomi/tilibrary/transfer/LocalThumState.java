@@ -94,6 +94,8 @@ class LocalThumState extends TransferState {
             public void onDelivered(int status) {
                 switch (status) {
                     case ImageLoader.STATUS_DISPLAY_SUCCESS:
+                        if (TransferImage.STATE_TRANS_CLIP == targetImage.getState())
+                            targetImage.transformIn(TransferImage.STAGE_SCALE);
                         // 启用 TransferImage 的手势缩放功能
                         targetImage.enable();
                         // 绑定点击关闭 Transferee

@@ -32,7 +32,7 @@ public class Transferee implements DialogInterface.OnShowListener,
 
     private TransferLayout transLayout;
     private TransferConfig transConfig;
-    private OnTransfereeChangeListener transListener;
+    private OnTransfereeStateChangeListener transListener;
 
     // 因为Dialog的关闭有动画延迟，固不能使用 dialog.isShowing, 去判断 transferee 的显示逻辑
     private boolean shown;
@@ -156,9 +156,9 @@ public class Transferee implements DialogInterface.OnShowListener,
     /**
      * 显示 transferee, 并设置 OnTransfereeChangeListener
      *
-     * @param listener {@link OnTransfereeChangeListener}
+     * @param listener {@link OnTransfereeStateChangeListener}
      */
-    public void show(OnTransfereeChangeListener listener) {
+    public void show(OnTransfereeStateChangeListener listener) {
         if (shown) return;
         transDialog.show();
         transListener = listener;
@@ -217,18 +217,18 @@ public class Transferee implements DialogInterface.OnShowListener,
     /**
      * 设置 Transferee 显示和关闭的监听器
      *
-     * @param listener {@link OnTransfereeChangeListener}
+     * @param listener {@link OnTransfereeStateChangeListener}
      */
-    public void setOnTransfereeChangeListener(OnTransfereeChangeListener listener) {
+    public void setOnTransfereeStateChangeListener(OnTransfereeStateChangeListener listener) {
         transListener = listener;
     }
 
     /**
-     * Transferee 显示的时候调用 {@link OnTransfereeChangeListener#onShow()}
+     * Transferee 显示的时候调用 {@link OnTransfereeStateChangeListener#onShow()}
      * <p>
-     * Transferee 关闭的时候调用 {@link OnTransfereeChangeListener#onDismiss()}
+     * Transferee 关闭的时候调用 {@link OnTransfereeStateChangeListener#onDismiss()}
      */
-    public interface OnTransfereeChangeListener {
+    public interface OnTransfereeStateChangeListener {
         void onShow();
 
         void onDismiss();

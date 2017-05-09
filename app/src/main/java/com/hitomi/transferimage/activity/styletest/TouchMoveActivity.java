@@ -87,7 +87,7 @@ public class TouchMoveActivity extends BaseActivity {
                     .setProgressIndicator(new ProgressBarIndicator())
                     .setJustLoadHitImage(true)
                     .create())
-                    .show(new Transferee.OnTransfereeChangeListener() {
+                    .show(new Transferee.OnTransfereeStateChangeListener() {
                         @Override
                         public void onShow() {
                             Glide.with(TouchMoveActivity.this).pauseRequests();

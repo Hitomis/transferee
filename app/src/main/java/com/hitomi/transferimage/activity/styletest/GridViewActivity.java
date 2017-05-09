@@ -96,7 +96,7 @@ public class GridViewActivity extends BaseActivity {
                             .setProgressIndicator(new ProgressPieIndicator())
                             .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                             .create();
-                    transferee.apply(config).show(new Transferee.OnTransfereeChangeListener() {
+                    transferee.apply(config).show(new Transferee.OnTransfereeStateChangeListener() {
                         @Override
                         public void onShow() {
                             Glide.with(GridViewActivity.this).pauseRequests();

@@ -9,56 +9,44 @@ import android.widget.Button;
 import com.hitomi.glideloader.GlideImageLoader;
 import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
-import com.hitomi.transferimage.activity.loadertest.UniversalLoaderActivity;
-import com.hitomi.transferimage.activity.loadertest.UniversalNoThumActivity;
-import com.hitomi.transferimage.activity.styletest.GridViewActivity;
-import com.hitomi.transferimage.activity.styletest.ListViewActivity;
-import com.hitomi.transferimage.activity.styletest.TouchMoveActivity;
+import com.hitomi.transferimage.activity.glide.GlideNoThumActivity;
+import com.hitomi.transferimage.activity.glide.TouchMoveActivity;
+import com.hitomi.transferimage.activity.universal.UniversalNoThumActivity;
+import com.hitomi.transferimage.activity.universal.UniversalNormalActivity;
 import com.hitomi.universalloader.UniversalImageLoader;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnList, btnGrid, btnGoTouchMove, btnClearGlide;
-    private Button btnUniversal, btnUniversalNoThum, btnClearUniversal;
+    private Button btnGoTouchMove, btnGlideNoThum;
+    private Button btnUniversalNormal, btnUniversalNoThum;
+    private Button btnClearGlide, btnClearUniversal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnList = (Button) findViewById(R.id.btn_list);
-        btnGrid = (Button) findViewById(R.id.btn_grid);
+        btnGlideNoThum = (Button) findViewById(R.id.btn_glide_no_thum);
+
+        btnUniversalNormal = (Button) findViewById(R.id.btn_universal_normal);
+        btnUniversalNoThum = (Button) findViewById(R.id.btn_universal_no_thum);
+
         btnGoTouchMove = (Button) findViewById(R.id.btn_touch_move);
+
         btnClearGlide = (Button) findViewById(R.id.btn_clear_glide);
-        btnUniversal = (Button) findViewById(R.id.btn_universal);
-        btnUniversalNoThum = (Button) findViewById(R.id.btn_universal_npo_thum);
         btnClearUniversal = (Button) findViewById(R.id.btn_clear_universal);
 
-        btnList.setOnClickListener(new View.OnClickListener() {
+        btnGlideNoThum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ListViewActivity.class));
+                startActivity(new Intent(MainActivity.this, GlideNoThumActivity.class));
             }
         });
 
-        btnGrid.setOnClickListener(new View.OnClickListener() {
+        btnUniversalNormal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, GridViewActivity.class));
-            }
-        });
-
-        btnGoTouchMove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, TouchMoveActivity.class));
-            }
-        });
-
-        btnUniversal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, UniversalLoaderActivity.class));
+                startActivity(new Intent(MainActivity.this, UniversalNormalActivity.class));
             }
         });
 
@@ -66,6 +54,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, UniversalNoThumActivity.class));
+            }
+        });
+
+        btnGoTouchMove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, TouchMoveActivity.class));
             }
         });
 
@@ -84,5 +79,4 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 }

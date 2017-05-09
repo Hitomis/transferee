@@ -1,4 +1,4 @@
-package com.hitomi.transferimage.activity.styletest;
+package com.hitomi.transferimage.activity.glide;
 
 import android.view.MotionEvent;
 import android.view.View;

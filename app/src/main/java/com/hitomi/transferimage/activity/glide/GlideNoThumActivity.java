@@ -1,10 +1,8 @@
-package com.hitomi.transferimage.activity.styletest;
+package com.hitomi.transferimage.activity.glide;
 
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.hitomi.glideloader.GlideImageLoader;
@@ -17,24 +15,20 @@ import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class GridViewActivity extends BaseActivity {
-
-    private GridView gvImages;
-    private List<String> imageStrList;
+public class GlideNoThumActivity extends BaseActivity {
 
     {
-        imageStrList = new ArrayList<>();
-        imageStrList.add("http://i1.17173cdn.com/2fhnvk/YWxqaGBf/cms3/mcofEgbkwpuvlob.jpg!a-3-640x.jpg");
-        imageStrList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/DWABSHbkCdElEDA.jpg!a-3-640x.jpg");
-        imageStrList.add("http://i2.17173cdn.com/2fhnvk/YWxqaGBf/cms3/xNLzqtbkCdElEyC.jpg!a-3-640x.jpg");
-        imageStrList.add("http://i1.17173cdn.com/2fhnvk/YWxqaGBf/cms3/vUFNHwbljxruktB.jpg!a-3-640x.jpg");
-        imageStrList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/FNGGjrbljxrukba.jpg!a-3-640x.jpg");
-        imageStrList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/Juvmrjbkwpuvjyv.jpg!a-3-640x.jpg");
-        imageStrList.add("http://i1.17173cdn.com/2fhnvk/YWxqaGBf/cms3/qlwPVQbkwpuvmcc.jpg!a-3-640x.jpg");
-        imageStrList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/vMbgOlbkwpuvlEE.jpg!a-3-640x.jpg");
-        imageStrList.add("http://i2.17173cdn.com/2fhnvk/YWxqaGBf/cms3/GJhaLjbkwpuvlty.jpg!a-3-640x.jpg");
+        sourceImageList = new ArrayList<>();
+        sourceImageList.add("http://i1.17173cdn.com/2fhnvk/YWxqaGBf/cms3/mcofEgbkwpuvlob.jpg!a-3-640x.jpg");
+        sourceImageList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/DWABSHbkCdElEDA.jpg!a-3-640x.jpg");
+        sourceImageList.add("http://i2.17173cdn.com/2fhnvk/YWxqaGBf/cms3/xNLzqtbkCdElEyC.jpg!a-3-640x.jpg");
+        sourceImageList.add("http://i1.17173cdn.com/2fhnvk/YWxqaGBf/cms3/vUFNHwbljxruktB.jpg!a-3-640x.jpg");
+        sourceImageList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/FNGGjrbljxrukba.jpg!a-3-640x.jpg");
+        sourceImageList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/Juvmrjbkwpuvjyv.jpg!a-3-640x.jpg");
+        sourceImageList.add("http://i1.17173cdn.com/2fhnvk/YWxqaGBf/cms3/qlwPVQbkwpuvmcc.jpg!a-3-640x.jpg");
+        sourceImageList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/vMbgOlbkwpuvlEE.jpg!a-3-640x.jpg");
+        sourceImageList.add("http://i2.17173cdn.com/2fhnvk/YWxqaGBf/cms3/GJhaLjbkwpuvlty.jpg!a-3-640x.jpg");
 
     }
 
@@ -54,32 +48,17 @@ public class GridViewActivity extends BaseActivity {
         gvImages.setAdapter(new NineGridAdapter());
     }
 
-    /**
-     * 包装缩略图 ImageView 集合
-     *
-     * @return
-     */
-    @NonNull
-    private List<ImageView> wrapOriginImageViewList() {
-        List<ImageView> originImgList = new ArrayList<>();
-        for (int i = 0; i < imageStrList.size(); i++) {
-            ImageView thumImg = (ImageView) ((LinearLayout) gvImages.getChildAt(i)).getChildAt(0);
-            originImgList.add(thumImg);
-        }
-        return originImgList;
-    }
-
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
-            super(GridViewActivity.this, R.layout.item_grid_image, imageStrList);
+            super(GlideNoThumActivity.this, R.layout.item_grid_image, sourceImageList);
         }
 
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             ImageView imageView = viewHolder.getView(R.id.image_view);
 
-            Glide.with(GridViewActivity.this)
+            Glide.with(GlideNoThumActivity.this)
                     .load(item)
                     .centerCrop()
                     .placeholder(R.mipmap.ic_empty_photo)
@@ -90,21 +69,21 @@ public class GridViewActivity extends BaseActivity {
                 public void onClick(View v) {
                     TransferConfig config = TransferConfig.build()
                             .setNowThumbnailIndex(position)
-                            .setSourceImageList(imageStrList)
+                            .setSourceImageList(sourceImageList)
                             .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-                            .setOriginImageList(wrapOriginImageViewList())
+                            .setOriginImageList(wrapOriginImageViewList(sourceImageList.size()))
                             .setProgressIndicator(new ProgressPieIndicator())
                             .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                             .create();
                     transferee.apply(config).show(new Transferee.OnTransfereeStateChangeListener() {
                         @Override
                         public void onShow() {
-                            Glide.with(GridViewActivity.this).pauseRequests();
+                            Glide.with(GlideNoThumActivity.this).pauseRequests();
                         }
 
                         @Override
                         public void onDismiss() {
-                            Glide.with(GridViewActivity.this).resumeRequests();
+                            Glide.with(GlideNoThumActivity.this).resumeRequests();
                         }
                     });
                 }

@@ -1,11 +1,9 @@
-package com.hitomi.transferimage.activity.loadertest;
+package com.hitomi.transferimage.activity.universal;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
@@ -22,13 +20,9 @@ import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class UniversalLoaderActivity extends BaseActivity {
-    private GridView gvImages;
+public class UniversalNormalActivity extends BaseActivity {
     private DisplayImageOptions options;
-    private List<String> thumbnailImageList;
-    private List<String> sourceImageList;
 
     {
         thumbnailImageList = new ArrayList<>();
@@ -56,7 +50,7 @@ public class UniversalLoaderActivity extends BaseActivity {
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_universal_loader;
+        return R.layout.activity_grid_view;
     }
 
     @Override
@@ -76,28 +70,13 @@ public class UniversalLoaderActivity extends BaseActivity {
                 .resetViewBeforeLoading(true)
                 .build();
 
-        gvImages.setAdapter(new UniversalLoaderActivity.NineGridAdapter());
-    }
-
-    /**
-     * 包装缩略图 ImageView 集合
-     *
-     * @return
-     */
-    @NonNull
-    private List<ImageView> wrapOriginImageViewList() {
-        List<ImageView> originImgList = new ArrayList<>();
-        for (int i = 0; i < thumbnailImageList.size(); i++) {
-            ImageView thumImg = (ImageView) ((LinearLayout) gvImages.getChildAt(i)).getChildAt(0);
-            originImgList.add(thumImg);
-        }
-        return originImgList;
+        gvImages.setAdapter(new UniversalNormalActivity.NineGridAdapter());
     }
 
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
-            super(UniversalLoaderActivity.this, R.layout.item_grid_image, thumbnailImageList);
+            super(UniversalNormalActivity.this, R.layout.item_grid_image, thumbnailImageList);
         }
 
         @Override
@@ -136,7 +115,7 @@ public class UniversalLoaderActivity extends BaseActivity {
                         .setThumbnailImageList(thumbnailImageList)
                         .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                         .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-                        .setOriginImageList(wrapOriginImageViewList())
+                        .setOriginImageList(wrapOriginImageViewList(thumbnailImageList.size()))
                         .setProgressIndicator(new ProgressPieIndicator())
                         .setIndexIndicator(new NumberIndexIndicator())
                         .setJustLoadHitImage(true)

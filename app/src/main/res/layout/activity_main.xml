@@ -12,38 +12,31 @@
     tools:context="com.hitomi.transferimage.activity.MainActivity">
 
     <Button
-        android:id="@+id/btn_list"
+        android:id="@+id/btn_glide_no_thum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="列表测试"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/btn_grid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="九宫格测试"
+        android:text="Glide测试（无缩略图）"
         android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_touch_move"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="高清图测试"
+        android:text="可移动图片/不可见图片测试"
         android:textAllCaps="false" />
 
     <Button
-        android:id="@+id/btn_universal"
+        android:id="@+id/btn_universal_normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="UniversalLoader 测试"
+        android:text="UniversalLoader测试（有缩略图）"
         android:textAllCaps="false" />
 
     <Button
-        android:id="@+id/btn_universal_npo_thum"
+        android:id="@+id/btn_universal_no_thum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="UniversalLoader 测试(无缩略图)"
+        android:text="UniversalLoader 测试（无缩略图）"
         android:textAllCaps="false" />
 
     <Button

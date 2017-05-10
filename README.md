@@ -1,5 +1,4 @@
 # Transferee
-
 transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功能体系仿照并涵盖 ios 版本的 QQ、微信朋友圈、新浪微博的图片浏览功能。
 
 transferee 支持两种模式：
@@ -17,7 +16,6 @@ transferee 支持两种模式：
 - 缩略图的 ScaleType 需要设置为 centerCrop (这个有点废话了...)
 
 # Preview
-
 <img src="preview/transferee_1.gif" />
 <img src="preview/transferee_2.gif" />
 <img src="preview/transferee_3.gif" />
@@ -54,7 +52,6 @@ setp 3: 在 Activity 关闭的时候，销毁 transferee (建议写在 onDestroy
 全部示例代码可以参考 [TransfereeDemo](https://github.com/Hitomis/transferee/tree/master/app/src/main/java/com/hitomi/transferimage/activity)
 
 # Config
-
 | 属性 | 说明 |
 | :--: | :--: |
 | nowThumbnailIndex | 缩略图在图组中的索引 |
@@ -72,15 +69,25 @@ setp 3: 在 Activity 关闭的时候，销毁 transferee (建议写在 onDestroy
 | indexIndicator | 图片索引指示器 (默认内置 CircleIndexIndicator 和 NumberIndexIndicator)。可实现 IIndexIndicator 接口定义自己的图片索引指示器|
 | imageLoader | 图片加载器 (默认内置 GlideImageLoader 和 UniversalImageLoader)。可实现 ImageLoader 接口定义自己的图片加载器|
 
-# Todo
+# Method
+| 方法 | 说明 |
+| :--: | :--: |
+| getDefault(context) | 获取 transferee 实例 |
+| apply(config) | 将配置参数对象应用到 transferee 实例中 |
+| show() | 打开/显示 transferee |
+| show(listener) | 打开/显示 transferee，并监听显示/关闭状态 |
+| dismiss() | 关闭 transferee |
+| clear(imageLoader) | 清除 ImageLoader 中加载的缓存 |
+| destroy() | 销毁 transferee |
+| setOnTransfereeStateChangeListener(listener) | 设置 transferee 显示/关闭状态改变的监听器 |
 
+# Todo
 + [ ] 支持高清大图和长图浏览
 + [ ] 扩展 PicassoImageLoader
 + [ ] 优化单个图片使用 transferee 的场景
 + [ ] 优化 TransferConfig 的参数配置。将固定不变的配置项从每次的参数对象创建中分离开来
 
 # Licence
-
     Copyright 2017 Hitomis, Inc.
 
     Licensed under the Apache License, Version 2.0 (the "License");

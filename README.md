@@ -84,6 +84,8 @@ setp 3: 在 Activity 关闭的时候，销毁 transferee (建议写在 onDestroy
 # Todo
 + [ ] 支持高清大图和长图浏览
 + [ ] 扩展 PicassoImageLoader
++ [ ] 支持下拉手势关闭 transferee
++ [ ] 支持扩展图片保存、收藏等相关操作
 + [ ] 优化单个图片使用 transferee 的场景
 + [ ] 优化 TransferConfig 的参数配置。将固定不变的配置项从每次的参数对象创建中分离开来
 

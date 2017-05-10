@@ -65,7 +65,6 @@ setp 3: 在 Activity 关闭的时候，销毁 transferee (建议写在 onDestroy
 | errorDrawable | 加载错误的占位图，Drawable 格式。原图加载错误时显示的图片 |
 | duration | transferee 播放过渡动画的动画时长 |
 | justLoadHitImage | 是否只加载当前显示在屏幕中的的原图。如果设置为 true，那么只有当 transferee 切换到当前页面时，才会触发当前页面原图的加载动作，否则按 offscreenPageLimit 所设置的数值去做预加载和当前页面的加载动作 |
-| errorPlaceHolder | 原图加载错误时显示的图片 |
 | originImageList | 缩略图 ImageView 集合 |
 | thumbnailImageList | 缩略图路径集合 |
 | sourceImageList | 原图路径集合 |

@@ -76,6 +76,7 @@ setp 3: 在 Activity 关闭的时候，销毁 transferee (建议写在 onDestroy
 | apply(config) | 将配置参数对象应用到 transferee 实例中 |
 | show() | 打开/显示 transferee |
 | show(listener) | 打开/显示 transferee，并监听显示/关闭状态 |
+| isShown() | transferee 是否显示 |
 | dismiss() | 关闭 transferee |
 | clear(imageLoader) | 清除 ImageLoader 中加载的缓存 |
 | destroy() | 销毁 transferee |

@@ -14,6 +14,11 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+/**
+ * Created by hitomi on 2017/3/1.
+ * <p>
+ * email: 196425254@qq.com
+ */
 public class OkHttpStreamFetcher implements DataFetcher<InputStream> {
     private final Call.Factory client;
     private final GlideUrl url;

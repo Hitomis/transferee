@@ -16,6 +16,8 @@ import java.util.Locale;
 /**
  * 图片加载时使用饼状并带进度百分比显示的进度组件
  * <a href= "https://github.com/FilipPudak/ProgressPieView">ProgressPieView</a>
+ * <p>
+ * email: 196425254@qq.com
  */
 public class ProgressPieIndicator implements IProgressIndicator {
 

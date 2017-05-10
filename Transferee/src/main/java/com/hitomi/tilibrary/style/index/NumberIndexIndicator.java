@@ -15,6 +15,8 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * 图片翻页时使用 {@link NumberIndicator} 去指示当前图片的位置
  * <p>
  * Created by Hitomis on 2017/4/23 0023.
+ * <p>
+ * email: 196425254@qq.com
  */
 public class NumberIndexIndicator implements IIndexIndicator {
 

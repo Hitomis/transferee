@@ -11,9 +11,11 @@ import com.hitomi.tilibrary.style.IProgressIndicator;
 import java.util.List;
 
 /**
- * Transferee Attributes <br/>
+ * Transferee Attributes
  * <p>
  * Created by hitomi on 2017/1/19.
+ * <p>
+ * email: 196425254@qq.com
  */
 public class TransferConfig {
     private int nowThumbnailIndex;

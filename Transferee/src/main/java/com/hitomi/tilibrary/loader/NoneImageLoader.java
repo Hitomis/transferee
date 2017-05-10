@@ -6,6 +6,8 @@ import android.widget.ImageView;
 /**
  * 图片加载器空实现，防止 NullPointer
  * Created by Hitomis on 2017/5/3 0003.
+ * <p>
+ * email: 196425254@qq.com
  */
 public class NoneImageLoader implements ImageLoader {
 

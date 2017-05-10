@@ -26,6 +26,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
  * <li>支持按指定尺寸参数裁剪后，在裁剪的区域显示图片</li>
  * <li>支持动画分离：只有图片平移动画或者只有图片缩放动画</li>
  * </ul>
+ * email: 196425254@qq.com
  */
 public class TransferImage extends PhotoView {
 

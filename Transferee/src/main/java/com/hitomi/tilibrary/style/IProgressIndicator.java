@@ -4,6 +4,8 @@ import android.widget.FrameLayout;
 
 /**
  * 图片加载进度组件接口，实现 IProgressIndicator 可扩展自己的图片加载进度组件
+ * <p>
+ * email: 196425254@qq.com
  */
 public interface IProgressIndicator {
 

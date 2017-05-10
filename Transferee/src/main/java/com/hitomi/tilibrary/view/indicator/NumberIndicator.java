@@ -12,6 +12,8 @@ import java.util.Locale;
  * 数字索引指示器
  * <p>
  * Created by Hitomis on 2017/4/23 0023.
+ * <p>
+ * email: 196425254@qq.com
  */
 public class NumberIndicator extends TextView {
 

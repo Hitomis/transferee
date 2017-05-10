@@ -28,6 +28,11 @@ import okio.ForwardingSource;
 import okio.Okio;
 import okio.Source;
 
+/**
+ * Created by hitomi on 2017/3/1.
+ * <p>
+ * email: 196425254@qq.com
+ */
 public class OkHttpProgressGlideModule implements GlideModule {
     private static Interceptor createInterceptor(final ResponseProgressListener listener) {
         return new Interceptor() {

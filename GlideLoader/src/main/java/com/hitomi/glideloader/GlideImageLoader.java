@@ -22,6 +22,8 @@ import java.util.concurrent.Executors;
  * 作为 Transferee 的图片加载器
  * <p>
  * Created by hitomi on 2017/1/25.
+ * <p>
+ * email: 196425254@qq.com
  */
 public class GlideImageLoader implements ImageLoader {
     private static final String SP_FILE = "transferee";

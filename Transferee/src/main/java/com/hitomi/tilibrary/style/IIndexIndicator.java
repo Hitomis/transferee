@@ -5,6 +5,8 @@ import android.widget.FrameLayout;
 
 /**
  * 图片索引指示器接口，实现 IIndexIndicator 可扩展自己的图片指示器组件
+ * <p>
+ * email: 196425254@qq.com
  */
 public interface IIndexIndicator {
 

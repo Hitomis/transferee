@@ -26,6 +26,8 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * 所有过渡动画的展示，图片的加载都是在这个 FrameLayout 中实现
  * <p>
  * Created by Hitomis on 2017/4/23 0023.
+ * <p>
+ * email: 196425254@qq.com
  */
 class TransferLayout extends FrameLayout {
     private Context context;

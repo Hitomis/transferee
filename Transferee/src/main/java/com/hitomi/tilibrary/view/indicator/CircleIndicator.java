@@ -21,6 +21,8 @@ import static android.support.v4.view.ViewPager.OnPageChangeListener;
 
 /**
  * 圆形小点索引指示器
+ * <p>
+ * email: 196425254@qq.com
  */
 public class CircleIndicator extends LinearLayout {
 

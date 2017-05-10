@@ -15,6 +15,11 @@ transferee 支持两种模式：
 - 使用 Universal-Image-Loader 作为 transferee 的图片加载器时，且只有原图的场景下，如果您的项目中也是使用的 Universal-Image-Loader 去加载图片，那么 transferee 中将无法显示出当前图片的百分比加载进度，只能使用 ProgressBarIndicator 作为 transferee 的进度指示器。详见 [UniversalNoThumActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/universal/UniversalNoThumActivity.java)
 - 缩略图的 ScaleType 需要设置为 centerCrop (这个有点废话了...)
 
+如有任何问题可以提 Issues 或者联系我：
+
+    QQ：196425254
+    Email：196425254@qq.com
+
 # Preview
 <img src="preview/transferee_1.gif" />
 <img src="preview/transferee_2.gif" />

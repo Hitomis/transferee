@@ -7,6 +7,11 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.Target;
 import com.hitomi.tilibrary.loader.ImageLoader;
 
+/**
+ * Created by hitomi on 2017/3/1.
+ * <p>
+ * email: 196425254@qq.com
+ */
 public abstract class ProgressTarget<T, Z> extends WrappingTarget<Z> implements OkHttpProgressGlideModule.UIProgressListener {
     private T model;
     private boolean ignoreProgress = true;

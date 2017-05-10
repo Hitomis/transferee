@@ -25,6 +25,8 @@ import static android.widget.ImageView.ScaleType.FIT_CENTER;
  * <li>3. 图片从 Transferee 中出去的过渡动画</li>
  * </ul>
  * Created by hitomi on 2017/5/4.
+ * <p>
+ * email: 196425254@qq.com
  */
 abstract class TransferState {
 

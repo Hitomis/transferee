@@ -12,6 +12,8 @@ import com.hitomi.tilibrary.style.IProgressIndicator;
 
 /**
  * 图片加载时使用 Android 默认的 ProgressBar
+ * <p>
+ * email: 196425254@qq.com
  */
 public class ProgressBarIndicator implements IProgressIndicator {
 

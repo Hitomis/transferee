@@ -13,6 +13,11 @@ import java.io.InputStream;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 
+/**
+ * Created by hitomi on 2017/3/1.
+ * <p>
+ * email: 196425254@qq.com
+ */
 public class OkHttpUrlLoader implements ModelLoader<GlideUrl, InputStream> {
 
     private final Call.Factory client;

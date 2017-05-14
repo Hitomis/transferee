@@ -35,6 +35,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 包装缩略图 ImageView 集合
+     * <p>
+     * 注意：此方法只是为了收集 Activity 列表中所有可见 ImageView 好传递给 transferee。
+     * 如果你添加了一些图片路径，扩展了列表图片个数，让列表超出屏幕，导致一些 ImageViwe 不
+     * 可见，那么有可能这个方法会报错。这种情况，可以自己根据实际情况，来设置 transferee 的
+     * originImageList 属性值
      *
      * @return
      */

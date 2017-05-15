@@ -60,7 +60,7 @@ setp 3: 在 Activity 关闭的时候，销毁 transferee (建议写在 onDestroy
 | 属性 | 说明 |
 | :--: | :--: |
 | nowThumbnailIndex | 缩略图在图组中的索引 |
-| offscreenPageLimit | 显示 transferee 时初始化加载的图片数量, 默认为1, 表示第一次加载3张(originIndex, originIndex + 1, originIndex - 1); 值为 2, 表示加载5张。依次类推 |
+| offscreenPageLimit | 显示 transferee 时初始化加载的图片数量, 默认为1, 表示第一次加载3张(nowThumbnailIndex, nowThumbnailIndex + 1, nowThumbnailIndex - 1); 值为 2, 表示加载5张。依次类推 |
 | missPlaceHolder | 缺省的占位图，资源 id 格式。图片未加载完成时默认显示的图片 |
 | missDrawable | 缺省的占位图，Drawable 格式。图片未加载完成时默认显示的图片 |
 | errorPlaceHolder | 加载错误的占位图，资源 id 格式。原图加载错误时显示的图片 |

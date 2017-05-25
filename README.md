@@ -15,10 +15,7 @@ transferee 支持两种模式：
 - 使用 Universal-Image-Loader 作为 transferee 的图片加载器时，且只有原图的场景下，如果您的项目中也是使用的 Universal-Image-Loader 去加载图片，那么 transferee 中将无法显示出当前图片的百分比加载进度，只能使用 ProgressBarIndicator 作为 transferee 的进度指示器。详见 [UniversalNoThumActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/universal/UniversalNoThumActivity.java)
 - 缩略图的 ScaleType 需要设置为 centerCrop (这个有点废话了...)
 
-如有任何问题可以提 Issues 或者联系我：
-
-    QQ：196425254
-    Email：196425254@qq.com
+如有任何问题可以提 Issues
 
 # Preview
 <img src="preview/transferee_1.gif" />
@@ -55,6 +52,22 @@ setp 3: 在 Activity 关闭的时候，销毁 transferee (建议写在 onDestroy
 ```
 
 全部示例代码可以参考 [TransfereeDemo](https://github.com/Hitomis/transferee/tree/master/app/src/main/java/com/hitomi/transferimage/activity)
+
+
+<img src="preview/demo.png" height="500" width= "320"/>
+
+针对很多朋友询问我 setOriginImageList 方法的传值问题，这里给出统一解释：
+这个 originImageList 集合中是你页面中<b style="color:'red'">可见</b>缩略图 ImageView 的集合.
+
+我们拿微信朋友圈举个栗子：
+
+上图中图组一（6张图片）和图组二（3张图片）在 Android 中实现方式经常用一个 RecyclerView 或者 GridView 来展示，当我们需要使用
+tranferee 查看图组一那么传递 originImageList 值时，originImageList 集合中就应该有图组一中的6个缩略图 ImageView，你当前点
+击图组一中的 n 号图片，那么 nowThumbnailIndex 属性值为 n-1 ;
+
+学过 Java 的人都知道 这里应该满足 nowThumbnailIndex <= originImageList.siez() - 1 && nowThumbnailIndex >=0
+
+图组一和图组二相互独立，没有任何关系。所以在使用 tranferee 查看图组二的时候，传值不会与图组一有任何关系！
 
 # Config
 | 属性 | 说明 |

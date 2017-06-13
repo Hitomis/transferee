@@ -88,13 +88,15 @@ abstract class TransferState {
      */
     @NonNull
     protected TransferImage createTransferImage(ImageView originImage) {
+        TransferConfig config = transfer.getTransConfig();
         int[] location = getViewLocation(originImage);
 
         TransferImage transImage = new TransferImage(context);
         transImage.setScaleType(FIT_CENTER);
         transImage.setOriginalInfo(location[0], getTransImageLocalY(location[1]),
                 originImage.getWidth(), originImage.getHeight());
-        transImage.setDuration(transfer.getTransConfig().getDuration());
+        transImage.setBackgroundColor(config.getBackgroundColor());
+        transImage.setDuration(config.getDuration());
         transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         transImage.setOnTransferListener(transfer.getTransListener());
 

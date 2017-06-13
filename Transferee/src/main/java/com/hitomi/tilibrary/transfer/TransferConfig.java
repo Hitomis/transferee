@@ -22,6 +22,7 @@ public class TransferConfig {
     private int offscreenPageLimit;
     private int missPlaceHolder;
     private int errorPlaceHolder;
+    private int backgroundColor;
     private long duration;
     private boolean justLoadHitImage;
 
@@ -70,6 +71,14 @@ public class TransferConfig {
 
     public void setErrorPlaceHolder(int errorPlaceHolder) {
         this.errorPlaceHolder = errorPlaceHolder;
+    }
+
+    public int getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     public long getDuration() {
@@ -179,6 +188,7 @@ public class TransferConfig {
         private int offscreenPageLimit;
         private int missPlaceHolder;
         private int errorPlaceHolder;
+        private int backgroundColor;
         private long duration;
         private boolean justLoadHitImage;
 
@@ -226,6 +236,14 @@ public class TransferConfig {
          */
         public Builder setErrorPlaceHolder(int errorPlaceHolder) {
             this.errorPlaceHolder = errorPlaceHolder;
+            return this;
+        }
+
+        /**
+         * 为 transferee 组件设置背景颜色
+         */
+        public Builder setBackgroundColor(int backgroundColor) {
+            this.backgroundColor = backgroundColor;
             return this;
         }
 
@@ -319,6 +337,7 @@ public class TransferConfig {
             config.setOffscreenPageLimit(offscreenPageLimit);
             config.setMissPlaceHolder(missPlaceHolder);
             config.setErrorPlaceHolder(errorPlaceHolder);
+            config.setBackgroundColor(backgroundColor);
             config.setDuration(duration);
             config.setJustLoadHitImage(justLoadHitImage);
 

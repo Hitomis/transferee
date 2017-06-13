@@ -111,9 +111,10 @@ class TransferAdapter extends PagerAdapter {
 
         // create inner ImageView
         TransferImage imageView = new TransferImage(context);
+        imageView.setDuration(config.getDuration());
+        imageView.setBackgroundColor(config.getBackgroundColor());
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        imageView.setDuration(config.getDuration());
 
         // create outer ParentLayout
         FrameLayout parentLayout = new FrameLayout(context);

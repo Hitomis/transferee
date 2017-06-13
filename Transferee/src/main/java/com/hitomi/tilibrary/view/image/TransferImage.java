@@ -214,6 +214,15 @@ public class TransferImage extends PhotoView {
     }
 
     /**
+     * 为 TransferImage 视图设置背景颜色
+     *
+     * @param color the new color (including alpha) to set in the paint.
+     */
+    public void setBackgroundColor(int color) {
+        paint.setColor(color);
+    }
+
+    /**
      * 初始化进入的变量信息
      */
     private void initTransform() {

@@ -6,10 +6,8 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -74,8 +72,6 @@ public class TransferImage extends PhotoView {
     private void init() {
         transMatrix = new Matrix();
         paint = new Paint();
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Style.FILL);
     }
 
     /**
@@ -143,6 +139,8 @@ public class TransferImage extends PhotoView {
         cate = CATE_ANIMA_TOGETHER;
         state = STATE_TRANS_IN;
         transformStart = true;
+
+        paint.setAlpha(0);
         invalidate();
     }
 
@@ -156,6 +154,8 @@ public class TransferImage extends PhotoView {
         state = STATE_TRANS_IN;
         stage = animaStage;
         transformStart = true;
+
+        paint.setAlpha(0);
         invalidate();
     }
 
@@ -166,6 +166,8 @@ public class TransferImage extends PhotoView {
         cate = CATE_ANIMA_TOGETHER;
         state = STATE_TRANS_OUT;
         transformStart = true;
+
+        paint.setAlpha(255);
         invalidate();
     }
 
@@ -179,6 +181,8 @@ public class TransferImage extends PhotoView {
         state = STATE_TRANS_OUT;
         stage = animaStage;
         transformStart = true;
+
+        paint.setAlpha(255);
         invalidate();
     }
 
@@ -320,6 +324,7 @@ public class TransferImage extends PhotoView {
                 }
             }
         } else {
+            paint.setAlpha(255);
             canvas.drawPaint(paint);
             super.onDraw(canvas);
         }
@@ -408,6 +413,7 @@ public class TransferImage extends PhotoView {
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public synchronized void onAnimationUpdate(ValueAnimator animation) {
+                paint.setAlpha((int) (255 * animation.getAnimatedFraction()));
                 transform.scale = (Float) animation.getAnimatedValue("scale");
                 transform.rect.left = (Float) animation.getAnimatedValue("left");
                 transform.rect.top = (Float) animation.getAnimatedValue("top");

@@ -32,7 +32,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 class TransferLayout extends FrameLayout {
     private Context context;
 
-    private TransferImage transImage; // 用来模拟
+    private TransferImage transImage;
     private ViewPager transViewPager;
     private TransferAdapter transAdapter;
     private TransferConfig transConfig;
@@ -277,6 +277,8 @@ class TransferLayout extends FrameLayout {
             return;
 
         hideIndexIndicator();
+        transViewPager.setVisibility(View.INVISIBLE);
+
         transImage = getTransferState(pos).transferOut(pos);
         if (transImage == null)
             diffusionTransfer(pos);

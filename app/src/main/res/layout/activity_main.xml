@@ -26,6 +26,13 @@
         android:textAllCaps="false" />
 
     <Button
+        android:id="@+id/btn_glide_local"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Glide测试（本地图片）"
+        android:textAllCaps="false" />
+
+    <Button
         android:id="@+id/btn_universal_normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,6 +44,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="UniversalLoader 测试（无缩略图）"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_universal_local"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="UniversalLoader 测试（本地图片）"
         android:textAllCaps="false" />
 
     <Button

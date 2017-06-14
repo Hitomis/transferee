@@ -1,12 +1,17 @@
 package com.hitomi.transferimage.activity.glide;
 
+import android.Manifest;
 import android.content.ContentResolver;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hitomi.glideloader.GlideImageLoader;
@@ -41,8 +46,24 @@ public class GlideLocalActivity extends BaseActivity {
 
     @Override
     protected void testTransferee() {
-        images = getLatestPhotoPaths(9);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                    READ_EXTERNAL_STORAGE);
+        } else {
+            images = getLatestPhotoPaths(9);
+        }
+
         gvImages.setAdapter(new GlideLocalActivity.NineGridAdapter());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == READ_EXTERNAL_STORAGE) {
+            images = getLatestPhotoPaths(9);
+        } else {
+            Toast.makeText(this, "请允许获取相册图片文件访问权限", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**

@@ -19,6 +19,8 @@ import java.util.List;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
+    protected static final int READ_EXTERNAL_STORAGE = 100;
+
     protected Transferee transferee;
     protected GridView gvImages;
     protected List<String> thumbnailImageList;

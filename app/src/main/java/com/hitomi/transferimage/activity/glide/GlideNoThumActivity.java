@@ -20,15 +20,15 @@ public class GlideNoThumActivity extends BaseActivity {
 
     {
         sourceImageList = new ArrayList<>();
-        sourceImageList.add("http://i1.17173cdn.com/2fhnvk/YWxqaGBf/cms3/mcofEgbkwpuvlob.jpg!a-3-640x.jpg");
-        sourceImageList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/DWABSHbkCdElEDA.jpg!a-3-640x.jpg");
-        sourceImageList.add("http://i2.17173cdn.com/2fhnvk/YWxqaGBf/cms3/xNLzqtbkCdElEyC.jpg!a-3-640x.jpg");
-        sourceImageList.add("http://i1.17173cdn.com/2fhnvk/YWxqaGBf/cms3/vUFNHwbljxruktB.jpg!a-3-640x.jpg");
-        sourceImageList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/FNGGjrbljxrukba.jpg!a-3-640x.jpg");
-        sourceImageList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/Juvmrjbkwpuvjyv.jpg!a-3-640x.jpg");
-        sourceImageList.add("http://i1.17173cdn.com/2fhnvk/YWxqaGBf/cms3/qlwPVQbkwpuvmcc.jpg!a-3-640x.jpg");
-        sourceImageList.add("http://i3.17173cdn.com/2fhnvk/YWxqaGBf/cms3/vMbgOlbkwpuvlEE.jpg!a-3-640x.jpg");
-        sourceImageList.add("http://i2.17173cdn.com/2fhnvk/YWxqaGBf/cms3/GJhaLjbkwpuvlty.jpg!a-3-640x.jpg");
+        sourceImageList.add("http://t2.27270.com/uploads/tu/201706/9999/d38274f15c.jpg");
+        sourceImageList.add("http://t2.27270.com/uploads/tu/201706/9999/061548f1fb.jpg");
+        sourceImageList.add("http://t2.27270.com/uploads/tu/201706/9999/4a85dd9bd9.jpg");
+        sourceImageList.add("http://t2.27270.com/uploads/tu/201706/9999/a6c57f438d.jpg");
+        sourceImageList.add("http://t2.27270.com/uploads/tu/201706/9999/b6ae25c618.jpg");
+        sourceImageList.add("http://t2.27270.com/uploads/tu/201612/562/lua4uwojfds.jpg");
+        sourceImageList.add("http://t2.27270.com/uploads/tu/201612/562/4hp4d1fcocu.jpg");
+        sourceImageList.add("http://t2.27270.com/uploads/tu/201612/562/d2madqozild.jpg");
+        sourceImageList.add("http://t2.27270.com/uploads/tu/201603/250/gl55chlleh1.jpg");
 
     }
 

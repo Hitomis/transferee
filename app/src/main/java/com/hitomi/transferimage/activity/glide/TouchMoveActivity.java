@@ -24,11 +24,11 @@ public class TouchMoveActivity extends BaseActivity {
 
     {
         imageStrList = new ArrayList<>();
-        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/7d635b455733338d4d6c13c2b2dda0b0-1024x665.jpg");
-        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/83fbe92159108b49ca13d187c5c8bcec-1024x785.jpg");
-        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/ce0ee71099e9b79cbb5996265cd2e6cd-758x1024.jpg");
-        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/ccf1baf0694d0f8beed24597ad761987-1024x637.jpg");
-        imageStrList.add("http://oxgood.com/wp-content/uploads/2016/07/09e67a0760fc22370c890bdc3954382b-827x1024.jpg");
+        imageStrList.add("http://t2.27270.com/uploads/tu/201706/9999/5a5fa496ba.jpg");
+        imageStrList.add("http://t2.27270.com/uploads/tu/201706/9999/d38274f15c.jpg");
+        imageStrList.add("http://t2.27270.com/uploads/tu/201705/9999/e49b76d0c3.jpg");
+        imageStrList.add("http://t2.27270.com/uploads/tu/201705/9999/4c90e97526.jpg");
+        imageStrList.add("http://t2.27270.com/uploads/tu/201705/9999/3a1614578a.jpg");
     }
 
     @Override

@@ -155,7 +155,10 @@ public class TransferImage extends PhotoView {
         stage = animaStage;
         transformStart = true;
 
-        paint.setAlpha(0);
+        if (stage == STAGE_TRANSLATE)
+            paint.setAlpha(0);
+        else
+            paint.setAlpha(255);
         invalidate();
     }
 
@@ -211,6 +214,15 @@ public class TransferImage extends PhotoView {
      */
     public int getState() {
         return state;
+    }
+
+    /**
+     * 设置当前动画的状态
+     *
+     * @param state {@link #STATE_TRANS_NORMAL}, {@link #STATE_TRANS_IN}, {@link #STATE_TRANS_OUT}, {@link #STATE_TRANS_CLIP}
+     */
+    public void setState(int state) {
+        this.state = state;
     }
 
     /**
@@ -304,6 +316,7 @@ public class TransferImage extends PhotoView {
                         transform.initStartOut();
                         break;
                     case STATE_TRANS_CLIP:
+                        paint.setAlpha(255);
                         transform.initStartClip();
                         break;
                 }
@@ -355,6 +368,7 @@ public class TransferImage extends PhotoView {
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public synchronized void onAnimationUpdate(ValueAnimator animation) {
+                    paint.setAlpha((int) (255 * animation.getAnimatedFraction()));
                     transform.rect.left = (Float) animation.getAnimatedValue("left");
                     transform.rect.top = (Float) animation.getAnimatedValue("top");
                     transform.rect.width = (Float) animation.getAnimatedValue("width");

@@ -37,6 +37,10 @@
             android:name=".activity.universal.UniversalNoThumActivity"
             android:label="UniversalLoader 测试(没缩略图)"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.universal.UniversalLocalActivity"
+            android:label="UniversalLoader 测试(本地图片)"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

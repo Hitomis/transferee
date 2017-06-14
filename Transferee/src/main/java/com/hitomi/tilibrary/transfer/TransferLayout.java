@@ -276,12 +276,15 @@ class TransferLayout extends FrameLayout {
                 == TransferImage.STATE_TRANS_OUT) // 防止双击
             return;
 
-        hideIndexIndicator();
-        transViewPager.setVisibility(View.INVISIBLE);
-
         transImage = getTransferState(pos).transferOut(pos);
+
         if (transImage == null)
             diffusionTransfer(pos);
+        else
+            transViewPager.setVisibility(View.INVISIBLE);
+
+        hideIndexIndicator();
+
     }
 
     /**
@@ -290,7 +293,9 @@ class TransferLayout extends FrameLayout {
      * @param pos 动画作用于 pos 索引位置的图片
      */
     private void diffusionTransfer(int pos) {
-        final TransferImage targetImage = transAdapter.getImageItem(pos);
+        transImage = transAdapter.getImageItem(pos);
+        transImage.setState(TransferImage.STATE_TRANS_OUT);
+        transImage.disenable();
 
         ValueAnimator valueAnimator = new ValueAnimator();
         valueAnimator.setDuration(transConfig.getDuration());
@@ -306,9 +311,9 @@ class TransferLayout extends FrameLayout {
                 float alpha = (Float) animation.getAnimatedValue("alpha");
                 float scale = (Float) animation.getAnimatedValue("scaleX");
 
-                targetImage.setAlpha(alpha);
-                targetImage.setScaleX(scale);
-                targetImage.setScaleY(scale);
+                transImage.setAlpha(alpha);
+                transImage.setScaleX(scale);
+                transImage.setScaleY(scale);
             }
         });
         valueAnimator.addListener(new AnimatorListenerAdapter() {

@@ -3,6 +3,7 @@ package com.hitomi.transferimage.activity.glide;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hitomi.glideloader.GlideImageLoader;
@@ -74,6 +75,13 @@ public class TouchMoveActivity extends BaseActivity {
                 .into(imageView3);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode != WRITE_EXTERNAL_STORAGE) {
+            Toast.makeText(this, "请允许获取相册图片文件写入权限", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private class ShowViewHDListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -86,6 +94,12 @@ public class TouchMoveActivity extends BaseActivity {
                     .setNowThumbnailIndex(imageViewList.indexOf(v))
                     .setProgressIndicator(new ProgressBarIndicator())
                     .setJustLoadHitImage(true)
+                    .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
+                        @Override
+                        public void onLongClick(ImageView imageView, int pos) {
+                            saveImageByGlide(imageView);
+                        }
+                    })
                     .create())
                     .show(new Transferee.OnTransfereeStateChangeListener() {
                         @Override

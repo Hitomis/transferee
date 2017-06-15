@@ -4,10 +4,12 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
+import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;
 import com.hitomi.universalloader.UniversalImageLoader;
@@ -73,6 +75,13 @@ public class UniversalNormalActivity extends BaseActivity {
         gvImages.setAdapter(new UniversalNormalActivity.NineGridAdapter());
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode != WRITE_EXTERNAL_STORAGE) {
+            Toast.makeText(this, "请允许获取相册图片文件写入权限", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
@@ -120,9 +129,16 @@ public class UniversalNormalActivity extends BaseActivity {
                         .setIndexIndicator(new NumberIndexIndicator())
                         .setJustLoadHitImage(true)
                         .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
+                        .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
+                            @Override
+                            public void onLongClick(ImageView imageView, int pos) {
+                                saveImageByUniversal(imageView);
+                            }
+                        })
                         .create();
                 transferee.apply(config).show();
             }
         });
     }
+
 }

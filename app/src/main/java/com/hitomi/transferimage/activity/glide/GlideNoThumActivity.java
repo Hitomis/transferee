@@ -3,6 +3,7 @@ package com.hitomi.transferimage.activity.glide;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.hitomi.glideloader.GlideImageLoader;
@@ -48,6 +49,13 @@ public class GlideNoThumActivity extends BaseActivity {
         gvImages.setAdapter(new NineGridAdapter());
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode != WRITE_EXTERNAL_STORAGE) {
+            Toast.makeText(this, "请允许获取相册图片文件写入权限", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
@@ -74,7 +82,14 @@ public class GlideNoThumActivity extends BaseActivity {
                             .setOriginImageList(wrapOriginImageViewList(sourceImageList.size()))
                             .setProgressIndicator(new ProgressPieIndicator())
                             .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+                            .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
+                                @Override
+                                public void onLongClick(ImageView imageView, int pos) {
+                                    saveImageByGlide(imageView);
+                                }
+                            })
                             .create();
+
                     transferee.apply(config).show(new Transferee.OnTransfereeStateChangeListener() {
                         @Override
                         public void onShow() {

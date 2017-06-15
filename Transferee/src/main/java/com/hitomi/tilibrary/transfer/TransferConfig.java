@@ -37,6 +37,8 @@ public class TransferConfig {
     private IIndexIndicator indexIndicator;
     private ImageLoader imageLoader;
 
+    private Transferee.OnTransfereeLongClickListener longClickListener;
+
     public static Builder build() {
         return new Builder();
     }
@@ -165,6 +167,14 @@ public class TransferConfig {
         this.imageLoader = imageLoader;
     }
 
+    public Transferee.OnTransfereeLongClickListener getLongClickListener() {
+        return longClickListener;
+    }
+
+    public void setLongClickListener(Transferee.OnTransfereeLongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
+    }
+
     /**
      * 原图路径集合是否为空
      *
@@ -202,6 +212,8 @@ public class TransferConfig {
         private IProgressIndicator progressIndicator;
         private IIndexIndicator indexIndicator;
         private ImageLoader imageLoader;
+
+        private Transferee.OnTransfereeLongClickListener longClickListener;
 
         /**
          * 当前缩略图在所有图片中的索引
@@ -330,6 +342,14 @@ public class TransferConfig {
             return this;
         }
 
+        /**
+         * 绑定 transferee 长按操作监听器
+         */
+        public Builder setOnLongClcikListener(Transferee.OnTransfereeLongClickListener listener) {
+            this.longClickListener = listener;
+            return this;
+        }
+
         public TransferConfig create() {
             TransferConfig config = new TransferConfig();
 
@@ -351,6 +371,8 @@ public class TransferConfig {
             config.setProgressIndicator(progressIndicator);
             config.setIndexIndicator(indexIndicator);
             config.setImageLoader(imageLoader);
+
+            config.setLongClickListener(longClickListener);
 
             return config;
         }

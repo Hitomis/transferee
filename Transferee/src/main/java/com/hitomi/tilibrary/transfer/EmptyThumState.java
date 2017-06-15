@@ -87,7 +87,7 @@ class EmptyThumState extends TransferState {
 
                                 targetImage.transformIn(TransferImage.STAGE_SCALE);
                                 targetImage.enable();
-                                transfer.bindOnDismissListener(targetImage, position);
+                                transfer.bindOnOperationListener(targetImage, position);
                                 break;
                             case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
                                 targetImage.setImageDrawable(config.getErrorDrawable(context));

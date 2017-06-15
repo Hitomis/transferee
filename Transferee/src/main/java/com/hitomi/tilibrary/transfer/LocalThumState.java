@@ -101,7 +101,7 @@ class LocalThumState extends TransferState {
                         // 启用 TransferImage 的手势缩放功能
                         targetImage.enable();
                         // 绑定点击关闭 Transferee
-                        transfer.bindOnDismissListener(targetImage, position);
+                        transfer.bindOnOperationListener(targetImage, position);
                         break;
                     case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
                         targetImage.setImageDrawable(config.getErrorDrawable(context));

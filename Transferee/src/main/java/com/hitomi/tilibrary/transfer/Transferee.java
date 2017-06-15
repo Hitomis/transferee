@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
+import android.widget.ImageView;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.loader.NoneImageLoader;
@@ -237,6 +238,10 @@ public class Transferee implements DialogInterface.OnShowListener,
         void onShow();
 
         void onDismiss();
+    }
+
+    public interface OnTransfereeLongClickListener {
+        void onLongClick(ImageView imageView, int pos);
     }
 
 }

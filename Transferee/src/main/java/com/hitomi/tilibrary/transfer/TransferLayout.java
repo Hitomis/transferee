@@ -252,18 +252,29 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
-     * 为加载完的成图片ImageView 绑定点击关闭 Transferee 的点击事件
+     * 为加载完的成图片ImageView 绑定点 Transferee 操作事件
      *
      * @param imageView 加载完成的 ImageView
      * @param pos       关闭 Transferee 时图片所在的索引
      */
-    public void bindOnDismissListener(ImageView imageView, final int pos) {
+    public void bindOnOperationListener(final ImageView imageView, final int pos) {
+        // bind click dismiss listener
         imageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss(pos);
             }
         });
+
+        // bind long click listener
+        if (transConfig.getLongClickListener() != null)
+            imageView.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    transConfig.getLongClickListener().onLongClick(imageView, pos);
+                    return false;
+                }
+            });
     }
 
     /**

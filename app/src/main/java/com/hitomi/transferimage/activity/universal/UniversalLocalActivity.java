@@ -51,14 +51,6 @@ public class UniversalLocalActivity extends BaseActivity {
 
     @Override
     protected void testTransferee() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE},
-                    READ_EXTERNAL_STORAGE);
-        } else {
-            images = getLatestPhotoPaths(9);
-        }
-
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
         options = new DisplayImageOptions
                 .Builder()
@@ -69,13 +61,23 @@ public class UniversalLocalActivity extends BaseActivity {
                 .resetViewBeforeLoading(true)
                 .build();
 
-        gvImages.setAdapter(new UniversalLocalActivity.NineGridAdapter());
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                    READ_EXTERNAL_STORAGE);
+        } else {
+            images = getLatestPhotoPaths(9);
+            if (images != null && !images.isEmpty())
+                gvImages.setAdapter(new UniversalLocalActivity.NineGridAdapter());
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == READ_EXTERNAL_STORAGE) {
             images = getLatestPhotoPaths(9);
+            if (images != null && !images.isEmpty())
+                gvImages.setAdapter(new UniversalLocalActivity.NineGridAdapter());
         } else {
             Toast.makeText(this, "请允许获取相册图片文件访问权限", Toast.LENGTH_SHORT).show();
         }

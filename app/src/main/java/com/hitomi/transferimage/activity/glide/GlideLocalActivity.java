@@ -135,7 +135,6 @@ public class GlideLocalActivity extends BaseActivity {
                     TransferConfig config = TransferConfig.build()
                             .setNowThumbnailIndex(position)
                             .setSourceImageList(images)
-                            .setDuration(4000)
                             .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                             .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                             .setOriginImageList(wrapOriginImageViewList(images.size()))

@@ -115,7 +115,7 @@ tranferee 查看图组一那么传递 originImageList 值时，originImageList �
 + [ ] 支持下拉手势关闭 transferee
 + [x] 支持扩展图片保存、收藏等相关操作
 + [ ] 优化单个图片使用 transferee 的场景
-+ [ ] 优化 TransferConfig 的参数配置。将固定不变的配置项从每次的参数对象创建中分离开来
++ [x] 优化 TransferConfig 的参数配置。将固定不变的配置项从每次的参数对象创建中分离开来
 
 # Licence
     Copyright 2017 Hitomis, Inc.

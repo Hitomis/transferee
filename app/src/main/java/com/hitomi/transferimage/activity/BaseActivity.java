@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
 
 import java.util.ArrayList;
@@ -31,6 +32,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected static final int WRITE_EXTERNAL_STORAGE = 101;
 
     protected Transferee transferee;
+    protected TransferConfig config;
+
     protected GridView gvImages;
     protected List<String> thumbnailImageList;
     protected List<String> sourceImageList;

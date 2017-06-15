@@ -59,6 +59,22 @@ public class UniversalNoThumActivity extends BaseActivity {
                 .resetViewBeforeLoading(true)
                 .build();
 
+        config = TransferConfig.build()
+                .setSourceImageList(sourceImageList)
+                .setMissPlaceHolder(R.mipmap.ic_empty_photo)
+                .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
+                .setProgressIndicator(new ProgressBarIndicator())
+                .setIndexIndicator(new NumberIndexIndicator())
+                .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
+                .setJustLoadHitImage(true)
+                .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
+                    @Override
+                    public void onLongClick(ImageView imageView, int pos) {
+                        saveImageByUniversal(imageView);
+                    }
+                })
+                .create();
+
         gvImages.setAdapter(new UniversalNoThumActivity.NineGridAdapter());
     }
 
@@ -83,23 +99,8 @@ public class UniversalNoThumActivity extends BaseActivity {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TransferConfig config = TransferConfig.build()
-                            .setNowThumbnailIndex(position)
-                            .setSourceImageList(sourceImageList)
-                            .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-                            .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-                            .setOriginImageList(wrapOriginImageViewList(sourceImageList.size()))
-                            .setProgressIndicator(new ProgressBarIndicator())
-                            .setIndexIndicator(new NumberIndexIndicator())
-                            .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
-                            .setJustLoadHitImage(true)
-                            .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
-                                @Override
-                                public void onLongClick(ImageView imageView, int pos) {
-                                    saveImageByUniversal(imageView);
-                                }
-                            })
-                            .create();
+                    config.setNowThumbnailIndex(position);
+                    config.setOriginImageList(wrapOriginImageViewList(sourceImageList.size()));
                     transferee.apply(config).show();
                 }
             });

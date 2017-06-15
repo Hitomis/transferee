@@ -17,7 +17,7 @@ import java.util.List;
  * <p>
  * email: 196425254@qq.com
  */
-public class TransferConfig {
+public final class TransferConfig {
     private int nowThumbnailIndex;
     private int offscreenPageLimit;
     private int missPlaceHolder;

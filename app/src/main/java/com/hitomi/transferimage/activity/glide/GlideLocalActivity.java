@@ -52,16 +52,30 @@ public class GlideLocalActivity extends BaseActivity {
                     READ_EXTERNAL_STORAGE);
         } else {
             images = getLatestPhotoPaths(9);
+            initTransfereeConfig();
             if (images != null && !images.isEmpty())
                 gvImages.setAdapter(new GlideLocalActivity.NineGridAdapter());
         }
 
     }
 
+    private void initTransfereeConfig() {
+        config = TransferConfig.build()
+                .setSourceImageList(images)
+                .setMissPlaceHolder(R.mipmap.ic_empty_photo)
+                .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
+                .setProgressIndicator(new ProgressBarIndicator())
+                .setIndexIndicator(new NumberIndexIndicator())
+                .setJustLoadHitImage(true)
+                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+                .create();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == READ_EXTERNAL_STORAGE) {
             images = getLatestPhotoPaths(9);
+            initTransfereeConfig();
             if (images != null && !images.isEmpty())
                 gvImages.setAdapter(new GlideLocalActivity.NineGridAdapter());
         } else {
@@ -132,17 +146,8 @@ public class GlideLocalActivity extends BaseActivity {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TransferConfig config = TransferConfig.build()
-                            .setNowThumbnailIndex(position)
-                            .setSourceImageList(images)
-                            .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-                            .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-                            .setOriginImageList(wrapOriginImageViewList(images.size()))
-                            .setProgressIndicator(new ProgressBarIndicator())
-                            .setIndexIndicator(new NumberIndexIndicator())
-                            .setJustLoadHitImage(true)
-                            .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                            .create();
+                    config.setNowThumbnailIndex(position);
+                    config.setOriginImageList(wrapOriginImageViewList(images.size()));
 
                     transferee.apply(config).show(new Transferee.OnTransfereeStateChangeListener() {
                         @Override

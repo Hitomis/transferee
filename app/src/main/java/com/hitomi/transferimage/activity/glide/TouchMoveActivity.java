@@ -61,6 +61,21 @@ public class TouchMoveActivity extends BaseActivity {
 
     @Override
     protected void testTransferee() {
+        config = TransferConfig.build()
+                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+                .setMissPlaceHolder(R.mipmap.ic_empty_photo)
+                .setOriginImageList(imageViewList)
+                .setSourceImageList(imageStrList)
+                .setProgressIndicator(new ProgressBarIndicator())
+                .setJustLoadHitImage(true)
+                .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
+                    @Override
+                    public void onLongClick(ImageView imageView, int pos) {
+                        saveImageByGlide(imageView);
+                    }
+                })
+                .create();
+
         Glide.with(this)
                 .load(imageStrList.get(0))
                 .placeholder(R.mipmap.ic_empty_photo)
@@ -85,22 +100,8 @@ public class TouchMoveActivity extends BaseActivity {
     private class ShowViewHDListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-
-            transferee.apply(TransferConfig.build()
-                    .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                    .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-                    .setOriginImageList(imageViewList)
-                    .setSourceImageList(imageStrList)
-                    .setNowThumbnailIndex(imageViewList.indexOf(v))
-                    .setProgressIndicator(new ProgressBarIndicator())
-                    .setJustLoadHitImage(true)
-                    .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
-                        @Override
-                        public void onLongClick(ImageView imageView, int pos) {
-                            saveImageByGlide(imageView);
-                        }
-                    })
-                    .create())
+            config.setNowThumbnailIndex(imageViewList.indexOf(v));
+            transferee.apply(config)
                     .show(new Transferee.OnTransfereeStateChangeListener() {
                         @Override
                         public void onShow() {

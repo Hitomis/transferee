@@ -45,6 +45,18 @@ public class GlideNoThumActivity extends BaseActivity {
 
     @Override
     protected void testTransferee() {
+        config = TransferConfig.build()
+                .setSourceImageList(sourceImageList)
+                .setMissPlaceHolder(R.mipmap.ic_empty_photo)
+                .setProgressIndicator(new ProgressPieIndicator())
+                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+                .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
+                    @Override
+                    public void onLongClick(ImageView imageView, int pos) {
+                        saveImageByGlide(imageView);
+                    }
+                })
+                .create();
 
         gvImages.setAdapter(new NineGridAdapter());
     }
@@ -75,20 +87,8 @@ public class GlideNoThumActivity extends BaseActivity {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TransferConfig config = TransferConfig.build()
-                            .setNowThumbnailIndex(position)
-                            .setSourceImageList(sourceImageList)
-                            .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-                            .setOriginImageList(wrapOriginImageViewList(sourceImageList.size()))
-                            .setProgressIndicator(new ProgressPieIndicator())
-                            .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                            .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
-                                @Override
-                                public void onLongClick(ImageView imageView, int pos) {
-                                    saveImageByGlide(imageView);
-                                }
-                            })
-                            .create();
+                    config.setNowThumbnailIndex(position);
+                    config.setOriginImageList(wrapOriginImageViewList(sourceImageList.size()));
 
                     transferee.apply(config).show(new Transferee.OnTransfereeStateChangeListener() {
                         @Override

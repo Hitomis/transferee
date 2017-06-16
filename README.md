@@ -23,6 +23,33 @@ transferee 支持两种模式：
 <img src="preview/transferee_3.gif" />
 
 # Usage
+
+### Dependency
+Step 1. Add the JitPack repository to your build file
+
+```
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+Step 2. Add the dependency
+
+```
+dependencies {
+        compile 'com.github.Hitomis.transferee:Transferee:v1.0.0'
+        compile 'com.github.Hitomis.transferee:GlideLoader:v1.0.0' // load with glide
+        compile 'com.github.Hitomis.transferee:UniversalLoader:v1.0.0' //  load with universal-image-loader
+}
+```
+
+图片加载器暂时只支持 glide 与 universal-image-loader。根据你的需要选择一个添加依赖即可
+
+### Demo
+
 step 1: 一个页面只创建一个 transferee 示例 (建议写在 onCreate 方法中)
 ```
 transferee = Transferee.getDefault(context);

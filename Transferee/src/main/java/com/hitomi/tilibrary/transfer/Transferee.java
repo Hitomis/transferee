@@ -30,7 +30,7 @@ public class Transferee implements DialogInterface.OnShowListener,
 
     static volatile Transferee defaultInstance;
 
-    private Context context;
+    private static Context context;
     private Dialog transDialog;
 
     private TransferLayout transLayout;
@@ -56,9 +56,9 @@ public class Transferee implements DialogInterface.OnShowListener,
      * @return {@link Transferee}
      */
     public static Transferee getDefault(Context context) {
-        if (defaultInstance == null) {
+        if (defaultInstance == null || Transferee.context != context) {
             synchronized (Transferee.class) {
-                if (defaultInstance == null) {
+                if (defaultInstance == null || Transferee.context != context) {
                     defaultInstance = new Transferee(context);
                 }
             }

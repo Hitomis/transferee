@@ -28,8 +28,6 @@ public class Transferee implements DialogInterface.OnShowListener,
         DialogInterface.OnKeyListener,
         TransferLayout.OnLayoutResetListener {
 
-    static volatile Transferee defaultInstance;
-
     private Context context;
     private Dialog transDialog;
 
@@ -56,14 +54,7 @@ public class Transferee implements DialogInterface.OnShowListener,
      * @return {@link Transferee}
      */
     public static Transferee getDefault(Context context) {
-        if (defaultInstance == null) {
-            synchronized (Transferee.class) {
-                if (defaultInstance == null) {
-                    defaultInstance = new Transferee(context);
-                }
-            }
-        }
-        return defaultInstance;
+        return new Transferee(context);
     }
 
     private void creatLayout() {
@@ -135,7 +126,7 @@ public class Transferee implements DialogInterface.OnShowListener,
             checkConfig();
             transLayout.apply(config);
         }
-        return defaultInstance;
+        return this;
     }
 
     /**
@@ -180,13 +171,6 @@ public class Transferee implements DialogInterface.OnShowListener,
         if (!shown) return;
         transLayout.dismiss(transConfig.getNowThumbnailIndex());
         shown = false;
-    }
-
-    /**
-     * 销毁 transferee 组件
-     */
-    public void destroy() {
-        defaultInstance = null;
     }
 
     /**

@@ -334,6 +334,12 @@ public class PhotoView extends ImageView {
         }
 
         mFromInfo = null;
+
+        if (imgh > imgw * 3) { // 判定是否为竖长图
+            mAnimaMatrix.postTranslate(0, -mImgRect.top);
+            mTranslateY -= mImgRect.top;
+            executeTranslate();
+        }
     }
 
     private void initCenter() {
@@ -684,6 +690,10 @@ public class PhotoView extends ImageView {
                 return false;
 
             mScale *= scaleFactor;
+            if (mScale > 1.0f)
+                isZoonUp = true;
+            else
+                isZoonUp = false;
 //            mScaleCenter.set(detector.getFocusX(), detector.getFocusY());
             mAnimaMatrix.postScale(scaleFactor, scaleFactor, detector.getFocusX(), detector.getFocusY());
             executeTranslate();

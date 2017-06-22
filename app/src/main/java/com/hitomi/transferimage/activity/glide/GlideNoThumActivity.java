@@ -29,7 +29,7 @@ public class GlideNoThumActivity extends BaseActivity {
         sourceImageList.add("http://t2.27270.com/uploads/tu/201612/562/lua4uwojfds.jpg");
         sourceImageList.add("http://t2.27270.com/uploads/tu/201612/562/4hp4d1fcocu.jpg");
         sourceImageList.add("http://t2.27270.com/uploads/tu/201612/562/d2madqozild.jpg");
-        sourceImageList.add("http://t2.27270.com/uploads/tu/201603/250/gl55chlleh1.jpg");
+        sourceImageList.add("http://ww1.sinaimg.cn/large/9be2329dgw1etlyb1yu49j20c82p6qc1.jpg");
 
     }
 

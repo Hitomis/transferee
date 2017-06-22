@@ -117,9 +117,4 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected abstract void testTransferee();
 
-    @Override
-    protected void onDestroy() {
-        transferee.destroy();
-        super.onDestroy();
-    }
 }

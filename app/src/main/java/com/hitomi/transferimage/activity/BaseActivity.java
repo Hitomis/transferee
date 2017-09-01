@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+//import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
 
@@ -73,15 +73,15 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param imageView
      */
     protected void saveImageByGlide(ImageView imageView) {
-        if (checkWriteStoragePermission()) {
-            GlideBitmapDrawable bmpDrawable = (GlideBitmapDrawable) imageView.getDrawable();
-            MediaStore.Images.Media.insertImage(
-                    getContentResolver(),
-                    bmpDrawable.getBitmap(),
-                    String.valueOf(System.currentTimeMillis()),
-                    "");
-            Toast.makeText(this, "save success", Toast.LENGTH_SHORT).show();
-        }
+//        if (checkWriteStoragePermission()) {
+//            GlideBitmapDrawable bmpDrawable = (GlideBitmapDrawable) imageView.getDrawable();
+//            MediaStore.Images.Media.insertImage(
+//                    getContentResolver(),
+//                    bmpDrawable.getBitmap(),
+//                    String.valueOf(System.currentTimeMillis()),
+//                    "");
+//            Toast.makeText(this, "save success", Toast.LENGTH_SHORT).show();
+//        }
     }
 
     /**

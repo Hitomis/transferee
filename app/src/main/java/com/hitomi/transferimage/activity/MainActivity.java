@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.hitomi.glideloader.GlideImageLoader;
+//import com.hitomi.glideloader.GlideImageLoader;
 import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.glide.GlideLocalActivity;
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_clear_glide).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Transferee.clear(GlideImageLoader.with(getApplicationContext()));
+//                Transferee.clear(GlideImageLoader.with(getApplicationContext()));
             }
         });
 

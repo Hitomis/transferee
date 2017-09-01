@@ -25,12 +25,14 @@ dependencies {
     compile rootProject.ext.libSupportDesign
 
     compile project(':Transferee')
-    compile project(':GlideLoader')
+//    compile project(':GlideLoader')
     compile project(':UniversalLoader')
+    compile project(path: ':Glide4Loader')
 
     compile 'com.zhy:base-adapter:3.0.3'
 
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+
 }

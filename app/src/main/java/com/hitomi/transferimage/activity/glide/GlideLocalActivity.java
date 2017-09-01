@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.hitomi.glideloader.GlideImageLoader;
+//import com.hitomi.glideloader.GlideImageLoader;
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
@@ -60,15 +60,15 @@ public class GlideLocalActivity extends BaseActivity {
     }
 
     private void initTransfereeConfig() {
-        config = TransferConfig.build()
-                .setSourceImageList(images)
-                .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-                .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-                .setProgressIndicator(new ProgressBarIndicator())
-                .setIndexIndicator(new NumberIndexIndicator())
-                .setJustLoadHitImage(true)
-                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                .create();
+//        config = TransferConfig.build()
+//                .setSourceImageList(images)
+//                .setMissPlaceHolder(R.mipmap.ic_empty_photo)
+//                .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
+//                .setProgressIndicator(new ProgressBarIndicator())
+//                .setIndexIndicator(new NumberIndexIndicator())
+//                .setJustLoadHitImage(true)
+//                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+//                .create();
     }
 
     @Override
@@ -137,11 +137,11 @@ public class GlideLocalActivity extends BaseActivity {
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             final ImageView imageView = viewHolder.getView(R.id.image_view);
 
-            Glide.with(GlideLocalActivity.this)
-                    .load(item)
-                    .centerCrop()
-                    .placeholder(R.mipmap.ic_empty_photo)
-                    .into(imageView);
+//            Glide.with(GlideLocalActivity.this)
+//                    .load(item)
+//                    .centerCrop()
+//                    .placeholder(R.mipmap.ic_empty_photo)
+//                    .into(imageView);
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override

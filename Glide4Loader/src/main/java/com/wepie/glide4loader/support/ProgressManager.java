@@ -1,5 +1,7 @@
 package com.wepie.glide4loader.support;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import com.bumptech.glide.load.engine.GlideException;
@@ -15,9 +17,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * Created by sunfusheng on 2017/6/14.
- */
 public class ProgressManager {
 
     private static List<WeakReference<OnProgressListener>> listeners = Collections.synchronizedList(new ArrayList<WeakReference<OnProgressListener>>());
@@ -45,17 +44,27 @@ public class ProgressManager {
     }
 
     private static final OnProgressListener LISTENER = new OnProgressListener() {
+
+        private final Handler handler = new Handler(Looper.getMainLooper());;
+
         @Override
-        public void onProgress(String imageUrl, long bytesRead, long totalBytes, boolean isDone, GlideException exception) {
+        public void onProgress(final String imageUrl, final long bytesRead, final long totalBytes,
+                               final boolean isDone, final GlideException exception) {
             if (listeners == null || listeners.size() == 0) return;
 
             for (int i = 0; i < listeners.size(); i++) {
                 WeakReference<OnProgressListener> listener = listeners.get(i);
-                OnProgressListener progressListener = listener.get();
+                final OnProgressListener progressListener = listener.get();
                 if (progressListener == null) {
                     listeners.remove(i);
                 } else {
-                    progressListener.onProgress(imageUrl, bytesRead, totalBytes, isDone, exception);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressListener.onProgress(imageUrl, bytesRead, totalBytes, isDone, exception);
+                        }
+                    });
+
                 }
             }
         }

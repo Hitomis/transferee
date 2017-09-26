@@ -3,8 +3,7 @@ package com.wepie.glide4loader;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.support.annotation.Nullable;
+`import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -32,13 +31,11 @@ public class Glide4ImageLoader implements ImageLoader {
     private static final String SP_LOAD_SET = "load_set";
 
     private Context context;
-    private Handler handler;
     private SharedPreferences loadSharedPref;
     private Map<String, SourceCallback> callbackMap;
 
     private Glide4ImageLoader(Context context) {
         this.context = context;
-        handler = new Handler();
         callbackMap = new WeakHashMap<>();
         loadSharedPref = context.getSharedPreferences(
                 SP_FILE, Context.MODE_PRIVATE);
@@ -56,17 +53,13 @@ public class Glide4ImageLoader implements ImageLoader {
         final OnProgressListener onProgressListener = new OnProgressListener() {
             @Override
             public void onProgress(final String imageUrl, final long bytesRead, final long totalBytes, boolean isDone, GlideException exception) {
-                if (isDone)
+                if (isDone) {
                     callbackMap.remove(imageUrl);
-                else
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            SourceCallback sourceCallback1 = callbackMap.get(imageUrl);
-                            if (sourceCallback1 != null)
-                                sourceCallback1.onProgress((int) (bytesRead * 100 / totalBytes));
-                        }
-                    });
+                } else {
+                    SourceCallback sourceCallback = callbackMap.get(imageUrl);
+                    if (sourceCallback != null)
+                        sourceCallback.onProgress((int) (bytesRead * 100 / totalBytes));
+                }
             }
         };
         ProgressManager.addProgressListener(onProgressListener);

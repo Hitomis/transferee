@@ -14,24 +14,27 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-//import com.hitomi.glideloader.GlideImageLoader;
+import com.bumptech.glide.request.RequestOptions;
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;
+import com.wepie.glide4loader.Glide4ImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Created by hitomi on 2017/6/14.
  */
 
 public class GlideLocalActivity extends BaseActivity {
+    private RequestOptions options;
     private List<String> images;
 
     @Override
@@ -52,30 +55,33 @@ public class GlideLocalActivity extends BaseActivity {
                     READ_EXTERNAL_STORAGE);
         } else {
             images = getLatestPhotoPaths(9);
-            initTransfereeConfig();
+            initConfig();
             if (images != null && !images.isEmpty())
                 gvImages.setAdapter(new GlideLocalActivity.NineGridAdapter());
         }
 
     }
 
-    private void initTransfereeConfig() {
-//        config = TransferConfig.build()
-//                .setSourceImageList(images)
-//                .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-//                .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-//                .setProgressIndicator(new ProgressBarIndicator())
-//                .setIndexIndicator(new NumberIndexIndicator())
-//                .setJustLoadHitImage(true)
-//                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-//                .create();
+    private void initConfig() {
+        config = TransferConfig.build()
+                .setSourceImageList(images)
+                .setMissPlaceHolder(R.mipmap.ic_empty_photo)
+                .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
+                .setProgressIndicator(new ProgressBarIndicator())
+                .setIndexIndicator(new NumberIndexIndicator())
+                .setJustLoadHitImage(true)
+                .setImageLoader(Glide4ImageLoader.with(getApplicationContext()))
+                .create();
+
+        options = new RequestOptions();
+        options.centerCrop().placeholder(R.mipmap.ic_empty_photo);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == READ_EXTERNAL_STORAGE) {
             images = getLatestPhotoPaths(9);
-            initTransfereeConfig();
+            initConfig();
             if (images != null && !images.isEmpty())
                 gvImages.setAdapter(new GlideLocalActivity.NineGridAdapter());
         } else {
@@ -137,11 +143,10 @@ public class GlideLocalActivity extends BaseActivity {
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             final ImageView imageView = viewHolder.getView(R.id.image_view);
 
-//            Glide.with(GlideLocalActivity.this)
-//                    .load(item)
-//                    .centerCrop()
-//                    .placeholder(R.mipmap.ic_empty_photo)
-//                    .into(imageView);
+            Glide.with(GlideLocalActivity.this)
+                    .load(item)
+                    .apply(options)
+                    .into(imageView);
 
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override

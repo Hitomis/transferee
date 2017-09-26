@@ -27,6 +27,10 @@
             android:label="可移动图片/不可见图片测试"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activity.glide.GlideNormalActivity"
+            android:label="Glide 测试（有缩略图）"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.glide.GlideNoThumActivity"
             android:label="Glide 测试（没有缩略图）"
             android:screenOrientation="portrait" />

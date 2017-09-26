@@ -73,15 +73,15 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param imageView
      */
     protected void saveImageByGlide(ImageView imageView) {
-//        if (checkWriteStoragePermission()) {
+        if (checkWriteStoragePermission()) {
 //            GlideBitmapDrawable bmpDrawable = (GlideBitmapDrawable) imageView.getDrawable();
 //            MediaStore.Images.Media.insertImage(
 //                    getContentResolver(),
 //                    bmpDrawable.getBitmap(),
 //                    String.valueOf(System.currentTimeMillis()),
 //                    "");
-//            Toast.makeText(this, "save success", Toast.LENGTH_SHORT).show();
-//        }
+            Toast.makeText(this, "save success", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**

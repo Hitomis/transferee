@@ -10,6 +10,7 @@ import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.glide.GlideLocalActivity;
 import com.hitomi.transferimage.activity.glide.GlideNoThumActivity;
+import com.hitomi.transferimage.activity.glide.GlideNormalActivity;
 import com.hitomi.transferimage.activity.glide.TouchMoveActivity;
 import com.hitomi.transferimage.activity.universal.UniversalLocalActivity;
 import com.hitomi.transferimage.activity.universal.UniversalNoThumActivity;
@@ -22,6 +23,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        findViewById(R.id.btn_glide_normal).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, GlideNormalActivity.class));
+            }
+        });
 
         findViewById(R.id.btn_glide_no_thum).setOnClickListener(new View.OnClickListener() {
             @Override

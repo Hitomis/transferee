@@ -3,7 +3,7 @@ package com.wepie.glide4loader;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-`import android.support.annotation.Nullable;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -37,8 +37,7 @@ public class Glide4ImageLoader implements ImageLoader {
     private Glide4ImageLoader(Context context) {
         this.context = context;
         callbackMap = new WeakHashMap<>();
-        loadSharedPref = context.getSharedPreferences(
-                SP_FILE, Context.MODE_PRIVATE);
+        loadSharedPref = context.getSharedPreferences(SP_FILE, Context.MODE_PRIVATE);
     }
 
     public static Glide4ImageLoader with(Context context) {

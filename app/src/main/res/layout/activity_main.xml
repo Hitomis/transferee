@@ -12,6 +12,13 @@
     tools:context="com.hitomi.transferimage.activity.MainActivity">
 
     <Button
+        android:id="@+id/btn_glide_normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Glide测试（有缩略图）"
+        android:textAllCaps="false" />
+
+    <Button
         android:id="@+id/btn_glide_no_thum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,17 +26,17 @@
         android:textAllCaps="false" />
 
     <Button
-        android:id="@+id/btn_touch_move"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="可移动图片/不可见图片测试"
-        android:textAllCaps="false" />
-
-    <Button
         android:id="@+id/btn_glide_local"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Glide测试（本地图片）"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_touch_move"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="可移动图片/不可见图片测试"
         android:textAllCaps="false" />
 
     <Button

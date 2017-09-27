@@ -40,9 +40,9 @@ Step 2. Add the dependency
 
 ```
 dependencies {
-        compile 'com.github.Hitomis.transferee:Transferee:v1.0.0'
-        compile 'com.github.Hitomis.transferee:GlideLoader:v1.0.0' // load with glide
-        compile 'com.github.Hitomis.transferee:UniversalLoader:v1.0.0' //  load with universal-image-loader
+        compile 'com.github.Hitomis.transferee:Transferee:v1.1.0'
+        compile 'com.github.Hitomis.transferee:GlideLoader:v1.1.0' // load with glide
+        compile 'com.github.Hitomis.transferee:UniversalLoader:v1.1.0' //  load with universal-image-loader
 }
 ```
 
@@ -139,13 +139,15 @@ tranferee 查看图组一那么传递 originImageList 值时，originImageList �
 
 + v1.0.0
   - 将项目托管到 jitpack。目前可以使用添加 dependencies 的方式，导入 transferee 组件
+  
++ v1.1.0
+  - 修复 transferee 单例为普通实例，解决多个界面公用 transferee 单例时的异常问题
 
 # Todo
 + [x] 支持高清大图和长图浏览
-+ [ ] 支持下拉手势关闭 transferee
 + [x] 支持扩展图片保存、收藏等相关操作
-+ [ ] 优化单个图片使用 transferee 的场景
 + [x] 优化 TransferConfig 的参数配置。将固定不变的配置项从每次的参数对象创建中分离开来
++ [ ] 优化单个图片使用 transferee 的场景
 
 # Licence
     Copyright 2017 Hitomis, Inc.

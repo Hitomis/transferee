@@ -25,15 +25,15 @@ public class GlideNoThumActivity extends BaseActivity {
 
     {
         sourceImageList = new ArrayList<>();
-        sourceImageList.add("http://t2.27270.com/uploads/tu/201706/9999/d38274f15c.jpg");
-        sourceImageList.add("http://t2.27270.com/uploads/tu/201706/9999/061548f1fb.jpg");
-        sourceImageList.add("http://t2.27270.com/uploads/tu/201706/9999/4a85dd9bd9.jpg");
-        sourceImageList.add("http://t2.27270.com/uploads/tu/201706/9999/a6c57f438d.jpg");
-        sourceImageList.add("http://t2.27270.com/uploads/tu/201706/9999/b6ae25c618.jpg");
-        sourceImageList.add("http://t2.27270.com/uploads/tu/201612/562/lua4uwojfds.jpg");
-        sourceImageList.add("http://t2.27270.com/uploads/tu/201612/562/4hp4d1fcocu.jpg");
-        sourceImageList.add("http://t2.27270.com/uploads/tu/201612/562/d2madqozild.jpg");
-        sourceImageList.add("http://ww1.sinaimg.cn/large/9be2329dgw1etlyb1yu49j20c82p6qc1.jpg");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
 
     }
 

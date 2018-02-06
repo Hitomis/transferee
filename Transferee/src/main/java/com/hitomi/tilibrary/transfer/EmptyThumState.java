@@ -128,8 +128,8 @@ class EmptyThumState extends TransferState {
         Drawable placeHolder;
 
         TransferConfig config = transfer.getTransConfig();
-        if (position < config.getOriginImageList().size()) {
-            ImageView originImage = config.getOriginImageList().get(position);
+        ImageView originImage = config.getOriginImageList().get(position);
+        if (originImage != null) {
             placeHolder = originImage.getDrawable();
         } else {
             placeHolder = config.getMissDrawable(context);
@@ -150,8 +150,8 @@ class EmptyThumState extends TransferState {
 
         Drawable placeHolder = getPlacHolder(position);
         int[] clipSize = new int[2];
-        if (position < config.getOriginImageList().size()) {
-            ImageView originImage = config.getOriginImageList().get(position);
+        ImageView originImage = config.getOriginImageList().get(position);
+        if (originImage != null) {
             clipSize[0] = originImage.getWidth();
             clipSize[1] = originImage.getHeight();
         }

@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
+import com.hitomi.transferimage.activity.universal.RecyclerViewActivity;
 import com.hitomi.transferimage.activity.universal.UniversalLocalActivity;
 import com.hitomi.transferimage.activity.universal.UniversalNoThumActivity;
 import com.hitomi.transferimage.activity.universal.UniversalNormalActivity;
@@ -37,6 +38,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, UniversalLocalActivity.class));
+            }
+        });
+
+        findViewById(R.id.btn_recycler).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, RecyclerViewActivity.class));
             }
         });
 

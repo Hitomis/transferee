@@ -104,7 +104,7 @@ class EmptyThumState extends TransferState {
         TransferConfig config = transfer.getTransConfig();
         List<ImageView> originImageList = config.getOriginImageList();
 
-        if (position < originImageList.size()) {
+        if (originImageList.get(position) != null) {
             transImage = createTransferImage(
                     originImageList.get(position));
             Drawable thumbnailDrawable = transfer.getTransAdapter().getImageItem(

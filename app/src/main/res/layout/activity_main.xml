@@ -33,6 +33,13 @@
         android:textAllCaps="false" />
 
     <Button
+        android:id="@+id/btn_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试 recyclerView"
+        android:textAllCaps="false" />
+
+    <Button
         android:id="@+id/btn_clear_universal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

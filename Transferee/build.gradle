@@ -54,6 +54,7 @@ artifacts {
 
 dependencies {
     compile rootProject.ext.libSupportV7
+    compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.github.filippudak.progresspieview:library:1.0.4'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }

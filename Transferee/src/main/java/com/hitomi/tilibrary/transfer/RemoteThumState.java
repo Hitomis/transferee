@@ -135,7 +135,7 @@ class RemoteThumState extends TransferState {
         TransferConfig config = transfer.getTransConfig();
         List<ImageView> originImageList = config.getOriginImageList();
 
-        if (position < originImageList.size()) {
+        if (originImageList.get(position) != null) {
             transImage = createTransferImage(
                     originImageList.get(position));
             transformThumbnail(config.getThumbnailImageList().get(position), transImage, false);

@@ -5,13 +5,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
-import com.hitomi.tilibrary.loader.NoneImageLoader;
+import com.hitomi.tilibrary.loader.UniversalImageLoader;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main workflow: <br/>
@@ -92,9 +99,6 @@ public class Transferee implements DialogInterface.OnShowListener,
         if (transConfig.isSourceEmpty())
             throw new IllegalArgumentException("the parameter sourceImageList can't be empty");
 
-        if (transConfig.getNowThumbnailIndex() >= transConfig.getOriginImageList().size())
-            throw new IllegalArgumentException("the parameter nowThumbnailIndex will generate an IndexOutOfBoundsException error");
-
         transConfig.setNowThumbnailIndex(transConfig.getNowThumbnailIndex() < 0
                 ? 0 : transConfig.getNowThumbnailIndex());
 
@@ -111,7 +115,70 @@ public class Transferee implements DialogInterface.OnShowListener,
                 ? new CircleIndexIndicator() : transConfig.getIndexIndicator());
 
         transConfig.setImageLoader(transConfig.getImageLoader() == null
-                ? new NoneImageLoader() : transConfig.getImageLoader());
+                ? UniversalImageLoader.with(context.getApplicationContext())
+                : transConfig.getImageLoader());
+    }
+
+    private void fillOriginImages() {
+        List<ImageView> originImageList = new ArrayList<>();
+        if (transConfig.getRecyclerView() != null) {
+            fillByRecyclerView(originImageList);
+        } else if (transConfig.getListView() != null) {
+            fillByListView(originImageList);
+        }
+        transConfig.setOriginImageList(originImageList);
+    }
+
+    private void fillByRecyclerView(final List<ImageView> originImageList) {
+        RecyclerView recyclerView = transConfig.getRecyclerView();
+        int childCount = recyclerView.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            ImageView originImage = ((ImageView) recyclerView.getChildAt(i)
+                    .findViewById(transConfig.getImageId()));
+            originImageList.add(originImage);
+        }
+
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        int firstPos = 0, lastPos = 0;
+        int totalCount = layoutManager.getItemCount();
+        if (layoutManager instanceof GridLayoutManager) {
+            GridLayoutManager gridLayMan = (GridLayoutManager) layoutManager;
+            firstPos = gridLayMan.findFirstVisibleItemPosition();
+            lastPos = gridLayMan.findLastVisibleItemPosition();
+        } else if (layoutManager instanceof LinearLayoutManager) {
+            LinearLayoutManager linLayMan = (LinearLayoutManager) layoutManager;
+            firstPos = linLayMan.findFirstVisibleItemPosition();
+            lastPos = linLayMan.findLastVisibleItemPosition();
+        }
+        fillPlaceHolder(originImageList, totalCount, firstPos, lastPos);
+    }
+
+    private void fillByListView(final List<ImageView> originImageList) {
+        AbsListView absListView = transConfig.getListView();
+        int childCount = absListView.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            ImageView originImage = ((ImageView) absListView.getChildAt(i)
+                    .findViewById(transConfig.getImageId()));
+            originImageList.add(originImage);
+        }
+
+        int firstPos = absListView.getFirstVisiblePosition();
+        int lastPos = absListView.getLastVisiblePosition();
+        int totalCount = absListView.getCount();
+        fillPlaceHolder(originImageList, totalCount, firstPos, lastPos);
+    }
+
+    private void fillPlaceHolder(List<ImageView> originImageList, int totalCount, int firstPos, int lastPos) {
+        if (firstPos > 0) {
+            for (int pos = firstPos; pos > 0; pos--) {
+                originImageList.add(0, null);
+            }
+        }
+        if (lastPos < totalCount) {
+            for (int i = (totalCount - 1 - lastPos); i > 0; i--) {
+                originImageList.add(null);
+            }
+        }
     }
 
     /**
@@ -123,6 +190,7 @@ public class Transferee implements DialogInterface.OnShowListener,
     public Transferee apply(TransferConfig config) {
         if (!shown) {
             transConfig = config;
+            fillOriginImages();
             checkConfig();
             transLayout.apply(config);
         }

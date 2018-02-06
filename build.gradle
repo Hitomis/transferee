@@ -43,5 +43,4 @@ project.ext {
     libSupportV7 = "com.android.support:appcompat-v7:${supportVersion}"
     libSupportAppcompat = "com.android.support:appcompat-v7:${supportVersion}"
     libSupportDesign = "com.android.support:design:${supportVersion}"
-    libSupportRecyclerview = "com.android.support:recyclerview-v7:${supportVersion}"
 }

@@ -20,9 +20,7 @@ import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;
 import com.hitomi.tilibrary.loader.UniversalImageLoader;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.zhy.adapter.abslistview.CommonAdapter;
@@ -36,7 +34,6 @@ import java.util.List;
  */
 
 public class UniversalLocalActivity extends BaseActivity {
-    private DisplayImageOptions options;
     private List<String> images;
 
     @Override
@@ -51,16 +48,6 @@ public class UniversalLocalActivity extends BaseActivity {
 
     @Override
     protected void testTransferee() {
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
-        options = new DisplayImageOptions
-                .Builder()
-                .showImageOnLoading(R.mipmap.ic_empty_photo)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .resetViewBeforeLoading(true)
-                .build();
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
                             Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -83,7 +70,8 @@ public class UniversalLocalActivity extends BaseActivity {
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setJustLoadHitImage(true)
-                .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
+                .setListView(gvImages)
+                .setImageId(R.id.image_view)
                 .create();
     }
 
@@ -150,7 +138,6 @@ public class UniversalLocalActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 config.setNowThumbnailIndex(position);
-                config.setOriginImageList(wrapOriginImageViewList(images.size()));
                 transferee.apply(config).show();
             }
         });
@@ -159,7 +146,7 @@ public class UniversalLocalActivity extends BaseActivity {
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
-            super(UniversalLocalActivity.this, R.layout.item_grid_image, images);
+            super(UniversalLocalActivity.this, R.layout.item_image, images);
         }
 
         @Override

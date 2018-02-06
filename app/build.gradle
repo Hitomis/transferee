@@ -23,15 +23,11 @@ android {
 dependencies {
     compile rootProject.ext.libSupportV7
     compile rootProject.ext.libSupportDesign
-
     compile project(':Transferee')
-    compile project(':UniversalLoader')
-    compile project(path: ':Glide4Loader')
-
-    compile 'com.zhy:base-adapter:3.0.3'
 
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 
+    compile 'com.zhy:base-adapter:3.0.3'
 }

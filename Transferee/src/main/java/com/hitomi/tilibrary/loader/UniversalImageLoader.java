@@ -1,4 +1,4 @@
-package com.hitomi.universalloader;
+package com.hitomi.tilibrary.loader;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -19,7 +19,7 @@ import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;
-import com.hitomi.universalloader.UniversalImageLoader;
+import com.hitomi.tilibrary.loader.UniversalImageLoader;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;

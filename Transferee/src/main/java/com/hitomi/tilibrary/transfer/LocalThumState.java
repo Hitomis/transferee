@@ -25,19 +25,9 @@ class LocalThumState extends TransferState {
     @Override
     public void prepareTransfer(final TransferImage transImage, final int position) {
         final TransferConfig config = transfer.getTransConfig();
-
         ImageLoader imageLoader = config.getImageLoader();
         String imgUrl = config.getSourceImageList().get(position);
-
-        imageLoader.loadImageAsync(imgUrl, new ImageLoader.ThumbnailCallback() {
-
-            @Override
-            public void onFinish(Drawable drawable) {
-                transImage.setImageDrawable(drawable == null
-                        ? config.getMissDrawable(context) : drawable);
-
-            }
-        });
+        imageLoader.showImage(imgUrl, transImage, config.getMissDrawable(context), null);
     }
 
     @Override

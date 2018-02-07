@@ -155,10 +155,12 @@ public class UniversalLocalActivity extends BaseActivity {
             ImageLoader.getInstance().displayImage(item, imageView, options, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
+                    imageView.setOnClickListener(null);
                 }
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    imageView.setOnClickListener(null);
                 }
 
                 @Override
@@ -169,6 +171,7 @@ public class UniversalLocalActivity extends BaseActivity {
 
                 @Override
                 public void onLoadingCancelled(String imageUri, View view) {
+                    imageView.setOnClickListener(null);
                 }
             });
         }

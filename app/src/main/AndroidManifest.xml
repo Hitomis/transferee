@@ -34,6 +34,10 @@
             android:name=".activity.universal.UniversalLocalActivity"
             android:label="UniversalLoader 测试(本地图片)"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.universal.RecyclerViewActivity"
+            android:label="UniversalLoader 测试(recyclerview)"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

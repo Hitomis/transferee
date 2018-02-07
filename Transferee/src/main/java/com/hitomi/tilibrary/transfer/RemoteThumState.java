@@ -31,14 +31,7 @@ class RemoteThumState extends TransferState {
         String imgUrl = config.getThumbnailImageList().get(position);
 
         if (imageLoader.isLoaded(imgUrl)) {
-            imageLoader.loadThumbnailAsync(imgUrl, transImage, new ImageLoader.ThumbnailCallback() {
-
-                @Override
-                public void onFinish(Drawable drawable) {
-                    transImage.setImageDrawable(drawable == null
-                            ? config.getMissDrawable(context) : drawable);
-                }
-            });
+            imageLoader.showImage(imgUrl, transImage, config.getMissDrawable(context), null);
         } else {
             transImage.setImageDrawable(config.getMissDrawable(context));
         }
@@ -74,7 +67,7 @@ class RemoteThumState extends TransferState {
             String thumUrl = config.getThumbnailImageList().get(position);
 
             if (imageLoader.isLoaded(thumUrl)) {
-                imageLoader.loadThumbnailAsync(thumUrl, targetImage, new ImageLoader.ThumbnailCallback() {
+                imageLoader.loadImageAsync(thumUrl, new ImageLoader.ThumbnailCallback() {
 
                     @Override
                     public void onFinish(Drawable drawable) {
@@ -93,7 +86,7 @@ class RemoteThumState extends TransferState {
     private void loadSourceImage(Drawable drawable, final int position, final TransferImage targetImage, final IProgressIndicator progressIndicator) {
         final TransferConfig config = transfer.getTransConfig();
 
-        config.getImageLoader().showSourceImage(config.getSourceImageList().get(position),
+        config.getImageLoader().showImage(config.getSourceImageList().get(position),
                 targetImage, drawable, new ImageLoader.SourceCallback() {
 
                     @Override
@@ -135,9 +128,8 @@ class RemoteThumState extends TransferState {
         TransferConfig config = transfer.getTransConfig();
         List<ImageView> originImageList = config.getOriginImageList();
 
-        if (position < originImageList.size()) {
-            transImage = createTransferImage(
-                    originImageList.get(position));
+        if (originImageList.get(position) != null) {
+            transImage = createTransferImage(originImageList.get(position));
             transformThumbnail(config.getThumbnailImageList().get(position), transImage, false);
 
             transfer.addView(transImage, 1);

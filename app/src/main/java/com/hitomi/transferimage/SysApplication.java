@@ -3,6 +3,8 @@ package com.hitomi.transferimage;
 import android.app.Application;
 import android.content.Context;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 

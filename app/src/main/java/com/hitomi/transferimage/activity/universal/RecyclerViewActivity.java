@@ -1,27 +1,28 @@
 package com.hitomi.transferimage.activity.universal;
 
 import android.graphics.Bitmap;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import com.hitomi.tilibrary.loader.UniversalImageLoader;
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
-import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
+import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
-import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;
-import com.hitomi.tilibrary.loader.UniversalImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.zhy.adapter.abslistview.CommonAdapter;
-import com.zhy.adapter.abslistview.ViewHolder;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 
-public class UniversalNormalActivity extends BaseActivity {
+public class RecyclerViewActivity extends BaseActivity {
+    private RecyclerView rvImages;
+
     {
         thumbnailImageList = new ArrayList<>();
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png@233w_160h_20q");
@@ -48,48 +49,35 @@ public class UniversalNormalActivity extends BaseActivity {
 
     @Override
     protected int getContentView() {
-        return R.layout.activity_grid_view;
+        return R.layout.activity_recycler_view;
     }
 
     @Override
     protected void initView() {
-        gvImages = (GridView) findViewById(R.id.gv_images);
+        rvImages = (RecyclerView) findViewById(R.id.rv_images);
+        rvImages.setLayoutManager(new GridLayoutManager(this, 3));
     }
 
     @Override
     protected void testTransferee() {
         config = TransferConfig.build()
-                .setSourceImageList(sourceImageList)
                 .setThumbnailImageList(thumbnailImageList)
+                .setSourceImageList(sourceImageList)
                 .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-                .setProgressIndicator(new ProgressPieIndicator())
+                .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setJustLoadHitImage(true)
-                .setListView(gvImages)
+                .setRecyclerView(rvImages)
                 .setImageId(R.id.image_view)
-                .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
-                    @Override
-                    public void onLongClick(ImageView imageView, int pos) {
-                        saveImageByUniversal(imageView);
-                    }
-                })
                 .create();
 
-        gvImages.setAdapter(new UniversalNormalActivity.NineGridAdapter());
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode != WRITE_EXTERNAL_STORAGE) {
-            Toast.makeText(this, "请允许获取相册图片文件写入权限", Toast.LENGTH_SHORT).show();
-        }
+        rvImages.setAdapter(new RecyclerViewActivity.NineGridAdapter());
     }
 
     private class NineGridAdapter extends CommonAdapter<String> {
-
         public NineGridAdapter() {
-            super(UniversalNormalActivity.this, R.layout.item_image, thumbnailImageList);
+            super(RecyclerViewActivity.this, R.layout.item_image, thumbnailImageList);
         }
 
         @Override
@@ -127,5 +115,4 @@ public class UniversalNormalActivity extends BaseActivity {
             }
         });
     }
-
 }

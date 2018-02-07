@@ -30,4 +30,5 @@ dependencies {
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 
     compile 'com.zhy:base-adapter:3.0.3'
+    compile 'com.zhy:base-rvadapter:3.0.3'
 }

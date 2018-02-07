@@ -25,19 +25,9 @@ class LocalThumState extends TransferState {
     @Override
     public void prepareTransfer(final TransferImage transImage, final int position) {
         final TransferConfig config = transfer.getTransConfig();
-
         ImageLoader imageLoader = config.getImageLoader();
         String imgUrl = config.getSourceImageList().get(position);
-
-        imageLoader.loadThumbnailAsync(imgUrl, transImage, new ImageLoader.ThumbnailCallback() {
-
-            @Override
-            public void onFinish(Drawable drawable) {
-                transImage.setImageDrawable(drawable == null
-                        ? config.getMissDrawable(context) : drawable);
-
-            }
-        });
+        imageLoader.showImage(imgUrl, transImage, config.getMissDrawable(context), null);
     }
 
     @Override
@@ -63,7 +53,7 @@ class LocalThumState extends TransferState {
             // 对 TransferImage 裁剪且设置了占位图， 所以这里直接加载原图即可
             loadSourceImage(imgUrl, targetImage, targetImage.getDrawable(), position);
         } else {
-            config.getImageLoader().loadThumbnailAsync(imgUrl, targetImage, new ImageLoader.ThumbnailCallback() {
+            config.getImageLoader().loadImageAsync(imgUrl, new ImageLoader.ThumbnailCallback() {
                 @Override
                 public void onFinish(Drawable drawable) {
                     if (drawable == null)
@@ -78,7 +68,7 @@ class LocalThumState extends TransferState {
     private void loadSourceImage(String imgUrl, final TransferImage targetImage, Drawable drawable, final int position) {
         final TransferConfig config = transfer.getTransConfig();
 
-        config.getImageLoader().showSourceImage(imgUrl, targetImage, drawable, new ImageLoader.SourceCallback() {
+        config.getImageLoader().showImage(imgUrl, targetImage, drawable, new ImageLoader.SourceCallback() {
 
             @Override
             public void onStart() {
@@ -118,7 +108,7 @@ class LocalThumState extends TransferState {
         TransferConfig config = transfer.getTransConfig();
         List<ImageView> originImageList = config.getOriginImageList();
 
-        if (position < originImageList.size()) {
+        if (originImageList.get(position) != null) {
             transImage = createTransferImage(
                     originImageList.get(position));
             transformThumbnail(config.getSourceImageList().get(position), transImage, false);

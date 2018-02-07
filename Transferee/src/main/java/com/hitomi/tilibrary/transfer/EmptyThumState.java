@@ -62,7 +62,7 @@ class EmptyThumState extends TransferState {
         final IProgressIndicator progressIndicator = config.getProgressIndicator();
         progressIndicator.attach(position, adapter.getParentItem(position));
 
-        config.getImageLoader().showSourceImage(imgUrl, targetImage,
+        config.getImageLoader().showImage(imgUrl, targetImage,
                 placeHolder, new ImageLoader.SourceCallback() {
 
                     @Override
@@ -104,7 +104,7 @@ class EmptyThumState extends TransferState {
         TransferConfig config = transfer.getTransConfig();
         List<ImageView> originImageList = config.getOriginImageList();
 
-        if (position < originImageList.size()) {
+        if (originImageList.get(position) != null) {
             transImage = createTransferImage(
                     originImageList.get(position));
             Drawable thumbnailDrawable = transfer.getTransAdapter().getImageItem(
@@ -128,8 +128,8 @@ class EmptyThumState extends TransferState {
         Drawable placeHolder;
 
         TransferConfig config = transfer.getTransConfig();
-        if (position < config.getOriginImageList().size()) {
-            ImageView originImage = config.getOriginImageList().get(position);
+        ImageView originImage = config.getOriginImageList().get(position);
+        if (originImage != null) {
             placeHolder = originImage.getDrawable();
         } else {
             placeHolder = config.getMissDrawable(context);
@@ -150,8 +150,8 @@ class EmptyThumState extends TransferState {
 
         Drawable placeHolder = getPlacHolder(position);
         int[] clipSize = new int[2];
-        if (position < config.getOriginImageList().size()) {
-            ImageView originImage = config.getOriginImageList().get(position);
+        ImageView originImage = config.getOriginImageList().get(position);
+        if (originImage != null) {
             clipSize[0] = originImage.getWidth();
             clipSize[1] = originImage.getHeight();
         }

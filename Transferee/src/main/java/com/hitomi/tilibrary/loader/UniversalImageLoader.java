@@ -31,6 +31,7 @@ import java.io.File;
  */
 public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLoader {
     private Context context;
+    private DisplayImageOptions normalImageOptions;
 
     private UniversalImageLoader(Context context) {
         this.context = context;
@@ -50,7 +51,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
             memoryCache = new LRULimitedMemoryCache(memoryCacheSize);
         }
 
-        DisplayImageOptions normalImageOptions = new DisplayImageOptions
+        normalImageOptions = new DisplayImageOptions
                 .Builder()
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .cacheInMemory(true)
@@ -73,48 +74,56 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     }
 
     @Override
-    public void showSourceImage(String srcUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
+    public void showImage(String imageUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
         DisplayImageOptions options = new DisplayImageOptions
                 .Builder()
                 .showImageOnLoading(placeholder)
+                .showImageOnFail(placeholder)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .resetViewBeforeLoading(true)
                 .build();
 
-        ImageLoader.getInstance().displayImage(srcUrl, imageView, options, new ImageLoadingListener() {
+        ImageLoader.getInstance().displayImage(imageUrl, imageView, options, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-                sourceCallback.onStart();
+                if (sourceCallback != null)
+                    sourceCallback.onStart();
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                sourceCallback.onDelivered(STATUS_DISPLAY_FAILED);
+                if (sourceCallback != null)
+                    sourceCallback.onDelivered(STATUS_DISPLAY_FAILED);
             }
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                sourceCallback.onFinish();
-                sourceCallback.onDelivered(STATUS_DISPLAY_SUCCESS);
+                if (sourceCallback != null) {
+                    sourceCallback.onFinish();
+                    sourceCallback.onDelivered(STATUS_DISPLAY_SUCCESS);
+                }
+
             }
 
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
-                sourceCallback.onDelivered(STATUS_DISPLAY_CANCEL);
+                if (sourceCallback != null)
+                    sourceCallback.onDelivered(STATUS_DISPLAY_CANCEL);
             }
         }, new ImageLoadingProgressListener() {
             @Override
             public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                sourceCallback.onProgress(current * 100 / total);
+                if (sourceCallback != null)
+                    sourceCallback.onProgress(current * 100 / total);
             }
         });
     }
 
     @Override
-    public void loadThumbnailAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback) {
-        ImageLoader.getInstance().loadImage(thumbUrl, new ImageLoadingListener() {
+    public void loadImageAsync(String imageUrl, final ThumbnailCallback callback) {
+        ImageLoader.getInstance().loadImage(imageUrl, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
             }
@@ -134,6 +143,12 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
                 callback.onFinish(null);
             }
         });
+    }
+
+    @Override
+    public Drawable loadImageSync(String imageUrl) {
+        Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUrl, normalImageOptions);
+        return new BitmapDrawable(bitmap);
     }
 
     @Override

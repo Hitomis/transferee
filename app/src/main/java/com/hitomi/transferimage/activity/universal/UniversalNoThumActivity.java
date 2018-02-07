@@ -1,6 +1,5 @@
 package com.hitomi.transferimage.activity.universal;
 
-import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -13,17 +12,13 @@ import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.activity.BaseActivity;
 import com.hitomi.tilibrary.loader.UniversalImageLoader;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 import java.util.ArrayList;
 
 public class UniversalNoThumActivity extends BaseActivity {
-    private DisplayImageOptions options;
-
     {
         sourceImageList = new ArrayList<>();
         sourceImageList.add("http://img2.woyaogexing.com/2018/01/25/f5d815584c61d376!500x500.jpg");
@@ -49,24 +44,15 @@ public class UniversalNoThumActivity extends BaseActivity {
 
     @Override
     protected void testTransferee() {
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
-        options = new DisplayImageOptions
-                .Builder()
-                .showImageOnLoading(R.mipmap.ic_empty_photo)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .resetViewBeforeLoading(true)
-                .build();
-
         config = TransferConfig.build()
                 .setSourceImageList(sourceImageList)
                 .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
-                .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
                 .setJustLoadHitImage(true)
+                .setListView(gvImages)
+                .setImageId(R.id.image_view)
                 .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
                     @Override
                     public void onLongClick(ImageView imageView, int pos) {
@@ -88,7 +74,7 @@ public class UniversalNoThumActivity extends BaseActivity {
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
-            super(UniversalNoThumActivity.this, R.layout.item_grid_image, sourceImageList);
+            super(UniversalNoThumActivity.this, R.layout.item_image, sourceImageList);
         }
 
         @Override
@@ -100,7 +86,6 @@ public class UniversalNoThumActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     config.setNowThumbnailIndex(position);
-                    config.setOriginImageList(wrapOriginImageViewList(sourceImageList.size()));
                     transferee.apply(config).show();
                 }
             });

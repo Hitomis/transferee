@@ -2,12 +2,16 @@ package com.hitomi.tilibrary.transfer;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.IdRes;
+import android.support.v7.widget.RecyclerView;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +40,10 @@ public final class TransferConfig {
     private IProgressIndicator progressIndicator;
     private IIndexIndicator indexIndicator;
     private ImageLoader imageLoader;
+
+    private @IdRes int imageId;
+    private AbsListView listView;
+    private RecyclerView recyclerView;
 
     private Transferee.OnTransfereeLongClickListener longClickListener;
 
@@ -120,10 +128,10 @@ public final class TransferConfig {
     }
 
     public List<ImageView> getOriginImageList() {
-        return originImageList;
+        return originImageList == null ? new ArrayList<ImageView>() : originImageList;
     }
 
-    public void setOriginImageList(List<ImageView> originImageList) {
+    void setOriginImageList(List<ImageView> originImageList) {
         this.originImageList = originImageList;
     }
 
@@ -193,6 +201,30 @@ public final class TransferConfig {
         return thumbnailImageList == null || thumbnailImageList.isEmpty();
     }
 
+    public int getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(int imageId) {
+        this.imageId = imageId;
+    }
+
+    public AbsListView getListView() {
+        return listView;
+    }
+
+    public void setListView(AbsListView listView) {
+        this.listView = listView;
+    }
+
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
+    }
+
+    public void setRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
+    }
+
     public static class Builder {
         private int nowThumbnailIndex;
         private int offscreenPageLimit;
@@ -205,13 +237,16 @@ public final class TransferConfig {
         private Drawable missDrawable;
         private Drawable errorDrawable;
 
-        private List<ImageView> originImageList;
         private List<String> sourceImageList;
         private List<String> thumbnailImageList;
 
         private IProgressIndicator progressIndicator;
         private IIndexIndicator indexIndicator;
         private ImageLoader imageLoader;
+
+        private @IdRes int imageId;
+        private AbsListView listView;
+        private RecyclerView recyclerView;
 
         private Transferee.OnTransfereeLongClickListener longClickListener;
 
@@ -292,14 +327,6 @@ public final class TransferConfig {
         }
 
         /**
-         * 原始的 ImageView 集合
-         */
-        public Builder setOriginImageList(List<ImageView> originImageList) {
-            this.originImageList = originImageList;
-            return this;
-        }
-
-        /**
          * 高清图的地址集合
          */
         public Builder setSourceImageList(List<String> sourceImageList) {
@@ -350,6 +377,21 @@ public final class TransferConfig {
             return this;
         }
 
+        public Builder setImageId(int imageId) {
+            this.imageId = imageId;
+            return this;
+        }
+
+        public Builder setListView(AbsListView listView) {
+            this.listView = listView;
+            return this;
+        }
+
+        public Builder setRecyclerView(RecyclerView recyclerView) {
+            this.recyclerView = recyclerView;
+            return this;
+        }
+
         public TransferConfig create() {
             TransferConfig config = new TransferConfig();
 
@@ -364,13 +406,16 @@ public final class TransferConfig {
             config.setMissDrawable(missDrawable);
             config.setErrorDrawable(errorDrawable);
 
-            config.setOriginImageList(originImageList);
             config.setSourceImageList(sourceImageList);
             config.setThumbnailImageList(thumbnailImageList);
 
             config.setProgressIndicator(progressIndicator);
             config.setIndexIndicator(indexIndicator);
             config.setImageLoader(imageLoader);
+
+            config.setImageId(imageId);
+            config.setListView(listView);
+            config.setRecyclerView(recyclerView);
 
             config.setLongClickListener(longClickListener);
 

@@ -27,20 +27,27 @@ public interface ImageLoader {
     /**
      * 加载并显示原图
      *
-     * @param srcUrl         原图图片地址
+     * @param imageUrl       图片地址
      * @param imageView      用于图片加载成功后显示的 ImageView
      * @param placeholder    加载完成之前显示的占位图
      * @param sourceCallback 图片加载过程的回调
      */
-    void showSourceImage(String srcUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback);
+    void showImage(String imageUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback);
 
     /**
-     * 异步加载缩略图
+     * 异步加载图片
      *
-     * @param thumbUrl 缩略图图片地址
-     * @param callback 缩略图片加载完成的回调
+     * @param imageUrl 图片地址
+     * @param callback 片加载完成的回调
      */
-    void loadThumbnailAsync(String thumbUrl, ImageView imageView, final ThumbnailCallback callback);
+    void loadImageAsync(String imageUrl, final ThumbnailCallback callback);
+
+    /**
+     * 同步加载图片，返回 Drawable
+     * @param imageUrl
+     * @return
+     */
+    Drawable loadImageSync(String imageUrl);
 
     /**
      * 检查本地磁盘缓存中是否已经存在此路径所关联的图片

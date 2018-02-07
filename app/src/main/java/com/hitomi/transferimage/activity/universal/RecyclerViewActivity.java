@@ -61,6 +61,7 @@ public class RecyclerViewActivity extends BaseActivity {
     @Override
     protected void testTransferee() {
         config = TransferConfig.build()
+                .setThumbnailImageList(thumbnailImageList)
                 .setSourceImageList(sourceImageList)
                 .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)

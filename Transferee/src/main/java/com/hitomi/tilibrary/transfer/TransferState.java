@@ -108,7 +108,7 @@ abstract class TransferState {
      *
      * @param imageUrl   当前缩略图路径
      * @param transImage {@link #createTransferImage(ImageView)} 方法创建的 TransferImage
-     * @param in         true : 从缩略图到高清图动画, false : 从到高清图到缩略图动画
+     * @param in         true : 从缩略图到高清图动画, false : 从高清图到缩略图动画
      */
     protected void transformThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
         final TransferConfig config = transfer.getTransConfig();
@@ -141,21 +141,17 @@ abstract class TransferState {
      */
     private void loadThunbnail(String imageUrl, final TransferImage transImage, final boolean in) {
         final TransferConfig config = transfer.getTransConfig();
+        ImageLoader imageLoader = config.getImageLoader();
+        Drawable drawable = imageLoader.loadImageSync(imageUrl);
+        if (drawable == null)
+            transImage.setImageDrawable(config.getMissDrawable(context));
+        else
+            transImage.setImageDrawable(drawable);
 
-        config.getImageLoader().loadThumbnailAsync(imageUrl, transImage, new ImageLoader.ThumbnailCallback() {
-            @Override
-            public void onFinish(Drawable drawable) {
-                if (drawable == null)
-                    transImage.setImageDrawable(config.getMissDrawable(context));
-                else
-                    transImage.setImageDrawable(drawable);
-
-                if (in)
-                    transImage.transformIn();
-                else
-                    transImage.transformOut();
-            }
-        });
+        if (in)
+            transImage.transformIn();
+        else
+            transImage.transformOut();
     }
 
     /**

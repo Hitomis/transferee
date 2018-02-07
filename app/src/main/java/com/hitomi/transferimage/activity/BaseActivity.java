@@ -18,6 +18,8 @@ import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.util.List;
 
@@ -51,6 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .resetViewBeforeLoading(true)
                 .build();
         transferee = Transferee.getDefault(this);
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
         setContentView(getContentView());
         initView();
         testTransferee();

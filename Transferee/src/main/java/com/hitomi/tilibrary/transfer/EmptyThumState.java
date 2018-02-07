@@ -62,7 +62,7 @@ class EmptyThumState extends TransferState {
         final IProgressIndicator progressIndicator = config.getProgressIndicator();
         progressIndicator.attach(position, adapter.getParentItem(position));
 
-        config.getImageLoader().showSourceImage(imgUrl, targetImage,
+        config.getImageLoader().showImage(imgUrl, targetImage,
                 placeHolder, new ImageLoader.SourceCallback() {
 
                     @Override

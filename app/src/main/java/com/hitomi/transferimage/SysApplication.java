@@ -25,6 +25,5 @@ public class SysApplication extends Application {
     public void onCreate() {
         super.onCreate();
         refWatcher = LeakCanary.install(this);
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
     }
 }

@@ -47,6 +47,7 @@ TransferConfig config = TransferConfig.build()
 
 setp 3: 显示 transferee
 ```
+config.setNowThumbnailIndex(position);
 transferee.apply(config).show();
 ```
 

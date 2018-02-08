@@ -14,7 +14,7 @@ transferee 支持两种模式：
 <img src="preview/transferee_3.gif" />
 
 
-### Dependency
+# Dependency
 Gradle 依赖，之前版本已作废，待现在版本稳定后，再上传
 
 # Usage

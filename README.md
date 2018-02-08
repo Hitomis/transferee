@@ -15,27 +15,7 @@ transferee 支持两种模式：
 
 
 ### Dependency
-Step 1. Add the JitPack repository to your build file
-
-```
-allprojects {
-    repositories {
-        ...
-        maven { url 'https://jitpack.io' }
-    }
-}
-```
-
-Step 2. Add the dependency
-
-```
-dependencies {
-        compile 'com.github.Hitomis.transferee:Transferee:v1.1.0'
-        compile 'com.github.Hitomis.transferee:GlideLoader:v1.1.0' // load with glide
-        compile 'com.github.Hitomis.transferee:UniversalLoader:v1.1.0' //  load with universal-image-loader
-}
-```
-
+Gradle 依赖，之前版本已作废，待现在版本稳定后，再上传
 
 # Usage
 

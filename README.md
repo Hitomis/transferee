@@ -3,17 +3,8 @@ transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功
 
 transferee 支持两种模式：
 
-1. 只有原图，就是说九宫格列表中的图片和全屏显示的大图其实来源于一张图片。详见 [GlideNoThumActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/glide/GlideNoThumActivity.java) 和 [UniversalNoThumActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/universal/UniversalNoThumActivity.java)
+1. 只有原图，就是说九宫格列表中的图片和全屏显示的大图其实来源于一张图片。详见 [UniversalNoThumActivity](https://github.com/Hitomis/transferee/blob/trans/simple/app/src/main/java/com/hitomi/transferimage/activity/universal/UniversalNoThumActivity.java)
 2. 既有原图，又有缩略图，例如我司使用了阿里云的图片裁剪功能提供了缩略图来源，在列表页使用阿里云裁剪后的缩略图，优化列表数据流量和流畅度，同时又能在详情页或者图片查看器中显示大图。这种情况下也是 transferee 最适合的模式。详见[UniversalNormalActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/universal/UniversalNormalActivity.java)
-
-在使用 transferee 组件的时候，还需要注意一些问题：
-
-由于不同 ImageLoader 的缓存和图片加载策略不同，所以在使用目前 transferee 中内置的 Glide 或者 Universal-Image-Loader 时，所支持的功能体系也是不一样的：
-
-- 使用 Glide 作为 transferee 的图片加载器时，不支持设置 thumbnailImageList 属性，即只支持模式1
-- 使用 Glide 作为 transferee 的图片加载器时，如果您的项目中也是使用的 Glide 去加载图片，最好使用 ProgressBarIndicator 作为 transferee 的进度指示器；如果一定要显示出图片的百分比加载进度，即使用 ProgressPieIndicator 的话，那么在显示 transferee 时，应该暂停列表页当前图片的加载。详见 [GlideNoThumActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/glide/GlideNoThumActivity.java)
-- 使用 Universal-Image-Loader 作为 transferee 的图片加载器时，且只有原图的场景下，如果您的项目中也是使用的 Universal-Image-Loader 去加载图片，那么 transferee 中将无法显示出当前图片的百分比加载进度，只能使用 ProgressBarIndicator 作为 transferee 的进度指示器。详见 [UniversalNoThumActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/universal/UniversalNoThumActivity.java)
-- 缩略图的 ScaleType 需要设置为 centerCrop (这个有点废话了...)
 
 如有任何问题可以提 Issues
 
@@ -22,7 +13,6 @@ transferee 支持两种模式：
 <img src="preview/transferee_2.gif" />
 <img src="preview/transferee_3.gif" />
 
-# Usage
 
 ### Dependency
 Step 1. Add the JitPack repository to your build file
@@ -46,55 +36,42 @@ dependencies {
 }
 ```
 
-图片加载器暂时只支持 glide 与 universal-image-loader。根据你的需要选择一个添加依赖即可
 
-### Demo
+# Usage
 
 step 1: 一个页面只创建一个 transferee 示例 (建议写在 onCreate 方法中)
 ```
 transferee = Transferee.getDefault(context);
 ```
 
-setp 2: 在需要显示 transferee 的位置为 transferee 创建参数配置器，并 show 出 transferee
+setp 2: 为 transferee 创建参数配置器，一般配置固定不变的参数
 ```
 TransferConfig config = TransferConfig.build()
-    .setNowThumbnailIndex(position)
-    .setSourceImageList(sourceImageList)
-    .setThumbnailImageList(thumbnailImageList)
-    .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-    .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-    .setOriginImageList(wrapOriginImageViewList(thumbnailImageList.size()))
-    .setProgressIndicator(new ProgressPieIndicator())
-    .setIndexIndicator(new NumberIndexIndicator())
-    .setJustLoadHitImage(true)
-    .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
-    .create();
+       .setSourceImageList(sourceImageList)
+       .setThumbnailImageList(thumbnailImageList)
+       .setMissPlaceHolder(R.mipmap.ic_empty_photo)
+       .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
+       .setProgressIndicator(new ProgressPieIndicator())
+       .setIndexIndicator(new NumberIndexIndicator())
+       .setJustLoadHitImage(true)
+       .setListView(gvImages)
+       .setImageId(R.id.image_view)
+       .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
+           @Override
+           public void onLongClick(ImageView imageView, int pos) {
+               saveImage(imageView);
+           }
+       })
+       .create();
+```
 
+setp 3: 显示 transferee
+```
 transferee.apply(config).show();
-```
-
-setp 3: 在 Activity 关闭的时候，销毁 transferee (建议写在 onDestroy 方法中)
-```
- transferee.destroy();
 ```
 
 全部示例代码可以参考 [TransfereeDemo](https://github.com/Hitomis/transferee/tree/master/app/src/main/java/com/hitomi/transferimage/activity)
 
-
-<img src="preview/demo.png" height="500" width= "320"/>
-
-针对很多朋友询问我 setOriginImageList 方法的传值问题，这里给出统一解释：
-这个 originImageList 集合中是你页面中<b style="color:'red'">可见</b>缩略图 ImageView 的集合.
-
-我们拿微信朋友圈举个栗子：
-
-上图中图组一（6张图片）和图组二（3张图片）在 Android 中实现方式经常用一个 RecyclerView 或者 GridView 来展示，当我们需要使用
-tranferee 查看图组一那么传递 originImageList 值时，originImageList 集合中就应该有图组一中的6个缩略图 ImageView，你当前点
-击图组一中的 n 号图片，那么 nowThumbnailIndex 属性值为 n-1 ;
-
-学过 Java 的人都知道 这里应该满足 nowThumbnailIndex <= originImageList.siez() - 1 && nowThumbnailIndex >=0
-
-图组一和图组二相互独立，没有任何关系。所以在使用 tranferee 查看图组二的时候，传值不会与图组一有任何关系！
 
 # Config
 | 属性 | 说明 |
@@ -113,8 +90,10 @@ tranferee 查看图组一那么传递 originImageList 值时，originImageList �
 | sourceImageList | 原图路径集合 |
 | progressIndicat | 图片加载进度指示器 (默认内置 ProgressPieIndicator 和 ProgressBarIndicator)。可实现 IProgressIndicator 接口定义自己的图片加载进度指示器 |
 | indexIndicator | 图片索引指示器 (默认内置 CircleIndexIndicator 和 NumberIndexIndicator)。可实现 IIndexIndicator 接口定义自己的图片索引指示器 |
-| imageLoader | 图片加载器 (默认内置 GlideImageLoader 和 UniversalImageLoader)。可实现 ImageLoader 接口定义自己的图片加载器 |
-| longClickListener | transferee 长按监听器 |
+| imageLoader | 图片加载器 (默认 UniversalImageLoader )。可实现 ImageLoader 接口定义自己的图片加载器 |
+| imageId | RecyclerView 或者 ListView 的 ItemView 中的 ImageView id|
+| listView | 如果你是使用的 ListView 或者 GridView 来排列显示图片，那么需要将你的 ListView 或者 GridView 绑定到 listView 参数 |
+| recyclerView | 如果你使用的 RecyclerView 来排列显示图片，需要将 RecyclerView 绑定到 recyclerView 参数 |
 
 # Method
 | 方法 | 说明 |
@@ -126,7 +105,6 @@ tranferee 查看图组一那么传递 originImageList 值时，originImageList �
 | isShown() | transferee 是否显示 |
 | dismiss() | 关闭 transferee |
 | clear(imageLoader) | 清除 ImageLoader 中加载的缓存 |
-| destroy() | 销毁 transferee |
 | setOnTransfereeStateChangeListener(listener) | 设置 transferee 显示/关闭状态改变的监听器 |
 
 # Update log
@@ -142,6 +120,12 @@ tranferee 查看图组一那么传递 originImageList 值时，originImageList �
   
 + v1.1.0
   - 修复 transferee 单例为普通实例，解决多个界面公用 transferee 单例时的异常问题
+
++ v2.0.0
+  - 针对之前版本的使用复杂考虑，添加了直接绑定 ListView，GridView，RecyclerView 即可使用，不再需要人肉传入 originImageList
+  - 针对各大厂家的图片加载器，实在是没有精力一一兼容，并且由于 transferee 需要判断图片是否已经加载过这一 api，而不是每个厂家的图片加载都有这一 api，所以现在默认使用 niversalUImageLoader 作为 transferee 内置图片加载器
+  - 修复有超出屏幕外图片情境下 transferee 崩溃的情景
+  - 修复 Issues 中各位同学反馈的bug
 
 # Todo
 + [x] 支持高清大图和长图浏览

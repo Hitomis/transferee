@@ -4,7 +4,7 @@ transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功
 transferee 支持两种模式：
 
 1. 只有原图，就是说九宫格列表中的图片和全屏显示的大图其实来源于一张图片。详见 [NoThumActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/NoThumActivity.java)
-2. 既有原图，又有缩略图，例如我司使用了阿里云的图片裁剪功能提供了缩略图来源，在列表页使用阿里云裁剪后的缩略图，优化列表数据流量和流畅度，同时又能在详情页或者图片查看器中显示大图。详见[NormalImageActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/NormalImageActivity.java)
+2. 既有原图，又有缩略图，例如我司使用了阿里云的图片裁剪功能提供了缩略图来源，在列表页使用阿里云裁剪后的缩略图，优化列表数据流量和流畅度，同时又能在详情页或者图片查看器中显示大图。详见 [NormalImageActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/NormalImageActivity.java)
 
 如有任何问题可以提 Issues
 

@@ -398,6 +398,12 @@ public class TransferImage extends PhotoView {
 
         valueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
+            public void onAnimationStart(Animator animation) {
+                if (transformListener != null)
+                    transformListener.onTransferStart(state, cate, stage);
+            }
+
+            @Override
             public void onAnimationEnd(Animator animation) {
                 if (stage == STAGE_TRANSLATE) {
                     originalLocationX = (int) transform.endRect.left;
@@ -447,6 +453,12 @@ public class TransferImage extends PhotoView {
         });
         valueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
+            public void onAnimationStart(Animator animation) {
+                if (transformListener != null)
+                    transformListener.onTransferStart(state, cate, stage);
+            }
+
+            @Override
             public void onAnimationEnd(Animator animation) {
                 if (transformListener != null)
                     transformListener.onTransferComplete(state, cate, stage);
@@ -473,6 +485,14 @@ public class TransferImage extends PhotoView {
     }
 
     public interface OnTransferListener {
+
+        /**
+         * @param state {@link #STATE_TRANS_IN} {@link #STATE_TRANS_OUT}
+         * @param cate  {@link #CATE_ANIMA_TOGETHER} {@link #CATE_ANIMA_APART}
+         * @param stage {@link #STAGE_TRANSLATE} {@link #STAGE_SCALE}
+         */
+        void onTransferStart(int state, int cate, int stage);
+
         /**
          * @param state {@link #STATE_TRANS_IN} {@link #STATE_TRANS_OUT}
          * @param cate  {@link #CATE_ANIMA_TOGETHER} {@link #CATE_ANIMA_APART}

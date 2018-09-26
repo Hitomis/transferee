@@ -23,19 +23,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.universal.UniversalNormalActivity"
+            android:name=".activity.NormalImageActivity"
             android:label="UniversalLoader 测试(有缩略图)"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.universal.UniversalNoThumActivity"
+            android:name=".activity.NoThumActivity"
             android:label="UniversalLoader 测试(没缩略图)"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.universal.UniversalLocalActivity"
+            android:name=".activity.LocalImageActivity"
             android:label="UniversalLoader 测试(本地图片)"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.universal.RecyclerViewActivity"
+            android:name=".activity.RecyclerViewActivity"
             android:label="UniversalLoader 测试(recyclerview)"
             android:screenOrientation="portrait" />
     </application>

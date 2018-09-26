@@ -45,5 +45,13 @@
         android:layout_height="wrap_content"
         android:text="clear cache" />
 
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop" />
+
 
 </LinearLayout>

@@ -26,8 +26,7 @@ class EmptyThumState extends TransferState {
 
     @Override
     public void prepareTransfer(final TransferImage transImage, final int position) {
-        transImage.setImageDrawable
-                (clipAndGetPlachHolder(transImage, position));
+        transImage.setImageDrawable(clipAndGetPlachHolder(transImage, position));
     }
 
     @Override
@@ -54,7 +53,7 @@ class EmptyThumState extends TransferState {
         if (config.isJustLoadHitImage()) {
             // 如果用户设置了 JustLoadHitImage 属性，说明在 prepareTransfer 中已经
             // 对 TransferImage 裁剪过了， 所以只需要获取 Drawable 作为占位图即可
-            placeHolder = getPlacHolder(position);
+            placeHolder = getPlaceHolder(position);
         } else {
             placeHolder = clipAndGetPlachHolder(targetImage, position);
         }
@@ -124,7 +123,7 @@ class EmptyThumState extends TransferState {
      * @param position 图片索引
      * @return 占位图
      */
-    private Drawable getPlacHolder(int position) {
+    private Drawable getPlaceHolder(int position) {
         Drawable placeHolder;
 
         TransferConfig config = transfer.getTransConfig();
@@ -148,7 +147,7 @@ class EmptyThumState extends TransferState {
     private Drawable clipAndGetPlachHolder(TransferImage targetImage, int position) {
         TransferConfig config = transfer.getTransConfig();
 
-        Drawable placeHolder = getPlacHolder(position);
+        Drawable placeHolder = getPlaceHolder(position);
         int[] clipSize = new int[2];
         ImageView originImage = config.getOriginImageList().get(position);
         if (originImage != null) {

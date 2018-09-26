@@ -79,6 +79,12 @@ class TransferLayout extends FrameLayout {
      */
     private TransferImage.OnTransferListener transListener = new TransferImage.OnTransferListener() {
         @Override
+        public void onTransferStart(int state, int cate, int stage) {
+            if (state == TransferImage.STATE_TRANS_OUT)
+                setBackgroundColor(0);
+        }
+
+        @Override
         public void onTransferComplete(int state, int cate, int stage) {
             if (cate == TransferImage.CATE_ANIMA_TOGETHER) {
                 switch (state) {
@@ -86,9 +92,11 @@ class TransferLayout extends FrameLayout {
                         addIndexIndicator();
                         transViewPager.setVisibility(View.VISIBLE);
                         removeFromParent(transImage);
+                        setBackgroundColor(transConfig.getBackgroundColor());
                         break;
                     case TransferImage.STATE_TRANS_OUT: // 缩小动画执行完毕
                         resetTransfer();
+                        setBackgroundColor(0);
                         break;
                 }
             } else { // 如果动画是分离的
@@ -99,12 +107,14 @@ class TransferLayout extends FrameLayout {
                             addIndexIndicator();
                             transViewPager.setVisibility(View.VISIBLE);
                             removeFromParent(transImage);
+                            setBackgroundColor(transConfig.getBackgroundColor());
                         }
                         break;
                     case TransferImage.STATE_TRANS_OUT:
                         if (stage == TransferImage.STAGE_TRANSLATE) {
                             // 位移动画执行完毕
                             resetTransfer();
+                            setBackgroundColor(0);
                         }
                         break;
                 }
@@ -328,6 +338,11 @@ class TransferLayout extends FrameLayout {
             }
         });
         valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                setBackgroundColor(0);
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 resetTransfer();

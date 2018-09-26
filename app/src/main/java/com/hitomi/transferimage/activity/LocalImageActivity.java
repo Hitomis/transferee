@@ -1,10 +1,9 @@
-package com.hitomi.transferimage.activity.universal;
+package com.hitomi.transferimage.activity;
 
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -18,11 +17,7 @@ import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.transferimage.R;
-import com.hitomi.transferimage.activity.BaseActivity;
-import com.hitomi.tilibrary.loader.UniversalImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -33,7 +28,7 @@ import java.util.List;
  * Created by hitomi on 2017/6/14.
  */
 
-public class UniversalLocalActivity extends BaseActivity {
+public class LocalImageActivity extends BaseActivity {
     private List<String> images;
 
     @Override
@@ -56,7 +51,7 @@ public class UniversalLocalActivity extends BaseActivity {
             images = getLatestPhotoPaths(9);
             if (images != null && !images.isEmpty()) {
                 initTransfereeConfig();
-                gvImages.setAdapter(new UniversalLocalActivity.NineGridAdapter());
+                gvImages.setAdapter(new LocalImageActivity.NineGridAdapter());
             }
         }
     }
@@ -70,9 +65,7 @@ public class UniversalLocalActivity extends BaseActivity {
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setJustLoadHitImage(true)
-                .setListView(gvImages)
-                .setImageId(R.id.image_view)
-                .create();
+                .bindListView(gvImages, R.id.image_view);
     }
 
     @Override
@@ -81,7 +74,7 @@ public class UniversalLocalActivity extends BaseActivity {
             images = getLatestPhotoPaths(9);
             if (images != null && !images.isEmpty()) {
                 initTransfereeConfig();
-                gvImages.setAdapter(new UniversalLocalActivity.NineGridAdapter());
+                gvImages.setAdapter(new LocalImageActivity.NineGridAdapter());
             }
         } else {
             Toast.makeText(this, "请允许获取相册图片文件访问权限", Toast.LENGTH_SHORT).show();
@@ -132,46 +125,21 @@ public class UniversalLocalActivity extends BaseActivity {
         return latestImagePaths;
     }
 
-    private void bindTransferee(ImageView imageView, final int position) {
-        // 如果指定了缩略图，那么缩略图一定要先加载完毕
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                config.setNowThumbnailIndex(position);
-                transferee.apply(config).show();
-            }
-        });
-    }
-
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
-            super(UniversalLocalActivity.this, R.layout.item_image, images);
+            super(LocalImageActivity.this, R.layout.item_image, images);
         }
 
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             final ImageView imageView = viewHolder.getView(R.id.image_view);
-            ImageLoader.getInstance().displayImage(item, imageView, options, new ImageLoadingListener() {
+            ImageLoader.getInstance().displayImage(item, imageView, options);
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                    imageView.setOnClickListener(null);
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    imageView.setOnClickListener(null);
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    bindTransferee(imageView, position);
-
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-                    imageView.setOnClickListener(null);
+                public void onClick(View v) {
+                    config.setNowThumbnailIndex(position);
+                    transferee.apply(config).show();
                 }
             });
         }

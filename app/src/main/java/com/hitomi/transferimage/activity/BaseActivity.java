@@ -38,8 +38,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected TransferConfig config;
 
     protected GridView gvImages;
-    protected List<String> thumbnailImageList;
-    protected List<String> sourceImageList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

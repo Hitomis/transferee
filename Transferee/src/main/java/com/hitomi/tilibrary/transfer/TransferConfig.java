@@ -1,12 +1,14 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IdRes;
 import android.support.v7.widget.RecyclerView;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 
+import com.hitomi.tilibrary.R;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.style.IProgressIndicator;
@@ -42,6 +44,7 @@ public final class TransferConfig {
     private ImageLoader imageLoader;
 
     private @IdRes int imageId;
+    private ImageView imageView;
     private AbsListView listView;
     private RecyclerView recyclerView;
 
@@ -84,7 +87,7 @@ public final class TransferConfig {
     }
 
     public int getBackgroundColor() {
-        return backgroundColor;
+        return backgroundColor == 0 ? Color.BLACK: backgroundColor;
     }
 
     public void setBackgroundColor(int backgroundColor) {
@@ -108,9 +111,12 @@ public final class TransferConfig {
     }
 
     public Drawable getMissDrawable(Context context) {
-        if (missDrawable == null && missPlaceHolder != 0)
+        if (missDrawable != null)
+            return missDrawable;
+        else if (missPlaceHolder != 0)
             return context.getResources().getDrawable(missPlaceHolder);
-        return missDrawable;
+        else
+            return context.getResources().getDrawable(R.drawable.ic_empty_photo);
     }
 
     public void setMissDrawable(Drawable missDrawable) {
@@ -118,9 +124,12 @@ public final class TransferConfig {
     }
 
     public Drawable getErrorDrawable(Context context) {
-        if (errorDrawable == null && errorPlaceHolder != 0)
+        if (errorDrawable != null)
+            return errorDrawable;
+        else if (errorPlaceHolder != 0)
             return context.getResources().getDrawable(errorPlaceHolder);
-        return errorDrawable;
+        else
+            return context.getResources().getDrawable(R.drawable.ic_empty_photo);
     }
 
     public void setErrorDrawable(Drawable errorDrawable) {
@@ -209,6 +218,14 @@ public final class TransferConfig {
         this.imageId = imageId;
     }
 
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public void setImageView(ImageView imageView) {
+        this.imageView = imageView;
+    }
+
     public AbsListView getListView() {
         return listView;
     }
@@ -245,6 +262,7 @@ public final class TransferConfig {
         private ImageLoader imageLoader;
 
         private @IdRes int imageId;
+        private ImageView imageView;
         private AbsListView listView;
         private RecyclerView recyclerView;
 
@@ -377,22 +395,35 @@ public final class TransferConfig {
             return this;
         }
 
-        public Builder setImageId(int imageId) {
-            this.imageId = imageId;
-            return this;
-        }
-
-        public Builder setListView(AbsListView listView) {
+        public TransferConfig bindListView(AbsListView listView, int imageId) {
             this.listView = listView;
-            return this;
+            this.imageId = imageId;
+            return create();
         }
 
-        public Builder setRecyclerView(RecyclerView recyclerView) {
+        public TransferConfig bindRecyclerView(RecyclerView recyclerView, int imageId) {
             this.recyclerView = recyclerView;
-            return this;
+            this.imageId = imageId;
+            return create();
         }
 
-        public TransferConfig create() {
+        public TransferConfig bindImageView(ImageView imageView, String thumbnailUrl, String sourceUrl) {
+            this.imageView = imageView;
+            this.thumbnailImageList = new ArrayList<>();
+            thumbnailImageList.add(thumbnailUrl);
+            this.sourceImageList = new ArrayList<>();
+            sourceImageList.add(sourceUrl);
+            return create();
+        }
+
+        public TransferConfig bindImageView(ImageView imageView, String sourceUrl) {
+            this.imageView = imageView;
+            this.sourceImageList = new ArrayList<>();
+            sourceImageList.add(sourceUrl);
+            return create();
+        }
+
+        private TransferConfig create() {
             TransferConfig config = new TransferConfig();
 
             config.setNowThumbnailIndex(nowThumbnailIndex);
@@ -414,6 +445,7 @@ public final class TransferConfig {
             config.setImageLoader(imageLoader);
 
             config.setImageId(imageId);
+            config.setImageView(imageView);
             config.setListView(listView);
             config.setRecyclerView(recyclerView);
 

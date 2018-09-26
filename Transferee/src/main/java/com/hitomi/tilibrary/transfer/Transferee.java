@@ -1,5 +1,6 @@
 package com.hitomi.tilibrary.transfer;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -125,6 +126,8 @@ public class Transferee implements DialogInterface.OnShowListener,
             fillByRecyclerView(originImageList);
         } else if (transConfig.getListView() != null) {
             fillByListView(originImageList);
+        } else if(transConfig.getImageView() != null) {
+            originImageList.add(transConfig.getImageView());
         }
         transConfig.setOriginImageList(originImageList);
     }

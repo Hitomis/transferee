@@ -108,9 +108,8 @@ class LocalThumState extends TransferState {
         TransferConfig config = transfer.getTransConfig();
         List<ImageView> originImageList = config.getOriginImageList();
 
-        if (originImageList.get(position) != null) {
-            transImage = createTransferImage(
-                    originImageList.get(position));
+        if (position <= originImageList.size() - 1 && originImageList.get(position) != null) {
+            transImage = createTransferImage(originImageList.get(position));
             transformThumbnail(config.getSourceImageList().get(position), transImage, false);
 
             transfer.addView(transImage, 1);

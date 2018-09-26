@@ -407,6 +407,19 @@ public final class TransferConfig {
             return create();
         }
 
+        public TransferConfig bindImageView(ImageView imageView, List<String> sourceImageList) {
+            this.imageView = imageView;
+            this.sourceImageList = sourceImageList;
+            return create();
+        }
+
+        public TransferConfig bindImageView(ImageView imageView, List<String> thumbnailImageList, List<String> sourceImageList) {
+            this.imageView = imageView;
+            this.thumbnailImageList = thumbnailImageList;
+            this.sourceImageList = sourceImageList;
+            return create();
+        }
+
         public TransferConfig bindImageView(ImageView imageView, String thumbnailUrl, String sourceUrl) {
             this.imageView = imageView;
             this.thumbnailImageList = new ArrayList<>();

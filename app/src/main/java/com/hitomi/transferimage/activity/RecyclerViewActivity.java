@@ -36,7 +36,7 @@ public class RecyclerViewActivity extends BaseActivity {
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setJustLoadHitImage(true)
-                .bindRecyclerView(rvImages, R.id.image_view);
+                .bindRecyclerView(rvImages, R.id.iv_thum);
 
         rvImages.setAdapter(new RecyclerViewActivity.NineGridAdapter());
     }
@@ -48,7 +48,7 @@ public class RecyclerViewActivity extends BaseActivity {
 
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
-            final ImageView imageView = viewHolder.getView(R.id.image_view);
+            final ImageView imageView = viewHolder.getView(R.id.iv_thum);
             ImageLoader.getInstance().displayImage(item, imageView, options);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override

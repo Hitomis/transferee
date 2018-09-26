@@ -3,7 +3,6 @@ package com.hitomi.transferimage.activity;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
@@ -23,13 +22,34 @@ public class NormalImageActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        findViewById(R.id.single_layout).setVisibility(View.VISIBLE);
         gvImages = (GridView) findViewById(R.id.gv_images);
+
+        final ImageView thumIv = (ImageView) findViewById(R.id.iv_thum);
+        final ImageView sourceIv = (ImageView) findViewById(R.id.iv_source);
+
+        ImageLoader.getInstance().displayImage(ImageConfig.THUM_URL, thumIv, options);
+        ImageLoader.getInstance().displayImage(ImageConfig.WEB_URL, sourceIv, options);
+
+        thumIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                transferee.apply(TransferConfig.build().bindImageView
+                        (thumIv, ImageConfig.THUM_URL, ImageConfig.SOURCE_URL)).show();
+            }
+        });
+
+        sourceIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                transferee.apply(TransferConfig.build().bindImageView
+                        (sourceIv, ImageConfig.WEB_URL)).show();
+            }
+        });
     }
 
     @Override
     protected void testTransferee() {
-
-
         config = TransferConfig.build()
                 .setThumbnailImageList(ImageConfig.getThumbnailPicUrlList())
                 .setSourceImageList(ImageConfig.getSourcePicUrlList())
@@ -44,16 +64,9 @@ public class NormalImageActivity extends BaseActivity {
                         saveImageByUniversal(imageView);
                     }
                 })
-                .bindListView(gvImages, R.id.image_view);
+                .bindListView(gvImages, R.id.iv_thum);
 
         gvImages.setAdapter(new NormalImageActivity.NineGridAdapter());
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode != WRITE_EXTERNAL_STORAGE) {
-            Toast.makeText(this, "请允许获取相册图片文件写入权限", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private class NineGridAdapter extends CommonAdapter<String> {
@@ -64,7 +77,7 @@ public class NormalImageActivity extends BaseActivity {
 
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
-            final ImageView imageView = viewHolder.getView(R.id.image_view);
+            final ImageView imageView = viewHolder.getView(R.id.iv_thum);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,6 +13,45 @@
         android:horizontalSpacing="5dp"
         android:numColumns="3"
         android:verticalSpacing="5dp" />
+
+    <LinearLayout
+        android:id="@+id/single_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="110dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="单张图片预览「有缩略图」：" />
+
+        <ImageView
+            android:id="@+id/iv_thum"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:scaleType="centerCrop" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="单张图片预览「无缩略图」：" />
+
+        <ImageView
+            android:id="@+id/iv_source"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:scaleType="centerCrop" />
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
 

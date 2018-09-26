@@ -39,7 +39,7 @@ public class NoThumActivity extends BaseActivity {
                         saveImageByUniversal(imageView);
                     }
                 })
-                .bindListView(gvImages, R.id.image_view);
+                .bindListView(gvImages, R.id.iv_thum);
 
         gvImages.setAdapter(new NoThumActivity.NineGridAdapter());
     }
@@ -59,7 +59,7 @@ public class NoThumActivity extends BaseActivity {
 
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
-            ImageView imageView = viewHolder.getView(R.id.image_view);
+            ImageView imageView = viewHolder.getView(R.id.iv_thum);
             ImageLoader.getInstance().displayImage(item, imageView, options);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override

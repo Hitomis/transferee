@@ -31,11 +31,9 @@ import static android.widget.ImageView.ScaleType.FIT_CENTER;
 abstract class TransferState {
 
     protected TransferLayout transfer;
-    protected Context context;
 
     TransferState(TransferLayout transfer) {
         this.transfer = transfer;
-        this.context = transfer.getContext();
     }
 
     /**
@@ -62,7 +60,7 @@ abstract class TransferState {
             Object object = c.newInstance();
             Field field = c.getField("status_bar_height");
             int x = (Integer) field.get(object);
-            return context.getResources().getDimensionPixelSize(x);
+            return transfer.getContext().getResources().getDimensionPixelSize(x);
         } catch (Exception e) {
             return 0;
         }
@@ -91,7 +89,7 @@ abstract class TransferState {
         TransferConfig config = transfer.getTransConfig();
         int[] location = getViewLocation(originImage);
 
-        TransferImage transImage = new TransferImage(context);
+        TransferImage transImage = new TransferImage(transfer.getContext());
         transImage.setScaleType(FIT_CENTER);
         transImage.setOriginalInfo(location[0], getTransImageLocalY(location[1]),
                 originImage.getWidth(), originImage.getHeight());
@@ -118,9 +116,9 @@ abstract class TransferState {
         if (this instanceof RemoteThumState) { // RemoteThumState
 
             if (imageLoader.isLoaded(imageUrl)) { // 缩略图已加载过
-                loadThunbnail(imageUrl, transImage, in);
+                loadThumbnail(imageUrl, transImage, in);
             } else { // 缩略图 未加载过，则使用用户配置的缺省占位图
-                transImage.setImageDrawable(config.getMissDrawable(context));
+                transImage.setImageDrawable(config.getMissDrawable(transfer.getContext()));
                 if (in)
                     transImage.transformIn();
                 else
@@ -128,7 +126,7 @@ abstract class TransferState {
             }
 
         } else { // LocalThumState
-            loadThunbnail(imageUrl, transImage, in);
+            loadThumbnail(imageUrl, transImage, in);
         }
     }
 
@@ -139,12 +137,12 @@ abstract class TransferState {
      * @param transImage
      * @param in         true: 表示从缩略图到 Transferee, false: 从 Transferee 到缩略图
      */
-    private void loadThunbnail(String imageUrl, final TransferImage transImage, final boolean in) {
+    private void loadThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
         final TransferConfig config = transfer.getTransConfig();
         ImageLoader imageLoader = config.getImageLoader();
         Drawable drawable = imageLoader.loadImageSync(imageUrl);
         if (drawable == null)
-            transImage.setImageDrawable(config.getMissDrawable(context));
+            transImage.setImageDrawable(config.getMissDrawable(transfer.getContext()));
         else
             transImage.setImageDrawable(drawable);
 

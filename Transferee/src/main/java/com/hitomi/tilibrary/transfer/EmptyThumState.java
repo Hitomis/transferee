@@ -89,7 +89,7 @@ class EmptyThumState extends TransferState {
                                 transfer.bindOnOperationListener(targetImage, position);
                                 break;
                             case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                                targetImage.setImageDrawable(config.getErrorDrawable(context));
+                                targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
                                 break;
                         }
                     }
@@ -131,7 +131,7 @@ class EmptyThumState extends TransferState {
         if (originImage != null) {
             placeHolder = originImage.getDrawable();
         } else {
-            placeHolder = config.getMissDrawable(context);
+            placeHolder = config.getMissDrawable(transfer.getContext());
         }
 
         return placeHolder;
@@ -167,7 +167,7 @@ class EmptyThumState extends TransferState {
      * @param clipSize       裁剪的尺寸数组
      */
     private void clipTargetImage(TransferImage targetImage, Drawable originDrawable, int[] clipSize) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = transfer.getContext().getResources().getDisplayMetrics();
         int width = displayMetrics.widthPixels;
         int height = getTransImageLocalY(displayMetrics.heightPixels);
 

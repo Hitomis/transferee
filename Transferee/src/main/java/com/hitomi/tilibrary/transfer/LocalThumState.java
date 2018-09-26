@@ -27,7 +27,7 @@ class LocalThumState extends TransferState {
         final TransferConfig config = transfer.getTransConfig();
         ImageLoader imageLoader = config.getImageLoader();
         String imgUrl = config.getSourceImageList().get(position);
-        imageLoader.showImage(imgUrl, transImage, config.getMissDrawable(context), null);
+        imageLoader.showImage(imgUrl, transImage, config.getMissDrawable(transfer.getContext()), null);
     }
 
     @Override
@@ -57,7 +57,7 @@ class LocalThumState extends TransferState {
                 @Override
                 public void onFinish(Drawable drawable) {
                     if (drawable == null)
-                        drawable = config.getMissDrawable(context);
+                        drawable = config.getMissDrawable(transfer.getContext());
 
                     loadSourceImage(imgUrl, targetImage, drawable, position);
                 }
@@ -94,7 +94,7 @@ class LocalThumState extends TransferState {
                         transfer.bindOnOperationListener(targetImage, position);
                         break;
                     case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                        targetImage.setImageDrawable(config.getErrorDrawable(context));
+                        targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
                         break;
                 }
             }

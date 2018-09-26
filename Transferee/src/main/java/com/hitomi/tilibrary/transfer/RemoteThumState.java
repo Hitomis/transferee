@@ -31,9 +31,10 @@ class RemoteThumState extends TransferState {
         String imgUrl = config.getThumbnailImageList().get(position);
 
         if (imageLoader.isLoaded(imgUrl)) {
-            imageLoader.showImage(imgUrl, transImage, config.getMissDrawable(context), null);
+            imageLoader.showImage(imgUrl, transImage,
+                    config.getMissDrawable(transfer.getContext()), null);
         } else {
-            transImage.setImageDrawable(config.getMissDrawable(context));
+            transImage.setImageDrawable(config.getMissDrawable(transfer.getContext()));
         }
     }
 
@@ -72,13 +73,14 @@ class RemoteThumState extends TransferState {
                     @Override
                     public void onFinish(Drawable drawable) {
                         if (drawable == null)
-                            drawable = config.getMissDrawable(context);
+                            drawable = config.getMissDrawable(transfer.getContext());
 
                         loadSourceImage(drawable, position, targetImage, progressIndicator);
                     }
                 });
             } else {
-                loadSourceImage(config.getMissDrawable(context), position, targetImage, progressIndicator);
+                loadSourceImage(config.getMissDrawable(transfer.getContext()),
+                        position, targetImage, progressIndicator);
             }
         }
     }
@@ -114,7 +116,7 @@ class RemoteThumState extends TransferState {
                                 transfer.bindOnOperationListener(targetImage, position);
                                 break;
                             case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                                targetImage.setImageDrawable(config.getErrorDrawable(context));
+                                targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
                                 break;
                         }
                     }

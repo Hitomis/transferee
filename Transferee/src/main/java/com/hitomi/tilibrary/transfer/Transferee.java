@@ -98,7 +98,7 @@ public class Transferee implements DialogInterface.OnShowListener,
      */
     private void checkConfig() {
         if (transConfig.isSourceEmpty())
-            throw new IllegalArgumentException("the parameter sourceImageList can't be empty");
+            throw new IllegalArgumentException("The parameter sourceImageList can't be empty");
 
         transConfig.setNowThumbnailIndex(transConfig.getNowThumbnailIndex() < 0
                 ? 0 : transConfig.getNowThumbnailIndex());

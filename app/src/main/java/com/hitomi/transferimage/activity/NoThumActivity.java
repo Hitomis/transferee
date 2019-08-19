@@ -23,7 +23,7 @@ public class NoThumActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        gvImages = (GridView) findViewById(R.id.gv_images);
+        gvImages = findViewById(R.id.gv_images);
     }
 
     @Override

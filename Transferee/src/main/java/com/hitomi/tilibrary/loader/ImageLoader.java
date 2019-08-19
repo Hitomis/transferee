@@ -4,6 +4,8 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.UiThread;
 import android.widget.ImageView;
 
+import java.io.File;
+
 /**
  * 图片加载器接口，实现 ImageLoader 可扩展自己的图片加载器
  * Created by hitomi on 2017/1/20.
@@ -56,6 +58,8 @@ public interface ImageLoader {
      * @return true: 已加载, false: 未加载
      */
     boolean isLoaded(String url);
+
+    File save(String url);
 
     /**
      * 清除 ImageLoader 缓存

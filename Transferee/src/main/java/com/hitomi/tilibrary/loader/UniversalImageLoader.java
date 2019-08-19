@@ -162,4 +162,9 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
         ImageLoader.getInstance().getMemoryCache().clear();
         ImageLoader.getInstance().getDiskCache().clear();
     }
+
+    @Override
+    public File save(String url) {
+        return ImageLoader.getInstance().getDiskCache().get(url);
+    }
 }

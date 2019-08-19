@@ -23,10 +23,10 @@ public class NormalImageActivity extends BaseActivity {
     @Override
     protected void initView() {
         findViewById(R.id.single_layout).setVisibility(View.VISIBLE);
-        gvImages = (GridView) findViewById(R.id.gv_images);
+        gvImages = findViewById(R.id.gv_images);
 
-        final ImageView thumIv = (ImageView) findViewById(R.id.iv_thum);
-        final ImageView sourceIv = (ImageView) findViewById(R.id.iv_source);
+        final ImageView thumIv = findViewById(R.id.iv_thum);
+        final ImageView sourceIv = findViewById(R.id.iv_source);
 
         ImageLoader.getInstance().displayImage(ImageConfig.THUM_URL, thumIv, options);
         ImageLoader.getInstance().displayImage(ImageConfig.WEB_URL, sourceIv, options);

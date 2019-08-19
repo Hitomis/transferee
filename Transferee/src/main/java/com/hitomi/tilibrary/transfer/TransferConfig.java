@@ -136,7 +136,7 @@ public final class TransferConfig {
         this.errorDrawable = errorDrawable;
     }
 
-    public List<ImageView> getOriginImageList() {
+    List<ImageView> getOriginImageList() {
         return originImageList == null ? new ArrayList<ImageView>() : originImageList;
     }
 

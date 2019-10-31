@@ -316,7 +316,7 @@ class TransferLayout extends FrameLayout {
     private void diffusionTransfer(int pos) {
         transImage = transAdapter.getImageItem(pos);
         transImage.setState(TransferImage.STATE_TRANS_OUT);
-        transImage.disenable();
+        transImage.disable();
 
         ValueAnimator valueAnimator = new ValueAnimator();
         valueAnimator.setDuration(transConfig.getDuration());

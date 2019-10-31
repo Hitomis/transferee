@@ -27,11 +27,11 @@ public class RotateGestureDetector {
         switch (Action) {
             case MotionEvent.ACTION_POINTER_DOWN:
             case MotionEvent.ACTION_POINTER_UP:
-                if (event.getPointerCount() == 2) mPrevSlope = caculateSlope(event);
+                if (event.getPointerCount() == 2) mPrevSlope = calculateSlope(event);
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (event.getPointerCount() > 1) {
-                    mCurrSlope = caculateSlope(event);
+                    mCurrSlope = calculateSlope(event);
 
                     double currDegrees = Math.toDegrees(Math.atan(mCurrSlope));
                     double prevDegrees = Math.toDegrees(Math.atan(mPrevSlope));
@@ -49,7 +49,7 @@ public class RotateGestureDetector {
         }
     }
 
-    private float caculateSlope(MotionEvent event) {
+    private float calculateSlope(MotionEvent event) {
         x1 = event.getX(0);
         y1 = event.getY(0);
         x2 = event.getX(1);

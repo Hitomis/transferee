@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -19,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.OverScroller;
 import android.widget.Scroller;
 
-public class PhotoView extends ImageView {
+public class PhotoView extends AppCompatImageView {
 
     private final static int MIN_ROTATE = 35;
     private final static int ANIMA_DURING = 340;
@@ -191,7 +192,7 @@ public class PhotoView extends ImageView {
     /**
      * 禁用缩放功能
      */
-    public void disenable() {
+    public void disable() {
         isEnable = false;
     }
 

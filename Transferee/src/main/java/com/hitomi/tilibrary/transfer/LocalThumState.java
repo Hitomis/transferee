@@ -46,7 +46,7 @@ class LocalThumState extends TransferState {
     public void transferLoad(final int position) {
         final TransferConfig config = transfer.getTransConfig();
         final String imgUrl = config.getSourceImageList().get(position);
-        final TransferImage targetImage = transfer.getTransAdapter().getImageItem(position);
+        final TransferImage targetImage = transfer.transAdapter.getImageItem(position);
 
         if (config.isJustLoadHitImage()) {
             // 如果用户设置了 JustLoadHitImage 属性，说明在 prepareTransfer 中已经

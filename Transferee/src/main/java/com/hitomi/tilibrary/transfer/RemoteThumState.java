@@ -52,9 +52,9 @@ class RemoteThumState extends TransferState {
 
     @Override
     public void transferLoad(final int position) {
-        TransferAdapter adapter = transfer.getTransAdapter();
+        TransferAdapter adapter = transfer.transAdapter;
         final TransferConfig config = transfer.getTransConfig();
-        final TransferImage targetImage = transfer.getTransAdapter().getImageItem(position);
+        final TransferImage targetImage = transfer.transAdapter.getImageItem(position);
         final ImageLoader imageLoader = config.getImageLoader();
 
         final IProgressIndicator progressIndicator = config.getProgressIndicator();

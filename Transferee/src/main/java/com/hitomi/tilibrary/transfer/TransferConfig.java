@@ -31,6 +31,7 @@ public final class TransferConfig {
     private int backgroundColor;
     private long duration;
     private boolean justLoadHitImage;
+    private boolean enableDragClose;
 
     private Drawable missDrawable;
     private Drawable errorDrawable;
@@ -108,6 +109,15 @@ public final class TransferConfig {
 
     public void setJustLoadHitImage(boolean justLoadHitImage) {
         this.justLoadHitImage = justLoadHitImage;
+    }
+
+
+    public boolean isEnableDragClose() {
+        return enableDragClose;
+    }
+
+    public void enableDragClose(boolean enableDragClose) {
+        this.enableDragClose = enableDragClose;
     }
 
     public Drawable getMissDrawable(Context context) {
@@ -250,6 +260,7 @@ public final class TransferConfig {
         private int backgroundColor;
         private long duration;
         private boolean justLoadHitImage;
+        private boolean enableDragClose = true;
 
         private Drawable missDrawable;
         private Drawable errorDrawable;
@@ -325,6 +336,14 @@ public final class TransferConfig {
          */
         public Builder setJustLoadHitImage(boolean justLoadHitImage) {
             this.justLoadHitImage = justLoadHitImage;
+            return this;
+        }
+
+        /**
+         * 是否可以拖拽关闭
+         */
+        public Builder enableDragClose(boolean enableDragClose) {
+            this.enableDragClose = enableDragClose;
             return this;
         }
 
@@ -446,6 +465,7 @@ public final class TransferConfig {
             config.setBackgroundColor(backgroundColor);
             config.setDuration(duration);
             config.setJustLoadHitImage(justLoadHitImage);
+            config.enableDragClose(enableDragClose);
 
             config.setMissDrawable(missDrawable);
             config.setErrorDrawable(errorDrawable);

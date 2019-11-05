@@ -1,6 +1,5 @@
 package com.hitomi.tilibrary.transfer;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -95,7 +94,7 @@ abstract class TransferState {
                 originImage.getWidth(), originImage.getHeight());
         transImage.setDuration(config.getDuration());
         transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        transImage.setOnTransferListener(transfer.getTransListener());
+        transImage.setOnTransferListener(transfer.transListener);
 
         return transImage;
     }
@@ -152,7 +151,7 @@ abstract class TransferState {
     }
 
     /**
-     * 当用户使用 {@link TransferConfig#justLoadHitImage} 属
+     * 当用户使用 justLoadHitImage 属
      * 性时，需要使用 prepareTransfer 方法提前让 ViewPager 对应
      * position 处的 TransferImage 剪裁并设置占位图
      *

@@ -32,8 +32,8 @@ public class TransferImage extends PhotoView {
     public static final int STATE_TRANS_NORMAL = 0; // 普通状态
     public static final int STATE_TRANS_IN = 1; // 从缩略图到大图状态
     public static final int STATE_TRANS_OUT = 2; // 从大图到缩略图状态
-    public static final int STATE_TRANS_CLIP = 3; // 裁剪状态
-    public static final int STATE_TRANS_SPEC_OUT = 4; // 从大图到缩略图状态并指定起始大图状态
+    public static final int STATE_TRANS_SPEC_OUT = 3; // 从大图到缩略图状态并指定起始大图状态
+    public static final int STATE_TRANS_CLIP = 4; // 裁剪状态
 
     public static final int CATE_ANIMA_TOGETHER = 100; // 动画类型：位移和缩放同时进行
     public static final int CATE_ANIMA_APART = 200; // 动画类型：位移和缩放分开进行

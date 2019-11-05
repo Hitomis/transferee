@@ -44,7 +44,7 @@ class EmptyThumState extends TransferState {
 
     @Override
     public void transferLoad(final int position) {
-        TransferAdapter adapter = transfer.getTransAdapter();
+        TransferAdapter adapter = transfer.transAdapter;
         final TransferConfig config = transfer.getTransConfig();
         final String imgUrl = config.getSourceImageList().get(position);
         final TransferImage targetImage = adapter.getImageItem(position);
@@ -105,7 +105,7 @@ class EmptyThumState extends TransferState {
 
         if (position <= originImageList.size() - 1 && originImageList.get(position) != null) {
             transImage = createTransferImage(originImageList.get(position));
-            Drawable thumbnailDrawable = transfer.getTransAdapter().getImageItem(
+            Drawable thumbnailDrawable = transfer.transAdapter.getImageItem(
                     config.getNowThumbnailIndex()).getDrawable();
             transImage.setImageDrawable(thumbnailDrawable);
             transImage.transformOut(TransferImage.STAGE_TRANSLATE);

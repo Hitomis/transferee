@@ -4,7 +4,18 @@ transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功
 transferee 支持两种模式：
 
 1. 只有原图，就是说九宫格列表中的图片和全屏显示的大图其实来源于一张图片。详见 [NoThumActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/NoThumActivity.java)
-2. 既有原图，又有缩略图，例如我司使用了阿里云的图片裁剪功能提供了缩略图来源，在列表页使用阿里云裁剪后的缩略图，优化列表数据流量和流畅度，同时又能在详情页或者图片查看器中显示大图。详见 [NormalImageActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/NormalImageActivity.java)
+2. 既有原图，又有缩略图，例如使用了阿里云的图片裁剪功能提供了缩略图来源，在列表页使用阿里云裁剪后的缩略图，优化列表数据流量和流畅度，同时又能在详情页或者图片查看器中显示大图。详见 [NormalImageActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/NormalImageActivity.java)
+
+支持的功能:
+
++ 缩略图到大图或者大图到缩略图的无缝过渡动画
++ 无缩略图信息时，自动改变动画的行为为平移过渡->加载大图->伸展图片动画
++ 傻瓜式绑定 RecyclerView / ListView / GridView / ImageView
++ 支持长图预览
++ 支持自定义图片加载器
++ 支持自定义图片索引指示器
++ 支持自定义图片加载进度条
++ 支持拖拽关闭
 
 如有任何问题可以提 Issues
 
@@ -62,6 +73,7 @@ transferee.apply(config).show();
 | backgroundColor | transferee 显示时，图片后的背景色 |
 | duration | transferee 播放过渡动画的动画时长 |
 | justLoadHitImage | 是否只加载当前显示在屏幕中的的原图。如果设置为 true，那么只有当 transferee 切换到当前页面时，才会触发当前页面原图的加载动作，否则按 offscreenPageLimit 所设置的数值去做预加载和当前页面的加载动作 |
+| enableDragClose | 是否支持向下拖拽关闭 |
 | thumbnailImageList | 缩略图路径集合 |
 | sourceImageList | 原图路径集合 |
 | progressIndicat | 图片加载进度指示器 (默认内置 ProgressPieIndicator 和 ProgressBarIndicator)。可实现 IProgressIndicator 接口定义自己的图片加载进度指示器 |

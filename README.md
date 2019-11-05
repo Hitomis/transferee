@@ -9,9 +9,7 @@ transferee 支持两种模式：
 如有任何问题可以提 Issues
 
 # Preview
-<img src="preview/transferee_1.gif" />
-<img src="preview/transferee_2.gif" />
-<img src="preview/transferee_3.gif" />
+<img src="preview/transferee_1.gif" /> <img src="preview/transferee_2.gif" />
 
 
 # Dependency

@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -32,6 +33,7 @@ public class TransferImage extends PhotoView {
     public static final int STATE_TRANS_IN = 1; // 从缩略图到大图状态
     public static final int STATE_TRANS_OUT = 2; // 从大图到缩略图状态
     public static final int STATE_TRANS_CLIP = 3; // 裁剪状态
+    public static final int STATE_TRANS_SPEC_OUT = 4; // 从大图到缩略图状态并指定起始大图状态
 
     public static final int CATE_ANIMA_TOGETHER = 100; // 动画类型：位移和缩放同时进行
     public static final int CATE_ANIMA_APART = 200; // 动画类型：位移和缩放分开进行
@@ -53,6 +55,9 @@ public class TransferImage extends PhotoView {
     private Paint paint;
     private Matrix transMatrix;
 
+    private RectF specSizeF;
+    private float specScale;
+
     private Transfrom transform;
     private OnTransferListener transformListener;
 
@@ -72,6 +77,7 @@ public class TransferImage extends PhotoView {
     private void init() {
         transMatrix = new Matrix();
         paint = new Paint();
+        paint.setAlpha(0);
     }
 
     /**
@@ -111,7 +117,7 @@ public class TransferImage extends PhotoView {
 
         float xSScale = originWidth / ((float) targetDrawable.getIntrinsicWidth());
         float ySScale = originHeight / ((float) targetDrawable.getIntrinsicHeight());
-        float endScale = xSScale > ySScale ? xSScale : ySScale;
+        float endScale = Math.max(xSScale, ySScale);
 
         float drawableEndWidth = targetDrawable.getIntrinsicWidth() * endScale;
         float drawableEndHeight = targetDrawable.getIntrinsicHeight() * endScale;
@@ -140,7 +146,6 @@ public class TransferImage extends PhotoView {
         state = STATE_TRANS_IN;
         transformStart = true;
 
-        paint.setAlpha(0);
         invalidate();
     }
 
@@ -154,11 +159,6 @@ public class TransferImage extends PhotoView {
         state = STATE_TRANS_IN;
         stage = animaStage;
         transformStart = true;
-
-        if (stage == STAGE_TRANSLATE)
-            paint.setAlpha(0);
-        else
-            paint.setAlpha(255);
         invalidate();
     }
 
@@ -169,8 +169,16 @@ public class TransferImage extends PhotoView {
         cate = CATE_ANIMA_TOGETHER;
         state = STATE_TRANS_OUT;
         transformStart = true;
+        invalidate();
+    }
 
-        paint.setAlpha(255);
+    public void transformSpecOut(RectF specSizeF, float scale) {
+        cate = CATE_ANIMA_TOGETHER;
+        state = STATE_TRANS_SPEC_OUT;
+        transformStart = true;
+
+        this.specSizeF = specSizeF;
+        this.specScale = scale;
         invalidate();
     }
 
@@ -184,8 +192,6 @@ public class TransferImage extends PhotoView {
         state = STATE_TRANS_OUT;
         stage = animaStage;
         transformStart = true;
-
-        paint.setAlpha(255);
         invalidate();
     }
 
@@ -226,12 +232,31 @@ public class TransferImage extends PhotoView {
     }
 
     /**
-     * 为 TransferImage 视图设置背景颜色
+     * 获取图片转变完全体之后的实际宽度
      *
-     * @param color the new color (including alpha) to set in the paint.
+     * @return 完全体宽度
      */
-    public void setBackgroundColor(int color) {
-        paint.setColor(color);
+    public float getDeformedWidth() {
+        Drawable transDrawable = getDrawable();
+        if (transDrawable == null) return 0;
+
+        float xEScale = getWidth() / ((float) transDrawable.getIntrinsicWidth());
+        float yEScale = getHeight() / ((float) transDrawable.getIntrinsicHeight());
+        return transDrawable.getIntrinsicWidth() * Math.min(xEScale, yEScale);
+    }
+
+    /**
+     * 获取图片转变完全体之后的实际高度
+     *
+     * @return 完全体高度
+     */
+    public float getDeformedHeight() {
+        Drawable transDrawable = getDrawable();
+        if (transDrawable == null) return 0;
+
+        float xEScale = getWidth() / ((float) transDrawable.getIntrinsicWidth());
+        float yEScale = getHeight() / ((float) transDrawable.getIntrinsicHeight());
+        return transDrawable.getIntrinsicHeight() * Math.min(xEScale, yEScale);
     }
 
     /**
@@ -244,23 +269,24 @@ public class TransferImage extends PhotoView {
 
         transform = new Transfrom();
 
-        /** 下面为缩放的计算 */
+        /* 下面为缩放的计算 */
         /* 计算初始的缩放值，初始值因为是CENTR_CROP效果，所以要保证图片的宽和高至少1个能匹配原始的宽和高，另1个大于 */
         float xSScale = originalWidth / ((float) transDrawable.getIntrinsicWidth());
         float ySScale = originalHeight / ((float) transDrawable.getIntrinsicHeight());
-        float startScale = xSScale > ySScale ? xSScale : ySScale;
+        float startScale = Math.max(xSScale, ySScale);
         transform.startScale = startScale;
         /* 计算结束时候的缩放值，结束值因为要达到FIT_CENTER效果，所以要保证图片的宽和高至少1个能匹配原始的宽和高，另1个小于 */
         float xEScale = getWidth() / ((float) transDrawable.getIntrinsicWidth());
         float yEScale = getHeight() / ((float) transDrawable.getIntrinsicHeight());
-        float endScale = xEScale < yEScale ? xEScale : yEScale;
+        float endScale = Math.min(xEScale, yEScale);
+        endScale = state == STATE_TRANS_SPEC_OUT ? endScale * specScale : endScale;
         if (cate == CATE_ANIMA_APART && stage == STAGE_TRANSLATE) { // 平移阶段的动画，不缩放
             transform.endScale = startScale;
         } else {
             transform.endScale = endScale;
         }
 
-        /**
+        /*
          * 计算Canvas Clip的范围，也就是图片的显示的范围，因为图片是慢慢变大，并且是等比例的，所以这个效果还需要裁减图片显示的区域
          * ，而显示区域的变化范围是在原始CENTER_CROP效果的范围区域
          * ，到最终的FIT_CENTER的范围之间的，区域我用LocationSizeF更好计算
@@ -276,10 +302,16 @@ public class TransferImage extends PhotoView {
         transform.endRect = new LocationSizeF();
         float bitmapEndWidth = transDrawable.getIntrinsicWidth() * transform.endScale;// 图片最终的宽度
         float bitmapEndHeight = transDrawable.getIntrinsicHeight() * transform.endScale;// 图片最终的高度
-        transform.endRect.left = (getWidth() - bitmapEndWidth) / 2;
-        transform.endRect.top = (getHeight() - bitmapEndHeight) / 2;
+        if (state == STATE_TRANS_SPEC_OUT) {
+            transform.endRect.left = specSizeF.left;
+            transform.endRect.top = specSizeF.top;
+        } else {
+            transform.endRect.left = (getWidth() - bitmapEndWidth) / 2;
+            transform.endRect.top = (getHeight() - bitmapEndHeight) / 2;
+        }
         transform.endRect.width = bitmapEndWidth;
         transform.endRect.height = bitmapEndHeight;
+
 
         transform.rect = new LocationSizeF();
     }
@@ -288,7 +320,7 @@ public class TransferImage extends PhotoView {
         Drawable transDrawable = getDrawable();
         if (transDrawable == null || transform == null) return;
 
-		/* 下面实现了CENTER_CROP的功能 */
+        /* 下面实现了CENTER_CROP的功能 */
         transMatrix.setScale(transform.scale, transform.scale);
         transMatrix.postTranslate(-(transform.scale * transDrawable.getIntrinsicWidth() / 2 - transform.rect.width / 2),
                 -(transform.scale * transDrawable.getIntrinsicHeight() / 2 - transform.rect.height / 2));
@@ -313,10 +345,10 @@ public class TransferImage extends PhotoView {
                         transform.initStartIn();
                         break;
                     case STATE_TRANS_OUT:
+                    case STATE_TRANS_SPEC_OUT:
                         transform.initStartOut();
                         break;
                     case STATE_TRANS_CLIP:
-                        paint.setAlpha(255);
                         transform.initStartClip();
                         break;
                 }
@@ -346,7 +378,6 @@ public class TransferImage extends PhotoView {
                 }
             }
         } else {
-            paint.setAlpha(255);
             canvas.drawPaint(paint);
             super.onDraw(canvas);
         }
@@ -368,7 +399,8 @@ public class TransferImage extends PhotoView {
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public synchronized void onAnimationUpdate(ValueAnimator animation) {
-                    paint.setAlpha((int) (255 * animation.getAnimatedFraction()));
+                    if (transformListener != null)
+                        transformListener.onTransferUpdate(state, animation.getAnimatedFraction());
                     transform.rect.left = (Float) animation.getAnimatedValue("left");
                     transform.rect.top = (Float) animation.getAnimatedValue("top");
                     transform.rect.width = (Float) animation.getAnimatedValue("width");
@@ -442,7 +474,8 @@ public class TransferImage extends PhotoView {
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public synchronized void onAnimationUpdate(ValueAnimator animation) {
-                paint.setAlpha((int) (255 * animation.getAnimatedFraction()));
+                if (transformListener != null)
+                    transformListener.onTransferUpdate(state, animation.getAnimatedFraction());
                 transform.scale = (Float) animation.getAnimatedValue("scale");
                 transform.rect.left = (Float) animation.getAnimatedValue("left");
                 transform.rect.top = (Float) animation.getAnimatedValue("top");
@@ -465,8 +498,8 @@ public class TransferImage extends PhotoView {
 
                 /*
                  * 如果是进入的话，当然是希望最后停留在center_crop的区域。但是如果是out的话，就不应该是center_crop的位置了
-				 * ， 而应该是最后变化的位置，因为当out的时候结束时，不回复视图是Normal，要不然会有一个突然闪动回去的bug
-				 */
+                 * ， 而应该是最后变化的位置，因为当out的时候结束时，不回复视图是Normal，要不然会有一个突然闪动回去的bug
+                 */
                 if (state == STATE_TRANS_IN)
                     TransferImage.this.state = STATE_TRANS_NORMAL;
 
@@ -492,6 +525,8 @@ public class TransferImage extends PhotoView {
          * @param stage {@link #STAGE_TRANSLATE} {@link #STAGE_SCALE}
          */
         void onTransferStart(int state, int cate, int stage);
+
+        void onTransferUpdate(int state, float fraction);
 
         /**
          * @param state {@link #STATE_TRANS_IN} {@link #STATE_TRANS_OUT}

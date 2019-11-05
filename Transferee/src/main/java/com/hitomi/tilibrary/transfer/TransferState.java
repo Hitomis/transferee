@@ -93,7 +93,6 @@ abstract class TransferState {
         transImage.setScaleType(FIT_CENTER);
         transImage.setOriginalInfo(location[0], getTransImageLocalY(location[1]),
                 originImage.getWidth(), originImage.getHeight());
-        transImage.setBackgroundColor(config.getBackgroundColor());
         transImage.setDuration(config.getDuration());
         transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         transImage.setOnTransferListener(transfer.getTransListener());

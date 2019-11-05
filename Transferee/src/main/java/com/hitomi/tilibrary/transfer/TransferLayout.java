@@ -2,10 +2,17 @@ package com.hitomi.tilibrary.transfer;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.RectF;
+import android.os.Build;
 import android.support.v4.view.ViewPager;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -15,10 +22,12 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.widget.ImageView.ScaleType.FIT_CENTER;
 
 /**
  * Transferee 中 Dialog 显示的内容
@@ -39,6 +48,22 @@ class TransferLayout extends FrameLayout {
 
     private OnLayoutResetListener layoutResetListener;
     private Set<Integer> loadedIndexSet;
+
+    private VelocityTracker velocityTracker;
+    private float alpha;
+    private float scale;
+
+    /**
+     * 构造方法
+     *
+     * @param context 上下文环境
+     */
+    TransferLayout(Context context) {
+        super(context);
+
+        this.context = context;
+        this.loadedIndexSet = new HashSet<>();
+    }
 
     /**
      * ViewPager 页面切换监听器 => 当页面切换时，根据相邻优先加载的规则去加载图片
@@ -80,8 +105,12 @@ class TransferLayout extends FrameLayout {
     private TransferImage.OnTransferListener transListener = new TransferImage.OnTransferListener() {
         @Override
         public void onTransferStart(int state, int cate, int stage) {
-            if (state == TransferImage.STATE_TRANS_OUT)
-                setBackgroundColor(0);
+        }
+
+        @Override
+        public void onTransferUpdate(int state, float fraction) {
+            float stateAlpha = state == TransferImage.STATE_TRANS_SPEC_OUT ? alpha : 255;
+            setBackgroundColor(getBackgroundColorByAlpha(stateAlpha * fraction));
         }
 
         @Override
@@ -92,11 +121,10 @@ class TransferLayout extends FrameLayout {
                         addIndexIndicator();
                         transViewPager.setVisibility(View.VISIBLE);
                         removeFromParent(transImage);
-                        setBackgroundColor(transConfig.getBackgroundColor());
                         break;
                     case TransferImage.STATE_TRANS_OUT: // 缩小动画执行完毕
+                    case TransferImage.STATE_TRANS_SPEC_OUT:
                         resetTransfer();
-                        setBackgroundColor(0);
                         break;
                 }
             } else { // 如果动画是分离的
@@ -107,14 +135,12 @@ class TransferLayout extends FrameLayout {
                             addIndexIndicator();
                             transViewPager.setVisibility(View.VISIBLE);
                             removeFromParent(transImage);
-                            setBackgroundColor(transConfig.getBackgroundColor());
                         }
                         break;
                     case TransferImage.STATE_TRANS_OUT:
                         if (stage == TransferImage.STAGE_TRANSLATE) {
                             // 位移动画执行完毕
                             resetTransfer();
-                            setBackgroundColor(0);
                         }
                         break;
                 }
@@ -122,16 +148,162 @@ class TransferLayout extends FrameLayout {
         }
     };
 
-    /**
-     * 构造方法
-     *
-     * @param context 上下文环境
-     */
-    TransferLayout(Context context) {
-        super(context);
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getPointerCount() == 1) {
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    preX = ev.getRawX();
+                    preY = ev.getRawY();
+                    if (null == velocityTracker) {
+                        velocityTracker = VelocityTracker.obtain();
+                    } else {
+                        velocityTracker.clear();
+                    }
+                    velocityTracker.addMovement(ev);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float diffY = ev.getRawY() - preY;
+                    float diffX = Math.abs(ev.getRawX() - preX);
+                    if (diffX < 10 && diffY > 3 && !getCurrentImage().isPhotoChanged()) {
+                        return true;
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    preY = 0;
+                    break;
+            }
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
 
-        this.context = context;
-        this.loadedIndexSet = new HashSet<>();
+    private float preX;
+    private float preY;
+
+    /**
+     * 获取带透明度的颜色值
+     * @param alpha [1, 255]
+     * @return color int value
+     */
+    private int getBackgroundColorByAlpha(float alpha) {
+        int bgColor = transConfig.getBackgroundColor();
+        return Color.argb(Math.round(alpha), Color.red(bgColor), Color.green(bgColor), Color.blue(bgColor));
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                preX = event.getRawX();
+                preY = event.getRawY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                velocityTracker.addMovement(event);
+                float diffX = event.getRawX() - preX;
+                float diffY = event.getRawY() - preY;
+                scale = 1 - Math.abs(diffY) / getHeight() * .75f;
+                alpha = 255 - Math.abs(diffY) * 1.68f / getHeight() * 255;
+                alpha = alpha < 0 ? 0 : alpha;
+
+                if (transViewPager.getTranslationY() >= 0) {
+                    setBackgroundColor(getBackgroundColorByAlpha(alpha));
+                    transViewPager.setTranslationX(diffX);
+                    transViewPager.setTranslationY(diffY);
+                    transViewPager.setScaleX(scale);
+                    transViewPager.setScaleY(scale);
+                } else {
+                    setBackgroundColor(transConfig.getBackgroundColor());
+                    transViewPager.setTranslationX(diffX);
+                    transViewPager.setTranslationY(diffY);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                velocityTracker.addMovement(event);
+                velocityTracker.computeCurrentVelocity(1000);
+                float velocityY = velocityTracker.getYVelocity();
+                System.out.println("velocityY ===>" + velocityY);
+                if (velocityY >= 0) {
+                    transViewPager.setVisibility(View.INVISIBLE);
+                    int pos = transConfig.getNowThumbnailIndex();
+                    ImageView originImage = transConfig.getOriginImageList().get(pos);
+                    if (originImage == null) { // 走扩散消失动画
+
+                    } else { // 走过渡动画
+                        int[] location = new int[2];
+                        originImage.getLocationInWindow(location);
+
+
+                        int x = location[0];
+                        int y = Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ? location[1] : location[1] - getStatusBarHeight();
+                        int width = originImage.getWidth();
+                        int height = originImage.getHeight();
+
+
+                        TransferImage transImage = new TransferImage(context);
+                        transImage.setScaleType(FIT_CENTER);
+                        transImage.setOriginalInfo(x, y, width, height);
+                        transImage.setDuration(300);
+                        transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+                        transImage.setOnTransferListener(transListener);
+                        transImage.setImageDrawable(transAdapter.getImageItem(pos).getDrawable());
+
+
+                        float realWidth = getCurrentImage().getDeformedWidth() * scale;
+                        float realHeight = getCurrentImage().getDeformedHeight() * scale;
+                        float left = transViewPager.getTranslationX() + (getWidth() - realWidth) * .5f;
+                        float top = transViewPager.getTranslationY() + (getHeight() - realHeight) * .5f;
+                        RectF rectF = new RectF(left, top, realWidth, realHeight);
+                        transImage.transformSpecOut(rectF, scale);
+                        addView(transImage, 1);
+                    }
+                } else {
+                    startFlingAndRollbackAnimation();
+                }
+
+                preX = 0;
+                preY = 0;
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                if (null != velocityTracker) {
+                    velocityTracker.recycle();
+                    velocityTracker = null;
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private int getStatusBarHeight() {
+        try {
+            Class<?> c = Class.forName("com.android.internal.R$dimen");
+            Object object = c.newInstance();
+            Field field = c.getField("status_bar_height");
+            int x = (Integer) field.get(object);
+            return context.getResources().getDimensionPixelSize(x);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private void startFlingAndRollbackAnimation() {
+        ValueAnimator bgColor = ObjectAnimator.ofFloat(null, "alpha", alpha, 255.f);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(transViewPager, "scaleX", transViewPager.getScaleX(), 1.0f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(transViewPager, "scaleY", transViewPager.getScaleX(), 1.0f);
+        ObjectAnimator transX = ObjectAnimator.ofFloat(transViewPager, "translationX", transViewPager.getTranslationX(), 0);
+        ObjectAnimator transY = ObjectAnimator.ofFloat(transViewPager, "translationY", transViewPager.getTranslationY(), 0);
+
+        bgColor.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = Float.parseFloat(animation.getAnimatedValue().toString());
+                setBackgroundColor(getBackgroundColorByAlpha(value));
+            }
+        });
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(bgColor, scaleX, scaleY, transX, transY);
+        animatorSet.start();
+
     }
 
     /**
@@ -220,6 +392,10 @@ class TransferLayout extends FrameLayout {
 
     public TransferConfig getTransConfig() {
         return transConfig;
+    }
+
+    public TransferImage getCurrentImage() {
+        return transAdapter.getImageItem(transViewPager.getCurrentItem());
     }
 
     public TransferImage.OnTransferListener getTransListener() {
@@ -322,8 +498,8 @@ class TransferLayout extends FrameLayout {
         valueAnimator.setDuration(transConfig.getDuration());
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
 
-        PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofFloat("alpha", 1, 0);
-        PropertyValuesHolder scaleXHolder = PropertyValuesHolder.ofFloat("scaleX", 1, 1.2f);
+        PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofFloat("alpha", 1.f, 0.f);
+        PropertyValuesHolder scaleXHolder = PropertyValuesHolder.ofFloat("scaleX", 1.f, 1.2f);
         valueAnimator.setValues(alphaHolder, scaleXHolder);
 
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -332,17 +508,13 @@ class TransferLayout extends FrameLayout {
                 float alpha = (Float) animation.getAnimatedValue("alpha");
                 float scale = (Float) animation.getAnimatedValue("scaleX");
 
+                setBackgroundColor(getBackgroundColorByAlpha(alpha * 255));
                 transImage.setAlpha(alpha);
                 transImage.setScaleX(scale);
                 transImage.setScaleY(scale);
             }
         });
         valueAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                setBackgroundColor(0);
-            }
-
             @Override
             public void onAnimationEnd(Animator animation) {
                 resetTransfer();

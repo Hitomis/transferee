@@ -197,6 +197,7 @@ public class PhotoView extends AppCompatImageView {
     }
 
     /**
+     *
      */
     public void setMaxAnimFromWaiteTime(int wait) {
         MAX_ANIM_FROM_WAITE = wait;
@@ -1240,6 +1241,10 @@ public class PhotoView extends AppCompatImageView {
 
         position[0] = (int) (position[0] + 0.5f);
         position[1] = (int) (position[1] + 0.5f);
+    }
+
+    public boolean isPhotoChanged() {
+        return mDegrees != 0.0f || mScale != 1.0f || getTranslationX() != 0.0f || getTranslationY() != 0.0f;
     }
 
     public void reset() {

@@ -34,16 +34,18 @@ public class NormalImageActivity extends BaseActivity {
         thumIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                transferee.apply(TransferConfig.build().bindImageView
-                        (thumIv, ImageConfig.THUM_URL, ImageConfig.SOURCE_URL)).show();
+                transferee.apply(TransferConfig.build()
+                        .bindImageView(thumIv, ImageConfig.THUM_URL, ImageConfig.SOURCE_URL)
+                ).show();
             }
         });
 
         sourceIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                transferee.apply(TransferConfig.build().bindImageView
-                        (sourceIv, ImageConfig.WEB_URL)).show();
+                transferee.apply(TransferConfig.build()
+                        .bindImageView(sourceIv, ImageConfig.WEB_URL)
+                ).show();
             }
         });
     }

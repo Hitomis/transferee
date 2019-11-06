@@ -55,7 +55,6 @@ public class LocalImageActivity extends BaseActivity {
     private void initTransfereeConfig() {
         config = TransferConfig.build()
                 .setSourceImageList(images)
-                .setThumbnailImageList(images)
                 .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                 .setProgressIndicator(new ProgressBarIndicator())

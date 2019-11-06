@@ -53,7 +53,6 @@ public class NormalImageActivity extends BaseActivity {
     @Override
     protected void testTransferee() {
         config = TransferConfig.build()
-                .setThumbnailImageList(ImageConfig.getThumbnailPicUrlList())
                 .setSourceImageList(ImageConfig.getSourcePicUrlList())
                 .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)

@@ -31,7 +31,6 @@ public class RecyclerViewActivity extends BaseActivity {
     @Override
     protected void testTransferee() {
         config = TransferConfig.build()
-                .setThumbnailImageList(ImageConfig.getThumbnailPicUrlList())
                 .setSourceImageList(ImageConfig.getSourcePicUrlList())
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())

@@ -46,8 +46,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .Builder()
                 .showImageOnLoading(R.mipmap.ic_empty_photo)
                 .bitmapConfig(Bitmap.Config.RGB_565)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
                 .resetViewBeforeLoading(true)
                 .build();
         transferee = Transferee.getDefault(this);

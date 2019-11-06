@@ -371,13 +371,13 @@ public final class TransferConfig {
             return this;
         }
 
-        /**
-         * 缩略图地址集合
-         */
-        public Builder setThumbnailImageList(List<String> thumbnailImageList) {
-            this.thumbnailImageList = thumbnailImageList;
-            return this;
-        }
+//        /**
+//         * 缩略图地址集合
+//         */
+//        public Builder setThumbnailImageList(List<String> thumbnailImageList) {
+//            this.thumbnailImageList = thumbnailImageList;
+//            return this;
+//        }
 
         /**
          * 加载高清图的进度条 (默认内置 ProgressPieIndicator), 可自实现
@@ -471,7 +471,7 @@ public final class TransferConfig {
             config.setErrorDrawable(errorDrawable);
 
             config.setSourceImageList(sourceImageList);
-            config.setThumbnailImageList(thumbnailImageList);
+//            config.setThumbnailImageList(thumbnailImageList);
 
             config.setProgressIndicator(progressIndicator);
             config.setIndexIndicator(indexIndicator);

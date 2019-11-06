@@ -4,17 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.cache.memory.MemoryCache;
-import com.nostra13.universalimageloader.cache.memory.impl.LRULimitedMemoryCache;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
@@ -50,7 +49,6 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
         normalImageOptions = new DisplayImageOptions
                 .Builder()
                 .bitmapConfig(Bitmap.Config.RGB_565)
-                .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .resetViewBeforeLoading(true)
                 .build();
@@ -70,13 +68,13 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     }
 
     @Override
-    public void showImage(String imageUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
+    public void showImage(String imageUrl, final ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
         DisplayImageOptions options = new DisplayImageOptions
                 .Builder()
                 .showImageOnLoading(placeholder)
                 .showImageOnFail(placeholder)
                 .bitmapConfig(Bitmap.Config.RGB_565)
-                .cacheInMemory(true)
+                .imageScaleType(ImageScaleType.NONE)
                 .cacheOnDisk(true)
                 .resetViewBeforeLoading(true)
                 .build();

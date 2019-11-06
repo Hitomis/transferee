@@ -11,6 +11,7 @@ transferee 支持两种模式：
 + 缩略图到大图或者大图到缩略图的无缝过渡动画
 + 无缩略图信息时，自动改变动画的行为为平移过渡->加载大图->伸展图片动画
 + 傻瓜式绑定 RecyclerView / ListView / GridView / ImageView
++ 支持预览图片缩放，拖动，旋转等手势操作
 + 支持长图预览
 + 支持自定义图片加载器
 + 支持自定义图片索引指示器
@@ -126,10 +127,8 @@ transferee.apply(config).show();
   - 简化 demo 代码
 
 # Todo
-+ [x] 支持高清大图和长图浏览
-+ [x] 支持扩展图片保存、收藏等相关操作
-+ [x] 优化 TransferConfig 的参数配置。将固定不变的配置项从每次的参数对象创建中分离开来
-+ [x] 优化单个图片使用 transferee 的场景
++ [x] 支持图片拖拽关闭
++ [ ] 支持 gif 图片 
 
 # Licence
     Copyright 2017 Hitomis, Inc.

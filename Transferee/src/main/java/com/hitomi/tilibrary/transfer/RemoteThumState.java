@@ -52,18 +52,14 @@ class RemoteThumState extends TransferState {
 
     @Override
     public void transferLoad(final int position) {
-        TransferAdapter adapter = transfer.transAdapter;
         final TransferConfig config = transfer.getTransConfig();
         final TransferImage targetImage = transfer.transAdapter.getImageItem(position);
         final ImageLoader imageLoader = config.getImageLoader();
 
-        final IProgressIndicator progressIndicator = config.getProgressIndicator();
-        progressIndicator.attach(position, adapter.getParentItem(position));
-
         if (config.isJustLoadHitImage()) {
             // 如果用户设置了 JustLoadHitImage 属性，说明在 prepareTransfer 中已经
             // 对 TransferImage 裁剪且设置了占位图， 所以这里直接加载原图即可
-            loadSourceImage(targetImage.getDrawable(), position, targetImage, progressIndicator);
+            loadSourceImage(targetImage.getDrawable(), position, targetImage);
         } else {
             String thumUrl = config.getThumbnailImageList().get(position);
 
@@ -75,52 +71,54 @@ class RemoteThumState extends TransferState {
                         if (drawable == null)
                             drawable = config.getMissDrawable(transfer.getContext());
 
-                        loadSourceImage(drawable, position, targetImage, progressIndicator);
+                        loadSourceImage(drawable, position, targetImage);
                     }
                 });
             } else {
                 loadSourceImage(config.getMissDrawable(transfer.getContext()),
-                        position, targetImage, progressIndicator);
+                        position, targetImage);
             }
         }
     }
 
-    private void loadSourceImage(Drawable drawable, final int position, final TransferImage targetImage, final IProgressIndicator progressIndicator) {
+    private void loadSourceImage(Drawable drawable, final int position, final TransferImage targetImage) {
         final TransferConfig config = transfer.getTransConfig();
+        final ImageLoader imageLoader = config.getImageLoader();
+        final String sourceUrl = config.getSourceImageList().get(position);
+        final IProgressIndicator progressIndicator = config.getProgressIndicator();
+        progressIndicator.attach(position, transfer.transAdapter.getParentItem(position));
+        imageLoader.showImage(sourceUrl, targetImage, drawable, new ImageLoader.SourceCallback() {
 
-        config.getImageLoader().showImage(config.getSourceImageList().get(position),
-                targetImage, drawable, new ImageLoader.SourceCallback() {
+            @Override
+            public void onStart() {
+                progressIndicator.onStart(position);
+            }
 
-                    @Override
-                    public void onStart() {
-                        progressIndicator.onStart(position);
-                    }
+            @Override
+            public void onProgress(int progress) {
+                progressIndicator.onProgress(position, progress);
+            }
 
-                    @Override
-                    public void onProgress(int progress) {
-                        progressIndicator.onProgress(position, progress);
-                    }
+            @Override
+            public void onFinish() {
+            }
 
-                    @Override
-                    public void onFinish() {
-                    }
-
-                    @Override
-                    public void onDelivered(int status) {
-                        switch (status) {
-                            case ImageLoader.STATUS_DISPLAY_SUCCESS:
-                                progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
-                                // 启用 TransferImage 的手势缩放功能
-                                targetImage.enable();
-                                // 绑定点击关闭 Transferee
-                                transfer.bindOnOperationListener(targetImage, position);
-                                break;
-                            case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                                targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
-                                break;
-                        }
-                    }
-                });
+            @Override
+            public void onDelivered(int status) {
+                switch (status) {
+                    case ImageLoader.STATUS_DISPLAY_SUCCESS:
+                        progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
+                        // 启用 TransferImage 的手势缩放功能
+                        targetImage.enable();
+                        // 绑定点击关闭 Transferee
+                        transfer.bindOnOperationListener(targetImage, position);
+                        break;
+                    case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
+                        targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
+                        break;
+                }
+            }
+        });
     }
 
     @Override

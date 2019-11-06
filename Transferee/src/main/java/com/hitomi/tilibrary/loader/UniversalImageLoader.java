@@ -43,13 +43,9 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     }
 
     private void initImageLoader(Context context) {
-        int memoryCacheSize = (int) (Runtime.getRuntime().maxMemory() / 5);
+        int memoryCacheSize = (int) (Runtime.getRuntime().maxMemory() / 3);
         MemoryCache memoryCache;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            memoryCache = new LruMemoryCache(memoryCacheSize);
-        } else {
-            memoryCache = new LRULimitedMemoryCache(memoryCacheSize);
-        }
+        memoryCache = new LruMemoryCache(memoryCacheSize);
 
         normalImageOptions = new DisplayImageOptions
                 .Builder()

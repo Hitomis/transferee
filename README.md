@@ -1,11 +1,6 @@
 # Transferee
 transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功能体系仿照并涵盖 ios 版本的 QQ、微信朋友圈、新浪微博的图片浏览功能。
 
-transferee 支持两种模式：
-
-1. 只有原图，就是说九宫格列表中的图片和全屏显示的大图其实来源于一张图片。详见 [NoThumActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/NoThumActivity.java)
-2. 既有原图，又有缩略图，例如使用了阿里云的图片裁剪功能提供了缩略图来源，在列表页使用阿里云裁剪后的缩略图，优化列表数据流量和流畅度，同时又能在详情页或者图片查看器中显示大图。详见 [NormalImageActivity](https://github.com/Hitomis/transferee/blob/master/app/src/main/java/com/hitomi/transferimage/activity/NormalImageActivity.java)
-
 支持的功能:
 
 + 缩略图到大图或者大图到缩略图的无缝过渡动画
@@ -37,13 +32,13 @@ transferee = Transferee.getDefault(context);
 setp 2: 为 transferee 创建参数配置器，一般配置固定不变的参数
 ```
 TransferConfig config = TransferConfig.build()
-       .setThumbnailImageList(ImageConfig.getThumbnailPicUrlList())
-       .setSourceImageList(ImageConfig.getSourcePicUrlList())
-       .setMissPlaceHolder(R.mipmap.ic_empty_photo)
-       .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-       .setProgressIndicator(new ProgressPieIndicator())
-       .setIndexIndicator(new NumberIndexIndicator())
-       .setJustLoadHitImage(true)
+       .setSourceImageList(ImageConfig.getSourcePicUrlList()) // 图片url集合
+       .setMissPlaceHolder(R.mipmap.ic_empty_photo) // 图片加载前的占位图
+       .setErrorPlaceHolder(R.mipmap.ic_empty_photo) // 图片加载错误后的占位图
+       .setProgressIndicator(new ProgressPieIndicator()) // 图片加载进度指示器
+       .setIndexIndicator(new NumberIndexIndicator()) // 图片数量索引只是青
+       .setJustLoadHitImage(true) // 是否只加载当前显示在屏幕中的的图片
+       .enableDragClose(true) // 开启拖拽关闭
        .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
            @Override
            public void onLongClick(ImageView imageView, int pos) {
@@ -75,7 +70,6 @@ transferee.apply(config).show();
 | duration | transferee 播放过渡动画的动画时长 |
 | justLoadHitImage | 是否只加载当前显示在屏幕中的的原图。如果设置为 true，那么只有当 transferee 切换到当前页面时，才会触发当前页面原图的加载动作，否则按 offscreenPageLimit 所设置的数值去做预加载和当前页面的加载动作 |
 | enableDragClose | 是否支持向下拖拽关闭 |
-| thumbnailImageList | 缩略图路径集合 |
 | sourceImageList | 原图路径集合 |
 | progressIndicat | 图片加载进度指示器 (默认内置 ProgressPieIndicator 和 ProgressBarIndicator)。可实现 IProgressIndicator 接口定义自己的图片加载进度指示器 |
 | indexIndicator | 图片索引指示器 (默认内置 CircleIndexIndicator 和 NumberIndexIndicator)。可实现 IIndexIndicator 接口定义自己的图片索引指示器 |

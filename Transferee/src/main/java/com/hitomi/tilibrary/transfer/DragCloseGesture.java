@@ -54,7 +54,8 @@ class DragCloseGesture {
                 case MotionEvent.ACTION_MOVE:
                     float diffY = ev.getRawY() - preY;
                     float diffX = Math.abs(ev.getRawX() - preX);
-                    if (diffX < touchSlop && diffY > touchSlop && !transferLayout.getCurrentImage().isPhotoChanged()) {
+                    TransferImage currentImage = transferLayout.getCurrentImage();
+                    if (diffX < touchSlop && diffY > touchSlop && currentImage.isScrollTop()) {
                         return true;
                     }
                     break;
@@ -110,35 +111,7 @@ class DragCloseGesture {
                     if (originImage == null) { // 走扩散消失动画
                         transferLayout.diffusionTransfer(pos);
                     } else { // 走过渡动画
-                        ViewPager transViewPagerUp = transferLayout.transViewPager;
-                        transViewPagerUp.setVisibility(View.INVISIBLE);
-                        int[] location = new int[2];
-                        originImage.getLocationInWindow(location);
-
-
-                        int x = location[0];
-                        int y = Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ? location[1] : location[1] - getStatusBarHeight();
-                        int width = originImage.getWidth();
-                        int height = originImage.getHeight();
-
-
-                        TransferImage transImage = new TransferImage(transferLayout.getContext());
-                        transImage.setScaleType(FIT_CENTER);
-                        transImage.setOriginalInfo(x, y, width, height);
-                        transImage.setDuration(300);
-                        transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-                        transImage.setOnTransferListener(transferLayout.transListener);
-                        transImage.setImageDrawable(transferLayout.transAdapter.getImageItem(pos).getDrawable());
-
-
-                        TransferImage currTransImage = transferLayout.getCurrentImage();
-                        float realWidth = currTransImage.getDeformedWidth() * scale;
-                        float realHeight = currTransImage.getDeformedHeight() * scale;
-                        float left = transViewPagerUp.getTranslationX() + (transferLayout.getWidth() - realWidth) * .5f;
-                        float top = transViewPagerUp.getTranslationY() + (transferLayout.getHeight() - realHeight) * .5f;
-                        RectF rectF = new RectF(left, top, realWidth, realHeight);
-                        transImage.transformSpecOut(rectF, scale);
-                        transferLayout.addView(transImage, 1);
+                        startTransformAnima(pos, originImage);
                     }
                 } else {
                     startFlingAndRollbackAnimation();
@@ -154,6 +127,38 @@ class DragCloseGesture {
                 }
                 break;
         }
+    }
+
+    private void startTransformAnima(int pos, ImageView originImage) {
+        ViewPager transViewPagerUp = transferLayout.transViewPager;
+        transViewPagerUp.setVisibility(View.INVISIBLE);
+        int[] location = new int[2];
+        originImage.getLocationInWindow(location);
+
+
+        int x = location[0];
+        int y = Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ? location[1] : location[1] - getStatusBarHeight();
+        int width = originImage.getWidth();
+        int height = originImage.getHeight();
+
+
+        TransferImage transImage = new TransferImage(transferLayout.getContext());
+        transImage.setScaleType(FIT_CENTER);
+        transImage.setOriginalInfo(x, y, width, height);
+        transImage.setDuration(300);
+        transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        transImage.setOnTransferListener(transferLayout.transListener);
+        transImage.setImageDrawable(transferLayout.transAdapter.getImageItem(pos).getDrawable());
+
+
+        TransferImage currTransImage = transferLayout.getCurrentImage();
+        float realWidth = currTransImage.getDeformedWidth() * scale;
+        float realHeight = currTransImage.getDeformedHeight() * scale;
+        float left = transViewPagerUp.getTranslationX() + (transferLayout.getWidth() - realWidth) * .5f;
+        float top = transViewPagerUp.getTranslationY() + (transferLayout.getHeight() - realHeight) * .5f;
+        RectF rectF = new RectF(left, top, realWidth, realHeight);
+        transImage.transformSpecOut(rectF, scale);
+        transferLayout.addView(transImage, 1);
     }
 
     private int getStatusBarHeight() {

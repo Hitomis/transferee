@@ -58,7 +58,7 @@ public class TransferImage extends PhotoView {
     private RectF specSizeF;
     private float specScale;
 
-    private Transfrom transform;
+    private Transform transform;
     private OnTransferListener transformListener;
 
     public TransferImage(Context context) {
@@ -267,7 +267,7 @@ public class TransferImage extends PhotoView {
         if (transDrawable == null) return;
         if (getWidth() == 0 || getHeight() == 0) return;
 
-        transform = new Transfrom();
+        transform = new Transform();
 
         /* 下面为缩放的计算 */
         /* 计算初始的缩放值，初始值因为是CENTR_CROP效果，所以要保证图片的宽和高至少1个能匹配原始的宽和高，另1个大于 */
@@ -536,7 +536,7 @@ public class TransferImage extends PhotoView {
         void onTransferComplete(int state, int cate, int stage);
     }
 
-    private class Transfrom {
+    private class Transform {
         float startScale;// 图片开始的缩放值
         float endScale;// 图片结束的缩放值
         float scale;// 属性ValueAnimator计算出来的值

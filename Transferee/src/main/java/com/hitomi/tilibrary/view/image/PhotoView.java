@@ -55,7 +55,7 @@ public class PhotoView extends AppCompatImageView {
     private boolean isInit;
     private boolean mAdjustViewBounds;
     // 当前是否处于放大状态
-    private boolean isZoonUp;
+    private boolean isZoomUp;
     private boolean canRotate;
 
     private boolean imgLargeWidth;
@@ -263,7 +263,7 @@ public class PhotoView extends AppCompatImageView {
         mBaseMatrix.reset();
         mAnimaMatrix.reset();
 
-        isZoonUp = false;
+        isZoomUp = false;
 
         Drawable img = getDrawable();
 
@@ -544,7 +544,7 @@ public class PhotoView extends AppCompatImageView {
         super.onSizeChanged(w, h, oldw, oldh);
 
         mWidgetRect.set(0, 0, w, h);
-        mScreenCenter.set(w / 2, h / 2);
+        mScreenCenter.set(w * .5f, h * .5f);
 
         if (!isKnowSize) {
             isKnowSize = true;
@@ -580,7 +580,7 @@ public class PhotoView extends AppCompatImageView {
     }
 
     private void onUp() {
-        if (mTranslate.isRuning) return;
+        if (mTranslate.isRunning) return;
 
         if (canRotate || mDegrees % 90 != 0) {
             float toDegrees = (int) (mDegrees / 90) * 90;
@@ -693,9 +693,9 @@ public class PhotoView extends AppCompatImageView {
 
             mScale *= scaleFactor;
             if (mScale > 1.0f)
-                isZoonUp = true;
+                isZoomUp = true;
             else
-                isZoonUp = false;
+                isZoomUp = false;
 //            mScaleCenter.set(detector.getFocusX(), detector.getFocusY());
             mAnimaMatrix.postScale(scaleFactor, scaleFactor, detector.getFocusX(), detector.getFocusY());
             executeTranslate();
@@ -773,6 +773,9 @@ public class PhotoView extends AppCompatImageView {
 
         @Override
         public boolean onDown(MotionEvent e) {
+            if (!mTranslate.mFlingScroller.isFinished()) {
+                mTranslate.mFlingScroller.forceFinished(true);
+            }
             hasOverTranslate = false;
             hasMultiTouch = false;
             canRotate = false;
@@ -784,7 +787,7 @@ public class PhotoView extends AppCompatImageView {
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if (hasMultiTouch) return false;
             if (!imgLargeWidth && !imgLargeHeight) return false;
-            if (mTranslate.isRuning) return false;
+            if (mTranslate.isRunning) return false;
 
             float vx = velocityX;
             float vy = velocityY;
@@ -821,7 +824,7 @@ public class PhotoView extends AppCompatImageView {
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            if (mTranslate.isRuning) {
+            if (mTranslate.isRunning) {
                 mTranslate.stop();
             }
 
@@ -895,7 +898,7 @@ public class PhotoView extends AppCompatImageView {
             mTranslateX = 0;
             mTranslateY = 0;
 
-            if (isZoonUp) {
+            if (isZoomUp) {
                 from = mScale;
                 to = 1;
             } else {
@@ -915,7 +918,7 @@ public class PhotoView extends AppCompatImageView {
             mTmpMatrix.mapRect(mTmpRect, mBaseRect);
             doTranslateReset(mTmpRect);
 
-            isZoonUp = !isZoonUp;
+            isZoomUp = !isZoomUp;
             mTranslate.withScale(from, to);
             mTranslate.start();
 
@@ -976,7 +979,7 @@ public class PhotoView extends AppCompatImageView {
 
     private class Transform implements Runnable {
 
-        boolean isRuning;
+        boolean isRunning;
 
         OverScroller mTranslateScroller;
         OverScroller mFlingScroller;
@@ -1061,7 +1064,7 @@ public class PhotoView extends AppCompatImageView {
         }
 
         void start() {
-            isRuning = true;
+            isRunning = true;
             postExecute();
         }
 
@@ -1071,13 +1074,13 @@ public class PhotoView extends AppCompatImageView {
             mScaleScroller.abortAnimation();
             mFlingScroller.abortAnimation();
             mRotateScroller.abortAnimation();
-            isRuning = false;
+            isRunning = false;
         }
 
         @Override
         public void run() {
 
-            // if (!isRuning) return;
+            // if (!isRunning) return;
 
             boolean endAnima = true;
 
@@ -1136,7 +1139,7 @@ public class PhotoView extends AppCompatImageView {
                 applyAnima();
                 postExecute();
             } else {
-                isRuning = false;
+                isRunning = false;
 
                 // 修复动画结束后边距有些空隙，
                 boolean needFix = false;
@@ -1185,7 +1188,7 @@ public class PhotoView extends AppCompatImageView {
 
 
         private void postExecute() {
-            if (isRuning) post(this);
+            if (isRunning) post(this);
         }
     }
 
@@ -1243,8 +1246,12 @@ public class PhotoView extends AppCompatImageView {
         position[1] = (int) (position[1] + 0.5f);
     }
 
-    public boolean isPhotoChanged() {
-        return mDegrees != 0.0f || mScale != 1.0f || getTranslationX() != 0.0f || getTranslationY() != 0.0f;
+    public boolean isPhotoNotChanged() {
+        return mDegrees == 0.f && mScale == 1.f && getTranslationX() == 0.f && getTranslationY() == 0.f;
+    }
+
+    public boolean isScrollTop() {
+        return mImgRect.top >= 0;
     }
 
     public void reset() {

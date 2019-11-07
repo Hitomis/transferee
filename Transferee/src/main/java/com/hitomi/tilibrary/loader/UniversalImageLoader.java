@@ -19,6 +19,8 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 使用 <a href="https://github.com/nostra13/Android-Universal-Image-Loader">
@@ -31,9 +33,11 @@ import java.io.File;
 public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLoader {
     private Context context;
     private DisplayImageOptions normalImageOptions;
+    private Map<String, SourceCallback> callbackMap;
 
     private UniversalImageLoader(Context context) {
         this.context = context;
+        this.callbackMap = new HashMap<>();
         initImageLoader(context);
     }
 
@@ -68,7 +72,8 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     }
 
     @Override
-    public void showImage(String imageUrl, final ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
+    public void showImage(final String imageUrl, final ImageView imageView, final Drawable placeholder, final SourceCallback sourceCallback) {
+        callbackMap.put(imageUrl, sourceCallback);
         DisplayImageOptions options = new DisplayImageOptions
                 .Builder()
                 .showImageOnLoading(placeholder)
@@ -82,35 +87,45 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
         ImageLoader.getInstance().displayImage(imageUrl, imageView, options, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-                if (sourceCallback != null)
-                    sourceCallback.onStart();
+                SourceCallback callback = callbackMap.get(imageUrl);
+                if (callback != null)
+                    callback.onStart();
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                if (sourceCallback != null)
-                    sourceCallback.onDelivered(STATUS_DISPLAY_FAILED);
+                SourceCallback callback = callbackMap.get(imageUrl);
+                if (callback != null) {
+                    callback.onDelivered(STATUS_DISPLAY_FAILED);
+                    callbackMap.remove(imageUrl);
+                }
             }
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                if (sourceCallback != null) {
-                    sourceCallback.onFinish();
-                    sourceCallback.onDelivered(STATUS_DISPLAY_SUCCESS);
+                SourceCallback callback = callbackMap.get(imageUrl);
+                if (callback != null) {
+                    callback.onFinish();
+                    callback.onDelivered(STATUS_DISPLAY_SUCCESS);
+                    callbackMap.remove(imageUrl);
                 }
 
             }
 
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
-                if (sourceCallback != null)
-                    sourceCallback.onDelivered(STATUS_DISPLAY_CANCEL);
+                SourceCallback callback = callbackMap.get(imageUrl);
+                if (callback != null) {
+                    callback.onDelivered(STATUS_DISPLAY_CANCEL);
+                    callbackMap.remove(imageUrl);
+                }
             }
         }, new ImageLoadingProgressListener() {
             @Override
             public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                if (sourceCallback != null)
-                    sourceCallback.onProgress(current * 100 / total);
+                SourceCallback callback = callbackMap.get(imageUrl);
+                if (callback != null)
+                    callback.onProgress(current * 100 / total);
             }
         });
     }

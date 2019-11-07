@@ -57,6 +57,7 @@ public class PhotoView extends AppCompatImageView {
     // 当前是否处于放大状态
     private boolean isZoomUp;
     private boolean canRotate;
+    private boolean forceFinished;
 
     private boolean imgLargeWidth;
     private boolean imgLargeHeight;
@@ -774,6 +775,7 @@ public class PhotoView extends AppCompatImageView {
         @Override
         public boolean onDown(MotionEvent e) {
             if (!mTranslate.mFlingScroller.isFinished()) {
+                forceFinished = true;
                 mTranslate.mFlingScroller.forceFinished(true);
             }
             hasOverTranslate = false;
@@ -878,7 +880,10 @@ public class PhotoView extends AppCompatImageView {
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            postDelayed(mClickRunnable, 250);
+            if (!forceFinished) {
+                postDelayed(mClickRunnable, 250);
+            }
+            forceFinished = false;
             return false;
         }
 

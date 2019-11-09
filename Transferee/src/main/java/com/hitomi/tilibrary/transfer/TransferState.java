@@ -151,7 +151,7 @@ abstract class TransferState {
             }
         }
         // 绑定点击关闭 Transferee
-        transfer.bindOnOperationListener(targetImage, position);
+        transfer.bindOnOperationListener(targetImage, imgUrl, position);
     }
 
     /**

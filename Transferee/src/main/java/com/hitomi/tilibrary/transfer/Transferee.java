@@ -1,6 +1,5 @@
 package com.hitomi.tilibrary.transfer;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,11 +12,11 @@ import android.view.KeyEvent;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 
-import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.loader.UniversalImageLoader;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class Transferee implements DialogInterface.OnShowListener,
      */
     private Transferee(Context context) {
         this.context = context;
-        creatLayout();
+        createLayout();
         createDialog();
     }
 
@@ -65,7 +64,7 @@ public class Transferee implements DialogInterface.OnShowListener,
         return new Transferee(context);
     }
 
-    private void creatLayout() {
+    private void createLayout() {
         transLayout = new TransferLayout(context);
         transLayout.setOnLayoutResetListener(this);
     }
@@ -245,10 +244,17 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     /**
+     * 获取图片文件
+     */
+    public File getImageFile(String imageUri) {
+        return transConfig.getImageLoader().getCache(imageUri);
+    }
+
+    /**
      * 清除 transferee 缓存
      */
-    public static void clear(ImageLoader imageLoader) {
-        imageLoader.clearCache();
+    public void clear() {
+        transConfig.getImageLoader().clearCache();
     }
 
     @Override
@@ -296,7 +302,7 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     public interface OnTransfereeLongClickListener {
-        void onLongClick(ImageView imageView, int pos);
+        void onLongClick(ImageView imageView, String imageUri, int pos);
     }
 
 }

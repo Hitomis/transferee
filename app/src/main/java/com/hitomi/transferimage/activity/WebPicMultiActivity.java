@@ -38,8 +38,8 @@ public class WebPicMultiActivity extends BaseActivity {
                 .setJustLoadHitImage(true)
                 .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
                     @Override
-                    public void onLongClick(ImageView imageView, int pos) {
-                        saveImageByUniversal(imageView);
+                    public void onLongClick(ImageView imageView, String imageUri, int pos) {
+                        saveImageFile(imageUri);
                     }
                 })
                 .bindListView(gvImages, R.id.iv_thum);

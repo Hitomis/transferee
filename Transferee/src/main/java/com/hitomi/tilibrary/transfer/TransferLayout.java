@@ -299,7 +299,7 @@ class TransferLayout extends FrameLayout {
      * @param imageView 加载完成的 ImageView
      * @param pos       关闭 Transferee 时图片所在的索引
      */
-    void bindOnOperationListener(final ImageView imageView, final int pos) {
+    void bindOnOperationListener(final ImageView imageView, final String imageUri, final int pos) {
         // bind click dismiss listener
         imageView.setOnClickListener(new OnClickListener() {
             @Override
@@ -313,7 +313,7 @@ class TransferLayout extends FrameLayout {
             imageView.setOnLongClickListener(new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    transConfig.getLongClickListener().onLongClick(imageView, pos);
+                    transConfig.getLongClickListener().onLongClick(imageView, imageUri, pos);
                     return false;
                 }
             });

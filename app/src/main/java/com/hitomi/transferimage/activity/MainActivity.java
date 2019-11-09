@@ -47,7 +47,7 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.btn_clear_universal).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Transferee.clear(UniversalImageLoader.with(getApplicationContext()));
+                transferee.clear();
             }
         });
     }

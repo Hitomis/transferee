@@ -28,4 +28,5 @@ dependencies {
 
     implementation 'com.zhy:base-adapter:3.0.3'
     implementation 'com.zhy:base-rvadapter:3.0.3'
+    implementation 'com.blankj:utilcode:1.25.9'
 }

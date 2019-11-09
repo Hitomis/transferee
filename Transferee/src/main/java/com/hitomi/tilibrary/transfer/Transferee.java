@@ -125,7 +125,7 @@ public class Transferee implements DialogInterface.OnShowListener,
             fillByRecyclerView(originImageList);
         } else if (transConfig.getListView() != null) {
             fillByListView(originImageList);
-        } else if(transConfig.getImageView() != null) {
+        } else if (transConfig.getImageView() != null) {
             originImageList.add(transConfig.getImageView());
         }
         transConfig.setOriginImageList(originImageList);
@@ -254,7 +254,11 @@ public class Transferee implements DialogInterface.OnShowListener,
      * 清除 transferee 缓存
      */
     public void clear() {
-        transConfig.getImageLoader().clearCache();
+        if (transConfig == null || transConfig.getImageLoader() == null) {
+            UniversalImageLoader.with(context.getApplicationContext()).clearCache();
+        } else {
+            transConfig.getImageLoader().clearCache();
+        }
     }
 
     @Override

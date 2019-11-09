@@ -3,8 +3,6 @@ package com.hitomi.transferimage.activity;
 import android.content.Intent;
 import android.view.View;
 
-import com.hitomi.tilibrary.loader.UniversalImageLoader;
-import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 
 public class MainActivity extends BaseActivity {

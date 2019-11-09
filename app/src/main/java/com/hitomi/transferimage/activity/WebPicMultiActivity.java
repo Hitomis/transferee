@@ -4,10 +4,9 @@ import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
-import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
+import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.ImageConfig;
@@ -33,7 +32,7 @@ public class WebPicMultiActivity extends BaseActivity {
     protected void testTransferee() {
         config = TransferConfig.build()
                 .setSourceImageList(ImageConfig.getWebPicUrlList())
-                .setProgressIndicator(new ProgressBarIndicator())
+                .setProgressIndicator(new ProgressPieIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setJustLoadHitImage(true)
                 .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
@@ -45,13 +44,6 @@ public class WebPicMultiActivity extends BaseActivity {
                 .bindListView(gvImages, R.id.iv_thum);
 
         gvImages.setAdapter(new WebPicMultiActivity.NineGridAdapter());
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode != WRITE_EXTERNAL_STORAGE) {
-            Toast.makeText(this, "请允许获取相册图片文件写入权限", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private class NineGridAdapter extends CommonAdapter<String> {

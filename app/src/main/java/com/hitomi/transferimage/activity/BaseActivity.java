@@ -53,6 +53,23 @@ public abstract class BaseActivity extends AppCompatActivity {
         testTransferee();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode != WRITE_EXTERNAL_STORAGE) {
+            Toast.makeText(this, "请允许获取相册图片文件写入权限", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean checkWriteStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_EXTERNAL_STORAGE);
+            return false;
+        }
+        return true;
+    }
+
     /**
      * 保存图片到相册使用的方法
      */
@@ -72,16 +89,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                     Toast.makeText(this, "Save file success", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private boolean checkWriteStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    WRITE_EXTERNAL_STORAGE);
-            return false;
-        }
-        return true;
     }
 
     protected abstract int getContentView();

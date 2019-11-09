@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
-import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
+import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.ImageConfig;
@@ -55,7 +55,7 @@ public class WebPicSimpleActivity extends BaseActivity {
                 .setSourceImageList(ImageConfig.getSourcePicUrlList())
                 .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
-                .setProgressIndicator(new ProgressPieIndicator())
+                .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setJustLoadHitImage(true)
                 .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {

@@ -279,14 +279,14 @@ class TransferLayout extends FrameLayout {
         TransferState transferState;
 
         if (!transConfig.isThumbnailEmpty()) { // 客户端指定了缩略图路径集合
-            transferState = new RemoteThumState(this);
+            transferState = new RemoteThumbState(this);
         } else {
             String url = transConfig.getSourceImageList().get(position);
 
             if (transConfig.getImageLoader().isLoaded(url)) {
-                transferState = new LocalThumState(this);
+                transferState = new LocalThumbState(this);
             } else {
-                transferState = new EmptyThumState(this);
+                transferState = new EmptyThumbState(this);
             }
         }
 

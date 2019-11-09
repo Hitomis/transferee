@@ -1,7 +1,6 @@
 package com.hitomi.transferimage.activity;
 
 import android.view.View;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
@@ -14,7 +13,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
-public class NormalImageActivity extends BaseActivity {
+public class WebPicSimpleActivity extends BaseActivity {
     @Override
     protected int getContentView() {
         return R.layout.activity_grid_view;
@@ -25,17 +24,17 @@ public class NormalImageActivity extends BaseActivity {
         findViewById(R.id.single_layout).setVisibility(View.VISIBLE);
         gvImages = findViewById(R.id.gv_images);
 
-        final ImageView thumIv = findViewById(R.id.iv_thum);
+        final ImageView thumbIv = findViewById(R.id.iv_thum);
         final ImageView sourceIv = findViewById(R.id.iv_source);
 
-        ImageLoader.getInstance().displayImage(ImageConfig.THUM_URL, thumIv, options);
+        ImageLoader.getInstance().displayImage(ImageConfig.THUM_URL, thumbIv, options);
         ImageLoader.getInstance().displayImage(ImageConfig.WEB_URL, sourceIv, options);
 
-        thumIv.setOnClickListener(new View.OnClickListener() {
+        thumbIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 transferee.apply(TransferConfig.build()
-                        .bindImageView(thumIv, ImageConfig.THUM_URL, ImageConfig.SOURCE_URL)
+                        .bindImageView(thumbIv, ImageConfig.SOURCE_URL)
                 ).show();
             }
         });
@@ -67,13 +66,13 @@ public class NormalImageActivity extends BaseActivity {
                 })
                 .bindListView(gvImages, R.id.iv_thum);
 
-        gvImages.setAdapter(new NormalImageActivity.NineGridAdapter());
+        gvImages.setAdapter(new WebPicSimpleActivity.NineGridAdapter());
     }
 
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
-            super(NormalImageActivity.this, R.layout.item_image, ImageConfig.getThumbnailPicUrlList());
+            super(WebPicSimpleActivity.this, R.layout.item_image, ImageConfig.getThumbnailPicUrlList());
         }
 
         @Override

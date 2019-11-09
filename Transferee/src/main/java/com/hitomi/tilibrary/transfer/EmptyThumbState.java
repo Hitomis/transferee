@@ -18,9 +18,9 @@ import java.util.List;
  * <p>
  * email: 196425254@qq.com
  */
-class EmptyThumState extends TransferState {
+class EmptyThumbState extends TransferState {
 
-    EmptyThumState(TransferLayout transfer) {
+    EmptyThumbState(TransferLayout transfer) {
         super(transfer);
     }
 
@@ -83,17 +83,13 @@ class EmptyThumState extends TransferState {
                         switch (status) {
                             case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
                                 progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
-
                                 targetImage.transformIn(TransferImage.STAGE_SCALE);
-                                targetImage.enable();
-                                transfer.bindOnOperationListener(targetImage, position);
+
+                                startPreview(targetImage, imgUrl, config, position);
                                 break;
                             case ImageLoader.STATUS_DISPLAY_CANCEL:
                                 if (targetImage.getDrawable() != null) {
-                                    // 启用 TransferImage 的手势缩放功能
-                                    targetImage.enable();
-                                    // 绑定点击关闭 Transferee
-                                    transfer.bindOnOperationListener(targetImage, position);
+                                    startPreview(targetImage, imgUrl, config, position);
                                 }
                                 break;
                             case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图

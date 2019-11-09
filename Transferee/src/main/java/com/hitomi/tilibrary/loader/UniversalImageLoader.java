@@ -155,9 +155,8 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     }
 
     @Override
-    public Drawable loadImageSync(String imageUrl) {
-        Bitmap bitmap = ImageLoader.getInstance().loadImageSync(imageUrl, normalImageOptions);
-        return new BitmapDrawable(bitmap);
+    public Bitmap loadImageSync(String imageUrl) {
+        return ImageLoader.getInstance().loadImageSync(imageUrl, normalImageOptions);
     }
 
     @Override
@@ -173,7 +172,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     }
 
     @Override
-    public File save(String url) {
+    public File getCache(String url) {
         return ImageLoader.getInstance().getDiskCache().get(url);
     }
 }

@@ -58,6 +58,9 @@ public class ImageConfig {
         sourceImageList.add("http://img2.woyaogexing.com/2018/01/16/ebb71389722b2bc4!500x500.jpg");
         sourceImageList.add("http://img2.woyaogexing.com/2018/01/16/56adca0f49dde198!500x500.jpg");
         sourceImageList.add("http://img2.woyaogexing.com/2018/01/16/78b37fd847279e8c!500x500.jpg");
+        sourceImageList.add("http://img3.duitang.com/uploads/item/201605/13/20160513144041_Ze3a4.gif");
+        sourceImageList.add("http://ww2.sinaimg.cn/large/85cc5ccbgy1ffng1sbcbdg20dc0m87wh.gif");
+        sourceImageList.add("https://pic4.zhimg.com/80/v2-ab305465594807042787fb0dc06c423b_hd.jpg");
         return sourceImageList;
     }
 
@@ -78,7 +81,7 @@ public class ImageConfig {
         // 只查询jpg和png的图片,按最新修改排序
         Cursor cursor = mContentResolver.query(mImageUri, new String[]{key_DATA},
                 key_MIME_TYPE + "=? or " + key_MIME_TYPE + "=? or " + key_MIME_TYPE + "=?",
-                new String[]{"image/jpg", "image/jpeg", "image/png"},
+                new String[]{"image/jpeg", "image/jpg", "image/gif"},
                 MediaStore.Images.Media.DATE_MODIFIED);
 
         List<String> latestImagePaths = null;

@@ -1,7 +1,8 @@
 package com.hitomi.transferimage.activity;
 
+import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
-import android.widget.GridView;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -15,7 +16,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
-public class NoThumActivity extends BaseActivity {
+public class WebPicMultiActivity extends BaseActivity {
     @Override
     protected int getContentView() {
         return R.layout.activity_grid_view;
@@ -24,6 +25,8 @@ public class NoThumActivity extends BaseActivity {
     @Override
     protected void initView() {
         gvImages = findViewById(R.id.gv_images);
+        gvImages.setLayoutParams(new CoordinatorLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     @Override
@@ -41,7 +44,7 @@ public class NoThumActivity extends BaseActivity {
                 })
                 .bindListView(gvImages, R.id.iv_thum);
 
-        gvImages.setAdapter(new NoThumActivity.NineGridAdapter());
+        gvImages.setAdapter(new WebPicMultiActivity.NineGridAdapter());
     }
 
     @Override
@@ -54,7 +57,7 @@ public class NoThumActivity extends BaseActivity {
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
-            super(NoThumActivity.this, R.layout.item_image, ImageConfig.getWebPicUrlList());
+            super(WebPicMultiActivity.this, R.layout.item_image, ImageConfig.getWebPicUrlList());
         }
 
         @Override

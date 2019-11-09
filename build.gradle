@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.2'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
@@ -29,7 +29,7 @@ project.ext {
     buildToolsVersion = "28.0.3"
 
     applicationId = "com.hitomi.transferimage"
-    minSdkVersion = 14
+    minSdkVersion = 17
     targetSdkVersion = 28
     versionCode = 1
     versionName = "1.0.0"
@@ -41,8 +41,8 @@ project.ext {
     javaVersion = JavaVersion.VERSION_1_8
 
     // 第三方库版本管理
-    libSupportV4 = "com.android.support:support-v4:${supportVersion}"
-    libSupportV7 = "com.android.support:appcompat-v7:${supportVersion}"
-    libSupportAppcompat = "com.android.support:appcompat-v7:${supportVersion}"
-    libSupportDesign = "com.android.support:design:${supportVersion}"
+    libSupportV7 = "com.android.support:appcompat-v7:$supportVersion"
+    libSupportAppcompat = "com.android.support:appcompat-v7:$supportVersion"
+    libSupportDesign = "com.android.support:design:$supportVersion"
+    libSupportRecyclerview = "com.android.support:recyclerview-v7:$supportVersion"
 }

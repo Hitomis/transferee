@@ -15,14 +15,14 @@
         android:id="@+id/btn_universal_normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="有缩略图"
+        android:text="网络图一预览 - 【简单图片演示】"
         android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_universal_no_thum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="无缩略图"
+        android:text="网络图二预览 - 【大图/Gif图片/长图】"
         android:textAllCaps="false" />
 
     <Button

@@ -62,13 +62,13 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected void saveImageByUniversal(ImageView imageView) {
         if (checkWriteStoragePermission()) {
-            BitmapDrawable bmpDrawable = (BitmapDrawable) imageView.getDrawable();
-            MediaStore.Images.Media.insertImage(
-                    getContentResolver(),
-                    bmpDrawable.getBitmap(),
-                    String.valueOf(System.currentTimeMillis()),
-                    "");
-            Toast.makeText(this, "save success", Toast.LENGTH_SHORT).show();
+//            BitmapDrawable bmpDrawable = (BitmapDrawable) imageView.getDrawable();
+//            MediaStore.Images.Media.insertImage(
+//                    getContentResolver(),
+//                    bmpDrawable.getBitmap(),
+//                    String.valueOf(System.currentTimeMillis()),
+//                    "");
+//            Toast.makeText(this, "Save file success", Toast.LENGTH_SHORT).show();
         }
     }
 

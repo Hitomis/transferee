@@ -1,5 +1,6 @@
 package com.hitomi.tilibrary.loader;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.UiThread;
 import android.widget.ImageView;
@@ -49,17 +50,17 @@ public interface ImageLoader {
      * @param imageUrl
      * @return
      */
-    Drawable loadImageSync(String imageUrl);
+    Bitmap loadImageSync(String imageUrl);
 
     /**
      * 检查本地磁盘缓存中是否已经存在此路径所关联的图片
      *
      * @param url 图片路径
-     * @return true: 已加载, false: 未加载
+     * @return 缓存文件
      */
     boolean isLoaded(String url);
 
-    File save(String url);
+    File getCache(String url);
 
     /**
      * 清除 ImageLoader 缓存

@@ -19,14 +19,14 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.btn_universal_normal).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, NormalImageActivity.class));
+                startActivity(new Intent(MainActivity.this, WebPicSimpleActivity.class));
             }
         });
 
         findViewById(R.id.btn_universal_no_thum).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, NoThumActivity.class));
+                startActivity(new Intent(MainActivity.this, WebPicMultiActivity.class));
             }
         });
 

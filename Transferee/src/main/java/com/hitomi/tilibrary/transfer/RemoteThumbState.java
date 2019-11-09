@@ -7,6 +7,7 @@ import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -17,9 +18,9 @@ import java.util.List;
  * <p>
  * email: 196425254@qq.com
  */
-class RemoteThumState extends TransferState {
+class RemoteThumbState extends TransferState {
 
-    RemoteThumState(TransferLayout transfer) {
+    RemoteThumbState(TransferLayout transfer) {
         super(transfer);
     }
 
@@ -61,10 +62,10 @@ class RemoteThumState extends TransferState {
             // 对 TransferImage 裁剪且设置了占位图， 所以这里直接加载原图即可
             loadSourceImage(targetImage.getDrawable(), position, targetImage);
         } else {
-            String thumUrl = config.getThumbnailImageList().get(position);
+            String thumbUrl = config.getThumbnailImageList().get(position);
 
-            if (imageLoader.isLoaded(thumUrl)) {
-                imageLoader.loadImageAsync(thumUrl, new ImageLoader.ThumbnailCallback() {
+            if (imageLoader.isLoaded(thumbUrl)) {
+                imageLoader.loadImageAsync(thumbUrl, new ImageLoader.ThumbnailCallback() {
 
                     @Override
                     public void onFinish(Drawable drawable) {

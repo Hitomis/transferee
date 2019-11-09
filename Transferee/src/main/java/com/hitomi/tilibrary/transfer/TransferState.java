@@ -1,6 +1,6 @@
 package com.hitomi.tilibrary.transfer;
 
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -10,7 +10,11 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
+
+import pl.droidsonroids.gif.GifDrawable;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
@@ -41,7 +45,7 @@ abstract class TransferState {
      * @param oldY
      * @return
      */
-    protected int getTransImageLocalY(int oldY) {
+    int getTransImageLocalY(int oldY) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             return oldY;
         }
@@ -53,7 +57,7 @@ abstract class TransferState {
      *
      * @return 状态栏高度
      */
-    protected int getStatusBarHeight() {
+    int getStatusBarHeight() {
         try {
             Class<?> c = Class.forName("com.android.internal.R$dimen");
             Object object = c.newInstance();
@@ -71,7 +75,7 @@ abstract class TransferState {
      * @param view 需要定位位置的 View
      * @return 坐标系数组
      */
-    protected int[] getViewLocation(View view) {
+    int[] getViewLocation(View view) {
         int[] location = new int[2];
         view.getLocationInWindow(location);
         return location;
@@ -84,7 +88,7 @@ abstract class TransferState {
      * @return TransferImage
      */
     @NonNull
-    protected TransferImage createTransferImage(ImageView originImage) {
+    TransferImage createTransferImage(ImageView originImage) {
         TransferConfig config = transfer.getTransConfig();
         int[] location = getViewLocation(originImage);
 
@@ -106,12 +110,12 @@ abstract class TransferState {
      * @param transImage {@link #createTransferImage(ImageView)} 方法创建的 TransferImage
      * @param in         true : 从缩略图到高清图动画, false : 从高清图到缩略图动画
      */
-    protected void transformThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
+    void transformThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
         final TransferConfig config = transfer.getTransConfig();
 
         ImageLoader imageLoader = config.getImageLoader();
 
-        if (this instanceof RemoteThumState) { // RemoteThumState
+        if (this instanceof RemoteThumbState) { // RemoteThumbState
 
             if (imageLoader.isLoaded(imageUrl)) { // 缩略图已加载过
                 loadThumbnail(imageUrl, transImage, in);
@@ -123,9 +127,31 @@ abstract class TransferState {
                     transImage.transformOut();
             }
 
-        } else { // LocalThumState
+        } else { // LocalThumbState
             loadThumbnail(imageUrl, transImage, in);
         }
+    }
+
+    /**
+     * 图片加载完毕，开启预览
+     *
+     * @param targetImage 预览图片
+     * @param imgUrl      图片url
+     * @param config      设置
+     * @param position    索引
+     */
+    void startPreview(TransferImage targetImage, String imgUrl, TransferConfig config, int position) {
+        // 启用 TransferImage 的手势缩放功能
+        targetImage.enable();
+        if (imgUrl.endsWith("gif")) {
+            File cache = config.getImageLoader().getCache(imgUrl);
+            try {
+                targetImage.setImageDrawable(new GifDrawable(cache.getPath()));
+            } catch (IOException ignored) {
+            }
+        }
+        // 绑定点击关闭 Transferee
+        transfer.bindOnOperationListener(targetImage, position);
     }
 
     /**
@@ -138,11 +164,11 @@ abstract class TransferState {
     private void loadThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
         final TransferConfig config = transfer.getTransConfig();
         ImageLoader imageLoader = config.getImageLoader();
-        Drawable drawable = imageLoader.loadImageSync(imageUrl);
+        Bitmap drawable = imageLoader.loadImageSync(imageUrl);
         if (drawable == null)
             transImage.setImageDrawable(config.getMissDrawable(transfer.getContext()));
         else
-            transImage.setImageDrawable(drawable);
+            transImage.setImageBitmap(drawable);
 
         if (in)
             transImage.transformIn();

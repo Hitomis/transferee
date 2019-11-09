@@ -14,7 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.TestActivity"></activity>
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait">
@@ -25,20 +24,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.NormalImageActivity"
-            android:label="UniversalLoader 测试(有缩略图)"
+            android:name=".activity.WebPicSimpleActivity"
+            android:label="网络图片预览一"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.NoThumActivity"
-            android:label="UniversalLoader 测试(没缩略图)"
+            android:name=".activity.WebPicMultiActivity"
+            android:label="网络图片预览二"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.LocalImageActivity"
-            android:label="UniversalLoader 测试(本地图片)"
+            android:label="本地图片预览"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.RecyclerViewActivity"
-            android:label="UniversalLoader 测试(recyclerview)"
+            android:label="RecyclerView 测试"
             android:screenOrientation="portrait" />
     </application>
 

@@ -6,7 +6,11 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import pl.droidsonroids.gif.GifDrawable;
 
 /**
  * 高清图图片已经加载过了，使用高清图作为缩略图。
@@ -16,9 +20,9 @@ import java.util.List;
  * <p>
  * email: 196425254@qq.com
  */
-class LocalThumState extends TransferState {
+class LocalThumbState extends TransferState {
 
-    LocalThumState(TransferLayout transfer) {
+    LocalThumbState(TransferLayout transfer) {
         super(transfer);
     }
 
@@ -65,7 +69,7 @@ class LocalThumState extends TransferState {
         }
     }
 
-    private void loadSourceImage(String imgUrl, final TransferImage targetImage, Drawable drawable, final int position) {
+    private void loadSourceImage(final String imgUrl, final TransferImage targetImage, Drawable drawable, final int position) {
         final TransferConfig config = transfer.getTransConfig();
 
         config.getImageLoader().showImage(imgUrl, targetImage, drawable, new ImageLoader.SourceCallback() {
@@ -88,17 +92,11 @@ class LocalThumState extends TransferState {
                     case ImageLoader.STATUS_DISPLAY_SUCCESS:
                         if (TransferImage.STATE_TRANS_CLIP == targetImage.getState())
                             targetImage.transformIn(TransferImage.STAGE_SCALE);
-                        // 启用 TransferImage 的手势缩放功能
-                        targetImage.enable();
-                        // 绑定点击关闭 Transferee
-                        transfer.bindOnOperationListener(targetImage, position);
+                        startPreview(targetImage, imgUrl, config, position);
                         break;
                     case ImageLoader.STATUS_DISPLAY_CANCEL:
                         if (targetImage.getDrawable() != null) {
-                            // 启用 TransferImage 的手势缩放功能
-                            targetImage.enable();
-                            // 绑定点击关闭 Transferee
-                            transfer.bindOnOperationListener(targetImage, position);
+                            startPreview(targetImage, imgUrl, config, position);
                         }
                         break;
                     case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图

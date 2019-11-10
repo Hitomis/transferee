@@ -106,9 +106,9 @@ class RemoteThumbState extends TransferState {
 
             @Override
             public void onDelivered(int status) {
+                progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
                 switch (status) {
                     case ImageLoader.STATUS_DISPLAY_SUCCESS:
-                        progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
                         // 启用 TransferImage 的手势缩放功能
                         targetImage.enable();
                         // 绑定点击关闭 Transferee

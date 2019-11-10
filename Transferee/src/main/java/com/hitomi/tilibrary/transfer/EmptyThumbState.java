@@ -80,9 +80,9 @@ class EmptyThumbState extends TransferState {
 
                     @Override
                     public void onDelivered(int status) {
+                        progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
                         switch (status) {
                             case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
-                                progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
                                 targetImage.transformIn(TransferImage.STAGE_SCALE);
 
                                 startPreview(targetImage, imgUrl, config, position);

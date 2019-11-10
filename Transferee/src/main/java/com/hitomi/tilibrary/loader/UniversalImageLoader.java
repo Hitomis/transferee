@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
@@ -65,6 +66,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
                 .tasksProcessingOrder(QueueProcessingType.FIFO)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .threadPoolSize(3)
+                .imageDownloader(new BaseImageDownloader(context, 15000, 15000))
                 .build();
 
         // Initialize ImageLoader with configuration.

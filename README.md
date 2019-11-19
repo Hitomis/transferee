@@ -124,7 +124,7 @@ transferee.apply(config).show();
 
 # Todo
 + [x] 支持图片拖拽关闭
-+ [ ] 支持 gif 图片 
++ [x] 支持 gif 图片 
 
 # Licence
     Copyright 2017 Hitomis, Inc.

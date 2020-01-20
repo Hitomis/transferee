@@ -18,7 +18,7 @@ transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功
 如有任何问题可以提 Issues
 
 # Preview
-<img src="preview/transferee_1.gif" /> <img src="preview/transferee_2.gif" />
+<img src="preview/transferee.gif" />
 
 
 # Dependency

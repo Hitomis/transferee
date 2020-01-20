@@ -20,6 +20,10 @@ transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功
 # Preview
 <img src="preview/transferee.gif" />
 
+# Sample
+
+[demo.apk](https://github.com/Hitomis/transferee/tree/master/preview/app.apk)
+
 
 # Dependency
 Gradle 依赖，之前版本已作废，待现在版本稳定后，再上传

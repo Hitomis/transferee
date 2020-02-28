@@ -2,7 +2,9 @@ package com.hitomi.tilibrary.transfer;
 
 import android.graphics.Bitmap;
 import android.os.Build;
+
 import androidx.annotation.NonNull;
+
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -140,14 +142,16 @@ abstract class TransferState {
      * @param config      设置
      * @param position    索引
      */
-    void startPreview(TransferImage targetImage, String imgUrl, TransferConfig config, int position) {
+    void startPreview(TransferImage targetImage, File source, String imgUrl, TransferConfig config, int position) {
         // 启用 TransferImage 的手势缩放功能
         targetImage.enable();
         if (imgUrl.endsWith("gif")) {
-            File cache = config.getImageLoader().getCache(imgUrl);
-            try {
-                targetImage.setImageDrawable(new GifDrawable(cache.getPath()));
-            } catch (IOException ignored) {
+            File cache = source == null ? config.getImageLoader().getCache(imgUrl) : source;
+            if (cache != null) {
+                try {
+                    targetImage.setImageDrawable(new GifDrawable(cache.getPath()));
+                } catch (IOException ignored) {
+                }
             }
         }
         // 绑定点击关闭 Transferee

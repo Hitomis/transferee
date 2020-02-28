@@ -12,6 +12,7 @@ import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.ImageConfig;
 import com.hitomi.transferimage.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.vansz.universalimageloader.UniversalImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -34,6 +35,7 @@ public class WebPicMultiActivity extends BaseActivity {
                 .setSourceImageList(ImageConfig.getWebPicUrlList())
                 .setProgressIndicator(new ProgressPieIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
+                .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
                 .setJustLoadHitImage(true)
                 .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
                     @Override

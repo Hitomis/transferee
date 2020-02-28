@@ -14,6 +14,7 @@ import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.transferimage.ImageConfig;
 import com.hitomi.transferimage.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.vansz.universalimageloader.UniversalImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -58,6 +59,7 @@ public class LocalImageActivity extends BaseActivity {
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
+                .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
                 .setJustLoadHitImage(true)
                 .bindListView(gvImages, R.id.iv_thum);
     }

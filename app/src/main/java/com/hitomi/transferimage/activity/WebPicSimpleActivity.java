@@ -3,13 +3,14 @@ package com.hitomi.transferimage.activity;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.ImageConfig;
 import com.hitomi.transferimage.R;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.vansz.glideimageloader.GlideImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -24,25 +25,13 @@ public class WebPicSimpleActivity extends BaseActivity {
         findViewById(R.id.single_layout).setVisibility(View.VISIBLE);
         gvImages = findViewById(R.id.gv_images);
 
-        final ImageView thumbIv = findViewById(R.id.iv_thum);
         final ImageView sourceIv = findViewById(R.id.iv_source);
-
-        ImageLoader.getInstance().displayImage(ImageConfig.THUM_URL, thumbIv, options);
-        ImageLoader.getInstance().displayImage(ImageConfig.WEB_URL, sourceIv, options);
-
-        thumbIv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                transferee.apply(TransferConfig.build()
-                        .bindImageView(thumbIv, ImageConfig.SOURCE_URL)
-                ).show();
-            }
-        });
-
+        Glide.with(sourceIv).load(ImageConfig.WEB_URL).into(sourceIv);
         sourceIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 transferee.apply(TransferConfig.build()
+                        .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                         .bindImageView(sourceIv, ImageConfig.WEB_URL)
                 ).show();
             }
@@ -57,6 +46,7 @@ public class WebPicSimpleActivity extends BaseActivity {
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
+                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                 .setJustLoadHitImage(true)
                 .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
                     @Override
@@ -85,7 +75,7 @@ public class WebPicSimpleActivity extends BaseActivity {
                     transferee.apply(config).show();
                 }
             });
-            ImageLoader.getInstance().displayImage(item, imageView, options);
+            Glide.with(imageView).load(item).into(imageView);
         }
     }
 

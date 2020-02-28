@@ -8,6 +8,7 @@ import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -75,17 +76,16 @@ class EmptyThumbState extends TransferState {
                     }
 
                     @Override
-                    public void onDelivered(int status) {
+                    public void onDelivered(int status, File source) {
                         progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
                         switch (status) {
                             case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
                                 targetImage.transformIn(TransferImage.STAGE_SCALE);
-
-                                startPreview(targetImage, imgUrl, config, position);
+                                startPreview(targetImage, source, imgUrl, config, position);
                                 break;
                             case ImageLoader.STATUS_DISPLAY_CANCEL:
                                 if (targetImage.getDrawable() != null) {
-                                    startPreview(targetImage, imgUrl, config, position);
+                                    startPreview(targetImage, source, imgUrl, config, position);
                                 }
                                 break;
                             case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图

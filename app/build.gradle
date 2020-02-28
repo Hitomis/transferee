@@ -22,11 +22,12 @@ android {
 
 dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation rootProject.ext.libSupportV7
-    implementation rootProject.ext.libSupportDesign
     implementation project(':Transferee')
     implementation project(':GlideImageLoader')
+    implementation project(':UniversalImageLoader')
 
+    implementation rootProject.ext.libSupportV7
+    implementation rootProject.ext.libSupportDesign
     implementation 'com.zhy:base-adapter:3.0.3'
     implementation 'com.zhy:base-rvadapter:3.0.3'
     implementation 'com.blankj:utilcodex:1.26.0'

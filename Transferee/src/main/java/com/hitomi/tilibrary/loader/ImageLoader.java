@@ -2,6 +2,8 @@ package com.hitomi.tilibrary.loader;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import android.widget.ImageView;
 
@@ -35,7 +37,7 @@ public interface ImageLoader {
      * @param placeholder    加载完成之前显示的占位图
      * @param sourceCallback 图片加载过程的回调
      */
-    void showImage(String imageUrl, ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback);
+    void showImage(String imageUrl, ImageView imageView, Drawable placeholder, @Nullable final SourceCallback sourceCallback);
 
     /**
      * 异步加载图片
@@ -47,15 +49,11 @@ public interface ImageLoader {
 
     /**
      * 同步加载图片，返回 Bitmap
-     * @param imageUrl
-     * @return
      */
     Bitmap loadImageSync(String imageUrl);
 
     /**
      * 获取 url 关联的图片缓存
-     * @param url
-     * @return
      */
     File getCache(String url);
 
@@ -72,7 +70,7 @@ public interface ImageLoader {
         void onProgress(int progress);
 
         @UiThread
-        void onDelivered(int status);
+        void onDelivered(int status, @Nullable File source);
     }
 
     interface ThumbnailCallback {

@@ -11,6 +11,7 @@ import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.transferimage.ImageConfig;
 import com.hitomi.transferimage.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.vansz.universalimageloader.UniversalImageLoader;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
@@ -34,6 +35,7 @@ public class RecyclerViewActivity extends BaseActivity {
                 .setSourceImageList(ImageConfig.getSourcePicUrlList())
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
+                .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
                 .setJustLoadHitImage(true)
                 .bindRecyclerView(rvImages, R.id.iv_thum);
 

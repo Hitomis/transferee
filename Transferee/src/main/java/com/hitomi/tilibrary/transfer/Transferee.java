@@ -4,15 +4,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.KeyEvent;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 
-import com.hitomi.tilibrary.loader.UniversalImageLoader;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 
@@ -113,10 +114,6 @@ public class Transferee implements DialogInterface.OnShowListener,
 
         transConfig.setIndexIndicator(transConfig.getIndexIndicator() == null
                 ? new CircleIndexIndicator() : transConfig.getIndexIndicator());
-
-        transConfig.setImageLoader(transConfig.getImageLoader() == null
-                ? UniversalImageLoader.with(context.getApplicationContext())
-                : transConfig.getImageLoader());
     }
 
     private void fillOriginImages() {
@@ -254,9 +251,7 @@ public class Transferee implements DialogInterface.OnShowListener,
      * 清除 transferee 缓存
      */
     public void clear() {
-        if (transConfig == null || transConfig.getImageLoader() == null) {
-            UniversalImageLoader.with(context.getApplicationContext()).clearCache();
-        } else {
+        if (transConfig != null && transConfig.getImageLoader() != null) {
             transConfig.getImageLoader().clearCache();
         }
     }

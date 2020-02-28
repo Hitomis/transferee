@@ -26,22 +26,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="单张图片预览「有缩略图」：" />
-
-        <ImageView
-            android:id="@+id/iv_thum"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:scaleType="centerCrop" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="单张图片预览「无缩略图」：" />
+            android:text="单张图片预览:" />
 
         <ImageView
             android:id="@+id/iv_source"

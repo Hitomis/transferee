@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary.loader;
+package com.vansz.universalimageloader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -98,7 +98,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 SourceCallback callback = callbackMap.get(imageUrl);
                 if (callback != null) {
-                    callback.onDelivered(STATUS_DISPLAY_FAILED);
+                    callback.onDelivered(STATUS_DISPLAY_FAILED, null);
                     callbackMap.remove(imageUrl);
                 }
             }
@@ -107,7 +107,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 SourceCallback callback = callbackMap.get(imageUrl);
                 if (callback != null) {
-                    callback.onDelivered(STATUS_DISPLAY_SUCCESS);
+                    callback.onDelivered(STATUS_DISPLAY_SUCCESS, null);
                     callbackMap.remove(imageUrl);
                 }
             }
@@ -116,7 +116,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
             public void onLoadingCancelled(String imageUri, View view) {
                 SourceCallback callback = callbackMap.get(imageUrl);
                 if (callback != null) {
-                    callback.onDelivered(STATUS_DISPLAY_CANCEL);
+                    callback.onDelivered(STATUS_DISPLAY_CANCEL, null);
                     callbackMap.remove(imageUrl);
                 }
             }

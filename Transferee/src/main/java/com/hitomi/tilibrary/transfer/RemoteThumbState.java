@@ -18,6 +18,7 @@ import java.util.List;
  * <p>
  * email: 196425254@qq.com
  */
+@Deprecated
 class RemoteThumbState extends TransferState {
 
     RemoteThumbState(TransferLayout transfer) {
@@ -101,7 +102,7 @@ class RemoteThumbState extends TransferState {
             }
 
             @Override
-            public void onDelivered(int status) {
+            public void onDelivered(int status, File source) {
                 progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
                 switch (status) {
                     case ImageLoader.STATUS_DISPLAY_SUCCESS:

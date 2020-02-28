@@ -57,5 +57,4 @@ dependencies {
     implementation rootProject.ext.libSupportRecyclerview
     implementation 'com.github.filippudak.progresspieview:library:1.0.4'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
-    api 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 }

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.view.View;
 
 import com.hitomi.transferimage.R;
+import com.vansz.glideimageloader.GlideImageLoader;
+import com.vansz.universalimageloader.UniversalImageLoader;
 
 public class MainActivity extends BaseActivity {
     @Override
@@ -45,7 +47,8 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.btn_clear_universal).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                transferee.clear();
+                UniversalImageLoader.with(getApplicationContext()).clearCache();
+                GlideImageLoader.with(getApplicationContext()).clearCache();
             }
         });
     }

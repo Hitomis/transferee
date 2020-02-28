@@ -53,13 +53,10 @@ public interface ImageLoader {
     Bitmap loadImageSync(String imageUrl);
 
     /**
-     * 检查本地磁盘缓存中是否已经存在此路径所关联的图片
-     *
-     * @param url 图片路径
-     * @return 缓存文件
+     * 获取 url 关联的图片缓存
+     * @param url
+     * @return
      */
-    boolean isLoaded(String url);
-
     File getCache(String url);
 
     /**

@@ -160,12 +160,6 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     }
 
     @Override
-    public boolean isLoaded(String url) {
-        File cache = ImageLoader.getInstance().getDiskCache().get(url);
-        return cache != null && cache.exists();
-    }
-
-    @Override
     public void clearCache() {
         ImageLoader.getInstance().getMemoryCache().clear();
         ImageLoader.getInstance().getDiskCache().clear();
@@ -173,6 +167,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
 
     @Override
     public File getCache(String url) {
-        return ImageLoader.getInstance().getDiskCache().get(url);
+        File cache = ImageLoader.getInstance().getDiskCache().get(url);
+        return (cache != null && cache.exists()) ? cache : null;
     }
 }

@@ -84,7 +84,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
             if (mkFlag) {
                 File imageFile = transferee.getImageFile(imageUri);
-                boolean success = FileUtils.copyFile(imageFile, new File(rootFile, imageName));
+                boolean success = FileUtils.copy(imageFile, new File(rootFile, imageName));
                 if (success)
                     Toast.makeText(this, "Save file success", Toast.LENGTH_SHORT).show();
             }

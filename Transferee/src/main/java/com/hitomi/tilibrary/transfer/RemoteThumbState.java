@@ -31,7 +31,7 @@ class RemoteThumbState extends TransferState {
         ImageLoader imageLoader = config.getImageLoader();
         String imgUrl = config.getThumbnailImageList().get(position);
 
-        if (imageLoader.isLoaded(imgUrl)) {
+        if (imageLoader.getCache(imgUrl) != null) {
             imageLoader.showImage(imgUrl, transImage,
                     config.getMissDrawable(transfer.getContext()), null);
         } else {
@@ -64,7 +64,7 @@ class RemoteThumbState extends TransferState {
         } else {
             String thumbUrl = config.getThumbnailImageList().get(position);
 
-            if (imageLoader.isLoaded(thumbUrl)) {
+            if (imageLoader.getCache(thumbUrl) != null) {
                 imageLoader.loadImageAsync(thumbUrl, new ImageLoader.ThumbnailCallback() {
 
                     @Override

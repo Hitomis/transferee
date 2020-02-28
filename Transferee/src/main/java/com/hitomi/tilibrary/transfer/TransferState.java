@@ -117,7 +117,7 @@ abstract class TransferState {
 
         if (this instanceof RemoteThumbState) { // RemoteThumbState
 
-            if (imageLoader.isLoaded(imageUrl)) { // 缩略图已加载过
+            if (imageLoader.getCache(imageUrl) != null) { // 缩略图已加载过
                 loadThumbnail(imageUrl, transImage, in);
             } else { // 缩略图 未加载过，则使用用户配置的缺省占位图
                 transImage.setImageDrawable(config.getMissDrawable(transfer.getContext()));

@@ -26,11 +26,11 @@ task clean(type: Delete) {
 def supportVersion = "27.1.1"
 project.ext {
     compileSdkVersion = 28
-    buildToolsVersion = "28.0.3"
+    buildToolsVersion = "29.0.2"
 
     applicationId = "com.hitomi.transferimage"
     minSdkVersion = 17
-    targetSdkVersion = 28
+    targetSdkVersion = 29
     versionCode = 1
     versionName = "1.0.0"
 

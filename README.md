@@ -22,7 +22,7 @@ transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功
 
 # Sample
 
-[demo.apk](https://github.com/Hitomis/transferee/tree/master/preview/app_release.apk)
+[demo.apk](https://github.com/Hitomis/transferee/tree/master/preview/app-release.apk)
 
 
 # Dependency

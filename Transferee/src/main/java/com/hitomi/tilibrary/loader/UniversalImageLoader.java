@@ -107,11 +107,9 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 SourceCallback callback = callbackMap.get(imageUrl);
                 if (callback != null) {
-                    callback.onFinish();
                     callback.onDelivered(STATUS_DISPLAY_SUCCESS);
                     callbackMap.remove(imageUrl);
                 }
-
             }
 
             @Override

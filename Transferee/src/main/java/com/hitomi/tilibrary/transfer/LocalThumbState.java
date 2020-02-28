@@ -83,10 +83,6 @@ class LocalThumbState extends TransferState {
             }
 
             @Override
-            public void onFinish() {
-            }
-
-            @Override
             public void onDelivered(int status) {
                 switch (status) {
                     case ImageLoader.STATUS_DISPLAY_SUCCESS:

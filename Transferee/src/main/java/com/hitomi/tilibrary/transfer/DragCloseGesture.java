@@ -5,7 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.RectF;
 import android.os.Build;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;

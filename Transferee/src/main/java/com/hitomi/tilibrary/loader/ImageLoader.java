@@ -2,7 +2,7 @@ package com.hitomi.tilibrary.loader;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.UiThread;
+import androidx.annotation.UiThread;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -46,7 +46,7 @@ public interface ImageLoader {
     void loadImageAsync(String imageUrl, final ThumbnailCallback callback);
 
     /**
-     * 同步加载图片，返回 Drawable
+     * 同步加载图片，返回 Bitmap
      * @param imageUrl
      * @return
      */
@@ -73,9 +73,6 @@ public interface ImageLoader {
 
         @UiThread
         void onProgress(int progress);
-
-        @UiThread
-        void onFinish();
 
         @UiThread
         void onDelivered(int status);

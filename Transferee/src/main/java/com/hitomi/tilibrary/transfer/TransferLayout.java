@@ -6,7 +6,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;

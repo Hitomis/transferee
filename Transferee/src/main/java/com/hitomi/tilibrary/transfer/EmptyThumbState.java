@@ -75,10 +75,6 @@ class EmptyThumbState extends TransferState {
                     }
 
                     @Override
-                    public void onFinish() {
-                    }
-
-                    @Override
                     public void onDelivered(int status) {
                         progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
                         switch (status) {

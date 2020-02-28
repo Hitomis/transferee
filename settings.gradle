@@ -1,1 +1,1 @@
-include ':app', ':Transferee'
+include ':app', ':Transferee', ':GlideImageLoader'

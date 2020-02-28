@@ -3,8 +3,8 @@ package com.hitomi.tilibrary.transfer;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.IdRes;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.IdRes;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 

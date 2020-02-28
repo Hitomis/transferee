@@ -114,7 +114,6 @@ transferee.apply(config).show();
 
 + v1.2.0
   - 针对之前版本的使用复杂考虑，添加了直接绑定 ListView，GridView，RecyclerView 即可使用，不再需要人肉传入 originImageList
-  - 针对各大厂家的图片加载器，实在是没有精力一一兼容，并且由于 transferee 需要判断图片是否已经加载过这一 api，而不是每个厂家的图片加载都有这一 api，所以现在默认使用 niversalUImageLoader 作为 transferee 内置图片加载器
   - 修复有超出屏幕外图片情境下 transferee 崩溃的情景
   - 修复 Issues 中各位同学反馈的bug
   

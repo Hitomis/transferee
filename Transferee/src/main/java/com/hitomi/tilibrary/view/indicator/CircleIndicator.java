@@ -8,7 +8,7 @@ import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 
 import com.hitomi.tilibrary.R;
 
-import static android.support.v4.view.ViewPager.OnPageChangeListener;
+import static androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 
 /**
  * 圆形小点索引指示器

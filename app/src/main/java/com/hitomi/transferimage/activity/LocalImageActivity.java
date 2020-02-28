@@ -2,8 +2,8 @@ package com.hitomi.transferimage.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;

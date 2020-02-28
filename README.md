@@ -7,7 +7,7 @@ transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功
 + 无缩略图信息时，自动改变动画的行为为平移过渡->加载大图->伸展图片动画
 + 傻瓜式绑定 RecyclerView / ListView / GridView / ImageView
 + 支持预览图片缩放，拖动，旋转等手势操作
-+ 支持自定义图片加载器
++ 支持自定义图片加载器[目前已经有 UniversalImageLoader 和 GlideImageLoader]
 + 支持自定义图片索引指示器
 + 支持自定义图片加载进度条
 + 支持图片保存
@@ -42,7 +42,8 @@ TransferConfig config = TransferConfig.build()
        .setMissPlaceHolder(R.mipmap.ic_empty_photo) // 图片加载前的占位图
        .setErrorPlaceHolder(R.mipmap.ic_empty_photo) // 图片加载错误后的占位图
        .setProgressIndicator(new ProgressPieIndicator()) // 图片加载进度指示器
-       .setIndexIndicator(new NumberIndexIndicator()) // 图片数量索引只是青
+       .setIndexIndicator(new NumberIndexIndicator()) // 图片数量索引指示器
+       .setImageLoader(GlideImageLoader.with(getApplicationContext())) // 设置图片加载器
        .setJustLoadHitImage(true) // 是否只加载当前显示在屏幕中的的图片
        .enableDragClose(true) // 开启拖拽关闭
        .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {

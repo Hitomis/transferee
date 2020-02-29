@@ -53,7 +53,7 @@ public class GlideImageLoader implements ImageLoader {
 
             @Override
             public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
-                if (!imageUrl.endsWith(".gif"))
+                if (!imageUrl.endsWith(".gif")) // gif 图片需要 transferee 内部渲染，所以这里作显示
                     imageView.setImageBitmap(BitmapFactory.decodeFile(resource.getAbsolutePath()));
                 checkSaveFile(resource, getFileName(imageUrl));
                 SourceCallback callback = callbackMap.get(imageUrl);
@@ -80,8 +80,7 @@ public class GlideImageLoader implements ImageLoader {
             public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
                 checkSaveFile(resource, getFileName(imageUrl));
                 if (callback != null)
-                    callback.onFinish(new BitmapDrawable(context.getResources(),
-                            BitmapFactory.decodeFile(resource.getAbsolutePath())));
+                    callback.onFinish(BitmapFactory.decodeFile(resource.getAbsolutePath()));
                 return false;
             }
         }).preload();
@@ -94,24 +93,26 @@ public class GlideImageLoader implements ImageLoader {
 
     @Override
     public File getCache(String url) {
-        final File cacheFile = new File(getCacheDir(), getFileName(url));
+        File cacheFile = new File(getCacheDir(), getFileName(url));
         return cacheFile.exists() ? cacheFile : null;
     }
 
     @Override
     public void clearCache() {
+        Glide.get(context).clearMemory();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Glide.get(context).clearDiskCache();
-                Glide.get(context).clearMemory();
                 FileUtils.delete(getCacheDir());
             }
-        });
+        }).start();
     }
 
     private File getCacheDir() {
-        return new File(context.getCacheDir(), CACHE_DIR);
+        File cacheDir = new File(context.getCacheDir(), CACHE_DIR);
+        if (!cacheDir.exists()) cacheDir.mkdirs();
+        return cacheDir;
     }
 
     private String getFileName(String imageUrl) {
@@ -121,8 +122,6 @@ public class GlideImageLoader implements ImageLoader {
 
     private void checkSaveFile(final File file, final String fileName) {
         final File cacheDir = getCacheDir();
-        if (!cacheDir.exists()) cacheDir.mkdirs();
-
         boolean exists = FileUtils.isFileExists(new File(cacheDir, fileName));
         if (!exists) {
             new Thread(new Runnable() {

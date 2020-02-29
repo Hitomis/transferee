@@ -14,6 +14,9 @@ import com.vansz.glideimageloader.GlideImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
+/**
+ * 使用 GlideImageLoader 演示
+ */
 public class WebPicSimpleActivity extends BaseActivity {
     @Override
     protected int getContentView() {

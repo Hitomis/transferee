@@ -283,6 +283,7 @@ class TransferLayout extends FrameLayout {
         } else {
             String url = transConfig.getSourceImageList().get(position);
 
+            // 即使是网络图片，但是之前已经加载到本地，那么也是本地图片
             if (transConfig.getImageLoader().getCache(url) != null) {
                 transferState = new LocalThumbState(this);
             } else {

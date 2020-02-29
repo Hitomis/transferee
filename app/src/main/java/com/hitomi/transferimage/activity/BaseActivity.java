@@ -2,22 +2,18 @@ package com.hitomi.transferimage.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.widget.GridView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.blankj.utilcode.util.FileUtils;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
-import com.hitomi.transferimage.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
 
@@ -30,24 +26,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected static final int READ_EXTERNAL_STORAGE = 100;
     protected static final int WRITE_EXTERNAL_STORAGE = 101;
 
-    protected DisplayImageOptions options;
-
     protected Transferee transferee;
     protected TransferConfig config;
-
     protected GridView gvImages;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        options = new DisplayImageOptions
-                .Builder()
-                .showImageOnLoading(R.mipmap.ic_empty_photo)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .resetViewBeforeLoading(true)
-                .build();
         transferee = Transferee.getDefault(this);
-        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
         setContentView(getContentView());
         initView();
         testTransferee();

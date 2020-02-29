@@ -25,6 +25,7 @@ dependencies {
     implementation project(':Transferee')
     implementation project(':GlideImageLoader')
     implementation project(':UniversalImageLoader')
+    implementation project(':PicassoImageLoader')
 
     implementation rootProject.ext.libSupportV7
     implementation rootProject.ext.libSupportDesign

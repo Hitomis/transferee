@@ -2,28 +2,28 @@ package com.hitomi.transferimage.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.transferimage.ImageConfig;
 import com.hitomi.transferimage.R;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.vansz.universalimageloader.UniversalImageLoader;
+import com.vansz.glideimageloader.GlideImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 import java.util.List;
 
 /**
- * Created by hitomi on 2017/6/14.
+ * 使用 GlideImageLoader 演示
  */
-
 public class LocalImageActivity extends BaseActivity {
     private List<String> images;
 
@@ -59,7 +59,7 @@ public class LocalImageActivity extends BaseActivity {
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
-                .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
+                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                 .setJustLoadHitImage(true)
                 .bindListView(gvImages, R.id.iv_thum);
     }
@@ -86,7 +86,7 @@ public class LocalImageActivity extends BaseActivity {
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             final ImageView imageView = viewHolder.getView(R.id.iv_thum);
-            ImageLoader.getInstance().displayImage(item, imageView, options);
+            Glide.with(imageView).load(item).into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

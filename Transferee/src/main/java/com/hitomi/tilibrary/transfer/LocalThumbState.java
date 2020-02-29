@@ -1,5 +1,7 @@
 package com.hitomi.tilibrary.transfer;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
@@ -7,10 +9,7 @@ import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
-
-import pl.droidsonroids.gif.GifDrawable;
 
 /**
  * 高清图图片已经加载过了，使用高清图作为缩略图。
@@ -59,11 +58,14 @@ class LocalThumbState extends TransferState {
         } else {
             config.getImageLoader().loadImageAsync(imgUrl, new ImageLoader.ThumbnailCallback() {
                 @Override
-                public void onFinish(Drawable drawable) {
-                    if (drawable == null)
-                        drawable = config.getMissDrawable(transfer.getContext());
+                public void onFinish(Bitmap bitmap) {
+                    Drawable placeholder = null;
+                    if (bitmap == null)
+                        placeholder = config.getMissDrawable(transfer.getContext());
+                    else
+                        placeholder = new BitmapDrawable(transfer.getContext().getResources(), bitmap);
 
-                    loadSourceImage(imgUrl, targetImage, drawable, position);
+                    loadSourceImage(imgUrl, targetImage, placeholder, position);
                 }
             });
         }

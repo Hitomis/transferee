@@ -48,7 +48,7 @@ public interface ImageLoader {
     void loadImageAsync(String imageUrl, final ThumbnailCallback callback);
 
     /**
-     * 同步加载图片，返回 Bitmap
+     * 从本地同步加载图片（imageUrl 对应的图片是已经加载过的），返回 Bitmap
      */
     Bitmap loadImageSync(String imageUrl);
 
@@ -75,6 +75,6 @@ public interface ImageLoader {
 
     interface ThumbnailCallback {
         @UiThread
-        void onFinish(Drawable drawable);
+        void onFinish(Bitmap bitmap);
     }
 }

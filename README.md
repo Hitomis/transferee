@@ -7,7 +7,7 @@ transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功
 + 无缩略图信息时，自动改变动画的行为为平移过渡->加载大图->伸展图片动画
 + 傻瓜式绑定 RecyclerView / ListView / GridView / ImageView
 + 支持预览图片缩放，拖动，旋转等手势操作
-+ 支持自定义图片加载器[目前已经有 UniversalImageLoader 和 GlideImageLoader]
++ 支持自定义图片加载器[目前已经有 UniversalImageLoader / GlideImageLoader / PicassoImageLoader]
 + 支持自定义图片索引指示器
 + 支持自定义图片加载进度条
 + 支持图片保存
@@ -22,7 +22,7 @@ transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功
 
 # Sample
 
-[demo.apk](https://github.com/Hitomis/transferee/tree/master/preview/app_release.apk)
+[demo.apk](https://github.com/Hitomis/transferee/tree/master/preview/app-release.apk)
 
 
 # Dependency

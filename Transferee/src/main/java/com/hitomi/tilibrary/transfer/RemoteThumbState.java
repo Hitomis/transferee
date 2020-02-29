@@ -1,5 +1,7 @@
 package com.hitomi.tilibrary.transfer;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
@@ -69,11 +71,14 @@ class RemoteThumbState extends TransferState {
                 imageLoader.loadImageAsync(thumbUrl, new ImageLoader.ThumbnailCallback() {
 
                     @Override
-                    public void onFinish(Drawable drawable) {
-                        if (drawable == null)
-                            drawable = config.getMissDrawable(transfer.getContext());
+                    public void onFinish(Bitmap bitmap) {
+                        Drawable placeholder = null;
+                        if (bitmap == null)
+                            placeholder = config.getMissDrawable(transfer.getContext());
+                        else
+                            placeholder = new BitmapDrawable(transfer.getContext().getResources(), bitmap);
 
-                        loadSourceImage(drawable, position, targetImage);
+                        loadSourceImage(placeholder, position, targetImage);
                     }
                 });
             } else {

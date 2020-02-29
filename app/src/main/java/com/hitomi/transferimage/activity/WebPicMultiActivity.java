@@ -1,6 +1,8 @@
 package com.hitomi.transferimage.activity;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,12 +13,19 @@ import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.ImageConfig;
 import com.hitomi.transferimage.R;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.vansz.universalimageloader.UniversalImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
+/**
+ * 使用 UniversalImageLoader 演示
+ */
 public class WebPicMultiActivity extends BaseActivity {
+    private DisplayImageOptions options;
+
     @Override
     protected int getContentView() {
         return R.layout.activity_grid_view;
@@ -44,6 +53,13 @@ public class WebPicMultiActivity extends BaseActivity {
                     }
                 })
                 .bindListView(gvImages, R.id.iv_thum);
+        options = new DisplayImageOptions
+                .Builder()
+                .showImageOnLoading(R.mipmap.ic_empty_photo)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .resetViewBeforeLoading(true)
+                .build();
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
 
         gvImages.setAdapter(new WebPicMultiActivity.NineGridAdapter());
     }

@@ -1,20 +1,24 @@
 package com.hitomi.transferimage.activity;
 
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.transferimage.ImageConfig;
 import com.hitomi.transferimage.R;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.vansz.universalimageloader.UniversalImageLoader;
+import com.squareup.picasso.Picasso;
+import com.vansz.picassoimageloader.PicassoImageLoader;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+/**
+ * 使用 PicassoImageLoader 演示
+ */
 public class RecyclerViewActivity extends BaseActivity {
     private RecyclerView rvImages;
 
@@ -25,7 +29,7 @@ public class RecyclerViewActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        rvImages = (RecyclerView) findViewById(R.id.rv_images);
+        rvImages = findViewById(R.id.rv_images);
         rvImages.setLayoutManager(new GridLayoutManager(this, 3));
     }
 
@@ -35,7 +39,7 @@ public class RecyclerViewActivity extends BaseActivity {
                 .setSourceImageList(ImageConfig.getSourcePicUrlList())
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
-                .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
+                .setImageLoader(PicassoImageLoader.with(getApplicationContext()))
                 .setJustLoadHitImage(true)
                 .bindRecyclerView(rvImages, R.id.iv_thum);
 
@@ -50,7 +54,7 @@ public class RecyclerViewActivity extends BaseActivity {
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             final ImageView imageView = viewHolder.getView(R.id.iv_thum);
-            ImageLoader.getInstance().displayImage(item, imageView, options);
+            Picasso.get().load(item).into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -26,5 +26,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':Transferee')
-    api 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    api libUniversal
 }

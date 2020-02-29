@@ -43,4 +43,10 @@ project.ext {
     libSupportDesign = "com.android.support:design:27.1.1"
     libSupportV7 = "androidx.appcompat:appcompat:1.1.0"
     libSupportRecyclerview = "androidx.recyclerview:recyclerview:1.0.0"
+    libUtilCodex = "com.blankj:utilcodex:1.26.0"
+    libGlide = "com.github.bumptech.glide:glide:4.11.0"
+    libPicasso = "com.squareup.picasso:picasso:2.71828"
+    libUniversal = "com.nostra13.universalimageloader:universal-image-loader:1.9.5"
+    libBaseAdapter = "com.zhy:base-adapter:3.0.3"
+    libRecyclerviewAdpater = "com.zhy:base-rvadapter:3.0.3"
 }

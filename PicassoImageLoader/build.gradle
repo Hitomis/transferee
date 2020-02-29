@@ -27,7 +27,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':Transferee')
-    implementation 'com.blankj:utilcodex:1.26.0'
-    api 'com.squareup.picasso:picasso:2.71828'
+    implementation libUtilCodex
+    api libPicasso
 
 }

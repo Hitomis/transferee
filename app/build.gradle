@@ -27,9 +27,9 @@ dependencies {
     implementation project(':UniversalImageLoader')
     implementation project(':PicassoImageLoader')
 
-    implementation rootProject.ext.libSupportV7
-    implementation rootProject.ext.libSupportDesign
-    implementation 'com.zhy:base-adapter:3.0.3'
-    implementation 'com.zhy:base-rvadapter:3.0.3'
-    implementation 'com.blankj:utilcodex:1.26.0'
+    implementation libSupportV7
+    implementation libSupportDesign
+    implementation libBaseAdapter
+    implementation libRecyclerviewAdpater
+    implementation libUtilCodex
 }

@@ -3,7 +3,6 @@ package com.vansz.glideimageloader;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
@@ -23,6 +22,7 @@ import java.util.Map;
 
 /**
  * Created by Vans Z on 2020-02-28.
+ * 暂不支持百分比进度指示器
  */
 public class GlideImageLoader implements ImageLoader {
     private Context context;

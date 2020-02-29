@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.hitomi.transferimage.activity.MainActivity">
 
     <Button
@@ -26,17 +26,17 @@
         android:textAllCaps="false" />
 
     <Button
-        android:id="@+id/btn_universal_local"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="本地图片"
-        android:textAllCaps="false" />
-
-    <Button
         android:id="@+id/btn_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="测试 recyclerView"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_universal_local"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="本地图片"
         android:textAllCaps="false" />
 
     <Button

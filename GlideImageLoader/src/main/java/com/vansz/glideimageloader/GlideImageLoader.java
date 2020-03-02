@@ -53,7 +53,7 @@ public class GlideImageLoader implements ImageLoader {
 
             @Override
             public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
-                if (!imageUrl.endsWith(".gif")) // gif 图片需要 transferee 内部渲染，所以这里作显示
+                if (!imageUrl.endsWith(".gif")) // gif 图片需要 transferee 内部渲染，所以这里不作显示
                     imageView.setImageBitmap(BitmapFactory.decodeFile(resource.getAbsolutePath()));
                 checkSaveFile(resource, getFileName(imageUrl));
                 SourceCallback callback = callbackMap.get(imageUrl);

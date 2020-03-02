@@ -3,8 +3,11 @@ package com.hitomi.tilibrary.transfer;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+
 import androidx.annotation.IdRes;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 
@@ -44,10 +47,12 @@ public final class TransferConfig {
     private IIndexIndicator indexIndicator;
     private ImageLoader imageLoader;
 
-    private @IdRes int imageId;
+    private @IdRes
+    int imageId;
     private ImageView imageView;
     private AbsListView listView;
     private RecyclerView recyclerView;
+    private View customView;
 
     private Transferee.OnTransfereeLongClickListener longClickListener;
 
@@ -88,7 +93,7 @@ public final class TransferConfig {
     }
 
     public int getBackgroundColor() {
-        return backgroundColor == 0 ? Color.BLACK: backgroundColor;
+        return backgroundColor == 0 ? Color.BLACK : backgroundColor;
     }
 
     public void setBackgroundColor(int backgroundColor) {
@@ -252,6 +257,14 @@ public final class TransferConfig {
         this.recyclerView = recyclerView;
     }
 
+    public View getCustomView() {
+        return customView;
+    }
+
+    public void setCustomView(View customView) {
+        this.customView = customView;
+    }
+
     public static class Builder {
         private int nowThumbnailIndex;
         private int offscreenPageLimit;
@@ -271,8 +284,10 @@ public final class TransferConfig {
         private IProgressIndicator progressIndicator;
         private IIndexIndicator indexIndicator;
         private ImageLoader imageLoader;
+        private View customView;
 
-        private @IdRes int imageId;
+        private @IdRes
+        int imageId;
         private ImageView imageView;
         private AbsListView listView;
         private RecyclerView recyclerView;
@@ -414,40 +429,48 @@ public final class TransferConfig {
             return this;
         }
 
+        /**
+         * 在 transferee 视图放置用户自定义的视图
+         */
+        public Builder setCustomView(View customView) {
+            this.customView = customView;
+            return this;
+        }
+
+        /**
+         * 绑定 ListView
+         *
+         * @param imageId item layout 中的 ImageView Resource ID
+         */
         public TransferConfig bindListView(AbsListView listView, int imageId) {
             this.listView = listView;
             this.imageId = imageId;
             return create();
         }
 
+        /**
+         * 绑定 RecyclerView
+         *
+         * @param imageId item layout 中的 ImageView Resource ID
+         */
         public TransferConfig bindRecyclerView(RecyclerView recyclerView, int imageId) {
             this.recyclerView = recyclerView;
             this.imageId = imageId;
             return create();
         }
 
+        /**
+         * 绑定单个 ImageView, 指定一个 sourceImageList 作为显示的图片源数据
+         */
         public TransferConfig bindImageView(ImageView imageView, List<String> sourceImageList) {
             this.imageView = imageView;
             this.sourceImageList = sourceImageList;
             return create();
         }
 
-        public TransferConfig bindImageView(ImageView imageView, List<String> thumbnailImageList, List<String> sourceImageList) {
-            this.imageView = imageView;
-            this.thumbnailImageList = thumbnailImageList;
-            this.sourceImageList = sourceImageList;
-            return create();
-        }
-
-        public TransferConfig bindImageView(ImageView imageView, String thumbnailUrl, String sourceUrl) {
-            this.imageView = imageView;
-            this.thumbnailImageList = new ArrayList<>();
-            thumbnailImageList.add(thumbnailUrl);
-            this.sourceImageList = new ArrayList<>();
-            sourceImageList.add(sourceUrl);
-            return create();
-        }
-
+        /**
+         * 绑定单个 ImageView, 并指定图片的 url
+         */
         public TransferConfig bindImageView(ImageView imageView, String sourceUrl) {
             this.imageView = imageView;
             this.sourceImageList = new ArrayList<>();
@@ -456,6 +479,7 @@ public final class TransferConfig {
         }
 
         private TransferConfig create() {
+
             TransferConfig config = new TransferConfig();
 
             config.setNowThumbnailIndex(nowThumbnailIndex);
@@ -476,6 +500,7 @@ public final class TransferConfig {
             config.setProgressIndicator(progressIndicator);
             config.setIndexIndicator(indexIndicator);
             config.setImageLoader(imageLoader);
+            config.setCustomView(customView);
 
             config.setImageId(imageId);
             config.setImageView(imageView);

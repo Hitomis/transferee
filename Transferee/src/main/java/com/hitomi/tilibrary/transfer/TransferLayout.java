@@ -111,6 +111,7 @@ class TransferLayout extends FrameLayout {
                 switch (state) {
                     case TransferImage.STATE_TRANS_IN: // 伸展动画执行完毕
                         addIndexIndicator();
+                        addCustomView();
                         transViewPager.setVisibility(View.VISIBLE);
                         removeFromParent(transImage);
                         break;
@@ -125,6 +126,7 @@ class TransferLayout extends FrameLayout {
                         if (stage == TransferImage.STAGE_TRANSLATE) {
                             // 第一阶段位移动画执行完毕
                             addIndexIndicator();
+                            addCustomView();
                             transViewPager.setVisibility(View.VISIBLE);
                             removeFromParent(transImage);
                         }
@@ -419,6 +421,13 @@ class TransferLayout extends FrameLayout {
         IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
         if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
             indexIndicator.onHide();
+        }
+    }
+
+    private void addCustomView() {
+        View customView = transConfig.getCustomView();
+        if (customView != null) {
+            addView(customView);
         }
     }
 

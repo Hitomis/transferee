@@ -135,9 +135,10 @@ public class Transferee implements DialogInterface.OnShowListener,
         RecyclerView recyclerView = transConfig.getRecyclerView();
         int childCount = recyclerView.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            ImageView originImage = ((ImageView) recyclerView.getChildAt(i)
-                    .findViewById(transConfig.getImageId()));
-            originImageList.add(originImage);
+            ImageView originImage = recyclerView.getChildAt(i)
+                    .findViewById(transConfig.getImageId());
+            if (originImage != null)
+                originImageList.add(originImage);
         }
 
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();

@@ -65,6 +65,7 @@ Transferee.getDefault(context)
 
 
 如果你需要更多的功能，下面是 transferee 完整的使用示例：
+
 step 1: 一个页面只创建一个 transferee 示例 (建议写在 onCreate 方法中)
 ```
 transferee = Transferee.getDefault(context);

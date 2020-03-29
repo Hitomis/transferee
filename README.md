@@ -1,4 +1,4 @@
-# Transferee
+# Transferee [![](https://jitpack.io/v/Hitomis/transferee.svg)](https://jitpack.io/#Hitomis/transferee)
 transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功能体系仿照并涵盖 ios 版本的 QQ、微信朋友圈、新浪微博的图片浏览功能。
 
 支持的功能:
@@ -26,7 +26,34 @@ transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功
 
 
 # Dependency
-Gradle 依赖，之前版本已作废，待现在版本稳定后，再上传
+
+step1.
+```
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+step2.
+```
+// 添加所有 module  [包括 Transferee、GlideImageLoader、PicassoImageLoader、UniversalImageLoader]
+implementation 'com.github.Hitomis:transferee:1.5.0'
+
+// 单独添加核心 module Transferee, 之后至少还需要添加以下三种图片加载器中的一种
+implementation 'com.github.Hitomis.transferee:Transferee:v1.5.0'
+
+// 添加 Glide 图片加载器
+implementation 'com.github.Hitomis.transferee:GlideImageLoader:v1.5.0'
+
+// 添加 casso 图片加载器
+implementation 'com.github.Hitomis.transferee:PicassoImageLoader:v1.5.0'
+
+// 添加 Universal 图片加载器
+implementation 'com.github.Hitomis.transferee:UniversalImageLoader:v1.5.0'
+```
 
 # Usage
 

@@ -48,7 +48,7 @@ implementation 'com.github.Hitomis.transferee:Transferee:v1.5.0'
 // 添加 Glide 图片加载器
 implementation 'com.github.Hitomis.transferee:GlideImageLoader:v1.5.0'
 
-// 添加 casso 图片加载器
+// 添加 Picasso 图片加载器P
 implementation 'com.github.Hitomis.transferee:PicassoImageLoader:v1.5.0'
 
 // 添加 Universal 图片加载器

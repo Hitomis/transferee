@@ -29,7 +29,10 @@ public class WebPicSimpleActivity extends BaseActivity {
         gvImages = findViewById(R.id.gv_images);
 
         final ImageView sourceIv = findViewById(R.id.iv_source);
-        Glide.with(sourceIv).load(ImageConfig.WEB_URL).into(sourceIv);
+        Glide.with(sourceIv)
+                .load(ImageConfig.WEB_URL)
+                .placeholder(R.mipmap.ic_empty_photo)
+                .into(sourceIv);
         sourceIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +82,10 @@ public class WebPicSimpleActivity extends BaseActivity {
                     transferee.apply(config).show();
                 }
             });
-            Glide.with(imageView).load(item).into(imageView);
+            Glide.with(imageView)
+                    .load(item)
+                    .placeholder(R.mipmap.ic_empty_photo)
+                    .into(imageView);
         }
     }
 

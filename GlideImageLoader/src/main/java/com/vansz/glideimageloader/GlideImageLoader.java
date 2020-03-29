@@ -43,7 +43,9 @@ public class GlideImageLoader implements ImageLoader {
     public void showImage(final String imageUrl, final ImageView imageView, final Drawable placeholder, final SourceCallback sourceCallback) {
         callbackMap.put(imageUrl, sourceCallback);
         if (sourceCallback != null) sourceCallback.onStart();
-        Glide.with(imageView).download(imageUrl).placeholder(placeholder).listener(new RequestListener<File>() {
+        // download not support placeholder
+        imageView.setImageDrawable(placeholder);
+        Glide.with(imageView).download(imageUrl).listener(new RequestListener<File>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<File> target, boolean isFirstResource) {
                 SourceCallback callback = callbackMap.get(imageUrl);

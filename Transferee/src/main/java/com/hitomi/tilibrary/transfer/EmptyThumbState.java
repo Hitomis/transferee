@@ -27,7 +27,7 @@ class EmptyThumbState extends TransferState {
 
     @Override
     public void prepareTransfer(final TransferImage transImage, final int position) {
-        transImage.setImageDrawable(clipAndGetPlachHolder(transImage, position));
+        transImage.setImageDrawable(clipAndGetPlaceHolder(transImage, position));
     }
 
     @Override
@@ -56,7 +56,7 @@ class EmptyThumbState extends TransferState {
             // 对 TransferImage 裁剪过了， 所以只需要获取 Drawable 作为占位图即可
             placeHolder = getPlaceHolder(position);
         } else {
-            placeHolder = clipAndGetPlachHolder(targetImage, position);
+            placeHolder = clipAndGetPlaceHolder(targetImage, position);
         }
 
         final IProgressIndicator progressIndicator = config.getProgressIndicator();
@@ -123,16 +123,16 @@ class EmptyThumbState extends TransferState {
      * @return 占位图
      */
     private Drawable getPlaceHolder(int position) {
-        Drawable placeHolder;
+        Drawable placeHolder = null;
 
         TransferConfig config = transfer.getTransConfig();
         ImageView originImage = config.getOriginImageList().get(position);
         if (originImage != null) {
             placeHolder = originImage.getDrawable();
-        } else {
+        }
+        if (placeHolder == null) {
             placeHolder = config.getMissDrawable(transfer.getContext());
         }
-
         return placeHolder;
     }
 
@@ -143,7 +143,7 @@ class EmptyThumbState extends TransferState {
      * @param position    图片索引
      * @return 被裁减的 TransferImage 中显示的 Drawable
      */
-    private Drawable clipAndGetPlachHolder(TransferImage targetImage, int position) {
+    private Drawable clipAndGetPlaceHolder(TransferImage targetImage, int position) {
         TransferConfig config = transfer.getTransConfig();
 
         Drawable placeHolder = getPlaceHolder(position);

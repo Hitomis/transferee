@@ -424,7 +424,7 @@ public final class TransferConfig {
         /**
          * 绑定 transferee 长按操作监听器
          */
-        public Builder setOnLongClcikListener(Transferee.OnTransfereeLongClickListener listener) {
+        public Builder setOnLongClickListener(Transferee.OnTransfereeLongClickListener listener) {
             this.longClickListener = listener;
             return this;
         }

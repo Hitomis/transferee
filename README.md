@@ -21,12 +21,10 @@ transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功
 <img src="preview/transferee.gif" />
 
 # Sample
-
 [demo.apk](https://github.com/Hitomis/transferee/tree/master/preview/app-release.apk)
 
 
 # Dependency
-
 step1.
 ```
 allprojects {
@@ -43,20 +41,30 @@ step2.
 implementation 'com.github.Hitomis:transferee:1.5.0'
 
 // 单独添加核心 module Transferee, 之后至少还需要添加以下三种图片加载器中的一种
-implementation 'com.github.Hitomis.transferee:Transferee:v1.5.0'
+implementation 'com.github.Hitomis.transferee:Transferee:1.5.0'
 
 // 添加 Glide 图片加载器
-implementation 'com.github.Hitomis.transferee:GlideImageLoader:v1.5.0'
+implementation 'com.github.Hitomis.transferee:GlideImageLoader:1.5.0'
 
-// 添加 Picasso 图片加载器P
-implementation 'com.github.Hitomis.transferee:PicassoImageLoader:v1.5.0'
+// 添加 Picasso 图片加载器
+implementation 'com.github.Hitomis.transferee:PicassoImageLoader:1.5.0'
 
 // 添加 Universal 图片加载器
-implementation 'com.github.Hitomis.transferee:UniversalImageLoader:v1.5.0'
+implementation 'com.github.Hitomis.transferee:UniversalImageLoader:1.5.0'
 ```
 
 # Usage
+如果针对单个 ImageView 使用，将非常简单：
+```
+Transferee.getDefault(context)
+        .apply(TransferConfig.build()
+                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+                .bindImageView(sourceIv, imageUrl)
+        ).show();
+```
 
+
+如果你需要更多的功能，下面是 transferee 完整的使用示例：
 step 1: 一个页面只创建一个 transferee 示例 (建议写在 onCreate 方法中)
 ```
 transferee = Transferee.getDefault(context);
@@ -73,12 +81,12 @@ TransferConfig config = TransferConfig.build()
        .setImageLoader(GlideImageLoader.with(getApplicationContext())) // 设置图片加载器
        .setJustLoadHitImage(true) // 是否只加载当前显示在屏幕中的的图片
        .enableDragClose(true) // 开启拖拽关闭
-       .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
-           @Override
-           public void onLongClick(ImageView imageView, int pos) {
-               saveImageByUniversal(imageView);
-           }
-       })
+       .setOnLongClickListener(new Transferee.OnTransfereeLongClickListener() {
+            @Override
+            public void onLongClick(ImageView imageView, String imageUri, int pos) {
+                saveImageFile(imageUri); // 使用 transferee.getFile(imageUri) 获取缓存文件保存
+            }
+        })
        .bindRecyclerView(gvImages, R.id.iv_thum);
        
 TransferConfig 可以绑定 ImageView, ListView, RecyclerView, 详见下面 api 说明

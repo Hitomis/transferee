@@ -46,7 +46,7 @@ public class WebPicMultiActivity extends BaseActivity {
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
                 .setJustLoadHitImage(true)
-                .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
+                .setOnLongClickListener(new Transferee.OnTransfereeLongClickListener() {
                     @Override
                     public void onLongClick(ImageView imageView, String imageUri, int pos) {
                         saveImageFile(imageUri);

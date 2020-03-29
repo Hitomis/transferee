@@ -55,7 +55,7 @@ public class WebPicSimpleActivity extends BaseActivity {
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                 .setJustLoadHitImage(true)
-                .setOnLongClcikListener(new Transferee.OnTransfereeLongClickListener() {
+                .setOnLongClickListener(new Transferee.OnTransfereeLongClickListener() {
                     @Override
                     public void onLongClick(ImageView imageView, String imageUri, int pos) {
                         saveImageFile(imageUri);

@@ -1,7 +1,5 @@
 apply plugin: 'com.android.library'
-// JitPack Maven
 apply plugin: 'com.github.dcendents.android-maven'
-// Group
 group='com.github.hitomi'
 
 android {

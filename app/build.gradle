@@ -32,4 +32,7 @@ dependencies {
     implementation libBaseAdapter
     implementation libRecyclerviewAdpater
     implementation libUtilCodex
+    implementation libUniversal
+    implementation libGlide
+    implementation libPicasso
 }

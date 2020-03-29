@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.hitomi'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -26,5 +28,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':Transferee')
-    api libUniversal
+    implementation libUniversal
 }

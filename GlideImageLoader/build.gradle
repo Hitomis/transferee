@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.hitomi'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -27,5 +29,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':Transferee')
     implementation libUtilCodex
-    api libGlide
+    implementation libGlide
 }

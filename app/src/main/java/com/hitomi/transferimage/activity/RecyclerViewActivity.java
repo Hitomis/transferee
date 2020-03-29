@@ -54,7 +54,10 @@ public class RecyclerViewActivity extends BaseActivity {
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             final ImageView imageView = viewHolder.getView(R.id.iv_thum);
-            Picasso.get().load(item).into(imageView);
+            Picasso.get()
+                    .load(item)
+                    .placeholder(R.mipmap.ic_empty_photo)
+                    .into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

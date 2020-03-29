@@ -86,7 +86,10 @@ public class LocalImageActivity extends BaseActivity {
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             final ImageView imageView = viewHolder.getView(R.id.iv_thum);
-            Glide.with(imageView).load(item).into(imageView);
+            Glide.with(imageView)
+                    .load(item)
+                    .placeholder(R.mipmap.ic_empty_photo)
+                    .into(imageView);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

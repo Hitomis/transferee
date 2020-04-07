@@ -35,6 +35,7 @@ public final class TransferConfig {
     private long duration;
     private boolean justLoadHitImage;
     private boolean enableDragClose;
+    private boolean enableDragHide;
 
     private Drawable missDrawable;
     private Drawable errorDrawable;
@@ -123,6 +124,14 @@ public final class TransferConfig {
 
     public void enableDragClose(boolean enableDragClose) {
         this.enableDragClose = enableDragClose;
+    }
+
+    public void enableDragHide(boolean enableDragHide){
+        this.enableDragHide = enableDragHide;
+    }
+
+    public boolean isEnableDragHide() {
+        return enableDragHide;
     }
 
     public Drawable getMissDrawable(Context context) {
@@ -274,6 +283,7 @@ public final class TransferConfig {
         private long duration;
         private boolean justLoadHitImage;
         private boolean enableDragClose = true;
+        private boolean enableDragHide;
 
         private Drawable missDrawable;
         private Drawable errorDrawable;
@@ -359,6 +369,14 @@ public final class TransferConfig {
          */
         public Builder enableDragClose(boolean enableDragClose) {
             this.enableDragClose = enableDragClose;
+            return this;
+        }
+
+        /**
+         * 拖拽的时候是否隐藏indicator或customView
+         */
+        public Builder enableDragHide(boolean enableDragHide){
+            this.enableDragHide = enableDragHide;
             return this;
         }
 
@@ -490,9 +508,11 @@ public final class TransferConfig {
             config.setDuration(duration);
             config.setJustLoadHitImage(justLoadHitImage);
             config.enableDragClose(enableDragClose);
+            config.enableDragHide(enableDragHide);
 
             config.setMissDrawable(missDrawable);
             config.setErrorDrawable(errorDrawable);
+
 
             config.setSourceImageList(sourceImageList);
 //            config.setThumbnailImageList(thumbnailImageList);

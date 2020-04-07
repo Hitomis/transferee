@@ -36,6 +36,7 @@ public class NumberIndexIndicator implements IIndexIndicator {
 
     @Override
     public void onShow(ViewPager viewPager) {
+        if(numberIndicator == null) return;
         numberIndicator.setVisibility(View.VISIBLE);
         numberIndicator.setViewPager(viewPager);
     }

@@ -93,7 +93,7 @@ public class ImageConfig {
 
                 while (true) {
                     // 获取图片的路径
-                    String path = "file:/" + cursor.getString(0);
+                    String path = cursor.getString(0);
                     if (!latestImagePaths.contains(path))
                         latestImagePaths.add(path);
 

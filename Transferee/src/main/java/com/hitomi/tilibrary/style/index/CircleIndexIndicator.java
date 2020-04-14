@@ -37,6 +37,7 @@ public class CircleIndexIndicator implements IIndexIndicator {
 
     @Override
     public void onShow(ViewPager viewPager) {
+        if(circleIndicator == null) return;
         circleIndicator.setVisibility(View.VISIBLE);
         circleIndicator.setViewPager(viewPager);
     }

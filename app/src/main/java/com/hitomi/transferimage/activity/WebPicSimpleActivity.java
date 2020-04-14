@@ -38,6 +38,7 @@ public class WebPicSimpleActivity extends BaseActivity {
             public void onClick(View v) {
                 transferee.apply(TransferConfig.build()
                         .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+                        .enableDragHide(true)
                         .setCustomView(View.inflate(getBaseContext(), R.layout.layout_custom, null))
                         .bindImageView(sourceIv, ImageConfig.WEB_URL)
                 ).show();

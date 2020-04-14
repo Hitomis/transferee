@@ -1,5 +1,7 @@
 package com.hitomi.tilibrary.transfer;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -31,11 +33,13 @@ class DragCloseGesture {
     private float preY;
     private float scale; // 拖拽图片缩放值
     private int touchSlop;
+    private DragCloseListener listener;
 
 
-    DragCloseGesture(TransferLayout transferLayout) {
+    DragCloseGesture(TransferLayout transferLayout, DragCloseListener listener) {
         this.transferLayout = transferLayout;
         touchSlop = ViewConfiguration.get(transferLayout.getContext()).getScaledEdgeSlop();
+        this.listener = listener;
     }
 
     boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -95,6 +99,7 @@ class DragCloseGesture {
                     transViewPager.setTranslationY(diffY);
                     transViewPager.setScaleX(scale);
                     transViewPager.setScaleY(scale);
+                    listener.onDragStar();
                 } else {
                     transferLayout.setBackgroundColor(transferLayout.getTransConfig().getBackgroundColor());
                     transViewPager.setTranslationX(diffX);
@@ -189,8 +194,29 @@ class DragCloseGesture {
             }
         });
 
+        bgColor.addListener(new AnimatorListenerAdapter() {
+            @Override public void onAnimationEnd(Animator animation) {
+                listener.onDragRollback();
+            }
+        });
+
+
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(bgColor, scaleX, scaleY, transX, transY);
         animatorSet.start();
     }
+
+
+    public interface DragCloseListener{
+        /**
+         * 拖拽开始
+         */
+        void onDragStar();
+
+        /**
+         * 不满足拖拽返回条件，执行rollBack动画
+         */
+        void onDragRollback();
+    }
+
 }

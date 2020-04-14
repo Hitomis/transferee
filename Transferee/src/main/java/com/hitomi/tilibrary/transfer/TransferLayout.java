@@ -58,6 +58,35 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
+     * 拖拽开始和未满足拖拽返回执行的rollBack回调
+     */
+    private DragCloseGesture.DragCloseListener dragCloseListener = new DragCloseGesture.DragCloseListener() {
+        @Override public void onDragStar() {
+            if(!transConfig.isEnableDragHide())return;
+            View view = transConfig.getCustomView();
+            if(view != null){
+                view.setVisibility(GONE);
+            }
+            IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
+            if(indexIndicator != null && transConfig.getSourceImageList().size() >= 2){
+                indexIndicator.onHide();
+            }
+        }
+
+        @Override public void onDragRollback() {
+            if(!transConfig.isEnableDragHide())return;
+            View view = transConfig.getCustomView();
+            if(view != null){
+                view.setVisibility(VISIBLE);
+            }
+            IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
+            if(indexIndicator != null && transConfig.getSourceImageList().size() >= 2){
+                indexIndicator.onShow(transViewPager);
+            }
+        }
+    };
+
+    /**
      * ViewPager 页面切换监听器 => 当页面切换时，根据相邻优先加载的规则去加载图片
      */
     private ViewPager.OnPageChangeListener transChangeListener = new ViewPager.SimpleOnPageChangeListener() {
@@ -391,7 +420,7 @@ class TransferLayout extends FrameLayout {
     void apply(TransferConfig config) {
         transConfig = config;
         if (transConfig.isEnableDragClose())
-            this.dragCloseGesture = new DragCloseGesture(this);
+            this.dragCloseGesture = new DragCloseGesture(this, dragCloseListener);
     }
 
     /**

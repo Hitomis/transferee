@@ -126,7 +126,7 @@ public final class TransferConfig {
         this.enableDragClose = enableDragClose;
     }
 
-    public void enableDragHide(boolean enableDragHide){
+    public void enableDragHide(boolean enableDragHide) {
         this.enableDragHide = enableDragHide;
     }
 
@@ -283,7 +283,7 @@ public final class TransferConfig {
         private long duration;
         private boolean justLoadHitImage;
         private boolean enableDragClose = true;
-        private boolean enableDragHide;
+        private boolean enableDragHide = true;
 
         private Drawable missDrawable;
         private Drawable errorDrawable;
@@ -375,7 +375,7 @@ public final class TransferConfig {
         /**
          * 拖拽的时候是否隐藏indicator或customView
          */
-        public Builder enableDragHide(boolean enableDragHide){
+        public Builder enableDragHide(boolean enableDragHide) {
             this.enableDragHide = enableDragHide;
             return this;
         }

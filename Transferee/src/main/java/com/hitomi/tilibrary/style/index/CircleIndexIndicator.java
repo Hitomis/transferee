@@ -1,6 +1,7 @@
 package com.hitomi.tilibrary.style.index;
 
 import androidx.viewpager.widget.ViewPager;
+
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ public class CircleIndexIndicator implements IIndexIndicator {
 
     @Override
     public void onShow(ViewPager viewPager) {
-        if(circleIndicator == null) return;
+        if (circleIndicator == null) return;
         circleIndicator.setVisibility(View.VISIBLE);
         circleIndicator.setViewPager(viewPager);
     }

@@ -7,7 +7,9 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.RectF;
 import android.os.Build;
+
 import androidx.viewpager.widget.ViewPager;
+
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -195,7 +197,8 @@ class DragCloseGesture {
         });
 
         bgColor.addListener(new AnimatorListenerAdapter() {
-            @Override public void onAnimationEnd(Animator animation) {
+            @Override
+            public void onAnimationEnd(Animator animation) {
                 listener.onDragRollback();
             }
         });
@@ -207,7 +210,7 @@ class DragCloseGesture {
     }
 
 
-    public interface DragCloseListener{
+    public interface DragCloseListener {
         /**
          * 拖拽开始
          */

@@ -6,7 +6,9 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+
 import androidx.viewpager.widget.ViewPager;
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,26 +63,28 @@ class TransferLayout extends FrameLayout {
      * 拖拽开始和未满足拖拽返回执行的rollBack回调
      */
     private DragCloseGesture.DragCloseListener dragCloseListener = new DragCloseGesture.DragCloseListener() {
-        @Override public void onDragStar() {
-            if(!transConfig.isEnableDragHide())return;
+        @Override
+        public void onDragStar() {
+            if (!transConfig.isEnableDragHide()) return;
             View view = transConfig.getCustomView();
-            if(view != null){
+            if (view != null) {
                 view.setVisibility(GONE);
             }
             IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
-            if(indexIndicator != null && transConfig.getSourceImageList().size() >= 2){
+            if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
                 indexIndicator.onHide();
             }
         }
 
-        @Override public void onDragRollback() {
-            if(!transConfig.isEnableDragHide())return;
+        @Override
+        public void onDragRollback() {
+            if (!transConfig.isEnableDragHide()) return;
             View view = transConfig.getCustomView();
-            if(view != null){
+            if (view != null) {
                 view.setVisibility(VISIBLE);
             }
             IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
-            if(indexIndicator != null && transConfig.getSourceImageList().size() >= 2){
+            if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
                 indexIndicator.onShow(transViewPager);
             }
         }

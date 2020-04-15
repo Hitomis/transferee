@@ -1,11 +1,10 @@
 package com.hitomi.transferimage.activity;
 
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
 import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
@@ -34,7 +33,7 @@ public class WebPicMultiActivity extends BaseActivity {
     @Override
     protected void initView() {
         gvImages = findViewById(R.id.gv_images);
-        gvImages.setLayoutParams(new CoordinatorLayout.LayoutParams(
+        gvImages.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 

@@ -1,13 +1,11 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.graphics.Bitmap;
-import android.os.Build;
-
-import androidx.annotation.NonNull;
-
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.view.image.TransferImage;
@@ -48,9 +46,6 @@ abstract class TransferState {
      * @return
      */
     int getTransImageLocalY(int oldY) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            return oldY;
-        }
         return oldY - getStatusBarHeight();
     }
 

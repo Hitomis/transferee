@@ -3,16 +3,14 @@ package com.hitomi.tilibrary.transfer;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
+import android.view.KeyEvent;
+import android.widget.AbsListView;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.KeyEvent;
-import android.widget.AbsListView;
-import android.widget.ImageView;
 
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
@@ -71,26 +69,12 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     private void createDialog() {
-        transDialog = new AlertDialog.Builder(context, getDialogStyle())
+        transDialog = new AlertDialog.Builder(context, android.R.style.Theme_Translucent_NoTitleBar)
                 .setView(transLayout)
                 .create();
+
         transDialog.setOnShowListener(this);
         transDialog.setOnKeyListener(this);
-    }
-
-    /**
-     * 兼容4.4以下的全屏 Dialog 样式
-     *
-     * @return The style of the dialog
-     */
-    private int getDialogStyle() {
-        int dialogStyle;
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            dialogStyle = android.R.style.Theme_Translucent_NoTitleBar_Fullscreen;
-        } else {
-            dialogStyle = android.R.style.Theme_Translucent_NoTitleBar;
-        }
-        return dialogStyle;
     }
 
     /**

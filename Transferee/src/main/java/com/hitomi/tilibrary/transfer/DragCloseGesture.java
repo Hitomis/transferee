@@ -6,16 +6,14 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.RectF;
-import android.os.Build;
-
-import androidx.viewpager.widget.ViewPager;
-
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import androidx.viewpager.widget.ViewPager;
 
 import com.hitomi.tilibrary.view.image.TransferImage;
 
@@ -144,7 +142,7 @@ class DragCloseGesture {
 
 
         int x = location[0];
-        int y = Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT ? location[1] : location[1] - getStatusBarHeight();
+        int y = location[1] - getStatusBarHeight();
         int width = originImage.getWidth();
         int height = originImage.getHeight();
 

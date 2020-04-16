@@ -45,6 +45,10 @@
             android:name=".activity.ResImageActivity"
             android:label="Res 资源图片测试"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.NoneViewActivity"
+            android:label="无 View 绑定，直接使用"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -2,19 +2,19 @@ package com.hitomi.tilibrary.transfer;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
-
-import androidx.viewpager.widget.ViewPager;
-
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import androidx.viewpager.widget.ViewPager;
 
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
@@ -143,10 +143,7 @@ class TransferLayout extends FrameLayout {
             if (cate == TransferImage.CATE_ANIMA_TOGETHER) {
                 switch (state) {
                     case TransferImage.STATE_TRANS_IN: // 伸展动画执行完毕
-                        addIndexIndicator();
-                        addCustomView();
-                        transViewPager.setVisibility(View.VISIBLE);
-                        removeFromParent(transImage);
+                        resumeTransfer();
                         break;
                     case TransferImage.STATE_TRANS_OUT: // 缩小动画执行完毕
                     case TransferImage.STATE_TRANS_SPEC_OUT:
@@ -158,10 +155,7 @@ class TransferLayout extends FrameLayout {
                     case TransferImage.STATE_TRANS_IN:
                         if (stage == TransferImage.STAGE_TRANSLATE) {
                             // 第一阶段位移动画执行完毕
-                            addIndexIndicator();
-                            addCustomView();
-                            transViewPager.setVisibility(View.VISIBLE);
-                            removeFromParent(transImage);
+                            resumeTransfer();
                         }
                         break;
                     case TransferImage.STATE_TRANS_OUT:
@@ -248,17 +242,35 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
-     * 创建 ViewPager 并添加到 TransferLayout 中
+     * transferee STATE_TRANS_IN 动画执行完毕后，开始显示内容
      */
-    private void createTransferViewPager() {
+    private void resumeTransfer() {
+        addIndexIndicator();
+        addCustomView();
+        transViewPager.setVisibility(View.VISIBLE);
+        if (transImage != null) removeFromParent(transImage);
+    }
+
+    /**
+     * 创建 ViewPager 并添加到 TransferLayout 中
+     *
+     * @param transferState
+     */
+    private void createTransferViewPager(TransferState transferState) {
         transAdapter = new TransferAdapter(this,
                 transConfig.getSourceImageList().size(),
                 transConfig.getNowThumbnailIndex());
         transAdapter.setOnInstantListener(instantListener);
 
         transViewPager = new ViewPager(context);
-        // 先隐藏，待 ViewPager 下标为 config.getCurrOriginIndex() 的页面创建完毕再显示
-        transViewPager.setVisibility(View.INVISIBLE);
+        if (transferState instanceof NoneThumbState) {
+            // 如果是 NoneThumbState 状态下，需要执行 alpha 显示动画
+            transViewPager.setVisibility(View.VISIBLE);
+            setBackgroundColor(getBackgroundColorByAlpha(255));
+        } else {
+            // 先隐藏，待 ViewPager 下标为 config.getCurrOriginIndex() 的页面创建完毕再显示
+            transViewPager.setVisibility(View.INVISIBLE);
+        }
         transViewPager.setOffscreenPageLimit(transConfig.getOffscreenPageLimit() + 1);
         transViewPager.setAdapter(transAdapter);
         transViewPager.setCurrentItem(transConfig.getNowThumbnailIndex());
@@ -297,10 +309,9 @@ class TransferLayout extends FrameLayout {
      * 初始化 TransferLayout 中的各个组件，并执行图片从缩略图到 Transferee 进入动画
      */
     void show() {
-        createTransferViewPager();
-
         int nowThumbnailIndex = transConfig.getNowThumbnailIndex();
         TransferState transferState = getTransferState(nowThumbnailIndex);
+        createTransferViewPager(transferState);
         transImage = transferState.createTransferIn(nowThumbnailIndex);
     }
 
@@ -313,7 +324,9 @@ class TransferLayout extends FrameLayout {
     TransferState getTransferState(int position) {
         TransferState transferState;
 
-        if (!transConfig.isThumbnailEmpty()) { // 客户端指定了缩略图路径集合
+        if (transConfig.getOriginImageList().isEmpty()) { // 用户没有绑定任何 View
+            transferState = new NoneThumbState(this);
+        } else if (!transConfig.isThumbnailEmpty()) { // 客户端指定了缩略图路径集合
             transferState = new RemoteThumbState(this);
         } else {
             String url = transConfig.getSourceImageList().get(position);
@@ -374,6 +387,22 @@ class TransferLayout extends FrameLayout {
 
         hideIndexIndicator();
 
+    }
+
+    /**
+     * alpha 动画显示 transfer
+     */
+    void displayTransfer() {
+        ValueAnimator alphaAnim = ObjectAnimator.ofFloat(this, "alpha", 0.f, 1.f);
+        alphaAnim.setDuration(transConfig.getDuration());
+        alphaAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+        alphaAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                resumeTransfer();
+            }
+        });
+        alphaAnim.start();
     }
 
     /**

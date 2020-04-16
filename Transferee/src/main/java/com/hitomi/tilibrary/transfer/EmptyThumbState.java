@@ -157,25 +157,4 @@ class EmptyThumbState extends TransferState {
         clipTargetImage(targetImage, placeHolder, clipSize);
         return placeHolder;
     }
-
-    /**
-     * 裁剪 ImageView 显示图片的区域
-     *
-     * @param targetImage    被裁减的 ImageView
-     * @param originDrawable 缩略图 Drawable
-     * @param clipSize       裁剪的尺寸数组
-     */
-    private void clipTargetImage(TransferImage targetImage, Drawable originDrawable, int[] clipSize) {
-        DisplayMetrics displayMetrics = transfer.getContext().getResources().getDisplayMetrics();
-        int width = displayMetrics.widthPixels;
-        int height = getTransImageLocalY(displayMetrics.heightPixels);
-
-        targetImage.setOriginalInfo(
-                originDrawable,
-                clipSize[0], clipSize[1],
-                width, height);
-
-        targetImage.transClip();
-    }
-
 }

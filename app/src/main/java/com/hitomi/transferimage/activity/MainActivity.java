@@ -52,6 +52,13 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        findViewById(R.id.btn_none_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, NoneViewActivity.class));
+            }
+        });
+
         findViewById(R.id.btn_clear_universal).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,5 +70,6 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void testTransferee() {}
+    protected void testTransferee() {
+    }
 }

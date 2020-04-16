@@ -47,6 +47,13 @@
         android:textAllCaps="false" />
 
     <Button
+        android:id="@+id/btn_none_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="没有绑定 View，直接使用"
+        android:textAllCaps="false" />
+
+    <Button
         android:id="@+id/btn_clear_universal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

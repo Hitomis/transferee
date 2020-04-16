@@ -1,6 +1,8 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -54,7 +56,7 @@ abstract class TransferState {
      *
      * @return 状态栏高度
      */
-    int getStatusBarHeight() {
+    private int getStatusBarHeight() {
         try {
             Class<?> c = Class.forName("com.android.internal.R$dimen");
             Object object = c.newInstance();
@@ -72,7 +74,7 @@ abstract class TransferState {
      * @param view 需要定位位置的 View
      * @return 坐标系数组
      */
-    int[] getViewLocation(View view) {
+    private int[] getViewLocation(View view) {
         int[] location = new int[2];
         view.getLocationInWindow(location);
         return location;
@@ -151,6 +153,26 @@ abstract class TransferState {
         }
         // 绑定点击关闭 Transferee
         transfer.bindOnOperationListener(targetImage, imgUrl, position);
+    }
+
+    /**
+     * 裁剪 ImageView 显示图片的区域
+     *
+     * @param targetImage    被裁减的 ImageView
+     * @param originDrawable 缩略图 Drawable
+     * @param clipSize       裁剪的尺寸数组
+     */
+    void clipTargetImage(TransferImage targetImage, Drawable originDrawable, int[] clipSize) {
+        DisplayMetrics displayMetrics = transfer.getContext().getResources().getDisplayMetrics();
+        int width = displayMetrics.widthPixels;
+        int height = getTransImageLocalY(displayMetrics.heightPixels);
+
+        targetImage.setOriginalInfo(
+                originDrawable,
+                clipSize[0], clipSize[1],
+                width, height);
+
+        targetImage.transClip();
     }
 
     /**

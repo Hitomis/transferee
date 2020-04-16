@@ -177,6 +177,14 @@ transferee.apply(config).show();
   - 化调用方式，不需要关注缩略图片是否加载完成
   - 修复缓存清除的crash
 
++ v1.5.1
+  - 修改在无网络的时候，使用 GlideImageLoader 加载图片闪退和行为错乱的问题
+  - 添加 enableDragHide 属性，控制在拖拽关闭的时候，是否立即隐藏其他 view
+  - 由于历史原因，不再兼容4.4以下的全屏模式。同时修复了 StatusBar 抖动的问题
+  - 拓展 Uri 格式的图片数据源接口
+  - 添加不绑定 view 也能使用 Transferee 的状态模型
+  - 同步更新 demo
+
 # Todo
 + [x] 支持图片拖拽关闭
 + [x] 支持 gif 图片 

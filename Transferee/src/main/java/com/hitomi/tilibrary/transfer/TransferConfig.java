@@ -523,7 +523,7 @@ public final class TransferConfig {
             return create();
         }
 
-        private TransferConfig create() {
+        public TransferConfig create() {
 
             TransferConfig config = new TransferConfig();
 

@@ -40,6 +40,13 @@
         android:textAllCaps="false" />
 
     <Button
+        android:id="@+id/btn_res"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="apk 内资源图片"
+        android:textAllCaps="false" />
+
+    <Button
         android:id="@+id/btn_clear_universal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

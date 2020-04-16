@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools"
     package="com.hitomi.transferimage">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,7 +14,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tool:ignore="LockedOrientationActivity">
         <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait">
@@ -38,6 +40,10 @@
         <activity
             android:name=".activity.RecyclerViewActivity"
             android:label="RecyclerView 测试"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ResImageActivity"
+            android:label="Res 资源图片测试"
             android:screenOrientation="portrait" />
     </application>
 

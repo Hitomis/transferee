@@ -52,12 +52,6 @@ public class PicassoImageLoader implements ImageLoader {
         picasso = builder
                 .downloader(new OkHttp3Downloader(cacheDir, diskCacheSize))
                 .defaultBitmapConfig(Bitmap.Config.RGB_565)
-                .listener(new Picasso.Listener() {
-                    @Override
-                    public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-                        System.out.println(uri.toString());
-                    }
-                })
                 .build();
     }
 

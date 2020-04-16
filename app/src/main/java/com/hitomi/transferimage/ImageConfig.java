@@ -2,6 +2,7 @@ package com.hitomi.transferimage;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -62,6 +63,32 @@ public class ImageConfig {
         sourceImageList.add("http://ww2.sinaimg.cn/large/85cc5ccbgy1ffng1sbcbdg20dc0m87wh.gif");
         sourceImageList.add("https://pic4.zhimg.com/80/v2-ab305465594807042787fb0dc06c423b_hd.jpg");
         return sourceImageList;
+    }
+
+    public static List<Uri> getResUriList(Context context) {
+        List<Integer> resList = new ArrayList<>();
+        resList.add(R.drawable.one);
+        resList.add(R.drawable.two);
+        resList.add(R.drawable.three);
+        resList.add(R.drawable.four);
+        resList.add(R.drawable.five);
+        resList.add(R.drawable.six);
+        resList.add(R.drawable.seven);
+        resList.add(R.drawable.eight);
+        resList.add(R.drawable.nine);
+
+        List<Uri> resUriList = new ArrayList<>();
+
+        Resources r = context.getResources();
+        for (Integer res : resList) {
+            Uri uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"
+                    + r.getResourcePackageName(res) + "/"
+                    + r.getResourceTypeName(res) + "/"
+                    + r.getResourceEntryName(res));
+            resUriList.add(uri);
+        }
+
+        return resUriList;
     }
 
     /**

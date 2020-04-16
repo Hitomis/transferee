@@ -3,13 +3,13 @@ package com.hitomi.tilibrary.transfer;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-
-import androidx.annotation.IdRes;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.net.Uri;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
+
+import androidx.annotation.IdRes;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.hitomi.tilibrary.R;
 import com.hitomi.tilibrary.loader.ImageLoader;
@@ -42,6 +42,7 @@ public final class TransferConfig {
 
     private List<ImageView> originImageList;
     private List<String> sourceImageList;
+    private List<Uri> sourceUriList;
     private List<String> thumbnailImageList;
 
     private IProgressIndicator progressIndicator;
@@ -169,11 +170,25 @@ public final class TransferConfig {
     }
 
     public List<String> getSourceImageList() {
+        if (sourceImageList == null || sourceImageList.isEmpty()) {
+            sourceImageList = new ArrayList<>();
+            for (Uri uri : sourceUriList) {
+                sourceImageList.add(uri.toString());
+            }
+        }
         return sourceImageList;
     }
 
     public void setSourceImageList(List<String> sourceImageList) {
         this.sourceImageList = sourceImageList;
+    }
+
+    public List<Uri> getSourceUriList() {
+        return sourceUriList;
+    }
+
+    public void setSourceUriList(List<Uri> sourceUriList) {
+        this.sourceUriList = sourceUriList;
     }
 
     public List<String> getThumbnailImageList() {
@@ -222,7 +237,8 @@ public final class TransferConfig {
      * @return true : 空
      */
     public boolean isSourceEmpty() {
-        return sourceImageList == null || sourceImageList.isEmpty();
+        return (sourceImageList == null || sourceImageList.isEmpty())
+                && (sourceUriList == null || sourceUriList.isEmpty());
     }
 
     /**
@@ -289,6 +305,7 @@ public final class TransferConfig {
         private Drawable errorDrawable;
 
         private List<String> sourceImageList;
+        private List<Uri> sourceUriList;
         private List<String> thumbnailImageList;
 
         private IProgressIndicator progressIndicator;
@@ -398,9 +415,19 @@ public final class TransferConfig {
 
         /**
          * 高清图的地址集合
+         * format: java.lang.String
          */
         public Builder setSourceImageList(List<String> sourceImageList) {
             this.sourceImageList = sourceImageList;
+            return this;
+        }
+
+        /**
+         * 高清图的地址集合
+         * format: android.net.Uri
+         */
+        public Builder setSourceUriList(List<Uri> sourceUriList) {
+            this.sourceUriList = sourceUriList;
             return this;
         }
 
@@ -515,6 +542,7 @@ public final class TransferConfig {
 
 
             config.setSourceImageList(sourceImageList);
+            config.setSourceUriList(sourceUriList);
 //            config.setThumbnailImageList(thumbnailImageList);
 
             config.setProgressIndicator(progressIndicator);

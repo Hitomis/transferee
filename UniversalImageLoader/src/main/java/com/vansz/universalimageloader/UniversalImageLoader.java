@@ -31,12 +31,9 @@ import java.util.Map;
  * email: 196425254@qq.com
  */
 public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLoader {
-    private Context context;
-    private DisplayImageOptions normalImageOptions;
     private Map<String, SourceCallback> callbackMap;
 
     private UniversalImageLoader(Context context) {
-        this.context = context;
         this.callbackMap = new HashMap<>();
         initImageLoader(context);
     }
@@ -50,7 +47,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
         MemoryCache memoryCache;
         memoryCache = new LruMemoryCache(memoryCacheSize);
 
-        normalImageOptions = new DisplayImageOptions
+        DisplayImageOptions normalImageOptions = new DisplayImageOptions
                 .Builder()
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .cacheOnDisk(true)

@@ -1,7 +1,6 @@
 package com.vansz.glideimageloader;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
@@ -86,11 +85,6 @@ public class GlideImageLoader implements ImageLoader {
                 return false;
             }
         }).preload();
-    }
-
-    @Override
-    public Bitmap loadImageSync(String imageUrl) {
-        return BitmapFactory.decodeFile(getCache(imageUrl).getAbsolutePath());
     }
 
     @Override

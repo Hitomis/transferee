@@ -2,9 +2,7 @@ package com.vansz.picassoimageloader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.ImageView;
@@ -181,11 +179,6 @@ public class PicassoImageLoader implements ImageLoader {
 
             }
         });
-    }
-
-    @Override
-    public Bitmap loadImageSync(String imageUrl) {
-        return BitmapFactory.decodeFile(getCache(imageUrl).getAbsolutePath());
     }
 
     @Override

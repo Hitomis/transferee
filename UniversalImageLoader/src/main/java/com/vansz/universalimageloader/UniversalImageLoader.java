@@ -2,7 +2,6 @@ package com.vansz.universalimageloader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
@@ -155,11 +154,6 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
                     callback.onFinish(null);
             }
         });
-    }
-
-    @Override
-    public Bitmap loadImageSync(String imageUrl) {
-        return ImageLoader.getInstance().loadImageSync(imageUrl, normalImageOptions);
     }
 
     @Override

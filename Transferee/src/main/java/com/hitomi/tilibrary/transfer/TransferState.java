@@ -1,6 +1,7 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -185,11 +186,12 @@ abstract class TransferState {
     private void loadThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
         final TransferConfig config = transfer.getTransConfig();
         ImageLoader imageLoader = config.getImageLoader();
-        Bitmap drawable = imageLoader.loadImageSync(imageUrl);
-        if (drawable == null)
+        File thumbFile = imageLoader.getCache(imageUrl);
+        Bitmap thumbBitmap = thumbFile != null ? BitmapFactory.decodeFile(thumbFile.getAbsolutePath()) : null;
+        if (thumbBitmap == null)
             transImage.setImageDrawable(config.getMissDrawable(transfer.getContext()));
         else
-            transImage.setImageBitmap(drawable);
+            transImage.setImageBitmap(thumbBitmap);
 
         if (in)
             transImage.transformIn();

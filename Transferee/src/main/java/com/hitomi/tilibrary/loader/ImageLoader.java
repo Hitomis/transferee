@@ -48,11 +48,6 @@ public interface ImageLoader {
     void loadImageAsync(String imageUrl, final ThumbnailCallback callback);
 
     /**
-     * 从本地同步加载图片（imageUrl 对应的图片是已经加载过的），返回 Bitmap
-     */
-    Bitmap loadImageSync(String imageUrl);
-
-    /**
      * 获取 url 关联的图片缓存
      */
     File getCache(String url);

@@ -2,6 +2,7 @@ package com.hitomi.tilibrary.transfer;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
@@ -394,15 +395,20 @@ class TransferLayout extends FrameLayout {
      */
     void displayTransfer() {
         ValueAnimator alphaAnim = ObjectAnimator.ofFloat(this, "alpha", 0.f, 1.f);
-        alphaAnim.setDuration(transConfig.getDuration());
-        alphaAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-        alphaAnim.addListener(new AnimatorListenerAdapter() {
+        ValueAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 1.2f, 1.0f);
+        ValueAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 1.2f, 1.0f);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(alphaAnim, scaleX, scaleY);
+        animatorSet.setDuration(transConfig.getDuration());
+        animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+        animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 resumeTransfer();
             }
         });
-        alphaAnim.start();
+        animatorSet.start();
     }
 
     /**
@@ -420,14 +426,14 @@ class TransferLayout extends FrameLayout {
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
 
         PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofFloat("alpha", alpha, 0.f);
-        PropertyValuesHolder scaleXHolder = PropertyValuesHolder.ofFloat("scaleX", 1.f, 1.2f);
+        PropertyValuesHolder scaleXHolder = PropertyValuesHolder.ofFloat("scale", 1.f, 1.2f);
         valueAnimator.setValues(alphaHolder, scaleXHolder);
 
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float alpha = (Float) animation.getAnimatedValue("alpha");
-                float scale = (Float) animation.getAnimatedValue("scaleX");
+                float scale = (Float) animation.getAnimatedValue("scale");
 
                 setBackgroundColor(getBackgroundColorByAlpha(alpha));
                 transImage.setAlpha(alpha / 255.f);

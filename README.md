@@ -41,16 +41,16 @@ step2.
 implementation 'com.github.Hitomis:transferee:1.5.0'
 
 // 单独添加核心 module Transferee, 之后至少还需要添加以下三种图片加载器中的一种
-implementation 'com.github.Hitomis.transferee:Transferee:1.5.0'
+implementation 'com.github.Hitomis.transferee:Transferee:1.5.1'
 
 // 添加 Glide 图片加载器
-implementation 'com.github.Hitomis.transferee:GlideImageLoader:1.5.0'
+implementation 'com.github.Hitomis.transferee:GlideImageLoader:1.5.1'
 
 // 添加 Picasso 图片加载器
-implementation 'com.github.Hitomis.transferee:PicassoImageLoader:1.5.0'
+implementation 'com.github.Hitomis.transferee:PicassoImageLoader:1.5.1'
 
 // 添加 Universal 图片加载器
-implementation 'com.github.Hitomis.transferee:UniversalImageLoader:1.5.0'
+implementation 'com.github.Hitomis.transferee:UniversalImageLoader:1.5.1'
 ```
 
 # Usage

@@ -184,10 +184,8 @@ transferee.apply(config).show();
   - 拓展 Uri 格式的图片数据源接口
   - 添加不绑定 view 也能使用 Transferee 的状态模型
   - 同步更新 demo
+  - 添加不绑定view也能使用 Transferee 的功能
 
-# Todo
-+ [x] 支持图片拖拽关闭
-+ [x] 支持 gif 图片 
 
 # Licence
     Copyright 2017 Hitomis, Inc.

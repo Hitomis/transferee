@@ -17,8 +17,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.hitomi.tilibrary.view.image.TransferImage;
 
-import java.lang.reflect.Field;
-
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
 
@@ -145,7 +143,7 @@ class DragCloseGesture {
 
 
         int x = location[0];
-        int y = location[1] - getStatusBarHeight();
+        int y = location[1];
         int width = originImage.getWidth();
         int height = originImage.getHeight();
 
@@ -167,18 +165,6 @@ class DragCloseGesture {
         RectF rectF = new RectF(left, top, realWidth, realHeight);
         transImage.transformSpecOut(rectF, scale);
         transferLayout.addView(transImage, 1);
-    }
-
-    private int getStatusBarHeight() {
-        try {
-            Class<?> c = Class.forName("com.android.internal.R$dimen");
-            Object object = c.newInstance();
-            Field field = c.getField("status_bar_height");
-            int x = (Integer) field.get(object);
-            return transferLayout.getContext().getResources().getDimensionPixelSize(x);
-        } catch (Exception e) {
-            return 0;
-        }
     }
 
     private void startFlingAndRollbackAnimation() {

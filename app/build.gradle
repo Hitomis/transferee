@@ -35,4 +35,7 @@ dependencies {
     implementation libUniversal
     implementation libGlide
     implementation libPicasso
+
+    // 基础依赖包，必须要依赖
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
 }

@@ -15,7 +15,6 @@ import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 
 import pl.droidsonroids.gif.GifDrawable;
 
@@ -43,33 +42,6 @@ abstract class TransferState {
     }
 
     /**
-     * 由于 4.4 以下版本状态栏不可修改，所以兼容 4.4 以下版本的全屏模式时，要去除状态栏的高度
-     *
-     * @param oldY
-     * @return
-     */
-    int getTransImageLocalY(int oldY) {
-        return oldY - getStatusBarHeight();
-    }
-
-    /**
-     * 获取状态栏高度
-     *
-     * @return 状态栏高度
-     */
-    private int getStatusBarHeight() {
-        try {
-            Class<?> c = Class.forName("com.android.internal.R$dimen");
-            Object object = c.newInstance();
-            Field field = c.getField("status_bar_height");
-            int x = (Integer) field.get(object);
-            return transfer.getContext().getResources().getDimensionPixelSize(x);
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
-    /**
      * 获取 View 在屏幕坐标系中的坐标
      *
      * @param view 需要定位位置的 View
@@ -94,7 +66,7 @@ abstract class TransferState {
 
         TransferImage transImage = new TransferImage(transfer.getContext());
         transImage.setScaleType(FIT_CENTER);
-        transImage.setOriginalInfo(location[0], getTransImageLocalY(location[1]),
+        transImage.setOriginalInfo(location[0], location[1],
                 originImage.getWidth(), originImage.getHeight());
         transImage.setDuration(config.getDuration());
         transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
@@ -166,7 +138,7 @@ abstract class TransferState {
     void clipTargetImage(TransferImage targetImage, Drawable originDrawable, int[] clipSize) {
         DisplayMetrics displayMetrics = transfer.getContext().getResources().getDisplayMetrics();
         int width = displayMetrics.widthPixels;
-        int height = getTransImageLocalY(displayMetrics.heightPixels);
+        int height = displayMetrics.heightPixels;
 
         targetImage.setOriginalInfo(
                 originDrawable,

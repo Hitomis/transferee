@@ -12,8 +12,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.blankj.utilcode.util.FileUtils;
+import com.gyf.immersionbar.ImmersionBar;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
+import com.hitomi.transferimage.R;
 
 import java.io.File;
 
@@ -33,6 +35,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 修改状态栏颜色
+        ImmersionBar.with(this).statusBarColor(R.color.colorPrimary).init();
         transferee = Transferee.getDefault(this);
         setContentView(getContentView());
         initView();

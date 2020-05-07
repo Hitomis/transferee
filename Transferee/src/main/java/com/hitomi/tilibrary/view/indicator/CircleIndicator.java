@@ -8,12 +8,13 @@ import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+
+import androidx.viewpager.widget.ViewPager;
 
 import com.hitomi.tilibrary.R;
 
@@ -137,16 +138,16 @@ public class CircleIndicator extends LinearLayout {
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CircleIndicator);
         mIndicatorWidth =
-                typedArray.getDimensionPixelSize(R.styleable.CircleIndicator_ci_width, -1);
+                typedArray.getDimensionPixelSize(R.styleable.CircleIndicator_circle_indicator_width, -1);
         mIndicatorHeight =
-                typedArray.getDimensionPixelSize(R.styleable.CircleIndicator_ci_height, -1);
+                typedArray.getDimensionPixelSize(R.styleable.CircleIndicator_circle_indicator_height, -1);
         mIndicatorMargin =
-                typedArray.getDimensionPixelSize(R.styleable.CircleIndicator_ci_margin, -1);
+                typedArray.getDimensionPixelSize(R.styleable.CircleIndicator_circle_indicator_margin, -1);
 
-        int orientation = typedArray.getInt(R.styleable.CircleIndicator_ci_orientation, -1);
+        int orientation = typedArray.getInt(R.styleable.CircleIndicator_circle_indicator_orientation, -1);
         setOrientation(orientation == VERTICAL ? VERTICAL : HORIZONTAL);
 
-        int gravity = typedArray.getInt(R.styleable.CircleIndicator_ci_gravity, -1);
+        int gravity = typedArray.getInt(R.styleable.CircleIndicator_circle_indicator_gravity, -1);
         setGravity(gravity >= 0 ? gravity : Gravity.CENTER);
 
         typedArray.recycle();

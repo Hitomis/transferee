@@ -2,17 +2,17 @@
 <resources>
 
     <declare-styleable name="CircleIndicator">
-        <attr name="ci_width" format="dimension"/>
-        <attr name="ci_height" format="dimension"/>
-        <attr name="ci_margin" format="dimension"/>
-        <attr name="ci_orientation" format="enum">
+        <attr name="circle_indicator_width" format="dimension"/>
+        <attr name="circle_indicator_height" format="dimension"/>
+        <attr name="circle_indicator_margin" format="dimension"/>
+        <attr name="circle_indicator_orientation" format="enum">
             <!-- Defines an horizontal widget. -->
             <enum name="horizontal" value="0"/>
             <!-- Defines a vertical widget. -->
             <enum name="vertical" value="1"/>
         </attr>
 
-        <attr name="ci_gravity">
+        <attr name="circle_indicator_gravity">
             <!-- Push object to the top of its container, not changing its size. -->
             <flag name="top" value="0x30"/>
             <!-- Push object to the bottom of its container, not changing its size. -->

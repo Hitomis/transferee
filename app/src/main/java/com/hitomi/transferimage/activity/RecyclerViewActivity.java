@@ -1,5 +1,6 @@
 package com.hitomi.transferimage.activity;
 
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,9 +51,11 @@ public class RecyclerViewActivity extends BaseActivity {
         HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(adapter);
 
         TextView t1 = new TextView(this);
-        t1.setText("我是 Header 1");
+        t1.setGravity(Gravity.CENTER);
+        t1.setText("我是 RecyclerView 的 Header ");
         TextView t2 = new TextView(this);
-        t2.setText("我是 Header 2");
+        t2.setText("确认 thumbnailIndex 值是否正确 ");
+        t2.setGravity(Gravity.CENTER);
         mHeaderAndFooterWrapper.addHeaderView(t1);
         mHeaderAndFooterWrapper.addHeaderView(t2);
 

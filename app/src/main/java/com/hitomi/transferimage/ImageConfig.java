@@ -31,11 +31,31 @@ public class ImageConfig {
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png@233w_160h_20q");
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png@233w_160h_20q");
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png@233w_160h_20q");
+
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png@233w_160h_20q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png@233w_160h_20q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png@233w_160h_20q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png@233w_160h_20q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png@233w_160h_20q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png@233w_160h_20q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png@233w_160h_20q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png@233w_160h_20q");
+        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png@233w_160h_20q");
         return thumbnailImageList;
     }
 
     public static List<String> getSourcePicUrlList() {
         List<String> sourceImageList = new ArrayList<>();
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
+
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png");
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png");

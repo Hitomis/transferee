@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
@@ -33,7 +33,7 @@ public class RecyclerViewActivity extends BaseActivity {
     @Override
     protected void initView() {
         rvImages = findViewById(R.id.rv_images);
-        rvImages.setLayoutManager(new GridLayoutManager(this, 3));
+        rvImages.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class RecyclerViewActivity extends BaseActivity {
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setImageLoader(PicassoImageLoader.with(getApplicationContext()))
                 .setJustLoadHitImage(true)
-                .bindRecyclerView(rvImages, R.id.iv_thum);
+                .bindRecyclerView(rvImages, 1, 1, R.id.iv_thum);
 
 
         NineGridAdapter adapter = new RecyclerViewActivity.NineGridAdapter();
@@ -54,10 +54,10 @@ public class RecyclerViewActivity extends BaseActivity {
         t1.setGravity(Gravity.CENTER);
         t1.setText("我是 RecyclerView 的 Header ");
         TextView t2 = new TextView(this);
-        t2.setText("确认 thumbnailIndex 值是否正确 ");
+        t2.setText("我是 RecyclerView 的 footer");
         t2.setGravity(Gravity.CENTER);
         mHeaderAndFooterWrapper.addHeaderView(t1);
-        mHeaderAndFooterWrapper.addHeaderView(t2);
+        mHeaderAndFooterWrapper.addFootView(t2);
 
         rvImages.setAdapter(mHeaderAndFooterWrapper);
         mHeaderAndFooterWrapper.notifyDataSetChanged();
@@ -78,7 +78,8 @@ public class RecyclerViewActivity extends BaseActivity {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    config.setNowThumbnailIndex(position - 2);
+                    // position 减去 header 的数量后，才是当前图片正确的索引
+                    config.setNowThumbnailIndex(position - 1);
                     transferee.apply(config).show();
                 }
             });

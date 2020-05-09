@@ -56,6 +56,9 @@ public final class TransferConfig {
     private RecyclerView recyclerView;
     private View customView;
 
+    private int headerSize;
+    private int footerSize;
+
     private Transferee.OnTransfereeLongClickListener longClickListener;
 
     public static Builder build() {
@@ -290,6 +293,22 @@ public final class TransferConfig {
         this.customView = customView;
     }
 
+    public int getHeaderSize() {
+        return headerSize;
+    }
+
+    public void setHeaderSize(int headerSize) {
+        this.headerSize = headerSize;
+    }
+
+    public int getFooterSize() {
+        return footerSize;
+    }
+
+    public void setFooterSize(int footerSize) {
+        this.footerSize = footerSize;
+    }
+
     public static class Builder {
         private int nowThumbnailIndex;
         private int offscreenPageLimit;
@@ -318,6 +337,9 @@ public final class TransferConfig {
         private ImageView imageView;
         private AbsListView listView;
         private RecyclerView recyclerView;
+
+        private int headerSize;
+        private int footerSize;
 
         private Transferee.OnTransfereeLongClickListener longClickListener;
 
@@ -494,12 +516,38 @@ public final class TransferConfig {
         }
 
         /**
+         * 绑定 ListView, 并指定 header 和 footer 的数量
+         *
+         * @param imageId item layout 中的 ImageView Resource ID
+         */
+        public TransferConfig bindListView(AbsListView listView, int headerSize, int footerSize, int imageId) {
+            this.listView = listView;
+            this.headerSize = headerSize;
+            this.footerSize = footerSize;
+            this.imageId = imageId;
+            return create();
+        }
+
+        /**
          * 绑定 RecyclerView
          *
          * @param imageId item layout 中的 ImageView Resource ID
          */
         public TransferConfig bindRecyclerView(RecyclerView recyclerView, int imageId) {
             this.recyclerView = recyclerView;
+            this.imageId = imageId;
+            return create();
+        }
+
+        /**
+         * 绑定 RecyclerView, 并指定 header 和 footer 的数量
+         *
+         * @param imageId item layout 中的 ImageView Resource ID
+         */
+        public TransferConfig bindRecyclerView(RecyclerView recyclerView, int headerSize, int footerSize, int imageId) {
+            this.recyclerView = recyclerView;
+            this.headerSize = headerSize;
+            this.footerSize = footerSize;
             this.imageId = imageId;
             return create();
         }
@@ -554,6 +602,8 @@ public final class TransferConfig {
             config.setImageView(imageView);
             config.setListView(listView);
             config.setRecyclerView(recyclerView);
+            config.setHeaderSize(headerSize);
+            config.setFooterSize(footerSize);
 
             config.setLongClickListener(longClickListener);
 

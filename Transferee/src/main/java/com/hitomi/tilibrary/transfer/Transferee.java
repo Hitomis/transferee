@@ -116,6 +116,8 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     private void fillByRecyclerView(final List<ImageView> originImageList) {
+        final int headerSize = transConfig.getHeaderSize();
+        final int footerSize = transConfig.getFooterSize();
         RecyclerView recyclerView = transConfig.getRecyclerView();
         int childCount = recyclerView.getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -127,31 +129,33 @@ public class Transferee implements DialogInterface.OnShowListener,
 
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         int firstPos = 0, lastPos = 0;
-        int totalCount = layoutManager.getItemCount();
+        int totalCount = layoutManager.getItemCount() - headerSize - -footerSize;
         if (layoutManager instanceof GridLayoutManager) {
             GridLayoutManager gridLayMan = (GridLayoutManager) layoutManager;
-            firstPos = gridLayMan.findFirstVisibleItemPosition();
-            lastPos = gridLayMan.findLastVisibleItemPosition();
+            firstPos = gridLayMan.findFirstVisibleItemPosition() - headerSize;
+            lastPos = gridLayMan.findLastVisibleItemPosition() - headerSize - footerSize;
         } else if (layoutManager instanceof LinearLayoutManager) {
             LinearLayoutManager linLayMan = (LinearLayoutManager) layoutManager;
-            firstPos = linLayMan.findFirstVisibleItemPosition();
-            lastPos = linLayMan.findLastVisibleItemPosition();
+            firstPos = linLayMan.findFirstVisibleItemPosition() - headerSize;
+            lastPos = linLayMan.findLastVisibleItemPosition() - headerSize - footerSize;
         }
         fillPlaceHolder(originImageList, totalCount, firstPos, lastPos);
     }
 
     private void fillByListView(final List<ImageView> originImageList) {
+        final int headerSize = transConfig.getHeaderSize();
+        final int footerSize = transConfig.getFooterSize();
         AbsListView absListView = transConfig.getListView();
         int childCount = absListView.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            ImageView originImage = ((ImageView) absListView.getChildAt(i)
-                    .findViewById(transConfig.getImageId()));
+            ImageView originImage = absListView.getChildAt(i)
+                    .findViewById(transConfig.getImageId());
             originImageList.add(originImage);
         }
 
-        int firstPos = absListView.getFirstVisiblePosition();
-        int lastPos = absListView.getLastVisiblePosition();
-        int totalCount = absListView.getCount();
+        int firstPos = absListView.getFirstVisiblePosition() - headerSize;
+        int lastPos = absListView.getLastVisiblePosition() - headerSize - footerSize;
+        int totalCount = absListView.getCount() - headerSize - footerSize;
         fillPlaceHolder(originImageList, totalCount, firstPos, lastPos);
     }
 

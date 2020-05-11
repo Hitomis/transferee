@@ -1,14 +1,18 @@
 package com.hitomi.transferimage.activity;
 
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
+import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.transferimage.ImageConfig;
@@ -24,6 +28,9 @@ import com.zhy.adapter.recyclerview.wrapper.HeaderAndFooterWrapper;
  */
 public class RecyclerViewActivity extends BaseActivity {
     private RecyclerView rvImages;
+    private HeaderAndFooterWrapper headerAndFooterWrapper;
+    private LinearLayoutManager linLayManager = new LinearLayoutManager(this);
+    private GridLayoutManager gridLayManager = new GridLayoutManager(this, 3);
 
     @Override
     protected int getContentView() {
@@ -33,7 +40,28 @@ public class RecyclerViewActivity extends BaseActivity {
     @Override
     protected void initView() {
         rvImages = findViewById(R.id.rv_images);
-        rvImages.setLayoutManager(new LinearLayoutManager(this));
+        rvImages.setLayoutManager(gridLayManager);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.action_bar_options, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_toggle) {
+            if (rvImages.getLayoutManager() == linLayManager) {
+                rvImages.setLayoutManager(gridLayManager);
+            } else {
+                rvImages.setLayoutManager(linLayManager);
+            }
+            headerAndFooterWrapper.notifyDataSetChanged();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -41,14 +69,14 @@ public class RecyclerViewActivity extends BaseActivity {
         config = TransferConfig.build()
                 .setSourceImageList(ImageConfig.getSourcePicUrlList())
                 .setProgressIndicator(new ProgressBarIndicator())
-                .setIndexIndicator(new NumberIndexIndicator())
+                .setIndexIndicator(new CircleIndexIndicator())
                 .setImageLoader(PicassoImageLoader.with(getApplicationContext()))
                 .setJustLoadHitImage(true)
                 .bindRecyclerView(rvImages, 1, 1, R.id.iv_thum);
 
 
         NineGridAdapter adapter = new RecyclerViewActivity.NineGridAdapter();
-        HeaderAndFooterWrapper mHeaderAndFooterWrapper = new HeaderAndFooterWrapper(adapter);
+        headerAndFooterWrapper = new HeaderAndFooterWrapper(adapter);
 
         TextView t1 = new TextView(this);
         t1.setGravity(Gravity.CENTER);
@@ -56,11 +84,11 @@ public class RecyclerViewActivity extends BaseActivity {
         TextView t2 = new TextView(this);
         t2.setText("我是 RecyclerView 的 footer");
         t2.setGravity(Gravity.CENTER);
-        mHeaderAndFooterWrapper.addHeaderView(t1);
-        mHeaderAndFooterWrapper.addFootView(t2);
+        headerAndFooterWrapper.addHeaderView(t1);
+        headerAndFooterWrapper.addFootView(t2);
 
-        rvImages.setAdapter(mHeaderAndFooterWrapper);
-        mHeaderAndFooterWrapper.notifyDataSetChanged();
+        rvImages.setAdapter(headerAndFooterWrapper);
+        headerAndFooterWrapper.notifyDataSetChanged();
     }
 
     private class NineGridAdapter extends CommonAdapter<String> {

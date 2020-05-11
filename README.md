@@ -137,32 +137,19 @@ transferee.apply(config).show();
 | setOnTransfereeStateChangeListener(listener) | 设置 transferee 显示/关闭状态改变的监听器 |
 
 # Update log
-+ v0.5
-  - 优化打开或者关闭 transferee 时背景色显示效果，从直接显示背景色优化为渐变显示。
-  - 基于 [#26](https://github.com/Hitomis/transferee/issues/26) 添加 transferee 使用本地图片场景下的 Demo
-  - 为 transferee 组件添加背景色自定义功能
-  - 为 transferee 组件添加长按监听器，并添加了长按保存图片到相册的示例代码
-  - 更新了部分示例代码中失效的图片地址
++ v1.5.2
+   - 修改 transferee 容器 dialog 固定为全屏样式。更好的配合当前可定制化的状态栏。
+   - transferee 绑定的 ListView 或者 RecyclerView 支持添加 header 或者 footer
+   - RecyclerViewActivity 新增线性排列和九宫格排列切换，演示在不同的列表下 transferee 使用方式
 
-+ v1.0.0
-  - 将项目托管到 jitpack。目前可以使用添加 dependencies 的方式，导入 transferee 组件
-  
-+ v1.1.0
-  - 修复 transferee 单例为普通实例，解决多个界面公用 transferee 单例时的异常问题
++ v1.5.1
+  - 修改在无网络的时候，使用 GlideImageLoader 加载图片闪退和行为错乱的问题
+  - 添加 enableDragHide 属性，控制在拖拽关闭的时候，是否立即隐藏其他 view
+  - 由于历史原因，不再兼容4.4以下的全屏模式。同时修复了 StatusBar 抖动的问题
+  - 拓展 Uri 格式的图片数据源接口
+  - 添加不绑定 view 也能使用 Transferee 的状态模型
+  - 同步更新 demo
 
-+ v1.2.0
-  - 针对之前版本的使用复杂考虑，添加了直接绑定 ListView，GridView，RecyclerView 即可使用，不再需要人肉传入 originImageList
-  - 修复有超出屏幕外图片情境下 transferee 崩溃的情景
-  - 修复 Issues 中各位同学反馈的bug
-  
-+ v1.3.0
-  - 支持 transferee 绑定单个 ImageView 直接使用
-  - 支持 transferee 绑定单个 ImageView 后多样化展示图片，兼容有缩略图，无缩略图，或者实际图片数量远大于这里的一个 ImageView 数量，例如点击相册封面图片，可以查看相册中其他的图片的的功能
-  - 优化 api 使用方式，最简可以只需要绑定控件，传入图片地址后就能使用
-  - 优化用户体验，不再需要关注缩略图是否加载完成，任何时刻都可以立即打开 transferee
-  - 修复内存泄漏问题
-  - 简化 demo 代码
-  
 + v1.5.0
   - 新增拖拽关闭功能
   - 新增 gif 图片和大长图显示
@@ -177,14 +164,31 @@ transferee.apply(config).show();
   - 化调用方式，不需要关注缩略图片是否加载完成
   - 修复缓存清除的crash
 
-+ v1.5.1
-  - 修改在无网络的时候，使用 GlideImageLoader 加载图片闪退和行为错乱的问题
-  - 添加 enableDragHide 属性，控制在拖拽关闭的时候，是否立即隐藏其他 view
-  - 由于历史原因，不再兼容4.4以下的全屏模式。同时修复了 StatusBar 抖动的问题
-  - 拓展 Uri 格式的图片数据源接口
-  - 添加不绑定 view 也能使用 Transferee 的状态模型
-  - 同步更新 demo
++ v1.3.0
+  - 支持 transferee 绑定单个 ImageView 直接使用
+  - 支持 transferee 绑定单个 ImageView 后多样化展示图片，兼容有缩略图，无缩略图，或者实际图片数量远大于这里的一个 ImageView 数量，例如点击相册封面图片，可以查看相册中其他的图片的的功能
+  - 优化 api 使用方式，最简可以只需要绑定控件，传入图片地址后就能使用
+  - 优化用户体验，不再需要关注缩略图是否加载完成，任何时刻都可以立即打开 transferee
+  - 修复内存泄漏问题
+  - 简化 demo 代码
 
++ v1.2.0
+  - 针对之前版本的使用复杂考虑，添加了直接绑定 ListView，GridView，RecyclerView 即可使用，不再需要人肉传入 originImageList
+  - 修复有超出屏幕外图片情境下 transferee 崩溃的情景
+  - 修复 Issues 中各位同学反馈的bug
+
++ v1.1.0
+  - 修复 transferee 单例为普通实例，解决多个界面公用 transferee 单例时的异常问题
+
++ v1.0.0
+  - 将项目托管到 jitpack。目前可以使用添加 dependencies 的方式，导入 transferee 组件
+
++ v0.5
+  - 优化打开或者关闭 transferee 时背景色显示效果，从直接显示背景色优化为渐变显示。
+  - 基于 [#26](https://github.com/Hitomis/transferee/issues/26) 添加 transferee 使用本地图片场景下的 Demo
+  - 为 transferee 组件添加背景色自定义功能
+  - 为 transferee 组件添加长按监听器，并添加了长按保存图片到相册的示例代码
+  - 更新了部分示例代码中失效的图片地址
 
 # Licence
     Copyright 2017 Hitomis, Inc.

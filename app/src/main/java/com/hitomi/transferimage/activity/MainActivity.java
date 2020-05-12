@@ -45,7 +45,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        findViewById(R.id.btn_res).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_friends_res).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, ResImageActivity.class));

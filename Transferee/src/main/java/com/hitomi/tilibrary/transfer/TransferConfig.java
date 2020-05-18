@@ -168,7 +168,7 @@ public final class TransferConfig {
         return originImageList == null ? new ArrayList<ImageView>() : originImageList;
     }
 
-    void setOriginImageList(List<ImageView> originImageList) {
+    public void setOriginImageList(List<ImageView> originImageList) {
         this.originImageList = originImageList;
     }
 
@@ -326,6 +326,7 @@ public final class TransferConfig {
         private List<String> sourceImageList;
         private List<Uri> sourceUriList;
         private List<String> thumbnailImageList;
+        private List<ImageView> originImageList;
 
         private IProgressIndicator progressIndicator;
         private IIndexIndicator indexIndicator;
@@ -462,6 +463,14 @@ public final class TransferConfig {
 //        }
 
         /**
+         * 过渡前原始的 ImageView 集合
+         */
+        public Builder setOriginImageList(List<ImageView> originImageList) {
+            this.originImageList = originImageList;
+            return this;
+        }
+
+        /**
          * 加载高清图的进度条 (默认内置 ProgressPieIndicator), 可自实现
          * IProgressIndicator 接口定义自己的图片加载进度条
          */
@@ -591,6 +600,7 @@ public final class TransferConfig {
 
             config.setSourceImageList(sourceImageList);
             config.setSourceUriList(sourceUriList);
+            config.setOriginImageList(originImageList);
 //            config.setThumbnailImageList(thumbnailImageList);
 
             config.setProgressIndicator(progressIndicator);

@@ -81,6 +81,7 @@ class DragCloseGesture {
                 float diffY = event.getRawY() - preY;
                 float absDiffY = Math.abs(diffY);
                 scale = 1 - absDiffY / transferLayout.getHeight() * .75f;
+                float scaleOffsetY = (1 - scale) * (1 - scale) * transferLayout.getHeight() * .5f;
 
                 if (absDiffY < 350) {
                     transferLayout.alpha = 255 - (absDiffY / 350) * 25;
@@ -94,7 +95,7 @@ class DragCloseGesture {
                 if (transViewPager.getTranslationY() >= 0) {
                     transferLayout.setBackgroundColor(transferLayout.getBackgroundColorByAlpha(transferLayout.alpha));
                     transViewPager.setTranslationX(diffX);
-                    transViewPager.setTranslationY(diffY);
+                    transViewPager.setTranslationY(diffY - scaleOffsetY);
                     transViewPager.setScaleX(scale);
                     transViewPager.setScaleY(scale);
                     listener.onDragStar();

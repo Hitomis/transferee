@@ -1,17 +1,21 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.viewpager.widget.PagerAdapter;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
+
 import com.hitomi.tilibrary.view.image.TransferImage;
+import com.vansz.exoplayer.ExoVideoView;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * 展示大图组件 ViewPager 的图片数据适配器
@@ -61,21 +65,25 @@ class TransferAdapter extends PagerAdapter {
      * @return
      */
     TransferImage getImageItem(int position) {
-        TransferImage transImage = null;
-
         FrameLayout parentLayout = containLayoutArray.get(position);
-        if (parentLayout != null) {
-            int childCount = parentLayout.getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                View view = parentLayout.getChildAt(i);
-                if (view instanceof ImageView) {
-                    transImage = (TransferImage) view;
-                    break;
-                }
-            }
+        if (parentLayout != null && parentLayout.getChildAt(0) instanceof TransferImage) {
+            return ((TransferImage) parentLayout.getChildAt(0));
         }
+        return null;
+    }
 
-        return transImage;
+    /**
+     * 获取指定页面中的 ExoVideoView
+     *
+     * @param position
+     * @return
+     */
+    ExoVideoView getVideoItem(int position) {
+        FrameLayout parentLayout = containLayoutArray.get(position);
+        if (parentLayout != null && parentLayout.getChildAt(0) instanceof ExoVideoView) {
+            return ((ExoVideoView) parentLayout.getChildAt(0));
+        }
+        return null;
     }
 
     FrameLayout getParentItem(int position) {
@@ -86,8 +94,9 @@ class TransferAdapter extends PagerAdapter {
         this.onInstantListener = listener;
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         // ViewPager instantiateItem 顺序：按 position 递减 OffscreenPageLimit，
         // 再从 positon 递增 OffscreenPageLimit 的次序创建页面
         FrameLayout parentLayout = containLayoutArray.get(position);
@@ -109,19 +118,27 @@ class TransferAdapter extends PagerAdapter {
         Context context = container.getContext();
         TransferConfig config = transfer.getTransConfig();
 
-        // create inner ImageView
-        TransferImage imageView = new TransferImage(context);
-        imageView.setDuration(config.getDuration());
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        View contentView;
+        if (config.isVideoSource(pos)) {
+            FrameLayout.LayoutParams centerLp = new FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+            centerLp.gravity = Gravity.CENTER;
+            contentView = new ExoVideoView(context);
+            contentView.setLayoutParams(centerLp);
+        } else {
+            // create inner ImageView
+            TransferImage imageView = new TransferImage(context);
+            imageView.setDuration(config.getDuration());
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+            if (config.isJustLoadHitImage())
+                transfer.getTransferState(pos).prepareTransfer(imageView, pos);
+            contentView = imageView;
+        }
 
         // create outer ParentLayout
         FrameLayout parentLayout = new FrameLayout(context);
         parentLayout.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        parentLayout.addView(imageView);
-
-        if (config.isJustLoadHitImage())
-            transfer.getTransferState(pos).prepareTransfer(imageView, pos);
+        parentLayout.addView(contentView);
 
         return parentLayout;
     }

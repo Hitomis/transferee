@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.hitomi'
+group = 'com.github.hitomi'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -33,7 +33,7 @@ task sourcesJar(type: Jar) {
 }
 
 task javadoc(type: Javadoc) {
-    failOnError  false
+    failOnError false
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     classpath += configurations.compile
@@ -51,7 +51,8 @@ artifacts {
 }
 
 dependencies {
-    implementation libSupportV7
+    implementation project(':exoplayer')
+    implementation libAppcompat
     implementation libSupportRecyclerview
     implementation 'com.github.filippudak.progresspieview:library:1.0.4'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'

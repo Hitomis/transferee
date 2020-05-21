@@ -1,1 +1,2 @@
 include ':app', ':Transferee', ':GlideImageLoader', ':UniversalImageLoader', ':PicassoImageLoader'
+include ':exoplayer'

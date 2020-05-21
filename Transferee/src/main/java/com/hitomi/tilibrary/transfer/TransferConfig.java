@@ -253,6 +253,16 @@ public final class TransferConfig {
         return thumbnailImageList == null || thumbnailImageList.isEmpty();
     }
 
+    /**
+     * 判断当前 position 下的资源是不是视频
+     *
+     * @param position 为 -1 值，表示取 nowThumbnailIndex
+     * @return true : 是视频资源
+     */
+    public boolean isVideoSource(int position) {
+        return sourceImageList.get(position == -1 ? nowThumbnailIndex : position).endsWith(".mp4");
+    }
+
     public int getImageId() {
         return imageId;
     }

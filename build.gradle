@@ -24,7 +24,7 @@ task clean(type: Delete) {
 }
 
 project.ext {
-    compileSdkVersion = 28
+    compileSdkVersion = 29
     buildToolsVersion = "29.0.2"
 
     applicationId = "com.hitomi.transferimage"
@@ -41,7 +41,7 @@ project.ext {
 
     // 第三方库版本管理
     libSupportDesign = "com.android.support:design:27.1.1"
-    libSupportV7 = "androidx.appcompat:appcompat:1.1.0"
+    libAppcompat = "androidx.appcompat:appcompat:1.1.0"
     libSupportRecyclerview = "androidx.recyclerview:recyclerview:1.0.0"
     libUtilCodex = "com.blankj:utilcodex:1.26.0"
     libGlide = "com.github.bumptech.glide:glide:4.11.0"

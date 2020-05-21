@@ -19,6 +19,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.hitomi.tilibrary.style.IIndexIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
+import com.vansz.exoplayer.ExoVideoView;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -249,7 +250,10 @@ class TransferLayout extends FrameLayout {
         addIndexIndicator();
         addCustomView();
         transViewPager.setVisibility(View.VISIBLE);
-        if (transImage != null) removeFromParent(transImage);
+        // 因为视频尺寸需要自适应屏幕宽度，渲染时机会延迟，所以将由
+        // VideoThumbState 内部自己处理 transImage 的移除工作
+        if (transImage != null && !transConfig.isVideoSource(-1))
+            removeFromParent(transImage);
     }
 
     /**
@@ -284,7 +288,7 @@ class TransferLayout extends FrameLayout {
      *
      * @param view 待移除的 view
      */
-    private void removeFromParent(View view) {
+    public void removeFromParent(View view) {
         ViewGroup vg = (ViewGroup) view.getParent();
         if (vg != null)
             vg.removeView(view);
@@ -303,6 +307,10 @@ class TransferLayout extends FrameLayout {
 
     TransferImage getCurrentImage() {
         return transAdapter.getImageItem(transViewPager.getCurrentItem());
+    }
+
+    ExoVideoView getCurrentVideo() {
+        return transAdapter.getVideoItem(transViewPager.getCurrentItem());
     }
 
 
@@ -332,8 +340,10 @@ class TransferLayout extends FrameLayout {
         } else {
             String url = transConfig.getSourceImageList().get(position);
 
-            // 即使是网络图片，但是之前已经加载到本地，那么也是本地图片
-            if (transConfig.getImageLoader().getCache(url) != null) {
+            if (transConfig.isVideoSource(position)) {
+                transferState = new VideoThumbState(this);
+            } else if (transConfig.getImageLoader().getCache(url) != null) {
+                // 即使是网络图片，但是之前已经加载到本地，那么也是本地图片
                 transferState = new LocalThumbState(this);
             } else {
                 transferState = new EmptyThumbState(this);

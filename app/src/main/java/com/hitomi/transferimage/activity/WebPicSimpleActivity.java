@@ -83,10 +83,19 @@ public class WebPicSimpleActivity extends BaseActivity {
                     transferee.apply(config).show();
                 }
             });
-            Glide.with(imageView)
-                    .load(item)
-                    .placeholder(R.mipmap.ic_empty_photo)
-                    .into(imageView);
+            if (item.endsWith(".mp4")) {
+                Glide.with(imageView)
+                        .load(item)
+                        .frame(1000_000)
+                        .placeholder(R.mipmap.ic_empty_photo)
+                        .into(imageView);
+            } else {
+                Glide.with(imageView)
+                        .load(item)
+                        .placeholder(R.mipmap.ic_empty_photo)
+                        .into(imageView);
+            }
+
         }
     }
 

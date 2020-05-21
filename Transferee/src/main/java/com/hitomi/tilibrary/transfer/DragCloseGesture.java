@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.hitomi.tilibrary.view.image.TransferImage;
+import com.vansz.exoplayer.ExoVideoView;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
@@ -24,6 +25,8 @@ import static android.widget.ImageView.ScaleType.FIT_CENTER;
  * Created by Vans Z on 2019-11-05.
  */
 class DragCloseGesture {
+    private static int SOURCE_IMAGE = 1;
+    private static int SOURCE_VIDEO = 2;
 
     private TransferLayout transferLayout;
     private VelocityTracker velocityTracker;
@@ -31,6 +34,7 @@ class DragCloseGesture {
     private float preY;
     private float scale; // 拖拽图片缩放值
     private int touchSlop;
+    private int sourceType;
     private DragCloseListener listener;
 
 
@@ -52,13 +56,21 @@ class DragCloseGesture {
                         velocityTracker.clear();
                     }
                     velocityTracker.addMovement(ev);
+                    sourceType = transferLayout.getTransConfig().isVideoSource(-1)
+                            ? SOURCE_VIDEO : SOURCE_IMAGE;
                     break;
                 case MotionEvent.ACTION_MOVE:
                     float diffY = ev.getRawY() - preY;
                     float diffX = Math.abs(ev.getRawX() - preX);
-                    TransferImage currentImage = transferLayout.getCurrentImage();
-                    if (diffX < touchSlop && diffY > touchSlop && currentImage.isScrollTop()) {
-                        return true;
+                    if (diffX < touchSlop && diffY > touchSlop) {
+                        if (sourceType == SOURCE_IMAGE
+                                && transferLayout.getCurrentImage().isScrollTop()) {
+                            // 如果是图片，需要判断是否目前是顶部对齐（针对长图判断是不是滚动到顶部）
+                            return true;
+                        } else if (sourceType == SOURCE_VIDEO) {
+                            // 如果是视频，则直接返回 true
+                            return true;
+                        }
                     }
                     break;
                 case MotionEvent.ACTION_UP:
@@ -118,7 +130,12 @@ class DragCloseGesture {
                     if (originImage == null) { // 走扩散消失动画
                         transferLayout.diffusionTransfer(pos);
                     } else { // 走过渡动画
-                        startTransformAnima(pos, originImage);
+                        if(sourceType == SOURCE_IMAGE) {
+                            startTransformImageAnimate(originImage);
+                        } else {
+                            startTransformVideoAnimate(originImage);
+                        }
+
                     }
                 } else {
                     startFlingAndRollbackAnimation();
@@ -136,18 +153,17 @@ class DragCloseGesture {
         }
     }
 
-    private void startTransformAnima(int pos, ImageView originImage) {
+    private void startTransformImageAnimate(ImageView originImage) {
         ViewPager transViewPagerUp = transferLayout.transViewPager;
         transViewPagerUp.setVisibility(View.INVISIBLE);
+        TransferImage currTransImage = transferLayout.getCurrentImage();
         int[] location = new int[2];
         originImage.getLocationInWindow(location);
-
 
         int x = location[0];
         int y = location[1];
         int width = originImage.getWidth();
         int height = originImage.getHeight();
-
 
         TransferImage transImage = new TransferImage(transferLayout.getContext());
         transImage.setScaleType(FIT_CENTER);
@@ -155,16 +171,44 @@ class DragCloseGesture {
         transImage.setDuration(300);
         transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         transImage.setOnTransferListener(transferLayout.transListener);
-        transImage.setImageDrawable(transferLayout.transAdapter.getImageItem(pos).getDrawable());
+        transImage.setImageDrawable(currTransImage.getDrawable());
 
-
-        TransferImage currTransImage = transferLayout.getCurrentImage();
         float realWidth = currTransImage.getDeformedWidth() * scale;
         float realHeight = currTransImage.getDeformedHeight() * scale;
         float left = transViewPagerUp.getTranslationX() + (transferLayout.getWidth() - realWidth) * .5f;
         float top = transViewPagerUp.getTranslationY() + (transferLayout.getHeight() - realHeight) * .5f;
         RectF rectF = new RectF(left, top, realWidth, realHeight);
         transImage.transformSpecOut(rectF, scale);
+        transferLayout.addView(transImage, 1);
+    }
+
+    private void startTransformVideoAnimate(ImageView originImage) {
+        ViewPager transViewPagerUp = transferLayout.transViewPager;
+        transViewPagerUp.setVisibility(View.INVISIBLE);
+        ExoVideoView currVideo = transferLayout.getCurrentVideo();
+        int[] location = new int[2];
+        originImage.getLocationInWindow(location);
+
+        int x = location[0];
+        int y = location[1];
+        int width = originImage.getWidth();
+        int height = originImage.getHeight();
+
+        TransferImage transImage = new TransferImage(transferLayout.getContext());
+        transImage.setScaleType(FIT_CENTER);
+        transImage.setOriginalInfo(x, y, width, height);
+        transImage.setDuration(300);
+        transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        transImage.setOnTransferListener(transferLayout.transListener);
+        transImage.setImageBitmap(currVideo.getBitmap());
+
+        float realWidth = currVideo.getMeasuredWidth() * scale;
+        float realHeight = currVideo.getMeasuredHeight() * scale;
+        float left = transViewPagerUp.getTranslationX() + (transferLayout.getWidth() - realWidth) * .5f;
+        float top = transViewPagerUp.getTranslationY() + (transferLayout.getHeight() - realHeight) * .5f;
+        RectF rectF = new RectF(left, top, realWidth, realHeight);
+        transImage.transformSpecOut(rectF, scale);
+        transViewPagerUp.setVisibility(View.INVISIBLE);
         transferLayout.addView(transImage, 1);
     }
 

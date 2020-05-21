@@ -11,7 +11,10 @@ android {
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
     }
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -27,7 +30,7 @@ dependencies {
     implementation project(':UniversalImageLoader')
     implementation project(':PicassoImageLoader')
 
-    implementation libSupportV7
+    implementation libAppcompat
     implementation libSupportDesign
     implementation libBaseAdapter
     implementation libRecyclerviewAdpater
@@ -36,6 +39,5 @@ dependencies {
     implementation libGlide
     implementation libPicasso
 
-    // 基础依赖包，必须要依赖
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
 }

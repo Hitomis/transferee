@@ -1,7 +1,6 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.graphics.drawable.Drawable;
-import android.util.DisplayMetrics;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
@@ -51,7 +50,7 @@ class EmptyThumbState extends TransferState {
         final TransferImage targetImage = adapter.getImageItem(position);
 
         Drawable placeHolder;
-        if (config.isJustLoadHitImage()) {
+        if (config.isJustLoadHitPage()) {
             // 如果用户设置了 JustLoadHitImage 属性，说明在 prepareTransfer 中已经
             // 对 TransferImage 裁剪过了， 所以只需要获取 Drawable 作为占位图即可
             placeHolder = getPlaceHolder(position);

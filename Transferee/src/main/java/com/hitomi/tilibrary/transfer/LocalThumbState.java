@@ -50,7 +50,7 @@ class LocalThumbState extends TransferState {
         final String imgUrl = config.getSourceImageList().get(position);
         final TransferImage targetImage = transfer.transAdapter.getImageItem(position);
 
-        if (config.isJustLoadHitImage()) {
+        if (config.isJustLoadHitPage()) {
             // 如果用户设置了 JustLoadHitImage 属性，说明在 prepareTransfer 中已经
             // 对 TransferImage 裁剪且设置了占位图， 所以这里直接加载原图即可
             loadSourceImage(imgUrl, targetImage, targetImage.getDrawable(), position);

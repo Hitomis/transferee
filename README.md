@@ -1,19 +1,20 @@
 # Transferee [![](https://jitpack.io/v/Hitomis/transferee.svg)](https://jitpack.io/#Hitomis/transferee)
-transferee 可以帮助你完成从缩略图到原图的无缝过渡转变，功能体系仿照并涵盖 ios 版本的 QQ、微信朋友圈、新浪微博的图片浏览功能。
+transferee 可以帮助你完成从缩略视图到原视图的无缝过渡转变，功能体系仿照并涵盖 ios 版本的 QQ、微信朋友圈、新浪微博的图片浏览功能。
 
 支持的功能:
 
-+ 缩略图到大图或者大图到缩略图的无缝过渡动画
-+ 无缩略图信息时，自动改变动画的行为为平移过渡->加载大图->伸展图片动画
-+ 傻瓜式绑定 RecyclerView / ListView / GridView / ImageView
-+ 支持预览图片缩放，拖动，旋转等手势操作
-+ 支持自定义图片加载器[目前已经有 UniversalImageLoader / GlideImageLoader / PicassoImageLoader]
-+ 支持自定义图片索引指示器
-+ 支持自定义图片加载进度条
-+ 支持图片保存
-+ 支持大长图预览
++ 支持视频预览
 + 支持 Gif 图预览
++ 支持大长图预览
 + 支持拖拽关闭
++ 支持自定义页面索引指示器
++ 支持自定义资源加载进度条
++ 支持自定义图片加载器[目前已经有 UniversalImageLoader / GlideImageLoader / PicassoImageLoader]
++ 支持图片保存
++ 支持预览图片缩放，拖动，旋转等手势操作
++ 缩略图到大图或者大图到缩略图的无缝过渡动画，无缩略图信息时，自动改变动画的行为为平移过渡->加载大图->伸展图片动画
++ 支持傻瓜式绑定 RecyclerView / ListView / GridView / ImageView
++ 支持不绑定任何 View, 即可启动 transferee
 
 如有任何问题可以提 Issues
 
@@ -111,10 +112,14 @@ transferee.apply(config).show();
 | errorDrawable | 加载错误的占位图，Drawable 格式。原图加载错误时显示的图片 |
 | backgroundColor | transferee 显示时，图片后的背景色 |
 | duration | transferee 播放过渡动画的动画时长 |
-| justLoadHitImage | 是否只加载当前显示在屏幕中的的原图。如果设置为 true，那么只有当 transferee 切换到当前页面时，才会触发当前页面原图的加载动作，否则按 offscreenPageLimit 所设置的数值去做预加载和当前页面的加载动作 |
+| justLoadHitPage | 是否只加载当前页面中的资源。如果设置为 true，那么只有当 transferee 切换到当前页面时，才会触发当前页面的加载动作，否则按 offscreenPageLimit 所设置的数值去做预加载和当前页面的加载动作 |
 | enableDragClose | 是否支持向下拖拽关闭 |
-| sourceImageList | 原图路径集合 |
-| progressIndicat | 图片加载进度指示器 (默认内置 ProgressPieIndicator 和 ProgressBarIndicator)。可实现 IProgressIndicator 接口定义自己的图片加载进度指示器 |
+| enableDragHide | 拖拽关闭时是否隐藏除主 view 以外的其他 view |
+| enableDragPause | 拖拽关闭时是否暂停当前页面视频播放 |
+| enableDragPause | 拖拽关闭时是否暂停当前页面视频播放 |
+| enableAnimateShake | 是否启动抖动动画 |
+| enableScrollingWithPageChange | 是否启动列表随着 page 的切换而置顶滚动，仅仅针对绑定了 RecyclerView/GridView/ListView 有效 |
+| progressIndicator | 图片加载进度指示器 (默认内置 ProgressPieIndicator 和 ProgressBarIndicator)。可实现 IProgressIndicator 接口定义自己的图片加载进度指示器 |
 | indexIndicator | 图片索引指示器 (默认内置 CircleIndexIndicator 和 NumberIndexIndicator)。可实现 IIndexIndicator 接口定义自己的图片索引指示器 |
 | imageLoader | 图片加载器 (默认 UniversalImageLoader )。可实现 ImageLoader 接口定义自己的图片加载器 |
 | imageId | RecyclerView 或者 ListView 的 ItemView 中的 ImageView id|

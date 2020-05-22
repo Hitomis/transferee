@@ -60,7 +60,7 @@ class RemoteThumbState extends TransferState {
         final TransferImage targetImage = transfer.transAdapter.getImageItem(position);
         final ImageLoader imageLoader = config.getImageLoader();
 
-        if (config.isJustLoadHitImage()) {
+        if (config.isJustLoadHitPage()) {
             // 如果用户设置了 JustLoadHitImage 属性，说明在 prepareTransfer 中已经
             // 对 TransferImage 裁剪且设置了占位图， 所以这里直接加载原图即可
             loadSourceImage(targetImage.getDrawable(), position, targetImage);

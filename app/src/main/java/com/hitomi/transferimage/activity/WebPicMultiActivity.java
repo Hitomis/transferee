@@ -44,7 +44,7 @@ public class WebPicMultiActivity extends BaseActivity {
                 .setProgressIndicator(new ProgressPieIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
-                .setJustLoadHitImage(true)
+                .setJustLoadHitPage(true)
                 .setOnLongClickListener(new Transferee.OnTransfereeLongClickListener() {
                     @Override
                     public void onLongClick(ImageView imageView, String imageUri, int pos) {

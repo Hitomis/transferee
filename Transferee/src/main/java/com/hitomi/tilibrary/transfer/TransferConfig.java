@@ -33,9 +33,12 @@ public final class TransferConfig {
     private int errorPlaceHolder;
     private int backgroundColor;
     private long duration;
-    private boolean justLoadHitImage;
+    private boolean justLoadHitPage;
     private boolean enableDragClose;
     private boolean enableDragHide;
+    private boolean enableDragPause;
+    private boolean enableAnimateShake;
+    private boolean enableScrollingWithPageChange;
 
     private Drawable missDrawable;
     private Drawable errorDrawable;
@@ -113,12 +116,12 @@ public final class TransferConfig {
         this.duration = duration;
     }
 
-    public boolean isJustLoadHitImage() {
-        return justLoadHitImage;
+    public boolean isJustLoadHitPage() {
+        return justLoadHitPage;
     }
 
-    public void setJustLoadHitImage(boolean justLoadHitImage) {
-        this.justLoadHitImage = justLoadHitImage;
+    public void setJustLoadHitPage(boolean justLoadHitPage) {
+        this.justLoadHitPage = justLoadHitPage;
     }
 
 
@@ -326,9 +329,12 @@ public final class TransferConfig {
         private int errorPlaceHolder;
         private int backgroundColor;
         private long duration;
-        private boolean justLoadHitImage;
+        private boolean justLoadHitPage;
         private boolean enableDragClose = true;
         private boolean enableDragHide = true;
+        private boolean enableDragPause = false;
+        private boolean enableAnimateShake = true;
+        private boolean enableScrollingWithPageChange;
 
         private Drawable missDrawable;
         private Drawable errorDrawable;
@@ -409,8 +415,8 @@ public final class TransferConfig {
         /**
          * 仅仅只加载当前显示的图片
          */
-        public Builder setJustLoadHitImage(boolean justLoadHitImage) {
-            this.justLoadHitImage = justLoadHitImage;
+        public Builder setJustLoadHitPage(boolean justLoadHitPage) {
+            this.justLoadHitPage = justLoadHitPage;
             return this;
         }
 
@@ -600,7 +606,7 @@ public final class TransferConfig {
             config.setErrorPlaceHolder(errorPlaceHolder);
             config.setBackgroundColor(backgroundColor);
             config.setDuration(duration);
-            config.setJustLoadHitImage(justLoadHitImage);
+            config.setJustLoadHitPage(justLoadHitPage);
             config.enableDragClose(enableDragClose);
             config.enableDragHide(enableDragHide);
 

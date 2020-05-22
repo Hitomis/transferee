@@ -72,7 +72,7 @@ public class VideoThumbState extends TransferState {
             public void onVideoBuffering() {
                 if (isAttachProgress) return;
                 isAttachProgress = true;
-                progressIndicator.attach(position, transfer);
+                progressIndicator.attach(position, transfer.transAdapter.getParentItem(position));
                 progressIndicator.onStart(position);
             }
 
@@ -94,7 +94,7 @@ public class VideoThumbState extends TransferState {
                 transfer.removeFromParent(transfer.getChildAt(1));
             }
         });
-        exoVideo.play(transConfig.getSourceImageList().get(position));
+        exoVideo.play(transConfig.getSourceImageList().get(position), false);
     }
 
     private File getFirstFrameFile(String videoSourceUrl) {

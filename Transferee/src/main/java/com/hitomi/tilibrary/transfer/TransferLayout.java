@@ -8,6 +8,7 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,12 +101,27 @@ class TransferLayout extends FrameLayout {
         public void onPageSelected(int position) {
             transConfig.setNowThumbnailIndex(position);
 
-            if (transConfig.isJustLoadHitImage()) {
-                loadSourceImageOffset(position, 0);
+            if (transConfig.isJustLoadHitPage()) {
+                loadSourceViewOffset(position, 0);
             } else {
                 for (int i = 1; i <= transConfig.getOffscreenPageLimit(); i++) {
-                    loadSourceImageOffset(position, i);
+                    loadSourceViewOffset(position, i);
                 }
+            }
+            // 页面切换的时候，如果当前 position 是视频就播放，其他位置如果有视频，全部重置
+            SparseArray<FrameLayout> cacheItems = transAdapter.getCacheItems();
+            for (int i = 0; i < cacheItems.size(); i++) {
+                int key = cacheItems.keyAt(i);
+                View view = cacheItems.get(key).getChildAt(0);
+                if (view instanceof ExoVideoView) {
+                    ExoVideoView videoView = ((ExoVideoView) view);
+                    if (key == position) {
+                        videoView.resume();
+                    } else {
+                        videoView.reset();
+                    }
+                }
+
             }
         }
     };
@@ -118,12 +134,16 @@ class TransferLayout extends FrameLayout {
             transViewPager.addOnPageChangeListener(transChangeListener);
 
             int position = transConfig.getNowThumbnailIndex();
-            if (transConfig.isJustLoadHitImage()) {
-                loadSourceImageOffset(position, 0);
+            if (transConfig.isJustLoadHitPage()) {
+                loadSourceViewOffset(position, 0);
             } else {
-                loadSourceImageOffset(position, 1);
+                loadSourceViewOffset(position, 1);
             }
-
+            // 初始化的时候打开的就是视频, 那么打开后即刻开始播放 position 位置处的视频
+            ExoVideoView videoView = transAdapter.getVideoItem(position);
+            if (videoView != null) {
+                videoView.resume();
+            }
         }
     };
     /**
@@ -206,30 +226,30 @@ class TransferLayout extends FrameLayout {
      * @param position 当前显示图片的索引
      * @param offset   postion 左右便宜量
      */
-    private void loadSourceImageOffset(int position, int offset) {
+    private void loadSourceViewOffset(int position, int offset) {
         int left = position - offset;
         int right = position + offset;
 
         if (!loadedIndexSet.contains(position)) {
-            loadSourceImage(position);
+            loadSourceView(position);
             loadedIndexSet.add(position);
         }
         if (left >= 0 && !loadedIndexSet.contains(left)) {
-            loadSourceImage(left);
+            loadSourceView(left);
             loadedIndexSet.add(left);
         }
         if (right < transConfig.getSourceImageList().size() && !loadedIndexSet.contains(right)) {
-            loadSourceImage(right);
+            loadSourceView(right);
             loadedIndexSet.add(right);
         }
     }
 
     /**
-     * 加载索引位置为 position 处的图片
+     * 加载索引位置为 position 处的视图
      *
      * @param position 当前有效的索引
      */
-    private void loadSourceImage(int position) {
+    private void loadSourceView(int position) {
         getTransferState(position).transferLoad(position);
     }
 
@@ -289,6 +309,7 @@ class TransferLayout extends FrameLayout {
      * @param view 待移除的 view
      */
     public void removeFromParent(View view) {
+        if (view == null) return;
         ViewGroup vg = (ViewGroup) view.getParent();
         if (vg != null)
             vg.removeView(view);
@@ -427,16 +448,21 @@ class TransferLayout extends FrameLayout {
      * @param pos 动画作用于 pos 索引位置的图片
      */
     void diffusionTransfer(int pos) {
-        transImage = transAdapter.getImageItem(pos);
-        transImage.setState(TransferImage.STATE_TRANS_OUT);
-        transImage.disable();
+        TransferImage diffTransImage = transAdapter.getImageItem(pos);
+        if (diffTransImage != null) {
+            diffTransImage.disable();
+        }
+        ExoVideoView diffVideoView = transAdapter.getVideoItem(pos);
+        if (diffVideoView != null) {
+            diffVideoView.pause();
+        }
 
+        float scale = transViewPager.getScaleX();
+        PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofFloat("alpha", alpha, 0.f);
+        PropertyValuesHolder scaleXHolder = PropertyValuesHolder.ofFloat("scale", scale, scale + .2f);
         ValueAnimator valueAnimator = new ValueAnimator();
         valueAnimator.setDuration(transConfig.getDuration());
         valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-
-        PropertyValuesHolder alphaHolder = PropertyValuesHolder.ofFloat("alpha", alpha, 0.f);
-        PropertyValuesHolder scaleXHolder = PropertyValuesHolder.ofFloat("scale", 1.f, 1.2f);
         valueAnimator.setValues(alphaHolder, scaleXHolder);
 
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -446,9 +472,9 @@ class TransferLayout extends FrameLayout {
                 float scale = (Float) animation.getAnimatedValue("scale");
 
                 setBackgroundColor(getBackgroundColorByAlpha(alpha));
-                transImage.setAlpha(alpha / 255.f);
-                transImage.setScaleX(scale);
-                transImage.setScaleY(scale);
+                transViewPager.setAlpha(alpha / 255.f);
+                transViewPager.setScaleX(scale);
+                transViewPager.setScaleY(scale);
             }
         });
         valueAnimator.addListener(new AnimatorListenerAdapter() {

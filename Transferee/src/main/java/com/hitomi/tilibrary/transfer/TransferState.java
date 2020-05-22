@@ -174,8 +174,8 @@ abstract class TransferState {
     }
 
     /**
-     * 当用户使用 justLoadHitImage 属
-     * 性时，需要使用 prepareTransfer 方法提前让 ViewPager 对应
+     * 当用户使用 justLoadHitPage 属性时，
+     * 需要使用 prepareTransfer 方法提前让 ViewPager 对应
      * position 处的 TransferImage 剪裁并设置占位图
      *
      * @param transImage ViewPager 中 position 位置处的 TransferImage

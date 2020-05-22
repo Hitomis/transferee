@@ -86,6 +86,10 @@ class TransferAdapter extends PagerAdapter {
         return null;
     }
 
+    SparseArray<FrameLayout> getCacheItems() {
+        return containLayoutArray;
+    }
+
     FrameLayout getParentItem(int position) {
         return containLayoutArray.get(position);
     }
@@ -130,7 +134,7 @@ class TransferAdapter extends PagerAdapter {
             imageView.setDuration(config.getDuration());
             imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-            if (config.isJustLoadHitImage())
+            if (config.isJustLoadHitPage())
                 transfer.getTransferState(pos).prepareTransfer(imageView, pos);
             contentView = imageView;
         }

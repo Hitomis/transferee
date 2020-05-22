@@ -321,7 +321,7 @@ class TransferLayout extends FrameLayout {
         int nowThumbnailIndex = transConfig.getNowThumbnailIndex();
         TransferState transferState = getTransferState(nowThumbnailIndex);
         createTransferViewPager(transferState);
-        transImage = transferState.createTransferIn(nowThumbnailIndex);
+        transImage = transferState.transferIn(nowThumbnailIndex);
     }
 
     /**

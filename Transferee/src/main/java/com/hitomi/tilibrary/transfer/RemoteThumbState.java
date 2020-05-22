@@ -43,11 +43,11 @@ class RemoteThumbState extends TransferState {
     }
 
     @Override
-    public TransferImage createTransferIn(final int position) {
+    public TransferImage transferIn(final int position) {
         TransferConfig config = transfer.getTransConfig();
 
         TransferImage transImage = createTransferImage(
-                config.getOriginImageList().get(position));
+                config.getOriginImageList().get(position), true);
         transformThumbnail(config.getThumbnailImageList().get(position), transImage, true);
         transfer.addView(transImage, 1);
 
@@ -130,14 +130,11 @@ class RemoteThumbState extends TransferState {
 
         TransferConfig config = transfer.getTransConfig();
         List<ImageView> originImageList = config.getOriginImageList();
-
         if (position <= originImageList.size() - 1 && originImageList.get(position) != null) {
-            transImage = createTransferImage(originImageList.get(position));
+            transImage = createTransferImage(originImageList.get(position), true);
             transformThumbnail(config.getThumbnailImageList().get(position), transImage, false);
-
             transfer.addView(transImage, 1);
         }
-
         return transImage;
     }
 }

@@ -29,7 +29,7 @@ public class NoneThumbState extends TransferState {
     }
 
     @Override
-    public TransferImage createTransferIn(int position) {
+    public TransferImage transferIn(int position) {
         transfer.displayTransfer();
         return null;
     }

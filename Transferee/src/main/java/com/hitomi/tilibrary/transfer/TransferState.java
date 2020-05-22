@@ -56,11 +56,12 @@ abstract class TransferState {
     /**
      * 依据 originImage 在屏幕中的坐标和宽高信息创建一个 TransferImage
      *
-     * @param originImage 缩略图 ImageView
+     * @param originImage  缩略图 ImageView
+     * @param bindListener 是否需要绑定伸缩动画执行完成监听器
      * @return TransferImage
      */
     @NonNull
-    TransferImage createTransferImage(ImageView originImage) {
+    TransferImage createTransferImage(ImageView originImage, boolean bindListener) {
         TransferConfig config = transfer.getTransConfig();
         int[] location = getViewLocation(originImage);
 
@@ -70,7 +71,8 @@ abstract class TransferState {
                 originImage.getWidth(), originImage.getHeight());
         transImage.setDuration(config.getDuration());
         transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        transImage.setOnTransferListener(transfer.transListener);
+        if (bindListener)
+            transImage.setOnTransferListener(transfer.transListener);
 
         return transImage;
     }
@@ -79,7 +81,7 @@ abstract class TransferState {
      * 加载 imageUrl 所关联的图片到 TransferImage 并启动 TransferImage 中的过渡动画
      *
      * @param imageUrl   当前缩略图路径
-     * @param transImage {@link #createTransferImage(ImageView)} 方法创建的 TransferImage
+     * @param transImage {@link #createTransferImage(ImageView, boolean)} 方法创建的 TransferImage
      * @param in         true : 从缩略图到高清图动画, false : 从高清图到缩略图动画
      */
     void transformThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
@@ -187,7 +189,7 @@ abstract class TransferState {
      * @param position 进入到 Transferee 之前，用户在图片列表中点击的图片的索引
      * @return 创建的 TransferImage
      */
-    public abstract TransferImage createTransferIn(final int position);
+    public abstract TransferImage transferIn(final int position);
 
     /**
      * 从网络或者从 {@link ImageLoader} 指定的缓存中加载 SourceImageList.get(position) 对应的图片

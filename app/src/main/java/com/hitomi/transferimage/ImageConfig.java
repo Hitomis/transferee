@@ -16,8 +16,6 @@ import java.util.List;
 
 public class ImageConfig {
 
-    public static final String THUM_URL = "http://static.fdc.com.cn/avatar/sns/1486263782969.png@233w_160h_20q";
-    public static final String SOURCE_URL = "http://static.fdc.com.cn/avatar/sns/1486263782969.png";
     public static final String WEB_URL = "http://img2.woyaogexing.com/2018/01/25/f5d815584c61d376!500x500.jpg";
 
     public static List<String> getThumbnailPicUrlList() {
@@ -31,7 +29,17 @@ public class ImageConfig {
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png@233w_160h_20q");
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png@233w_160h_20q");
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png@233w_160h_20q");
+
+        thumbnailImageList.add("http://jzvd.nathen.cn/video/4542c17b-170c25a8e14-0007-1823-c86-de200.mp4");
         thumbnailImageList.add("http://jzvd.nathen.cn/f07fa9fddd1e45a6ae1570c7fe7967c1/c6db82685b894e25b523b1cb28d79f2e-5287d2089db37e62345123a1be272f8b.mp4");
+        thumbnailImageList.add("http://jzvd.nathen.cn/c494b340ff704015bb6682ffde3cd302/64929c369124497593205a4190d7d128-5287d2089db37e62345123a1be272f8b.mp4");
+        thumbnailImageList.add("http://jzvd.nathen.cn/63f3f73712544394be981d9e4f56b612/69c5767bb9e54156b5b60a1b6edeb3b5-5287d2089db37e62345123a1be272f8b.mp4");
+        thumbnailImageList.add("http://jzvd.nathen.cn/b201be3093814908bf987320361c5a73/2f6d913ea25941ffa78cc53a59025383-5287d2089db37e62345123a1be272f8b.mp4");
+        thumbnailImageList.add("http://jzvd.nathen.cn/d2438fd1c37c4618a704513ad38d68c5/68626a9d53ca421c896ac8010f172b68-5287d2089db37e62345123a1be272f8b.mp4");
+        thumbnailImageList.add("http://jzvd.nathen.cn/25a8d119cfa94b49a7a4117257d8ebd7/f733e65a22394abeab963908f3c336db-5287d2089db37e62345123a1be272f8b.mp4");
+        thumbnailImageList.add("http://jzvd.nathen.cn/7512edd1ad834d40bb5b978402274b1a/9691c7f2d7b74b5e811965350a0e5772-5287d2089db37e62345123a1be272f8b.mp4");
+        thumbnailImageList.add("http://jzvd.nathen.cn/c6e3dc12a1154626b3476d9bf3bd7266/6b56c5f0dc31428083757a45764763b0-5287d2089db37e62345123a1be272f8b.mp4");
+
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png@233w_160h_20q");
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png@233w_160h_20q");
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png@233w_160h_20q");
@@ -55,7 +63,17 @@ public class ImageConfig {
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
+
+        sourceImageList.add("http://jzvd.nathen.cn/video/4542c17b-170c25a8e14-0007-1823-c86-de200.mp4");
         sourceImageList.add("http://jzvd.nathen.cn/f07fa9fddd1e45a6ae1570c7fe7967c1/c6db82685b894e25b523b1cb28d79f2e-5287d2089db37e62345123a1be272f8b.mp4");
+        sourceImageList.add("http://jzvd.nathen.cn/c494b340ff704015bb6682ffde3cd302/64929c369124497593205a4190d7d128-5287d2089db37e62345123a1be272f8b.mp4");
+        sourceImageList.add("http://jzvd.nathen.cn/63f3f73712544394be981d9e4f56b612/69c5767bb9e54156b5b60a1b6edeb3b5-5287d2089db37e62345123a1be272f8b.mp4");
+        sourceImageList.add("http://jzvd.nathen.cn/b201be3093814908bf987320361c5a73/2f6d913ea25941ffa78cc53a59025383-5287d2089db37e62345123a1be272f8b.mp4");
+        sourceImageList.add("http://jzvd.nathen.cn/d2438fd1c37c4618a704513ad38d68c5/68626a9d53ca421c896ac8010f172b68-5287d2089db37e62345123a1be272f8b.mp4");
+        sourceImageList.add("http://jzvd.nathen.cn/25a8d119cfa94b49a7a4117257d8ebd7/f733e65a22394abeab963908f3c336db-5287d2089db37e62345123a1be272f8b.mp4");
+        sourceImageList.add("http://jzvd.nathen.cn/7512edd1ad834d40bb5b978402274b1a/9691c7f2d7b74b5e811965350a0e5772-5287d2089db37e62345123a1be272f8b.mp4");
+        sourceImageList.add("http://jzvd.nathen.cn/c6e3dc12a1154626b3476d9bf3bd7266/6b56c5f0dc31428083757a45764763b0-5287d2089db37e62345123a1be272f8b.mp4");
+
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png");
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png");

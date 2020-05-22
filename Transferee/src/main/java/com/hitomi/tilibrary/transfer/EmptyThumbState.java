@@ -31,11 +31,11 @@ class EmptyThumbState extends TransferState {
     }
 
     @Override
-    public TransferImage createTransferIn(final int position) {
+    public TransferImage transferIn(final int position) {
         ImageView originImage = transfer.getTransConfig()
                 .getOriginImageList().get(position);
 
-        TransferImage transImage = createTransferImage(originImage);
+        TransferImage transImage = createTransferImage(originImage, true);
         transImage.setImageDrawable(originImage.getDrawable());
         transImage.transformIn(TransferImage.STAGE_TRANSLATE);
         transfer.addView(transImage, 1);
@@ -104,7 +104,7 @@ class EmptyThumbState extends TransferState {
         List<ImageView> originImageList = config.getOriginImageList();
 
         if (position <= originImageList.size() - 1 && originImageList.get(position) != null) {
-            transImage = createTransferImage(originImageList.get(position));
+            transImage = createTransferImage(originImageList.get(position), true);
             Drawable thumbnailDrawable = transfer.transAdapter.getImageItem(
                     config.getNowThumbnailIndex()).getDrawable();
             transImage.setImageDrawable(thumbnailDrawable);

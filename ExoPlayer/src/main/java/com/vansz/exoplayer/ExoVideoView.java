@@ -23,7 +23,7 @@ import java.io.File;
  * Created by Vans Z on 2020/5/19.
  */
 public class ExoVideoView extends AdaptiveTextureView {
-    private static final String CACHE_DIR = "TransExo";
+    public static final String CACHE_DIR = "TransExo";
 
     private SimpleExoPlayer exoPlayer;
     private ExoSourceManager exoSourceManager;

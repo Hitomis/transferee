@@ -130,7 +130,7 @@ class DragCloseGesture {
                     if (originImage == null) { // 走扩散消失动画
                         transferLayout.diffusionTransfer(pos);
                     } else { // 走过渡动画
-                        if(sourceType == SOURCE_IMAGE) {
+                        if (sourceType == SOURCE_IMAGE) {
                             startTransformImageAnimate(originImage);
                         } else {
                             startTransformVideoAnimate(originImage);
@@ -153,6 +153,9 @@ class DragCloseGesture {
         }
     }
 
+    /**
+     * 当前是图片视图，且满足关闭条件执行关闭过渡动画
+     */
     private void startTransformImageAnimate(ImageView originImage) {
         ViewPager transViewPagerUp = transferLayout.transViewPager;
         transViewPagerUp.setVisibility(View.INVISIBLE);
@@ -168,7 +171,7 @@ class DragCloseGesture {
         TransferImage transImage = new TransferImage(transferLayout.getContext());
         transImage.setScaleType(FIT_CENTER);
         transImage.setOriginalInfo(x, y, width, height);
-        transImage.setDuration(300);
+        transImage.setDuration(transferLayout.getTransConfig().getDuration());
         transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         transImage.setOnTransferListener(transferLayout.transListener);
         transImage.setImageDrawable(currTransImage.getDrawable());
@@ -182,10 +185,14 @@ class DragCloseGesture {
         transferLayout.addView(transImage, 1);
     }
 
+    /**
+     * 当前是视频视图，且满足关闭条件执行关闭过渡动画
+     */
     private void startTransformVideoAnimate(ImageView originImage) {
         ViewPager transViewPagerUp = transferLayout.transViewPager;
         transViewPagerUp.setVisibility(View.INVISIBLE);
         ExoVideoView currVideo = transferLayout.getCurrentVideo();
+        long duration = transferLayout.getTransConfig().getDuration();
         int[] location = new int[2];
         originImage.getLocationInWindow(location);
 
@@ -194,24 +201,40 @@ class DragCloseGesture {
         int width = originImage.getWidth();
         int height = originImage.getHeight();
 
-        TransferImage transImage = new TransferImage(transferLayout.getContext());
-        transImage.setScaleType(FIT_CENTER);
-        transImage.setOriginalInfo(x, y, width, height);
-        transImage.setDuration(300);
-        transImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        transImage.setOnTransferListener(transferLayout.transListener);
-        transImage.setImageBitmap(currVideo.getBitmap());
+        TransferImage alphaOneImage = new TransferImage(transferLayout.getContext());
+        alphaOneImage.setScaleType(FIT_CENTER);
+        alphaOneImage.setOriginalInfo(x, y, width, height);
+        alphaOneImage.setDuration(duration);
+        alphaOneImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        alphaOneImage.setImageDrawable(originImage.getDrawable());
+        alphaOneImage.setAlpha(0f);
+        alphaOneImage.animate().alpha(1f).setDuration(duration);
+
+        TransferImage alphaZeroImage = new TransferImage(transferLayout.getContext());
+        alphaZeroImage.setScaleType(FIT_CENTER);
+        alphaZeroImage.setOriginalInfo(x, y, width, height);
+        alphaZeroImage.setDuration(duration);
+        alphaZeroImage.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        alphaZeroImage.setOnTransferListener(transferLayout.transListener);
+        alphaZeroImage.setImageBitmap(currVideo.getBitmap());
+        alphaZeroImage.setAlpha(1f);
+        alphaZeroImage.animate().alpha(0f).setDuration(duration);
 
         float realWidth = currVideo.getMeasuredWidth() * scale;
         float realHeight = currVideo.getMeasuredHeight() * scale;
         float left = transViewPagerUp.getTranslationX() + (transferLayout.getWidth() - realWidth) * .5f;
         float top = transViewPagerUp.getTranslationY() + (transferLayout.getHeight() - realHeight) * .5f;
         RectF rectF = new RectF(left, top, realWidth, realHeight);
-        transImage.transformSpecOut(rectF, scale);
-        transViewPagerUp.setVisibility(View.INVISIBLE);
-        transferLayout.addView(transImage, 1);
+        alphaOneImage.transformSpecOut(rectF, scale);
+        alphaZeroImage.transformSpecOut(rectF, scale);
+
+        transferLayout.addView(alphaOneImage, 1);
+        transferLayout.addView(alphaZeroImage, 2);
     }
 
+    /**
+     * 不满足关闭条件，执行回滚动画
+     */
     private void startFlingAndRollbackAnimation() {
         ViewPager transViewPager = transferLayout.transViewPager;
         ValueAnimator bgColor = ObjectAnimator.ofFloat(null, "alpha", transferLayout.alpha, 255.f);

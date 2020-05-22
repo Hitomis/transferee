@@ -71,7 +71,7 @@ public class RecyclerViewActivity extends BaseActivity {
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new CircleIndexIndicator())
                 .setImageLoader(PicassoImageLoader.with(getApplicationContext()))
-                .setJustLoadHitPage(true)
+                .enableJustLoadHitPage(true)
                 .bindRecyclerView(rvImages, 1, 1, R.id.iv_thum);
 
 

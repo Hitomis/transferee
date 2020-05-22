@@ -60,7 +60,7 @@ public class LocalImageActivity extends BaseActivity {
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                .setJustLoadHitPage(true)
+                .enableJustLoadHitPage(true)
                 .bindListView(gvImages, R.id.iv_thum);
     }
 

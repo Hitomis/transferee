@@ -35,13 +35,13 @@ class DragCloseGesture {
     private float scale; // 拖拽图片缩放值
     private int touchSlop;
     private int sourceType;
-    private DragCloseListener listener;
+    private DragCloseListener dragListener;
 
 
     DragCloseGesture(TransferLayout transferLayout, DragCloseListener listener) {
         this.transferLayout = transferLayout;
         touchSlop = ViewConfiguration.get(transferLayout.getContext()).getScaledEdgeSlop();
-        this.listener = listener;
+        this.dragListener = listener;
     }
 
     boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -66,9 +66,11 @@ class DragCloseGesture {
                         if (sourceType == SOURCE_IMAGE
                                 && transferLayout.getCurrentImage().isScrollTop()) {
                             // 如果是图片，需要判断是否目前是顶部对齐（针对长图判断是不是滚动到顶部）
+                            if (dragListener != null) dragListener.onDragStar();
                             return true;
                         } else if (sourceType == SOURCE_VIDEO) {
                             // 如果是视频，则直接返回 true
+                            if (dragListener != null) dragListener.onDragStar();
                             return true;
                         }
                     }
@@ -100,7 +102,6 @@ class DragCloseGesture {
                 } else {
                     transferLayout.alpha = 230 - (absDiffY - 350) * 1.35f / transferLayout.getHeight() * 255;
                 }
-
                 transferLayout.alpha = transferLayout.alpha < 0 ? 0 : transferLayout.alpha;
 
                 ViewPager transViewPager = transferLayout.transViewPager;
@@ -110,7 +111,6 @@ class DragCloseGesture {
                     transViewPager.setTranslationY(diffY - scaleOffsetY);
                     transViewPager.setScaleX(scale);
                     transViewPager.setScaleY(scale);
-                    listener.onDragStar();
                 } else {
                     transferLayout.setBackgroundColor(transferLayout.getTransConfig().getBackgroundColor());
                     transViewPager.setTranslationX(diffX);
@@ -254,7 +254,7 @@ class DragCloseGesture {
         bgColor.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                listener.onDragRollback();
+                if (dragListener != null) dragListener.onDragRollback();
             }
         });
 

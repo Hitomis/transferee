@@ -114,14 +114,13 @@ transferee.apply(config).show();
 | duration | transferee 播放过渡动画的动画时长 |
 | justLoadHitPage | 是否只加载当前页面中的资源。如果设置为 true，那么只有当 transferee 切换到当前页面时，才会触发当前页面的加载动作，否则按 offscreenPageLimit 所设置的数值去做预加载和当前页面的加载动作 |
 | enableDragClose | 是否支持向下拖拽关闭 |
-| enableDragHide | 拖拽关闭时是否隐藏除主 view 以外的其他 view |
+| enableDragHide | 拖拽关闭时是否隐藏除主视图以外的其他 view |
 | enableDragPause | 拖拽关闭时是否暂停当前页面视频播放 |
-| enableDragPause | 拖拽关闭时是否暂停当前页面视频播放 |
-| enableAnimateShake | 是否启动抖动动画 |
-| enableScrollingWithPageChange | 是否启动列表随着 page 的切换而置顶滚动，仅仅针对绑定了 RecyclerView/GridView/ListView 有效 |
+| enableHideThumb | 是否开启当 transferee 打开时，隐藏缩略图 |
+| enableScrollingWithPageChange | 是否启动列表随着 page 的切换而置顶滚动，仅仅针对绑定 RecyclerView/GridView/ListView 有效, 启动之后因为列表会实时滚动，缩略图 view 将不会出现为空的现象，从而保证关闭 transferee 时为过渡关闭动画 |
 | progressIndicator | 图片加载进度指示器 (默认内置 ProgressPieIndicator 和 ProgressBarIndicator)。可实现 IProgressIndicator 接口定义自己的图片加载进度指示器 |
 | indexIndicator | 图片索引指示器 (默认内置 CircleIndexIndicator 和 NumberIndexIndicator)。可实现 IIndexIndicator 接口定义自己的图片索引指示器 |
-| imageLoader | 图片加载器 (默认 UniversalImageLoader )。可实现 ImageLoader 接口定义自己的图片加载器 |
+| imageLoader | 图片加载器。可实现 ImageLoader 接口定义自己的图片加载器 |
 | imageId | RecyclerView 或者 ListView 的 ItemView 中的 ImageView id|
 | customView | 用户自定义的视图，放置在 transferee 显示后的面板之上 |
 | listView | 如果你是使用的 ListView 或者 GridView 来排列显示图片，那么需要将你的 ListView 或者 GridView 传入 bindListView() 方法中 |

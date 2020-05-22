@@ -37,7 +37,7 @@ public final class TransferConfig {
     private boolean enableDragClose;
     private boolean enableDragHide;
     private boolean enableDragPause;
-    private boolean enableAnimateShake;
+    private boolean enableHideThumb;
     private boolean enableScrollingWithPageChange;
 
     private Drawable missDrawable;
@@ -120,10 +120,9 @@ public final class TransferConfig {
         return justLoadHitPage;
     }
 
-    public void setJustLoadHitPage(boolean justLoadHitPage) {
+    public void enableJustLoadHitPage(boolean justLoadHitPage) {
         this.justLoadHitPage = justLoadHitPage;
     }
-
 
     public boolean isEnableDragClose() {
         return enableDragClose;
@@ -139,6 +138,30 @@ public final class TransferConfig {
 
     public boolean isEnableDragHide() {
         return enableDragHide;
+    }
+
+    public boolean isEnableDragPause() {
+        return enableDragPause;
+    }
+
+    public void enableDragPause(boolean enableDragPause) {
+        this.enableDragPause = enableDragPause;
+    }
+
+    public boolean isEnableHideThumb() {
+        return enableHideThumb;
+    }
+
+    public void enableHideThumb(boolean enableHideThumb) {
+        this.enableHideThumb = enableHideThumb;
+    }
+
+    public boolean isEnableScrollingWithPageChange() {
+        return enableScrollingWithPageChange;
+    }
+
+    public void enableScrollingWithPageChange(boolean enableScrollingWithPageChange) {
+        this.enableScrollingWithPageChange = enableScrollingWithPageChange;
     }
 
     public Drawable getMissDrawable(Context context) {
@@ -333,7 +356,7 @@ public final class TransferConfig {
         private boolean enableDragClose = true;
         private boolean enableDragHide = true;
         private boolean enableDragPause = false;
-        private boolean enableAnimateShake = true;
+        private boolean enableHideThumb = true;
         private boolean enableScrollingWithPageChange;
 
         private Drawable missDrawable;
@@ -415,7 +438,7 @@ public final class TransferConfig {
         /**
          * 仅仅只加载当前显示的图片
          */
-        public Builder setJustLoadHitPage(boolean justLoadHitPage) {
+        public Builder enableJustLoadHitPage(boolean justLoadHitPage) {
             this.justLoadHitPage = justLoadHitPage;
             return this;
         }
@@ -429,10 +452,38 @@ public final class TransferConfig {
         }
 
         /**
-         * 拖拽的时候是否隐藏indicator或customView
+         * 拖拽关闭时是否隐藏除主视图以外的其他 view
          */
         public Builder enableDragHide(boolean enableDragHide) {
             this.enableDragHide = enableDragHide;
+            return this;
+        }
+
+        /**
+         * 拖拽关闭时是否暂停当前页面视频播放
+         */
+        public Builder enableDragPause(boolean enableDragPause) {
+            this.enableDragPause = enableDragPause;
+            return this;
+        }
+
+        /**
+         * 是否开启当 transferee 打开时，隐藏缩略图
+         */
+        public Builder enableHideThumb(boolean enableHideThumb) {
+            this.enableHideThumb = enableHideThumb;
+            return this;
+        }
+
+        /**
+         * 是否启动列表随着 page 的切换而置顶滚动，仅仅针对绑定
+         * RecyclerView/GridView/ListView 有效, 启动之后
+         * 因为列表会实时滚动，缩略图 view 将不会出现为空的
+         * 现象，从而保证关闭 transferee 时为过渡关闭动画,
+         * 而不会出现扩散消失动画
+         */
+        public Builder enableScrollingWithPageChange(boolean enableScrollingWithPageChange) {
+            this.enableScrollingWithPageChange = enableScrollingWithPageChange;
             return this;
         }
 
@@ -606,9 +657,12 @@ public final class TransferConfig {
             config.setErrorPlaceHolder(errorPlaceHolder);
             config.setBackgroundColor(backgroundColor);
             config.setDuration(duration);
-            config.setJustLoadHitPage(justLoadHitPage);
+            config.enableJustLoadHitPage(justLoadHitPage);
             config.enableDragClose(enableDragClose);
             config.enableDragHide(enableDragHide);
+            config.enableDragPause(enableDragPause);
+            config.enableHideThumb(enableHideThumb);
+            config.enableScrollingWithPageChange(enableScrollingWithPageChange);
 
             config.setMissDrawable(missDrawable);
             config.setErrorDrawable(errorDrawable);

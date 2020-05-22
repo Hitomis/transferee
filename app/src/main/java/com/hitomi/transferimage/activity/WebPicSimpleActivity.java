@@ -38,7 +38,6 @@ public class WebPicSimpleActivity extends BaseActivity {
             public void onClick(View v) {
                 transferee.apply(TransferConfig.build()
                         .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                        .enableDragHide(true)
                         .setCustomView(View.inflate(getBaseContext(), R.layout.layout_custom, null))
                         .bindImageView(sourceIv, ImageConfig.WEB_URL)
                 ).show();
@@ -55,7 +54,9 @@ public class WebPicSimpleActivity extends BaseActivity {
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                .setJustLoadHitPage(true)
+                .enableJustLoadHitPage(true)
+                .enableScrollingWithPageChange(true)
+                .enableDragPause(true)
                 .setOnLongClickListener(new Transferee.OnTransfereeLongClickListener() {
                     @Override
                     public void onLongClick(ImageView imageView, String imageUri, int pos) {

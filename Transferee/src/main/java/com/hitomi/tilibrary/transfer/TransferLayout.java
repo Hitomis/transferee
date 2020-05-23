@@ -8,18 +8,13 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.hitomi.tilibrary.style.IIndexIndicator;
@@ -27,7 +22,6 @@ import com.hitomi.tilibrary.view.image.TransferImage;
 import com.vansz.exoplayer.ExoVideoView;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -37,7 +31,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * <p>
  * 所有过渡动画的展示，图片的加载都是在这个 FrameLayout 中实现
  * <p>
- * Created by Hitomis on 2017/4/23 0023.
+ * Created by Vans Z on 2017/4/23 0023.
  * <p>
  * email: 196425254@qq.com
  */
@@ -48,6 +42,7 @@ class TransferLayout extends FrameLayout {
     private TransferConfig transConfig;
     private DragCloseGesture dragCloseGesture;
 
+    private TransferChangeListener transChangeListener;
     private OnLayoutResetListener layoutResetListener;
     private Set<Integer> loadedIndexSet;
 
@@ -94,128 +89,6 @@ class TransferLayout extends FrameLayout {
         }
     };
 
-    /**
-     * ViewPager 页面切换监听器 => 当页面切换时，根据相邻优先加载的规则去加载图片
-     */
-    private ViewPager.OnPageChangeListener transChangeListener = new ViewPager.SimpleOnPageChangeListener() {
-        @Override
-        public void onPageSelected(final int position) {
-            transConfig.setNowThumbnailIndex(position);
-
-            if (transConfig.isJustLoadHitPage()) {
-                loadSourceViewOffset(position, 0);
-            } else {
-                for (int i = 1; i <= transConfig.getOffscreenPageLimit(); i++) {
-                    loadSourceViewOffset(position, i);
-                }
-            }
-            controlThumbHide(position);
-            controlVideoState(position);
-            if (controlScrollingWithPageChange(position)) {
-                // controlScrollingWithPageChange 会异步更新 originImageList，
-                // 所以这里也需要使用线程队列去保证在之后在执行一次 controlThumbHide
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        controlThumbHide(position);
-                    }
-                });
-            }
-        }
-
-        /**
-         * 页面切换的时候，如果开启了 enableScrollingWithPageChange,
-         * 需要实时检查当满足条件时滚动列表， 并更新 OriginImageList
-         */
-        private boolean controlScrollingWithPageChange(int position) {
-            if (!transConfig.isEnableScrollingWithPageChange()) return false;
-            RecyclerView recyclerView = transConfig.getRecyclerView();
-            AbsListView absListView = transConfig.getListView();
-            if (recyclerView == null && absListView == null) return false;
-            View scrollView = recyclerView == null ? absListView : recyclerView;
-            int headerSize = transConfig.getHeaderSize();
-            int footerSize = transConfig.getFooterSize();
-
-            int firstVisiblePos = -1, lastVisiblePos = -1;
-            if (recyclerView != null) {
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                if (layoutManager instanceof GridLayoutManager) {
-                    GridLayoutManager gridLayManager = ((GridLayoutManager) layoutManager);
-                    firstVisiblePos = gridLayManager.findFirstVisibleItemPosition() - headerSize;
-                    lastVisiblePos = gridLayManager.findLastVisibleItemPosition()
-                            - headerSize - footerSize;
-                } else if (layoutManager instanceof LinearLayoutManager) {
-                    LinearLayoutManager linearLayManager = ((LinearLayoutManager) layoutManager);
-                    firstVisiblePos = linearLayManager.findFirstVisibleItemPosition() - headerSize;
-                    lastVisiblePos = linearLayManager.findLastVisibleItemPosition()
-                            - headerSize - footerSize;
-                }
-
-            } else {
-                firstVisiblePos = absListView.getFirstVisiblePosition() - headerSize;
-                lastVisiblePos = absListView.getLastVisiblePosition() - headerSize - footerSize;
-            }
-
-            // item 在列表可见范围之内， 不需要处理
-            if (position >= firstVisiblePos && position <= lastVisiblePos) return false;
-            if (position < firstVisiblePos) { // 跳转位置在第一个可见项之前
-                if (recyclerView != null) {
-                    recyclerView.scrollToPosition(position);
-                } else {
-                    absListView.setSelection(position);
-                }
-
-            } else { // 跳转位置在最后可见项之后
-                if (recyclerView != null) {
-                    // todo recyclerView 跳转位置在最后可见项之后有问题
-                    recyclerView.scrollToPosition(position);
-                } else {
-                    absListView.setSelection(position);
-                }
-            }
-            // 执行到这里说明一定发生过滚动
-            scrollView.post(new Runnable() {
-                @Override
-                public void run() {
-                    OriginalViewHelper.getInstance().fillOriginImages(transConfig);
-                }
-            });
-            return true;
-        }
-
-        /**
-         * 页面切换的时候，如果开启了 enableHideThumb, 那么需要实时隐藏 originImage
-         */
-        private void controlThumbHide(int position) {
-            if (!transConfig.isEnableHideThumb()) return;
-            List<ImageView> originImageList = transConfig.getOriginImageList();
-            for (int i = 0; i < originImageList.size(); i++) {
-                ImageView currOriginImage = originImageList.get(i);
-                if (currOriginImage != null) {
-                    currOriginImage.setVisibility(i == position ? View.GONE : View.VISIBLE);
-                }
-            }
-        }
-
-        /**
-         * 页面切换的时候，如果当前 position 是视频就播放，其他位置如果有视频，全部重置
-         */
-        private void controlVideoState(int position) {
-            SparseArray<FrameLayout> cacheItems = transAdapter.getCacheItems();
-            for (int i = 0; i < cacheItems.size(); i++) {
-                int key = cacheItems.keyAt(i);
-                View view = cacheItems.get(key).getChildAt(0);
-                if (view instanceof ExoVideoView) {
-                    ExoVideoView videoView = ((ExoVideoView) view);
-                    if (key == position) {
-                        videoView.resume();
-                    } else {
-                        videoView.reset();
-                    }
-                }
-            }
-        }
-    };
     /**
      * TransferAdapter 中对应页面创建完成监听器
      */
@@ -342,7 +215,7 @@ class TransferLayout extends FrameLayout {
      * @param position 当前显示图片的索引
      * @param offset   postion 左右便宜量
      */
-    private void loadSourceViewOffset(int position, int offset) {
+    void loadSourceViewOffset(int position, int offset) {
         int left = position - offset;
         int right = position + offset;
 
@@ -608,6 +481,11 @@ class TransferLayout extends FrameLayout {
      */
     void apply(TransferConfig config) {
         transConfig = config;
+        if (transChangeListener == null) {
+            transChangeListener = new TransferChangeListener(this, transConfig);
+        } else {
+            transChangeListener.updateConfig(transConfig);
+        }
         if (transConfig.isEnableDragClose())
             this.dragCloseGesture = new DragCloseGesture(this, dragCloseListener);
     }

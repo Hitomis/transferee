@@ -65,7 +65,7 @@ public class WebPicSimpleActivity extends BaseActivity {
                 })
                 .bindListView(gvImages, R.id.iv_thum);
 
-        gvImages.setAdapter(new WebPicSimpleActivity.NineGridAdapter());
+        gvImages.setAdapter(new NineGridAdapter());
     }
 
     private class NineGridAdapter extends CommonAdapter<String> {

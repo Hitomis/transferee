@@ -66,6 +66,25 @@ public class RecyclerViewActivity extends BaseActivity {
 
     @Override
     protected void testTransferee() {
+        NineGridAdapter adapter = new NineGridAdapter();
+        headerAndFooterWrapper = new HeaderAndFooterWrapper(adapter);
+
+        TextView t1 = new TextView(this);
+        t1.setGravity(Gravity.CENTER);
+        t1.setText("我是 RecyclerView 的 Header ");
+        TextView t2 = new TextView(this);
+        t2.setGravity(Gravity.CENTER);
+        t2.setText("我是 RecyclerView 的 Header ");
+        TextView t3 = new TextView(this);
+        t3.setText("我是 RecyclerView 的 footer");
+        t3.setGravity(Gravity.CENTER);
+        headerAndFooterWrapper.addHeaderView(t1);
+        headerAndFooterWrapper.addHeaderView(t3);
+        headerAndFooterWrapper.addFootView(t2);
+
+        rvImages.setAdapter(headerAndFooterWrapper);
+        headerAndFooterWrapper.notifyDataSetChanged();
+
         config = TransferConfig.build()
                 .setSourceImageList(ImageConfig.getSourcePicUrlList())
                 .setProgressIndicator(new ProgressBarIndicator())
@@ -73,23 +92,9 @@ public class RecyclerViewActivity extends BaseActivity {
                 .setImageLoader(PicassoImageLoader.with(getApplicationContext()))
                 .enableJustLoadHitPage(true)
                 .enableScrollingWithPageChange(true)
-                .bindRecyclerView(rvImages, 1, 1, R.id.iv_thum);
+                .bindRecyclerView(rvImages, headerAndFooterWrapper.getHeadersCount(),
+                        headerAndFooterWrapper.getFootersCount(), R.id.iv_thum);
 
-
-        NineGridAdapter adapter = new RecyclerViewActivity.NineGridAdapter();
-        headerAndFooterWrapper = new HeaderAndFooterWrapper(adapter);
-
-        TextView t1 = new TextView(this);
-        t1.setGravity(Gravity.CENTER);
-        t1.setText("我是 RecyclerView 的 Header ");
-        TextView t2 = new TextView(this);
-        t2.setText("我是 RecyclerView 的 footer");
-        t2.setGravity(Gravity.CENTER);
-        headerAndFooterWrapper.addHeaderView(t1);
-        headerAndFooterWrapper.addFootView(t2);
-
-        rvImages.setAdapter(headerAndFooterWrapper);
-        headerAndFooterWrapper.notifyDataSetChanged();
     }
 
     private class NineGridAdapter extends CommonAdapter<String> {
@@ -108,7 +113,7 @@ public class RecyclerViewActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     // position 减去 header 的数量后，才是当前图片正确的索引
-                    config.setNowThumbnailIndex(position - 1);
+                    config.setNowThumbnailIndex(position - headerAndFooterWrapper.getHeadersCount());
                     transferee.apply(config).show();
                 }
             });

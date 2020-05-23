@@ -1,9 +1,9 @@
 package com.hitomi.tilibrary.transfer;
 
+import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,7 +13,8 @@ import java.util.List;
 /**
  * Created by Vans Z on 2020/5/22.
  */
-public class OriginalViewHelper {
+class OriginalViewHelper {
+    private static final String TAG = "OriginalViewHelper";
     private TransferConfig transConfig;
 
     private OriginalViewHelper() {
@@ -23,11 +24,11 @@ public class OriginalViewHelper {
         private final static OriginalViewHelper instance = new OriginalViewHelper();
     }
 
-    public static OriginalViewHelper getInstance() {
+    static OriginalViewHelper getInstance() {
         return SingletonHolder.instance;
     }
 
-    public void fillOriginImages(TransferConfig config) {
+    void fillOriginImages(TransferConfig config) {
         transConfig = config;
         List<ImageView> originImageList = new ArrayList<>();
         if (transConfig.getRecyclerView() != null) {
@@ -54,17 +55,17 @@ public class OriginalViewHelper {
 
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         int firstPos = 0, lastPos = 0;
-        int totalCount = layoutManager.getItemCount() - headerSize - -footerSize;
-        if (layoutManager instanceof GridLayoutManager) {
-            GridLayoutManager gridLayMan = (GridLayoutManager) layoutManager;
-            firstPos = gridLayMan.findFirstVisibleItemPosition() - headerSize;
-            lastPos = gridLayMan.findLastVisibleItemPosition() - headerSize - footerSize;
-        } else if (layoutManager instanceof LinearLayoutManager) {
+        int totalCount = layoutManager.getItemCount() - headerSize - footerSize;
+        if (layoutManager instanceof LinearLayoutManager) {
             LinearLayoutManager linLayMan = (LinearLayoutManager) layoutManager;
-            firstPos = linLayMan.findFirstVisibleItemPosition() - headerSize;
-            lastPos = linLayMan.findLastVisibleItemPosition() - headerSize - footerSize;
+            firstPos = linLayMan.findFirstVisibleItemPosition();
+            firstPos = firstPos < headerSize ? 0 : firstPos - headerSize;
+            lastPos = linLayMan.findLastVisibleItemPosition();
+            lastPos = lastPos > totalCount ? totalCount - 1 : lastPos - headerSize;
         }
         fillPlaceHolder(originImageList, totalCount, firstPos, lastPos);
+        Log.e(TAG, String.format("totalCount = %s, firstPos = %s, lastPos = %s",
+                totalCount, firstPos, lastPos));
     }
 
     private void fillByListView(final List<ImageView> originImageList) {

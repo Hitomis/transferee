@@ -13,7 +13,7 @@ import java.io.File;
 /**
  * 没有缩略图 ImageView, 直接在 transferee 中展示图片
  * <p>
- * Created by hitomi on 2020/4/16.
+ * Created by Vans Z on 2020/4/16.
  * <p>
  * email: 196425254@qq.com
  */

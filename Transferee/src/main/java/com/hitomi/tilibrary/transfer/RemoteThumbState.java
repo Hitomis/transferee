@@ -16,7 +16,7 @@ import java.util.List;
  * 用户指定了缩略图路径，使用该路径加载缩略图，
  * 并使用 {@link TransferImage#CATE_ANIMA_TOGETHER} 动画类型展示图片
  * <p>
- * Created by hitomi on 2017/5/4.
+ * Created by Vans Z on 2017/5/4.
  * <p>
  * email: 196425254@qq.com
  */

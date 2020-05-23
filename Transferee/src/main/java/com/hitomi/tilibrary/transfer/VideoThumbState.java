@@ -1,6 +1,7 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.graphics.BitmapFactory;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.style.IProgressIndicator;
@@ -86,12 +87,16 @@ public class VideoThumbState extends TransferState {
                 File firstFrameFile = getFirstFrameFile(videoSourceUrl);
                 if (firstFrameFile.exists()) {
                     // 首帧图片存在说明在 transferIn 方法中创建了两个 TransferImage 用来完成过渡动画
-                    transfer.removeFromParent(transfer.getChildAt(2));
+                    View alphaOneImage = transfer.getChildAt(2);
+                    if (alphaOneImage instanceof TransferImage)
+                        transfer.removeFromParent(alphaOneImage);
                 } else {
                     FileUtils.save(exoVideo.getBitmap(), firstFrameFile);
                 }
                 // 最后删除 pos 1 位置的 TransferImage
-                transfer.removeFromParent(transfer.getChildAt(1));
+                View alphaZeroImage = transfer.getChildAt(1);
+                if (alphaZeroImage instanceof TransferImage)
+                    transfer.removeFromParent(alphaZeroImage);
             }
         });
         exoVideo.play(transConfig.getSourceImageList().get(position), false);

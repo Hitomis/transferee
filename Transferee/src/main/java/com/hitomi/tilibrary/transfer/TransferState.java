@@ -22,14 +22,14 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
 
 /**
- * 由于用户配置的参数不同 (例如 使用不同的 ImageLoader  / 是否指定了 thumbnailImageList 参数值) <br/>
+ * 由于用户配置的参数不同 (例如图片是否加载过、当前播放的是不是视频有、没有绑定 View 等) <br/>
  * 使得 Transferee 所表现的行为不同，所以采用一组策略算法来实现以下不同的功能：
  * <ul>
  * <li>1. 图片进入 Transferee 的过渡动画</li>
  * <li>2. 图片加载时不同的表现形式</li>
  * <li>3. 图片从 Transferee 中出去的过渡动画</li>
  * </ul>
- * Created by hitomi on 2017/5/4.
+ * Created by Vans Z on 2020/5/4.
  * <p>
  * email: 196425254@qq.com
  */

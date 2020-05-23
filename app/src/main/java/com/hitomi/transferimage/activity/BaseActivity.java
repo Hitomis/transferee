@@ -20,7 +20,7 @@ import com.hitomi.transferimage.R;
 import java.io.File;
 
 /**
- * Created by hitomi on 2017/2/13.
+ * Created by Vans Z on 2017/2/13.
  */
 
 public abstract class BaseActivity extends AppCompatActivity {

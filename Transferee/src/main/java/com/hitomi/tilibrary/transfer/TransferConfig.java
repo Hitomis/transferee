@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Transferee Attributes
  * <p>
- * Created by hitomi on 2017/1/19.
+ * Created by Vans Z on 2017/1/19.
  * <p>
  * email: 196425254@qq.com
  */

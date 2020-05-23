@@ -15,7 +15,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 /**
  * 图片翻页时使用 {@link CircleIndicator} 去指示当前图片的位置
  * <p>
- * Created by hitomi on 2017/2/4.
+ * Created by Vans Z on 2017/2/4.
  * <p>
  * email: 196425254@qq.com
  */

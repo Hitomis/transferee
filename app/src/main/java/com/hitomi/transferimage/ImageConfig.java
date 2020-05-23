@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by hitomi on 2018/9/26.
+ * Created by Vans Z on 2018/9/26.
  */
 
 public class ImageConfig {

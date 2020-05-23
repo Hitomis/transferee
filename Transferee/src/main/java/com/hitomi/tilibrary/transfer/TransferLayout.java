@@ -109,28 +109,29 @@ class TransferLayout extends FrameLayout {
                     loadSourceViewOffset(position, i);
                 }
             }
+            controlThumbHide(position);
             controlVideoState(position);
-            controlScrollingWithPageChange(position);
-            // controlScrollingWithPageChange 会异步更新 originImageList，
-            // 所以这里也需要使用线程队列去保证在之后执行 controlThumbHide
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    controlThumbHide(position);
-                }
-            });
-
+            if (controlScrollingWithPageChange(position)) {
+                // controlScrollingWithPageChange 会异步更新 originImageList，
+                // 所以这里也需要使用线程队列去保证在之后在执行一次 controlThumbHide
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        controlThumbHide(position);
+                    }
+                });
+            }
         }
 
         /**
          * 页面切换的时候，如果开启了 enableScrollingWithPageChange,
          * 需要实时检查当满足条件时滚动列表， 并更新 OriginImageList
          */
-        private void controlScrollingWithPageChange(int position) {
-            if (!transConfig.isEnableScrollingWithPageChange()) return;
+        private boolean controlScrollingWithPageChange(int position) {
+            if (!transConfig.isEnableScrollingWithPageChange()) return false;
             RecyclerView recyclerView = transConfig.getRecyclerView();
             AbsListView absListView = transConfig.getListView();
-            if (recyclerView == null && absListView == null) return;
+            if (recyclerView == null && absListView == null) return false;
             View scrollView = recyclerView == null ? absListView : recyclerView;
             int headerSize = transConfig.getHeaderSize();
             int footerSize = transConfig.getFooterSize();
@@ -156,7 +157,7 @@ class TransferLayout extends FrameLayout {
             }
 
             // item 在列表可见范围之内， 不需要处理
-            if (position >= firstVisiblePos && position <= lastVisiblePos) return;
+            if (position >= firstVisiblePos && position <= lastVisiblePos) return false;
             if (position < firstVisiblePos) { // 跳转位置在第一个可见项之前
                 if (recyclerView != null) {
                     recyclerView.scrollToPosition(position);
@@ -166,10 +167,9 @@ class TransferLayout extends FrameLayout {
 
             } else { // 跳转位置在最后可见项之后
                 if (recyclerView != null) {
-                    recyclerView.scrollToPosition(position + 1);
+                    // todo recyclerView 跳转位置在最后可见项之后有问题
                     recyclerView.scrollToPosition(position);
                 } else {
-                    absListView.setSelection(position + 1);
                     absListView.setSelection(position);
                 }
             }
@@ -180,6 +180,7 @@ class TransferLayout extends FrameLayout {
                     OriginalViewHelper.getInstance().fillOriginImages(transConfig);
                 }
             });
+            return true;
         }
 
         /**
@@ -244,9 +245,16 @@ class TransferLayout extends FrameLayout {
         public void onTransferStart(int state, int cate, int stage) {
             if (state == TransferImage.STATE_TRANS_IN) {
                 if (transConfig.isEnableHideThumb()) {
-                    ImageView originImage = transConfig.getOriginImageList().get(transConfig.getNowThumbnailIndex());
+                    final ImageView originImage = transConfig.getOriginImageList()
+                            .get(transConfig.getNowThumbnailIndex());
                     if (originImage != null) {
-                        originImage.setVisibility(View.GONE);
+                        // 因为可能会出现闪现的问题。故需要延迟一点点时间去隐藏 originImage
+                        postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                originImage.setVisibility(View.GONE);
+                            }
+                        }, 15);
                     }
                 }
             }
@@ -258,7 +266,7 @@ class TransferLayout extends FrameLayout {
             setBackgroundColor(getBackgroundColorByAlpha(alpha));
 
             // 因为在 onTransferComplete 中执行 originImage 的显示
-            // 会出现闪现的问题。故需要提前一点点时间去先显示 originImage
+            // 会出现闪现的问题。故需要提前一点点时间去显示 originImage
             if (transConfig.isEnableHideThumb() && fraction <= 0.05 &&
                     (state == TransferImage.STATE_TRANS_OUT || state == TransferImage.STATE_TRANS_SPEC_OUT)) {
                 ImageView originImage = transConfig.getOriginImageList().get(transConfig.getNowThumbnailIndex());

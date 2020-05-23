@@ -11,7 +11,7 @@ import java.io.File;
 
 /**
  * 图片加载器接口，实现 ImageLoader 可扩展自己的图片加载器
- * Created by hitomi on 2017/1/20.
+ * Created by Vans Z on 2017/1/20.
  * <p>
  * email: 196425254@qq.com
  */

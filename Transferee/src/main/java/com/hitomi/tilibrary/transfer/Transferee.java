@@ -20,7 +20,7 @@ import java.io.File;
  * 3、加载完成显示高清图片 <br/>
  * 4、高清图支持手势缩放 <br/>
  * 5、关闭 transferee 展示 transferee 到原缩略图的过渡动画 <br/>
- * Created by hitomi on 2017/1/19.
+ * Created by Vans Z on 2017/1/19.
  * <p>
  * email: 196425254@qq.com
  */

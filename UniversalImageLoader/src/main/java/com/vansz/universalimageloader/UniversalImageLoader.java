@@ -26,7 +26,7 @@ import java.util.Map;
  * 使用 <a href="https://github.com/nostra13/Android-Universal-Image-Loader">
  * Android-Universal-Image-Loader</a>作为 Transferee 的图片加载器
  * <p>
- * Created by hitomi on 2017/5/3.
+ * Created by Vans Z on 2017/5/3.
  * <p>
  * email: 196425254@qq.com
  */

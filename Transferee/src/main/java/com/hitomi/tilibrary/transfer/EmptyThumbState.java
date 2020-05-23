@@ -14,7 +14,7 @@ import java.util.List;
  * 高清图尚未加载，使用原 ImageView 中显示的图片作为缩略图。
  * 同时使用 {@link TransferImage#CATE_ANIMA_APART} 动画类型展示图片
  * <p>
- * Created by hitomi on 2017/5/4.
+ * Created by Vans Z on 2017/5/4.
  * <p>
  * email: 196425254@qq.com
  */

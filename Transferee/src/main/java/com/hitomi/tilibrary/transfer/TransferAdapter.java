@@ -20,7 +20,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 /**
  * 展示大图组件 ViewPager 的图片数据适配器
  * <p>
- * Created by hitomi on 2017/1/23.
+ * Created by Vans Z on 2017/1/23.
  * <p>
  * email: 196425254@qq.com
  */

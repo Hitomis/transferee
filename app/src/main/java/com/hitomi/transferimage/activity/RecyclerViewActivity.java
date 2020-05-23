@@ -72,6 +72,7 @@ public class RecyclerViewActivity extends BaseActivity {
                 .setIndexIndicator(new CircleIndexIndicator())
                 .setImageLoader(PicassoImageLoader.with(getApplicationContext()))
                 .enableJustLoadHitPage(true)
+                .enableScrollingWithPageChange(true)
                 .bindRecyclerView(rvImages, 1, 1, R.id.iv_thum);
 
 

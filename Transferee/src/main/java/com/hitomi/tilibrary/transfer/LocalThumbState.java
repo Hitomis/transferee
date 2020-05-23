@@ -15,7 +15,7 @@ import java.util.List;
  * 高清图图片已经加载过了，使用高清图作为缩略图。
  * 同时使用 {@link TransferImage#CATE_ANIMA_TOGETHER} 动画类型展示图片
  * <p>
- * Created by hitomi on 2017/5/4.
+ * Created by Vans Z on 2017/5/4.
  * <p>
  * email: 196425254@qq.com
  */

@@ -1,4 +1,4 @@
-package com.vansz.exoplayer;
+package com.hitomi.tilibrary.view.exoplayer;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -12,7 +12,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.video.VideoListener;
-import com.vansz.exoplayer.source.ExoSourceManager;
+import com.hitomi.tilibrary.view.exoplayer.source.ExoSourceManager;
 
 import java.io.File;
 
@@ -22,6 +22,8 @@ import java.io.File;
 public class ExoVideoView extends AdaptiveTextureView {
     public static final String CACHE_DIR = "TransExo";
 
+    private String url;
+    private boolean invalidate;
     private SimpleExoPlayer exoPlayer;
     private ExoSourceManager exoSourceManager;
     private File cacheFile;
@@ -74,6 +76,7 @@ public class ExoVideoView extends AdaptiveTextureView {
                 }
             }
         });
+        invalidate = false;
     }
 
     private File getCacheDir() {
@@ -93,18 +96,23 @@ public class ExoVideoView extends AdaptiveTextureView {
         destroy();
     }
 
-
-    public void play(String url) {
-        play(url, true);
-    }
-
-    public void play(String url, boolean autoPlay) {
+    public void setSource(String url, boolean autoPlay) {
+        this.url = url;
         if (!exoPlayer.isLoading()) {
             MediaSource videoSource =
                     exoSourceManager.getMediaSource(url, true, true, true, cacheFile, null);
             exoPlayer.prepare(new LoopingMediaSource(videoSource));
         }
         exoPlayer.setPlayWhenReady(autoPlay);
+    }
+
+    public void play() {
+        if (invalidate) {
+            newExoPlayer(getContext());
+            setSource(url, true);
+        } else {
+            exoPlayer.setPlayWhenReady(true);
+        }
     }
 
     public void pause() {
@@ -116,11 +124,12 @@ public class ExoVideoView extends AdaptiveTextureView {
     }
 
     public void reset() {
-        exoPlayer.setPlayWhenReady(false);
         exoPlayer.seekTo(0);
+        exoPlayer.setPlayWhenReady(false);
     }
 
     public void destroy() {
+        invalidate = true;
         exoPlayer.release();
     }
 

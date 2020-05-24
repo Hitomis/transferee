@@ -7,8 +7,8 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.utils.EncryptUtils;
 import com.hitomi.tilibrary.utils.FileUtils;
+import com.hitomi.tilibrary.view.exoplayer.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
-import com.vansz.exoplayer.ExoVideoView;
 
 import java.io.File;
 import java.util.List;
@@ -100,7 +100,7 @@ public class VideoThumbState extends TransferState {
                     transfer.removeFromParent(alphaZeroImage);
             }
         });
-        exoVideo.play(transConfig.getSourceImageList().get(position), false);
+        exoVideo.setSource(transConfig.getSourceImageList().get(position), false);
     }
 
     private File getFirstFrameFile(String videoSourceUrl) {

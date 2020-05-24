@@ -1,4 +1,4 @@
-package com.vansz.exoplayer;
+package com.hitomi.tilibrary.view.exoplayer;
 
 import android.app.Activity;
 import android.content.Context;

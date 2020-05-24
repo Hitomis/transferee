@@ -13,8 +13,8 @@ import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.utils.AppManager;
 import com.hitomi.tilibrary.utils.FileUtils;
-import com.vansz.exoplayer.ExoVideoView;
-import com.vansz.exoplayer.source.ExoSourceManager;
+import com.hitomi.tilibrary.view.exoplayer.ExoVideoView;
+import com.hitomi.tilibrary.view.exoplayer.source.ExoSourceManager;
 
 import java.io.File;
 

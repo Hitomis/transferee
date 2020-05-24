@@ -15,8 +15,8 @@ import android.widget.ImageView;
 
 import androidx.viewpager.widget.ViewPager;
 
+import com.hitomi.tilibrary.view.exoplayer.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
-import com.vansz.exoplayer.ExoVideoView;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;

@@ -1,4 +1,4 @@
-package com.vansz.exoplayer.source;
+package com.hitomi.tilibrary.view.exoplayer.source;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

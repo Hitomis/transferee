@@ -18,8 +18,8 @@ import android.widget.ImageView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.hitomi.tilibrary.style.IIndexIndicator;
+import com.hitomi.tilibrary.view.exoplayer.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
-import com.vansz.exoplayer.ExoVideoView;
 
 import java.util.HashSet;
 import java.util.Set;

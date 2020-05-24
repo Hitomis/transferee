@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.vansz.exoplayer.ExoVideoView;
+
+import com.hitomi.tilibrary.view.exoplayer.ExoVideoView;
 
 import java.util.List;
 
@@ -171,7 +172,7 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
             if (view instanceof ExoVideoView) {
                 ExoVideoView videoView = ((ExoVideoView) view);
                 if (key == position) {
-                    videoView.resume();
+                    videoView.play();
                 } else {
                     videoView.reset();
                 }

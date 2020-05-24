@@ -51,9 +51,10 @@ artifacts {
 }
 
 dependencies {
-    implementation project(':exoplayer')
     implementation libAppcompat
     implementation libSupportRecyclerview
-    implementation 'com.github.filippudak.progresspieview:library:1.0.4'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+    implementation libExoplayer
+    implementation libExoExtensionRtmp
+    implementation libProgresspieview
+    implementation libGifDrawable
 }

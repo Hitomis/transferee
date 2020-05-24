@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.vansz.exoplayer.source;
+package com.hitomi.tilibrary.view.exoplayer.source;
 
 import androidx.annotation.Nullable;
 

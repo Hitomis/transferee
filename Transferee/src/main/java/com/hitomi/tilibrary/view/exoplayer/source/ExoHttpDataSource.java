@@ -1,4 +1,4 @@
-package com.vansz.exoplayer.source;
+package com.hitomi.tilibrary.view.exoplayer.source;
 
 import android.net.Uri;
 import android.text.TextUtils;

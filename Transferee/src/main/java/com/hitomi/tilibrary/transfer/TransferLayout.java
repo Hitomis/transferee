@@ -491,6 +491,21 @@ class TransferLayout extends FrameLayout {
     }
 
     /**
+     * 如果当前显示的是视频，那么暂停或者继续播放视频
+     *
+     * @param pause 是否暂停
+     */
+    void pauseOrPlayVideo(boolean pause) {
+        ExoVideoView videoView = transAdapter.getVideoItem(transConfig.getNowThumbnailIndex());
+        if (videoView != null) {
+            if (pause)
+                videoView.pause();
+            else
+                videoView.resume();
+        }
+    }
+
+    /**
      * 绑定 TransferLayout 内容重置时回调监听器
      *
      * @param listener 重置回调监听器

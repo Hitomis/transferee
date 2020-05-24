@@ -1,5 +1,6 @@
 package com.hitomi.tilibrary.transfer;
 
+import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
+import com.hitomi.tilibrary.utils.AppManager;
 
 import java.io.File;
 
@@ -26,7 +28,8 @@ import java.io.File;
  */
 public class Transferee implements DialogInterface.OnShowListener,
         DialogInterface.OnKeyListener,
-        TransferLayout.OnLayoutResetListener {
+        TransferLayout.OnLayoutResetListener,
+        AppManager.OnAppStateChangeListener {
 
     private Context context;
     private Dialog transDialog;
@@ -47,6 +50,7 @@ public class Transferee implements DialogInterface.OnShowListener,
         this.context = context;
         createLayout();
         createDialog();
+        AppManager.getInstance().init((Application) context.getApplicationContext());
     }
 
     /**
@@ -143,7 +147,6 @@ public class Transferee implements DialogInterface.OnShowListener,
         transDialog.show();
         transListener = listener;
         transListener.onShow();
-
         shown = true;
     }
 
@@ -174,15 +177,16 @@ public class Transferee implements DialogInterface.OnShowListener,
 
     @Override
     public void onShow(DialogInterface dialog) {
+        AppManager.getInstance().register(this);
         transLayout.show();
     }
 
     @Override
     public void onReset() {
+        AppManager.getInstance().unregister(this);
         transDialog.dismiss();
         if (transListener != null)
             transListener.onDismiss();
-
         shown = false;
     }
 
@@ -192,8 +196,19 @@ public class Transferee implements DialogInterface.OnShowListener,
                 event.getAction() == KeyEvent.ACTION_UP &&
                 !event.isCanceled()) {
             dismiss();
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    @Override
+    public void onForeground() {
+        transLayout.pauseOrPlayVideo(false);
+    }
+
+    @Override
+    public void onBackground() {
+        transLayout.pauseOrPlayVideo(true);
     }
 
     /**

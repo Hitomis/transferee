@@ -13,6 +13,7 @@ import java.io.OutputStream;
  */
 public class FileUtils {
 
+
     public static boolean save(final Bitmap src, final File file) {
         if (isEmptyBitmap(src) || !createFileByDeleteOldFile(file)) return false;
         OutputStream os = null;
@@ -33,6 +34,23 @@ public class FileUtils {
             }
         }
         return ret;
+    }
+
+    public static boolean deleteDir(final File dir) {
+        if (dir == null) return false;
+        if (!dir.exists()) return true;
+        if (!dir.isDirectory()) return false;
+        File[] files = dir.listFiles();
+        if (files != null && files.length != 0) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    if (!file.delete()) return false;
+                } else if (file.isDirectory()) {
+                    if (!deleteDir(file)) return false;
+                }
+            }
+        }
+        return dir.delete();
     }
 
     private static boolean isEmptyBitmap(final Bitmap src) {

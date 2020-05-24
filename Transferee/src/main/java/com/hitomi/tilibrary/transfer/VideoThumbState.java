@@ -19,6 +19,7 @@ import java.util.List;
  * Created by Vans Z on 2020/5/19.
  */
 public class VideoThumbState extends TransferState {
+    static final String FRAME_DIR = "frame";
 
     VideoThumbState(TransferLayout transfer) {
         super(transfer);
@@ -105,7 +106,7 @@ public class VideoThumbState extends TransferState {
     private File getFirstFrameFile(String videoSourceUrl) {
         File cacheDir = new File(transfer.getContext().getCacheDir(), ExoVideoView.CACHE_DIR);
         String frameName = EncryptUtils.encryptMD5ToString(videoSourceUrl);
-        return new File(cacheDir, String.format("/frame/%s.jpg", frameName.toLowerCase()));
+        return new File(cacheDir, String.format("/%s/%s.jpg", FRAME_DIR, frameName.toLowerCase()));
     }
 
     @Override

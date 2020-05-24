@@ -158,11 +158,10 @@ public class ExoSourceManager {
     }
 
     /**
-     * Cache需要release之后才能clear
+     * Cache 需要 release 之后才能 clear
      *
-     * @param context
-     * @param cacheDir
-     * @param url
+     * @param cacheDir 缓存文件夹
+     * @param url      如果 url 值是 null, 表示清楚所有缓存
      */
     public static void clearCache(Context context, File cacheDir, String url) {
         try {

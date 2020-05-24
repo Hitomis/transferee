@@ -12,6 +12,9 @@ import androidx.appcompat.app.AlertDialog;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.utils.AppManager;
+import com.hitomi.tilibrary.utils.FileUtils;
+import com.vansz.exoplayer.ExoVideoView;
+import com.vansz.exoplayer.source.ExoSourceManager;
 
 import java.io.File;
 
@@ -167,11 +170,16 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     /**
-     * 清除 transferee 缓存
+     * 清除 transferee 缓存,包括图片和视频文件缓存，注意清除视频缓存必须保证 transferee 是关闭状态
      */
     public void clear() {
         if (transConfig != null && transConfig.getImageLoader() != null) {
             transConfig.getImageLoader().clearCache();
+        }
+        File cacheFile = new File(context.getCacheDir(), ExoVideoView.CACHE_DIR);
+        if (cacheFile.exists() && !shown) {
+            FileUtils.deleteDir(new File(cacheFile, VideoThumbState.FRAME_DIR));
+            ExoSourceManager.clearCache(context, cacheFile, null);
         }
     }
 

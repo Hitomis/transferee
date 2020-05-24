@@ -65,6 +65,7 @@ public class MainActivity extends BaseActivity {
                 UniversalImageLoader.with(getApplicationContext()).clearCache();
                 GlideImageLoader.with(getApplicationContext()).clearCache();
                 PicassoImageLoader.with(getApplicationContext()).clearCache();
+                transferee.clear();
             }
         });
     }

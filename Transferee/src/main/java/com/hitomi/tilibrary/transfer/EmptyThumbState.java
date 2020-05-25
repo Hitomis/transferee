@@ -80,11 +80,11 @@ class EmptyThumbState extends TransferState {
                         switch (status) {
                             case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
                                 targetImage.transformIn(TransferImage.STAGE_SCALE);
-                                startPreview(targetImage, source, imgUrl, config, position);
+                                startPreview(targetImage, source, imgUrl, position);
                                 break;
                             case ImageLoader.STATUS_DISPLAY_CANCEL:
                                 if (targetImage.getDrawable() != null) {
-                                    startPreview(targetImage, source, imgUrl, config, position);
+                                    startPreview(targetImage, source, imgUrl, position);
                                 }
                                 break;
                             case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
@@ -136,7 +136,7 @@ class EmptyThumbState extends TransferState {
     }
 
     /**
-     * 裁剪用于显示 PlachHolder 的 TransferImage
+     * 裁剪用于显示 PlaceHolder 的 TransferImage
      *
      * @param targetImage 被裁剪的 TransferImage
      * @param position    图片索引
@@ -147,12 +147,26 @@ class EmptyThumbState extends TransferState {
 
         Drawable placeHolder = getPlaceHolder(position);
         int[] clipSize = new int[2];
-        ImageView originImage = config.getOriginImageList().get(position);
-        if (originImage != null) {
+        List<ImageView> originImageList = config.getOriginImageList();
+        ImageView originImage = originImageList.get(position);
+        // 先取 position 位置的 originImage, 如果为空，则从 originImageList 中
+        // 找到第一个不为空的 originImage, 如果仍然找不到，则默认取缺省占位图的尺寸
+        if (originImage == null) {
+            for (ImageView imageView : originImageList) {
+                if (imageView != null) {
+                    originImage = imageView;
+                    break;
+                }
+            }
+        }
+        if (originImage == null) {
+            Drawable placeholder = transfer.getTransConfig().getMissDrawable(transfer.getContext());
+            clipSize[0] = placeholder.getIntrinsicWidth();
+            clipSize[1] = placeHolder.getIntrinsicHeight();
+        } else {
             clipSize[0] = originImage.getWidth();
             clipSize[1] = originImage.getHeight();
         }
-
         clipTargetImage(targetImage, placeHolder, clipSize);
         return placeHolder;
     }

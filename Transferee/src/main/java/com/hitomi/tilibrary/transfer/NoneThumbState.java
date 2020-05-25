@@ -67,7 +67,6 @@ public class NoneThumbState extends TransferState {
 
     private void loadSourceImage(final TransferImage targetImage, final IProgressIndicator progressIndicator,
                                  final String imgUrl, final Drawable placeHolder, final int position) {
-        final long startTime = System.currentTimeMillis();
         final TransferConfig transConfig = transfer.getTransConfig();
         transConfig.getImageLoader().showImage(imgUrl, targetImage,
                 placeHolder, new ImageLoader.SourceCallback() {
@@ -92,11 +91,11 @@ public class NoneThumbState extends TransferState {
                             case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
                                 if (progressIndicator != null)
                                     targetImage.transformIn();
-                                startPreview(targetImage, source, imgUrl, transConfig, position);
+                                startPreview(targetImage, source, imgUrl, position);
                                 break;
                             case ImageLoader.STATUS_DISPLAY_CANCEL:
                                 if (targetImage.getDrawable() != null) {
-                                    startPreview(targetImage, source, imgUrl, transConfig, position);
+                                    startPreview(targetImage, source, imgUrl, position);
                                 }
                                 break;
                             case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图

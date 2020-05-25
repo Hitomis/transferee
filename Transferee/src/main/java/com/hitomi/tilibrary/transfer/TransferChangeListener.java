@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-
 import com.hitomi.tilibrary.view.exoplayer.ExoVideoView;
+import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.util.List;
 
@@ -51,6 +51,7 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
                 transfer.loadSourceViewOffset(position, i);
             }
         }
+        bindOperationListener(position);
         controlThumbHide(position);
         controlVideoState(position);
         if (controlScrollingWithPageChange(position)) {
@@ -177,6 +178,37 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
                     videoView.reset();
                 }
             }
+        }
+    }
+
+    /**
+     * 绑定目前支持的操作事件:
+     * <p>1.点击事件</p>
+     * <p>2.长按事件</p>
+     */
+    void bindOperationListener(final int position) {
+        FrameLayout parent = transfer.transAdapter.getParentItem(position);
+        if (parent == null || parent.getChildAt(0) == null) return;
+
+        final View contentView = parent.getChildAt(0);
+        if (!contentView.hasOnClickListeners())
+            contentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    transfer.dismiss(position);
+                }
+            });
+        // 只有图片支持长按事件
+        if (contentView instanceof TransferImage && transConfig.getLongClickListener() != null) {
+            contentView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    TransferImage targetImage = ((TransferImage) contentView);
+                    String sourceUrl = transConfig.getSourceImageList().get(position);
+                    transConfig.getLongClickListener().onLongClick(targetImage, sourceUrl, position);
+                    return false;
+                }
+            });
         }
     }
 }

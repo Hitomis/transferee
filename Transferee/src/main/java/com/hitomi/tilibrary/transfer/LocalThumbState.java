@@ -89,11 +89,11 @@ class LocalThumbState extends TransferState {
                     case ImageLoader.STATUS_DISPLAY_SUCCESS:
                         if (TransferImage.STATE_TRANS_CLIP == targetImage.getState())
                             targetImage.transformIn(TransferImage.STAGE_SCALE);
-                        startPreview(targetImage, source, imgUrl, config, position);
+                        startPreview(targetImage, source, imgUrl, position);
                         break;
                     case ImageLoader.STATUS_DISPLAY_CANCEL:
                         if (targetImage.getDrawable() != null) {
-                            startPreview(targetImage, source, imgUrl, config, position);
+                            startPreview(targetImage, source, imgUrl, position);
                         }
                         break;
                     case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图

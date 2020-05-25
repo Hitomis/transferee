@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.List;
 
 /**
+ * 处理视频加载播放
  * InAnimate: transInImage 伸展的同时，透明度降低到0; 视频开始播放并且透明度由0到1
  * OutAnimate: transOutImage 缩小同时，透明度由0到1; 视频停止播放透明度由1到0
  * Created by Vans Z on 2020/5/19.

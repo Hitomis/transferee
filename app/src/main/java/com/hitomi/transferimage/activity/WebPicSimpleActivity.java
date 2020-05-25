@@ -49,14 +49,11 @@ public class WebPicSimpleActivity extends BaseActivity {
     protected void testTransferee() {
         config = TransferConfig.build()
                 .setSourceImageList(ImageConfig.getSourcePicUrlList())
-                .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                .enableJustLoadHitPage(true)
                 .enableScrollingWithPageChange(true)
-                .enableDragPause(true)
                 .setOnLongClickListener(new Transferee.OnTransfereeLongClickListener() {
                     @Override
                     public void onLongClick(ImageView imageView, String imageUri, int pos) {

@@ -103,6 +103,8 @@ class TransferLayout extends FrameLayout {
             } else {
                 loadSourceViewOffset(position, 1);
             }
+            // 需要为首次打开的 item 绑定操作事件
+            transChangeListener.bindOperationListener(position);
             // 初始化的时候打开的就是视频, 那么打开后即刻开始播放 position 位置处的视频
             ExoVideoView videoView = transAdapter.getVideoItem(position);
             if (videoView != null) {
@@ -359,32 +361,6 @@ class TransferLayout extends FrameLayout {
         }
 
         return transferState;
-    }
-
-    /**
-     * 为加载完的成图片ImageView 绑定点 Transferee 操作事件
-     *
-     * @param imageView 加载完成的 ImageView
-     * @param pos       关闭 Transferee 时图片所在的索引
-     */
-    void bindOnOperationListener(final ImageView imageView, final String imageUri, final int pos) {
-        // bind click dismiss listener
-        imageView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss(pos);
-            }
-        });
-
-        // bind long click listener
-        if (transConfig.getLongClickListener() != null)
-            imageView.setOnLongClickListener(new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    transConfig.getLongClickListener().onLongClick(imageView, imageUri, pos);
-                    return false;
-                }
-            });
     }
 
     /**

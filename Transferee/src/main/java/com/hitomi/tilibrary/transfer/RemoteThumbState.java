@@ -111,10 +111,7 @@ class RemoteThumbState extends TransferState {
                 progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
                 switch (status) {
                     case ImageLoader.STATUS_DISPLAY_SUCCESS:
-                        // 启用 TransferImage 的手势缩放功能
-                        targetImage.enable();
-                        // 绑定点击关闭 Transferee
-                        transfer.bindOnOperationListener(targetImage, sourceUrl, position);
+                        startPreview(targetImage, source, sourceUrl, position);
                         break;
                     case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
                         targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));

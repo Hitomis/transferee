@@ -1,6 +1,5 @@
 package com.hitomi.tilibrary.view.exoplayer;
 
-import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -19,18 +18,14 @@ public class ScreenRotateUtils {
     private static int DATA_Z = 2;
     private static int ORIENTATION_UNKNOWN = -1;
     private static ScreenRotateUtils instance;
-    private Activity mActivity;
-    private boolean isOpenSensor = true;      // 是否打开传输，默认打开
-    private boolean isEffectSysSetting = true;   // 手机系统的重力感应设置是否生效，默认无效，想要生效改成true就好了
-    private SensorManager sm;
-    private OrientationSensorListener listener;
+    private Context context;
     private OrientationChangeListener changeListener;
-    private Sensor sensor;
 
     public ScreenRotateUtils(Context context) {
-        sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        listener = new OrientationSensorListener();
+        this.context = context.getApplicationContext();
+        SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sm.registerListener(new OrientationSensorListener(), sensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public static ScreenRotateUtils getInstance(Context context) {
@@ -40,27 +35,8 @@ public class ScreenRotateUtils {
         return instance;
     }
 
-    public void setOrientationChangeListener(OrientationChangeListener changeListener) {
+    void setOrientationChangeListener(OrientationChangeListener changeListener) {
         this.changeListener = changeListener;
-    }
-
-    /**
-     * 开启监听
-     * 绑定切换横竖屏Activity的生命周期
-     *
-     * @param activity
-     */
-    public void start(Activity activity) {
-        mActivity = activity;
-        sm.registerListener(listener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    /**
-     * 注销监听
-     */
-    public void stop() {
-        sm.unregisterListener(listener);
-        mActivity = null;  // 防止内存泄漏
     }
 
     public interface OrientationChangeListener {
@@ -92,27 +68,24 @@ public class ScreenRotateUtils {
                 }
             }
 
-            /**
+            /*
              * 获取手机系统的重力感应开关设置，这段代码看需求，不要就删除
              * screenchange = 1 表示开启，screenchange = 0 表示禁用
              * 要是禁用了就直接返回
              */
-            if (isEffectSysSetting) {
-                try {
-                    int isRotate = Settings.System.getInt(mActivity.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION);
-                    // 如果用户禁用掉了重力感应就直接return
-                    if (isRotate == 0) {
-                        return;
-                    }
-                } catch (Settings.SettingNotFoundException e) {
-                    e.printStackTrace();
-                }
-                // 判断是否要进行中断信息传递
-                if (!isOpenSensor) {
+            // 手机系统的重力感应设置是否生效，默认无效，想要生效改成true就好了
+            try {
+                int isRotate = Settings.System.getInt(context.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION);
+                // 如果用户禁用掉了重力感应就直接return
+                if (isRotate == 0) {
                     return;
                 }
-                changeListener.orientationChange(orientation);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
             }
+            // 判断是否要进行中断信息传递
+            // 是否打开传输，默认打开
+            changeListener.orientationChange(orientation);
         }
 
         @Override

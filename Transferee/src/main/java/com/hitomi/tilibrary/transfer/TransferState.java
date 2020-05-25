@@ -111,14 +111,16 @@ abstract class TransferState {
      *
      * @param targetImage 预览图片
      * @param imgUrl      图片url
-     * @param config      设置
-     * @param position    索引
+     * @param pos         索引
      */
-    void startPreview(TransferImage targetImage, File source, String imgUrl, TransferConfig config, int position) {
+    void startPreview(final TransferImage targetImage, final File source,
+                      final String imgUrl, final int pos) {
         // 启用 TransferImage 的手势缩放功能
         targetImage.enable();
         if (imgUrl.endsWith("gif")) {
-            File cache = source == null ? config.getImageLoader().getCache(imgUrl) : source;
+            File cache = source == null
+                    ? transfer.getTransConfig().getImageLoader().getCache(imgUrl)
+                    : source;
             if (cache != null) {
                 try {
                     targetImage.setImageDrawable(new GifDrawable(cache.getPath()));
@@ -126,8 +128,6 @@ abstract class TransferState {
                 }
             }
         }
-        // 绑定点击关闭 Transferee
-        transfer.bindOnOperationListener(targetImage, imgUrl, position);
     }
 
     /**

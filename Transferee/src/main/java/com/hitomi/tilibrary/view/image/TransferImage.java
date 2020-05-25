@@ -252,7 +252,7 @@ public class TransferImage extends PhotoView {
 
         float xEScale = getWidth() / ((float) transDrawable.getIntrinsicWidth());
         float yEScale = getHeight() / ((float) transDrawable.getIntrinsicHeight());
-        float minScale = transDrawable.getIntrinsicHeight() * Math.min(xEScale, yEScale);
+        float minScale = Math.min(xEScale, yEScale);
 
         deformedSize[0] = transDrawable.getIntrinsicWidth() * minScale;
         deformedSize[1] = transDrawable.getIntrinsicHeight() * minScale;

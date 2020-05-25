@@ -30,7 +30,7 @@ public class WebPicSimpleActivity extends BaseActivity {
 
         final ImageView sourceIv = findViewById(R.id.iv_source);
         Glide.with(sourceIv)
-                .load(ImageConfig.WEB_URL)
+                .load(ImageConfig.getSourcePicUrlList().get(0))
                 .placeholder(R.mipmap.ic_empty_photo)
                 .into(sourceIv);
         sourceIv.setOnClickListener(new View.OnClickListener() {
@@ -38,8 +38,9 @@ public class WebPicSimpleActivity extends BaseActivity {
             public void onClick(View v) {
                 transferee.apply(TransferConfig.build()
                         .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+                        .enableJustLoadHitPage(true)
                         .setCustomView(View.inflate(getBaseContext(), R.layout.layout_custom, null))
-                        .bindImageView(sourceIv, ImageConfig.WEB_URL)
+                        .bindImageView(sourceIv, ImageConfig.getSourcePicUrlList())
                 ).show();
             }
         });

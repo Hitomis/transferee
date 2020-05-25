@@ -187,17 +187,26 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
      * <p>2.长按事件</p>
      */
     void bindOperationListener(final int position) {
-        FrameLayout parent = transfer.transAdapter.getParentItem(position);
+        final FrameLayout parent = transfer.transAdapter.getParentItem(position);
         if (parent == null || parent.getChildAt(0) == null) return;
 
         final View contentView = parent.getChildAt(0);
-        if (!contentView.hasOnClickListeners())
-            contentView.setOnClickListener(new View.OnClickListener() {
+        // 因为 TransferImage 拦截了 click 事件，所以如果是图片，click 事件
+        // 只能绑定到 TransferImage，其他情况都绑定到 parent 上面
+        View bindClickView;
+        if (contentView instanceof TransferImage) {
+            bindClickView = contentView;
+        } else {
+            bindClickView = parent;
+        }
+        if (!bindClickView.hasOnClickListeners()) {
+            bindClickView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     transfer.dismiss(position);
                 }
             });
+        }
         // 只有图片支持长按事件
         if (contentView instanceof TransferImage && transConfig.getLongClickListener() != null) {
             contentView.setOnLongClickListener(new View.OnLongClickListener() {

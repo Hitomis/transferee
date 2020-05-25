@@ -2,6 +2,7 @@ package com.hitomi.tilibrary.view.exoplayer;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,9 +21,11 @@ import java.io.File;
  * Created by Vans Z on 2020/5/19.
  */
 public class ExoVideoView extends AdaptiveTextureView {
+    private static final String TAG = "ExoVideoView";
     public static final String CACHE_DIR = "TransExo";
 
     private String url;
+    private boolean requestLayout;
     private boolean invalidate;
     private SimpleExoPlayer exoPlayer;
     private ExoSourceManager exoSourceManager;
@@ -49,18 +52,13 @@ public class ExoVideoView extends AdaptiveTextureView {
         exoPlayer.setVideoTextureView(this);
         exoPlayer.addVideoListener(new VideoListener() {
             @Override
-            public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+            public void onVideoSizeChanged(int width, int height, int unAppliedRotationDegrees, float pixelWidthHeightRatio) {
                 if (currentVideoWidth != width && currentVideoHeight != height) {
+                    Log.e(TAG, "ExoVideoView.invoke()");
                     currentVideoWidth = width;
                     currentVideoHeight = height;
                     requestLayout();
-                    post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (videoStateChangeListener != null)
-                                videoStateChangeListener.onVideoRendered();
-                        }
-                    });
+                    requestLayout = true;
                 }
             }
         });
@@ -77,6 +75,22 @@ public class ExoVideoView extends AdaptiveTextureView {
             }
         });
         invalidate = false;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (requestLayout && exoPlayer.getPlayWhenReady()) {
+            Log.e(TAG, "ExoVideoView.onVideoRendered()");
+            requestLayout = false;
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (videoStateChangeListener != null)
+                        videoStateChangeListener.onVideoRendered();
+                }
+            }, 15);
+        }
     }
 
     private File getCacheDir() {

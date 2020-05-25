@@ -51,6 +51,7 @@ public class TransferImage extends PhotoView {
     private int originalLocationY;
     private long duration = 300; // 默认动画时长
     private boolean transformStart = false; // 开始动画的标记
+    private boolean isLoaded = false;
 
     private Paint paint;
     private Matrix transMatrix;
@@ -213,6 +214,14 @@ public class TransferImage extends PhotoView {
         this.duration = duration;
     }
 
+    public boolean isLoaded() {
+        return isLoaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        isLoaded = loaded;
+    }
+
     /**
      * 获取当前的状态
      *
@@ -232,31 +241,43 @@ public class TransferImage extends PhotoView {
     }
 
     /**
-     * 获取图片转变完全体之后的实际宽度
+     * 获取图片伸展之后的实际显示尺寸
      *
-     * @return 完全体宽度
+     * @return 伸展之后的尺寸
      */
-    public float getDeformedWidth() {
+    public float[] getAfterTransferSize() {
+        float[] deformedSize = new float[]{0, 0};
         Drawable transDrawable = getDrawable();
-        if (transDrawable == null) return 0;
+        if (transDrawable == null) return deformedSize;
 
         float xEScale = getWidth() / ((float) transDrawable.getIntrinsicWidth());
         float yEScale = getHeight() / ((float) transDrawable.getIntrinsicHeight());
-        return transDrawable.getIntrinsicWidth() * Math.min(xEScale, yEScale);
+        float minScale = transDrawable.getIntrinsicHeight() * Math.min(xEScale, yEScale);
+
+        deformedSize[0] = transDrawable.getIntrinsicWidth() * minScale;
+        deformedSize[1] = transDrawable.getIntrinsicHeight() * minScale;
+        return deformedSize;
     }
 
     /**
-     * 获取图片转变完全体之后的实际高度
+     * 获取图片伸展之前的实际显示尺寸
      *
-     * @return 完全体高度
+     * @param originWidth  原始图片宽度
+     * @param originHeight 原始图片高度
+     * @return 伸展之前的尺寸，数组中包括高度和宽度两个值
      */
-    public float getDeformedHeight() {
+    public float[] getBeforeTransferSize(int originWidth, int originHeight) {
+        float[] stableSize = new float[]{0, 0};
         Drawable transDrawable = getDrawable();
-        if (transDrawable == null) return 0;
+        if (transDrawable == null) return stableSize;
 
-        float xEScale = getWidth() / ((float) transDrawable.getIntrinsicWidth());
-        float yEScale = getHeight() / ((float) transDrawable.getIntrinsicHeight());
-        return transDrawable.getIntrinsicHeight() * Math.min(xEScale, yEScale);
+        float xSScale = originWidth / ((float) transDrawable.getIntrinsicWidth());
+        float ySScale = originHeight / ((float) transDrawable.getIntrinsicHeight());
+        float maxScale = Math.max(xSScale, ySScale);
+
+        stableSize[0] = transDrawable.getIntrinsicWidth() * maxScale;
+        stableSize[1] = transDrawable.getIntrinsicHeight() * maxScale;
+        return stableSize;
     }
 
     /**
@@ -305,14 +326,14 @@ public class TransferImage extends PhotoView {
         if (state == STATE_TRANS_SPEC_OUT) {
             transform.endRect.left = specSizeF.left;
             transform.endRect.top = specSizeF.top;
+            transform.endRect.width = specSizeF.width();
+            transform.endRect.height = specSizeF.height();
         } else {
             transform.endRect.left = (getWidth() - bitmapEndWidth) / 2;
             transform.endRect.top = (getHeight() - bitmapEndHeight) / 2;
+            transform.endRect.width = bitmapEndWidth;
+            transform.endRect.height = bitmapEndHeight;
         }
-        transform.endRect.width = bitmapEndWidth;
-        transform.endRect.height = bitmapEndHeight;
-
-
         transform.rect = new LocationSizeF();
     }
 

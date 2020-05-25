@@ -117,6 +117,7 @@ abstract class TransferState {
                       final String imgUrl, final int pos) {
         // 启用 TransferImage 的手势缩放功能
         targetImage.enable();
+        targetImage.setLoaded(true);
         if (imgUrl.endsWith("gif")) {
             File cache = source == null
                     ? transfer.getTransConfig().getImageLoader().getCache(imgUrl)

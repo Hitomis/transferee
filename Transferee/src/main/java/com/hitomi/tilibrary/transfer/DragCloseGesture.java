@@ -176,11 +176,21 @@ class DragCloseGesture {
         transImage.setOnTransferListener(transferLayout.transListener);
         transImage.setImageDrawable(currTransImage.getDrawable());
 
-        float realWidth = currTransImage.getDeformedWidth() * scale;
-        float realHeight = currTransImage.getDeformedHeight() * scale;
+        float currTransWidth, currTransHeight;
+        if (currTransImage.isLoaded()) {
+            float[] afterSize = currTransImage.getAfterTransferSize();
+            currTransWidth = afterSize[0];
+            currTransHeight = afterSize[1];
+        } else {
+            float[] beforeSize = currTransImage.getBeforeTransferSize(width, height);
+            currTransWidth = beforeSize[0];
+            currTransHeight = beforeSize[1];
+        }
+        float realWidth = currTransWidth * scale;
+        float realHeight = currTransHeight * scale;
         float left = transViewPagerUp.getTranslationX() + (transferLayout.getWidth() - realWidth) * .5f;
         float top = transViewPagerUp.getTranslationY() + (transferLayout.getHeight() - realHeight) * .5f;
-        RectF rectF = new RectF(left, top, realWidth, realHeight);
+        RectF rectF = new RectF(left, top, left + realWidth, top + realHeight);
         transImage.transformSpecOut(rectF, scale);
         transferLayout.addView(transImage, 1);
     }
@@ -224,7 +234,7 @@ class DragCloseGesture {
         float realHeight = currVideo.getMeasuredHeight() * scale;
         float left = transViewPagerUp.getTranslationX() + (transferLayout.getWidth() - realWidth) * .5f;
         float top = transViewPagerUp.getTranslationY() + (transferLayout.getHeight() - realHeight) * .5f;
-        RectF rectF = new RectF(left, top, realWidth, realHeight);
+        RectF rectF = new RectF(left, top, left + realWidth, top + realHeight);
         alphaOneImage.transformSpecOut(rectF, scale);
         alphaZeroImage.transformSpecOut(rectF, scale);
 

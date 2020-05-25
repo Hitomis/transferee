@@ -116,8 +116,11 @@ class TransferLayout extends FrameLayout {
      * TransferImage 伸/缩动画执行完成监听器
      */
     TransferImage.OnTransferListener transListener = new TransferImage.OnTransferListener() {
+        private float currentAlpha;
+
         @Override
         public void onTransferStart(int state, int cate, int stage) {
+            currentAlpha = (state == TransferImage.STATE_TRANS_SPEC_OUT ? alpha : 255);
             if (state == TransferImage.STATE_TRANS_IN) {
                 if (transConfig.isEnableHideThumb()) {
                     final ImageView originImage = transConfig.getOriginImageList()
@@ -137,7 +140,7 @@ class TransferLayout extends FrameLayout {
 
         @Override
         public void onTransferUpdate(int state, float fraction) {
-            alpha = (state == TransferImage.STATE_TRANS_SPEC_OUT ? alpha : 255) * fraction;
+            alpha = currentAlpha * fraction;
             setBackgroundColor(getBackgroundColorByAlpha(alpha));
 
             // 因为在 onTransferComplete 中执行 originImage 的显示

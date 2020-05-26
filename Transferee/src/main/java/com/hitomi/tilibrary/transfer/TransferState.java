@@ -176,7 +176,7 @@ abstract class TransferState {
         int[] clipSize = new int[2];
         TransferConfig transConfig = transfer.getTransConfig();
         List<ImageView> originImageList = transConfig.getOriginImageList();
-        ImageView originImage = originImageList.get(position);
+        ImageView originImage = originImageList.isEmpty() ? null : originImageList.get(position);
         if (originImage == null) {
             for (ImageView imageView : originImageList) {
                 if (imageView != null) {

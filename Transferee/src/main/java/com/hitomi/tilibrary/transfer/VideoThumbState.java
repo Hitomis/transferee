@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.utils.EncryptUtils;
 import com.hitomi.tilibrary.utils.FileUtils;
-import com.hitomi.tilibrary.view.exoplayer.ExoVideoView;
+import com.hitomi.tilibrary.view.video.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.io.File;

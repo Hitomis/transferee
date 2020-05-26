@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.hitomi.tilibrary.view.exoplayer.ExoVideoView;
+import com.hitomi.tilibrary.view.video.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.util.List;
@@ -157,7 +157,7 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
         for (int i = 0; i < originImageList.size(); i++) {
             ImageView currOriginImage = originImageList.get(i);
             if (currOriginImage != null) {
-                currOriginImage.setVisibility(i == position ? View.GONE : View.VISIBLE);
+                currOriginImage.setVisibility(i == position ? View.INVISIBLE : View.VISIBLE);
             }
         }
     }

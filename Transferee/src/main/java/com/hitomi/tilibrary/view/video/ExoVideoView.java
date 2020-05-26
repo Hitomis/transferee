@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary.view.exoplayer;
+package com.hitomi.tilibrary.view.video;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -13,7 +13,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.video.VideoListener;
-import com.hitomi.tilibrary.view.exoplayer.source.ExoSourceManager;
+import com.hitomi.tilibrary.view.video.source.ExoSourceManager;
 
 import java.io.File;
 

@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 import androidx.viewpager.widget.ViewPager;
 
-import com.hitomi.tilibrary.view.exoplayer.ExoVideoView;
+import com.hitomi.tilibrary.view.video.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;

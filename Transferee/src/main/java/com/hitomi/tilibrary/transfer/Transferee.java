@@ -13,8 +13,8 @@ import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.utils.AppManager;
 import com.hitomi.tilibrary.utils.FileUtils;
-import com.hitomi.tilibrary.view.exoplayer.ExoVideoView;
-import com.hitomi.tilibrary.view.exoplayer.source.ExoSourceManager;
+import com.hitomi.tilibrary.view.video.ExoVideoView;
+import com.hitomi.tilibrary.view.video.source.ExoSourceManager;
 
 import java.io.File;
 
@@ -82,23 +82,20 @@ public class Transferee implements DialogInterface.OnShowListener,
      * 检查参数，如果必须参数缺少，就使用缺省参数或者抛出异常
      */
     private void checkConfig() {
+        if (transConfig == null)
+            throw new IllegalArgumentException("The parameter TransferConfig can't be null");
         if (transConfig.isSourceEmpty())
             throw new IllegalArgumentException("The parameter sourceUrlList or sourceUriList  can't be empty");
-
         if (transConfig.getImageLoader() == null)
             throw new IllegalArgumentException("Need to specify an ImageLoader");
 
         transConfig.setNowThumbnailIndex(Math.max(transConfig.getNowThumbnailIndex(), 0));
-
         transConfig.setOffscreenPageLimit(transConfig.getOffscreenPageLimit() <= 0
                 ? 1 : transConfig.getOffscreenPageLimit());
-
         transConfig.setDuration(transConfig.getDuration() <= 0
                 ? 300 : transConfig.getDuration());
-
         transConfig.setProgressIndicator(transConfig.getProgressIndicator() == null
                 ? new ProgressBarIndicator() : transConfig.getProgressIndicator());
-
         transConfig.setIndexIndicator(transConfig.getIndexIndicator() == null
                 ? new CircleIndexIndicator() : transConfig.getIndexIndicator());
     }

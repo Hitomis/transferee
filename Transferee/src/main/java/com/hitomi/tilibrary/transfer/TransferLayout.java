@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.hitomi.tilibrary.style.IIndexIndicator;
-import com.hitomi.tilibrary.view.exoplayer.ExoVideoView;
+import com.hitomi.tilibrary.view.video.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.util.HashSet;
@@ -130,7 +130,7 @@ class TransferLayout extends FrameLayout {
                         postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                originImage.setVisibility(View.GONE);
+                                originImage.setVisibility(View.INVISIBLE);
                             }
                         }, 15);
                     }
@@ -346,16 +346,16 @@ class TransferLayout extends FrameLayout {
     TransferState getTransferState(int position) {
         TransferState transferState;
 
-        if (transConfig.getOriginImageList().isEmpty()) { // 用户没有绑定任何 View
+        if (transConfig.isVideoSource(position)) {
+            transferState = new VideoThumbState(this);
+        } else if (transConfig.getOriginImageList().isEmpty()) { // 用户没有绑定任何 View
             transferState = new NoneThumbState(this);
         } else if (!transConfig.isThumbnailEmpty()) { // 客户端指定了缩略图路径集合
             transferState = new RemoteThumbState(this);
         } else {
             String url = transConfig.getSourceUrlList().get(position);
 
-            if (transConfig.isVideoSource(position)) {
-                transferState = new VideoThumbState(this);
-            } else if (transConfig.getImageLoader().getCache(url) != null) {
+            if (transConfig.getImageLoader().getCache(url) != null) {
                 // 即使是网络图片，但是之前已经加载到本地，那么也是本地图片
                 transferState = new LocalThumbState(this);
             } else {
@@ -391,7 +391,7 @@ class TransferLayout extends FrameLayout {
      * alpha 动画显示 transfer
      */
     void displayTransfer() {
-        ValueAnimator alphaAnim = ObjectAnimator.ofFloat(this, "alpha", 0.f, 1.f);
+        final ValueAnimator alphaAnim = ObjectAnimator.ofFloat(this, "alpha", 0.f, 1.f);
         ValueAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 1.2f, 1.0f);
         ValueAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 1.2f, 1.0f);
 
@@ -403,6 +403,7 @@ class TransferLayout extends FrameLayout {
             @Override
             public void onAnimationEnd(Animator animation) {
                 resumeTransfer();
+                alpha = 255f;
             }
         });
         animatorSet.start();

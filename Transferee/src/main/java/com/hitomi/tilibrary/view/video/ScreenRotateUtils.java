@@ -1,4 +1,4 @@
-package com.hitomi.tilibrary.view.exoplayer;
+package com.hitomi.tilibrary.view.video;
 
 import android.content.Context;
 import android.hardware.Sensor;

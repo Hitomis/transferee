@@ -109,8 +109,8 @@ public class TransferImage extends PhotoView {
         Rect rect = getClipOriginalInfo(targetDrawable, originWidth, originHeight, width, height);
         originalLocationX = rect.left;
         originalLocationY = rect.top;
-        originalWidth = rect.right;
-        originalHeight = rect.bottom;
+        originalWidth = rect.width();
+        originalHeight = rect.height();
     }
 
     private Rect getClipOriginalInfo(Drawable targetDrawable, int originWidth, int originHeight, int width, int height) {
@@ -125,9 +125,8 @@ public class TransferImage extends PhotoView {
 
         rect.left = (int) ((width - drawableEndWidth) / 2);
         rect.top = (int) ((height - drawableEndHeight) / 2);
-        rect.right = (int) drawableEndWidth;
-        rect.bottom = (int) drawableEndHeight;
-
+        rect.right = (int) drawableEndWidth + rect.left;
+        rect.bottom = (int) drawableEndHeight + rect.top;
         return rect;
     }
 

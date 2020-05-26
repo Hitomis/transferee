@@ -51,7 +51,6 @@ public class WebPicSimpleActivity extends BaseActivity {
     protected void testTransferee() {
         config = TransferConfig.build()
                 .setSourceUrlList(SourceConfig.getSourcePicUrlList())
-                .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setImageLoader(GlideImageLoader.with(getApplicationContext()))

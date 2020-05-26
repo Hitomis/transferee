@@ -98,8 +98,8 @@ public class NoneThumbState extends TransferState {
                                     startPreview(targetImage, source, imgUrl, position);
                                 }
                                 break;
-                            case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                                targetImage.setImageDrawable(transConfig.getErrorDrawable(transfer.getContext()));
+                            case ImageLoader.STATUS_DISPLAY_FAILED: // 加载失败，显示加载错误的占位图
+                                loadFailedDrawable(targetImage, position);
                                 break;
                         }
                     }

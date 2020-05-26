@@ -113,8 +113,8 @@ class RemoteThumbState extends TransferState {
                     case ImageLoader.STATUS_DISPLAY_SUCCESS:
                         startPreview(targetImage, source, sourceUrl, position);
                         break;
-                    case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                        targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
+                    case ImageLoader.STATUS_DISPLAY_FAILED: // 加载失败，显示加载错误的占位图
+                        loadFailedDrawable(targetImage, position);
                         break;
                 }
             }

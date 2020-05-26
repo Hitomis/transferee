@@ -87,8 +87,8 @@ class EmptyThumbState extends TransferState {
                                     startPreview(targetImage, source, imgUrl, position);
                                 }
                                 break;
-                            case ImageLoader.STATUS_DISPLAY_FAILED:  // 加载失败，显示加载错误的占位图
-                                targetImage.setImageDrawable(config.getErrorDrawable(transfer.getContext()));
+                            case ImageLoader.STATUS_DISPLAY_FAILED: // 加载失败，显示加载错误的占位图
+                                loadFailedDrawable(targetImage, position);
                                 break;
                         }
                     }
@@ -143,31 +143,9 @@ class EmptyThumbState extends TransferState {
      * @return 被裁减的 TransferImage 中显示的 Drawable
      */
     private Drawable clipAndGetPlaceHolder(TransferImage targetImage, int position) {
-        TransferConfig config = transfer.getTransConfig();
-
         Drawable placeHolder = getPlaceHolder(position);
-        int[] clipSize = new int[2];
-        List<ImageView> originImageList = config.getOriginImageList();
-        ImageView originImage = originImageList.get(position);
-        // 先取 position 位置的 originImage, 如果为空，则从 originImageList 中
-        // 找到第一个不为空的 originImage, 如果仍然找不到，则默认取缺省占位图的尺寸
-        if (originImage == null) {
-            for (ImageView imageView : originImageList) {
-                if (imageView != null) {
-                    originImage = imageView;
-                    break;
-                }
-            }
-        }
-        if (originImage == null) {
-            Drawable placeholder = transfer.getTransConfig().getMissDrawable(transfer.getContext());
-            clipSize[0] = placeholder.getIntrinsicWidth();
-            clipSize[1] = placeHolder.getIntrinsicHeight();
-        } else {
-            clipSize[0] = originImage.getWidth();
-            clipSize[1] = originImage.getHeight();
-        }
-        clipTargetImage(targetImage, placeHolder, clipSize);
+        clipTargetImage(targetImage, placeHolder,
+                getPlaceholderClipSize(position, TYPE_PLACEHOLDER_MISS));
         return placeHolder;
     }
 }

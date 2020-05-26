@@ -15,6 +15,7 @@ import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import pl.droidsonroids.gif.GifDrawable;
 
@@ -34,6 +35,8 @@ import static android.widget.ImageView.ScaleType.FIT_CENTER;
  * email: 196425254@qq.com
  */
 abstract class TransferState {
+    static final int TYPE_PLACEHOLDER_MISS = 1;
+    static final int TYPE_PLACEHOLDER_ERROR = 2;
 
     protected TransferLayout transfer;
 
@@ -146,16 +149,63 @@ abstract class TransferState {
                 originDrawable,
                 clipSize[0], clipSize[1],
                 width, height);
-
         targetImage.transClip();
+    }
+
+    /**
+     * 加载失败，显示 errorDrawable
+     *
+     * @param targetImage 显示 errorDrawable 的目标 View
+     */
+    void loadFailedDrawable(TransferImage targetImage, int pos) {
+        Drawable errorDrawable = transfer.getTransConfig()
+                .getErrorDrawable(transfer.getContext());
+        clipTargetImage(targetImage, errorDrawable,
+                getPlaceholderClipSize(pos, TYPE_PLACEHOLDER_ERROR));
+        targetImage.setImageDrawable(errorDrawable);
+    }
+
+    /**
+     * 先取 position 位置的 originImage, 如果为空，则从 originImageList 中
+     * 找到第一个不为空的 originImage, 如果仍然找不到，则默认取缺省占位图的尺寸
+     *
+     * @param placeholderType TYPE_PLACEHOLDER_MISS 是缺省占位图，
+     *                        TYPE_PLACEHOLDER_ERROR 是加载失败或者错误的占位图
+     */
+    int[] getPlaceholderClipSize(int position, int placeholderType) {
+        int[] clipSize = new int[2];
+        TransferConfig transConfig = transfer.getTransConfig();
+        List<ImageView> originImageList = transConfig.getOriginImageList();
+        ImageView originImage = originImageList.get(position);
+        if (originImage == null) {
+            for (ImageView imageView : originImageList) {
+                if (imageView != null) {
+                    originImage = imageView;
+                    break;
+                }
+            }
+        }
+        if (originImage == null) {
+            Drawable defaultDrawable;
+            if (placeholderType == TYPE_PLACEHOLDER_MISS) {
+                defaultDrawable = transConfig.getMissDrawable(transfer.getContext());
+            } else {
+                defaultDrawable = transConfig.getErrorDrawable(transfer.getContext());
+            }
+            clipSize[0] = defaultDrawable.getIntrinsicWidth();
+            clipSize[1] = defaultDrawable.getIntrinsicHeight();
+        } else {
+            clipSize[0] = originImage.getWidth();
+            clipSize[1] = originImage.getHeight();
+        }
+        return clipSize;
     }
 
     /**
      * 加载 imageUrl 所关联的图片到 TransferImage 中
      *
-     * @param imageUrl   图片路径
-     * @param transImage
-     * @param in         true: 表示从缩略图到 Transferee, false: 从 Transferee 到缩略图
+     * @param imageUrl 图片路径
+     * @param in       true: 表示从缩略图到 Transferee, false: 从 Transferee 到缩略图
      */
     private void loadThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
         final TransferConfig config = transfer.getTransConfig();

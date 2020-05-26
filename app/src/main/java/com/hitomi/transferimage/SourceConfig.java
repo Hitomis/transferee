@@ -14,7 +14,7 @@ import java.util.List;
  * Created by Vans Z on 2018/9/26.
  */
 
-public class ImageConfig {
+public class SourceConfig {
 
     public static final String WEB_URL = "http://img2.woyaogexing.com/2018/01/25/f5d815584c61d376!500x500.jpg";
 

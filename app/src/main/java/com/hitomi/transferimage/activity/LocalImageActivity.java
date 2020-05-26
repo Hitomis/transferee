@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
-import com.hitomi.transferimage.ImageConfig;
+import com.hitomi.transferimage.SourceConfig;
 import com.hitomi.transferimage.R;
 import com.vansz.glideimageloader.GlideImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
@@ -44,7 +44,7 @@ public class LocalImageActivity extends BaseActivity {
                             Manifest.permission.READ_EXTERNAL_STORAGE},
                     READ_EXTERNAL_STORAGE);
         } else {
-            images = ImageConfig.getLatestPhotoPaths(this, 9);
+            images = SourceConfig.getLatestPhotoPaths(this, 9);
             if (images != null && !images.isEmpty()) {
                 initTransfereeConfig();
                 gvImages.setAdapter(new LocalImageActivity.NineGridAdapter());
@@ -54,7 +54,7 @@ public class LocalImageActivity extends BaseActivity {
 
     private void initTransfereeConfig() {
         config = TransferConfig.build()
-                .setSourceImageList(images)
+                .setSourceUrlList(images)
                 .setMissPlaceHolder(R.mipmap.ic_empty_photo)
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                 .setProgressIndicator(new ProgressBarIndicator())
@@ -67,7 +67,7 @@ public class LocalImageActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == READ_EXTERNAL_STORAGE) {
-            images = ImageConfig.getLatestPhotoPaths(this, 9);
+            images = SourceConfig.getLatestPhotoPaths(this, 9);
             if (images != null && !images.isEmpty()) {
                 initTransfereeConfig();
                 gvImages.setAdapter(new LocalImageActivity.NineGridAdapter());

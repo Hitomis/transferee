@@ -8,7 +8,7 @@ import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
-import com.hitomi.transferimage.ImageConfig;
+import com.hitomi.transferimage.SourceConfig;
 import com.hitomi.transferimage.R;
 import com.vansz.glideimageloader.GlideImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
@@ -30,17 +30,18 @@ public class WebPicSimpleActivity extends BaseActivity {
 
         final ImageView sourceIv = findViewById(R.id.iv_source);
         Glide.with(sourceIv)
-                .load(ImageConfig.getSourcePicUrlList().get(0))
+                .load(SourceConfig.getSourcePicUrlList().get(0))
                 .placeholder(R.mipmap.ic_empty_photo)
                 .into(sourceIv);
         sourceIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 transferee.apply(TransferConfig.build()
+                        .setSourceUrlList(SourceConfig.getSourcePicUrlList())
                         .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                         .enableJustLoadHitPage(true)
                         .setCustomView(View.inflate(getBaseContext(), R.layout.layout_custom, null))
-                        .bindImageView(sourceIv, ImageConfig.getSourcePicUrlList())
+                        .bindImageView(sourceIv)
                 ).show();
             }
         });
@@ -49,7 +50,7 @@ public class WebPicSimpleActivity extends BaseActivity {
     @Override
     protected void testTransferee() {
         config = TransferConfig.build()
-                .setSourceImageList(ImageConfig.getSourcePicUrlList())
+                .setSourceUrlList(SourceConfig.getSourcePicUrlList())
                 .setErrorPlaceHolder(R.mipmap.ic_empty_photo)
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
@@ -69,7 +70,7 @@ public class WebPicSimpleActivity extends BaseActivity {
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
-            super(WebPicSimpleActivity.this, R.layout.item_image, ImageConfig.getThumbnailPicUrlList());
+            super(WebPicSimpleActivity.this, R.layout.item_image, SourceConfig.getThumbnailPicUrlList());
         }
 
         @Override

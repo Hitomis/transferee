@@ -91,7 +91,7 @@ class RemoteThumbState extends TransferState {
     private void loadSourceImage(Drawable drawable, final int position, final TransferImage targetImage) {
         final TransferConfig config = transfer.getTransConfig();
         final ImageLoader imageLoader = config.getImageLoader();
-        final String sourceUrl = config.getSourceImageList().get(position);
+        final String sourceUrl = config.getSourceUrlList().get(position);
         final IProgressIndicator progressIndicator = config.getProgressIndicator();
         progressIndicator.attach(position, transfer.transAdapter.getParentItem(position));
         imageLoader.showImage(sourceUrl, targetImage, drawable, new ImageLoader.SourceCallback() {

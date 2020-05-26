@@ -83,7 +83,7 @@ public class Transferee implements DialogInterface.OnShowListener,
      */
     private void checkConfig() {
         if (transConfig.isSourceEmpty())
-            throw new IllegalArgumentException("The parameter sourceImageList can't be empty");
+            throw new IllegalArgumentException("The parameter sourceUrlList or sourceUriList  can't be empty");
 
         if (transConfig.getImageLoader() == null)
             throw new IllegalArgumentException("Need to specify an ImageLoader");
@@ -157,9 +157,9 @@ public class Transferee implements DialogInterface.OnShowListener,
      * 关闭 transferee
      */
     public void dismiss() {
-        if (!shown) return;
-        transLayout.dismiss(transConfig.getNowThumbnailIndex());
-        shown = false;
+        if (shown && transLayout.dismiss(transConfig.getNowThumbnailIndex())) {
+            shown = false;
+        }
     }
 
     /**

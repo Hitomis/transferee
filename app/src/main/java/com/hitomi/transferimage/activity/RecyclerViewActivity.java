@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
-import com.hitomi.transferimage.ImageConfig;
+import com.hitomi.transferimage.SourceConfig;
 import com.hitomi.transferimage.R;
 import com.squareup.picasso.Picasso;
 import com.vansz.picassoimageloader.PicassoImageLoader;
@@ -86,7 +86,7 @@ public class RecyclerViewActivity extends BaseActivity {
         headerAndFooterWrapper.notifyDataSetChanged();
 
         config = TransferConfig.build()
-                .setSourceImageList(ImageConfig.getSourcePicUrlList())
+                .setSourceUrlList(SourceConfig.getSourcePicUrlList())
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new CircleIndexIndicator())
                 .setImageLoader(PicassoImageLoader.with(getApplicationContext()))
@@ -99,7 +99,7 @@ public class RecyclerViewActivity extends BaseActivity {
 
     private class NineGridAdapter extends CommonAdapter<String> {
         public NineGridAdapter() {
-            super(RecyclerViewActivity.this, R.layout.item_image, ImageConfig.getThumbnailPicUrlList());
+            super(RecyclerViewActivity.this, R.layout.item_image, SourceConfig.getThumbnailPicUrlList());
         }
 
         @Override

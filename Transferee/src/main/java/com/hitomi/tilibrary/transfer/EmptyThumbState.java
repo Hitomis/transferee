@@ -46,7 +46,7 @@ class EmptyThumbState extends TransferState {
     public void transferLoad(final int position) {
         TransferAdapter adapter = transfer.transAdapter;
         final TransferConfig config = transfer.getTransConfig();
-        final String imgUrl = config.getSourceImageList().get(position);
+        final String imgUrl = config.getSourceUrlList().get(position);
         final TransferImage targetImage = adapter.getImageItem(position);
 
         Drawable placeHolder;

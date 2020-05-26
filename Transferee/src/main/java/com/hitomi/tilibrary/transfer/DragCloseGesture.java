@@ -177,7 +177,7 @@ class DragCloseGesture {
         transImage.setImageDrawable(currTransImage.getDrawable());
 
         float currTransWidth, currTransHeight;
-        if (currTransImage.isLoaded()) {
+        if (currTransImage.isEnableGesture()) { // 如果手势功能已经启用，表示图片是加载成功了
             float[] afterSize = currTransImage.getAfterTransferSize();
             currTransWidth = afterSize[0];
             currTransHeight = afterSize[1];

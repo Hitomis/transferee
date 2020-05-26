@@ -36,7 +36,7 @@ public class VideoThumbState extends TransferState {
         TransferImage transInImage = null;
         TransferConfig transConfig = transfer.getTransConfig();
         ImageView originImage = transConfig.getOriginImageList().get(position);
-        String videoSourceUrl = transConfig.getSourceImageList().get(position);
+        String videoSourceUrl = transConfig.getSourceUrlList().get(position);
         if (originImage.getDrawable() == null) { // 没有占位图并且视频指定帧还没有加载好
             transfer.displayTransfer();
         } else {
@@ -65,7 +65,7 @@ public class VideoThumbState extends TransferState {
     public void transferLoad(final int position) {
         final TransferAdapter transAdapter = transfer.transAdapter;
         final TransferConfig transConfig = transfer.getTransConfig();
-        final String videoSourceUrl = transConfig.getSourceImageList().get(position);
+        final String videoSourceUrl = transConfig.getSourceUrlList().get(position);
         final ExoVideoView exoVideo = transAdapter.getVideoItem(position);
         exoVideo.setVideoStateChangeListener(new ExoVideoView.VideoStateChangeListener() {
             private IProgressIndicator progressIndicator = transConfig.getProgressIndicator();
@@ -101,7 +101,7 @@ public class VideoThumbState extends TransferState {
                     transfer.removeFromParent(alphaZeroImage);
             }
         });
-        exoVideo.setSource(transConfig.getSourceImageList().get(position), false);
+        exoVideo.setSource(transConfig.getSourceUrlList().get(position), false);
     }
 
     private File getFirstFrameFile(String videoSourceUrl) {

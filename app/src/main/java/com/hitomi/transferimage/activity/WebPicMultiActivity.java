@@ -10,7 +10,7 @@ import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressPieIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
-import com.hitomi.transferimage.ImageConfig;
+import com.hitomi.transferimage.SourceConfig;
 import com.hitomi.transferimage.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -40,7 +40,7 @@ public class WebPicMultiActivity extends BaseActivity {
     @Override
     protected void testTransferee() {
         config = TransferConfig.build()
-                .setSourceImageList(ImageConfig.getWebPicUrlList())
+                .setSourceUrlList(SourceConfig.getWebPicUrlList())
                 .setProgressIndicator(new ProgressPieIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
@@ -66,7 +66,7 @@ public class WebPicMultiActivity extends BaseActivity {
     private class NineGridAdapter extends CommonAdapter<String> {
 
         public NineGridAdapter() {
-            super(WebPicMultiActivity.this, R.layout.item_image, ImageConfig.getWebPicUrlList());
+            super(WebPicMultiActivity.this, R.layout.item_image, SourceConfig.getWebPicUrlList());
         }
 
         @Override

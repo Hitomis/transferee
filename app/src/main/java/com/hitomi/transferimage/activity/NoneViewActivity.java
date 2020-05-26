@@ -3,7 +3,7 @@ package com.hitomi.transferimage.activity;
 import android.view.View;
 
 import com.hitomi.tilibrary.transfer.TransferConfig;
-import com.hitomi.transferimage.ImageConfig;
+import com.hitomi.transferimage.SourceConfig;
 import com.hitomi.transferimage.R;
 import com.vansz.glideimageloader.GlideImageLoader;
 
@@ -25,7 +25,7 @@ public class NoneViewActivity extends BaseActivity {
             public void onClick(View v) {
                 transferee.apply(TransferConfig.build()
                         .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                        .setSourceImageList(ImageConfig.getWebPicUrlList())
+                        .setSourceUrlList(SourceConfig.getWebPicUrlList())
                         .create()
                 ).show();
             }

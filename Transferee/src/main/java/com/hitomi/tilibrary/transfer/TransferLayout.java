@@ -232,7 +232,7 @@ class TransferLayout extends FrameLayout {
             loadSourceView(left);
             loadedIndexSet.add(left);
         }
-        if (right < transConfig.getSourceImageList().size() && !loadedIndexSet.contains(right)) {
+        if (right < transConfig.getSourceUrlList().size() && !loadedIndexSet.contains(right)) {
             loadSourceView(right);
             loadedIndexSet.add(right);
         }
@@ -275,7 +275,7 @@ class TransferLayout extends FrameLayout {
      */
     private void createTransferViewPager(TransferState transferState) {
         transAdapter = new TransferAdapter(this,
-                transConfig.getSourceImageList().size(),
+                transConfig.getSourceUrlList().size(),
                 transConfig.getNowThumbnailIndex());
         transAdapter.setOnInstantListener(instantListener);
 
@@ -351,7 +351,7 @@ class TransferLayout extends FrameLayout {
         } else if (!transConfig.isThumbnailEmpty()) { // 客户端指定了缩略图路径集合
             transferState = new RemoteThumbState(this);
         } else {
-            String url = transConfig.getSourceImageList().get(position);
+            String url = transConfig.getSourceUrlList().get(position);
 
             if (transConfig.isVideoSource(position)) {
                 transferState = new VideoThumbState(this);
@@ -370,21 +370,21 @@ class TransferLayout extends FrameLayout {
      * 开启 Transferee 关闭动画，并隐藏 transferLayout 中的各个组件
      *
      * @param pos 关闭 Transferee 时图片所在的索引
+     * @return 是否关闭成功
      */
-    void dismiss(int pos) {
-        if (transImage != null && transImage.getState()
-                == TransferImage.STATE_TRANS_OUT) // 防止双击
-            return;
+    boolean dismiss(int pos) {
+        if (transImage != null && (transImage.isAnimationRunning() // 防止打开动画还没执行完就要关闭
+                || transImage.getState() == TransferImage.STATE_TRANS_OUT)) // 防止连击
+            return false;
 
         transImage = getTransferState(pos).transferOut(pos);
-
         if (transImage == null)
             diffusionTransfer(pos);
         else
             transViewPager.setVisibility(View.INVISIBLE);
 
         hideIndexIndicator();
-
+        return true;
     }
 
     /**
@@ -500,7 +500,7 @@ class TransferLayout extends FrameLayout {
      */
     private void showIndexIndicator(boolean init) {
         IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
-        if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
+        if (indexIndicator != null && transConfig.getSourceUrlList().size() >= 2) {
             if (init) indexIndicator.attach(this);
             indexIndicator.onShow(transViewPager);
         }
@@ -511,7 +511,7 @@ class TransferLayout extends FrameLayout {
      */
     private void hideIndexIndicator() {
         IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
-        if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
+        if (indexIndicator != null && transConfig.getSourceUrlList().size() >= 2) {
             indexIndicator.onHide();
         }
     }
@@ -542,7 +542,7 @@ class TransferLayout extends FrameLayout {
      */
     private void removeIndexIndicator() {
         IIndexIndicator indexIndicator = transConfig.getIndexIndicator();
-        if (indexIndicator != null && transConfig.getSourceImageList().size() >= 2) {
+        if (indexIndicator != null && transConfig.getSourceUrlList().size() >= 2) {
             indexIndicator.onRemove();
         }
     }

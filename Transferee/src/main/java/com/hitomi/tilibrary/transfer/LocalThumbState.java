@@ -29,7 +29,7 @@ class LocalThumbState extends TransferState {
     public void prepareTransfer(final TransferImage transImage, final int position) {
         final TransferConfig config = transfer.getTransConfig();
         ImageLoader imageLoader = config.getImageLoader();
-        String imgUrl = config.getSourceImageList().get(position);
+        String imgUrl = config.getSourceUrlList().get(position);
         imageLoader.showImage(imgUrl, transImage, config.getMissDrawable(transfer.getContext()), null);
     }
 
@@ -39,7 +39,7 @@ class LocalThumbState extends TransferState {
 
         TransferImage transImage = createTransferImage(
                 config.getOriginImageList().get(position), true);
-        transformThumbnail(config.getSourceImageList().get(position), transImage, true);
+        transformThumbnail(config.getSourceUrlList().get(position), transImage, true);
         transfer.addView(transImage, 1);
         return transImage;
     }
@@ -47,7 +47,7 @@ class LocalThumbState extends TransferState {
     @Override
     public void transferLoad(final int position) {
         final TransferConfig config = transfer.getTransConfig();
-        final String imgUrl = config.getSourceImageList().get(position);
+        final String imgUrl = config.getSourceUrlList().get(position);
         final TransferImage targetImage = transfer.transAdapter.getImageItem(position);
 
         if (config.isJustLoadHitPage()) {
@@ -112,7 +112,7 @@ class LocalThumbState extends TransferState {
         List<ImageView> originImageList = config.getOriginImageList();
         if (position <= originImageList.size() - 1 && originImageList.get(position) != null) {
             transImage = createTransferImage(originImageList.get(position), true);
-            transformThumbnail(config.getSourceImageList().get(position), transImage, false);
+            transformThumbnail(config.getSourceUrlList().get(position), transImage, false);
             transfer.addView(transImage, 1);
         }
         return transImage;

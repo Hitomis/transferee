@@ -213,7 +213,7 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
                 @Override
                 public boolean onLongClick(View v) {
                     TransferImage targetImage = ((TransferImage) contentView);
-                    String sourceUrl = transConfig.getSourceImageList().get(position);
+                    String sourceUrl = transConfig.getSourceUrlList().get(position);
                     transConfig.getLongClickListener().onLongClick(targetImage, sourceUrl, position);
                     return false;
                 }

@@ -6,7 +6,6 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -19,6 +18,8 @@ import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.OverScroller;
 import android.widget.Scroller;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 public class PhotoView extends AppCompatImageView {
 
@@ -51,7 +52,7 @@ public class PhotoView extends AppCompatImageView {
     private boolean hasDrawable;
     private boolean isKnowSize;
     private boolean hasOverTranslate;
-    private boolean isEnable = false;
+    private boolean isEnableGesture = false;
     private boolean isInit;
     private boolean mAdjustViewBounds;
     // 当前是否处于放大状态
@@ -184,17 +185,24 @@ public class PhotoView extends AppCompatImageView {
     }
 
     /**
-     * 启用缩放功能
+     * 启用手势缩放功能
      */
-    public void enable() {
-        isEnable = true;
+    public void enableGesture() {
+        isEnableGesture = true;
+    }
+
+    /**
+     * 获取当前是否启用缩放功能的状态
+     */
+    public boolean isEnableGesture() {
+        return isEnableGesture;
     }
 
     /**
      * 禁用缩放功能
      */
     public void disable() {
-        isEnable = false;
+        isEnableGesture = false;
     }
 
     /**
@@ -564,7 +572,7 @@ public class PhotoView extends AppCompatImageView {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-        if (isEnable) {
+        if (isEnableGesture) {
             final int Action = event.getActionMasked();
             if (event.getPointerCount() >= 2) hasMultiTouch = true;
 

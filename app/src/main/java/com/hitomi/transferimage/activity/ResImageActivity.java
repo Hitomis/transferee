@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
-import com.hitomi.transferimage.ImageConfig;
+import com.hitomi.transferimage.SourceConfig;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.divider.DividerGridItemDecoration;
 import com.vansz.glideimageloader.GlideImageLoader;
@@ -55,7 +55,7 @@ public class ResImageActivity extends BaseActivity {
         private PhotosAdapter photosAdapter = new PhotosAdapter(
                 ResImageActivity.this,
                 R.layout.item_image,
-                ImageConfig.getResUriList(ResImageActivity.this)
+                SourceConfig.getResUriList(ResImageActivity.this)
         );
         private DividerGridItemDecoration divider = new DividerGridItemDecoration(
                 Color.TRANSPARENT,
@@ -64,7 +64,7 @@ public class ResImageActivity extends BaseActivity {
         );
 
         FriendsCircleAdapter() {
-            super(ResImageActivity.this, R.layout.item_friends_circle, ImageConfig.getResUriList(ResImageActivity.this));
+            super(ResImageActivity.this, R.layout.item_friends_circle, SourceConfig.getResUriList(ResImageActivity.this));
             // 设置朋友圈图片点击事件
             photosAdapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override

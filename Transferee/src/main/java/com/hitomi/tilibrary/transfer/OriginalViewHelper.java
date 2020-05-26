@@ -37,7 +37,7 @@ class OriginalViewHelper {
             fillByListView(originImageList);
         } else if (transConfig.getImageView() != null) {
             originImageList.add(transConfig.getImageView());
-            int size = transConfig.getSourceImageList().size();
+            int size = transConfig.getSourceUrlList().size();
             for (int i = 0; i < size - 1; i++) {
                 originImageList.add(null);
             }

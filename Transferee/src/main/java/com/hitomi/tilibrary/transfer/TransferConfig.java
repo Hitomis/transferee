@@ -18,6 +18,7 @@ import com.hitomi.tilibrary.style.IProgressIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Transferee Attributes
@@ -27,6 +28,8 @@ import java.util.List;
  * email: 196425254@qq.com
  */
 public final class TransferConfig {
+    private final static Pattern VIDEO_PATTERN = Pattern.compile(".+(://).+\\.(mp4|wmv|avi|mpeg|rm|rmvb|flv|3gp|mov|mkv|mod|)");
+
     private int nowThumbnailIndex;
     private int offscreenPageLimit;
     private int missPlaceHolder;
@@ -44,7 +47,7 @@ public final class TransferConfig {
     private Drawable errorDrawable;
 
     private List<ImageView> originImageList;
-    private List<String> sourceImageList;
+    private List<String> sourceUrlList;
     private List<Uri> sourceUriList;
     private List<String> thumbnailImageList;
 
@@ -198,18 +201,20 @@ public final class TransferConfig {
         this.originImageList = originImageList;
     }
 
-    public List<String> getSourceImageList() {
-        if (sourceImageList == null || sourceImageList.isEmpty()) {
-            sourceImageList = new ArrayList<>();
-            for (Uri uri : sourceUriList) {
-                sourceImageList.add(uri.toString());
+    public List<String> getSourceUrlList() {
+        if (sourceUrlList == null || sourceUrlList.isEmpty()) {
+            sourceUrlList = new ArrayList<>();
+            if (sourceUriList != null && !sourceUriList.isEmpty()) {
+                for (Uri uri : sourceUriList) {
+                    sourceUrlList.add(uri.toString());
+                }
             }
         }
-        return sourceImageList;
+        return sourceUrlList;
     }
 
-    public void setSourceImageList(List<String> sourceImageList) {
-        this.sourceImageList = sourceImageList;
+    public void setSourceUrlList(List<String> sourceUrlList) {
+        this.sourceUrlList = sourceUrlList;
     }
 
     public List<Uri> getSourceUriList() {
@@ -266,7 +271,7 @@ public final class TransferConfig {
      * @return true : 空
      */
     public boolean isSourceEmpty() {
-        return (sourceImageList == null || sourceImageList.isEmpty())
+        return (sourceUrlList == null || sourceUrlList.isEmpty())
                 && (sourceUriList == null || sourceUriList.isEmpty());
     }
 
@@ -286,7 +291,8 @@ public final class TransferConfig {
      * @return true : 是视频资源
      */
     public boolean isVideoSource(int position) {
-        return sourceImageList.get(position == -1 ? nowThumbnailIndex : position).endsWith(".mp4");
+        String sourceUrl = sourceUrlList.get(position == -1 ? nowThumbnailIndex : position);
+        return VIDEO_PATTERN.matcher(sourceUrl).matches();
     }
 
     public int getImageId() {
@@ -362,7 +368,7 @@ public final class TransferConfig {
         private Drawable missDrawable;
         private Drawable errorDrawable;
 
-        private List<String> sourceImageList;
+        private List<String> sourceUrlList;
         private List<Uri> sourceUriList;
         private List<String> thumbnailImageList;
         private List<ImageView> originImageList;
@@ -507,8 +513,8 @@ public final class TransferConfig {
          * 高清图的地址集合
          * format: java.lang.String
          */
-        public Builder setSourceImageList(List<String> sourceImageList) {
-            this.sourceImageList = sourceImageList;
+        public Builder setSourceUrlList(List<String> sourceUrlList) {
+            this.sourceUrlList = sourceUrlList;
             return this;
         }
 
@@ -629,11 +635,10 @@ public final class TransferConfig {
         }
 
         /**
-         * 绑定单个 ImageView, 指定一个 sourceImageList 作为显示的图片源数据
+         * 绑定单个 ImageView
          */
-        public TransferConfig bindImageView(ImageView imageView, List<String> sourceImageList) {
+        public TransferConfig bindImageView(ImageView imageView) {
             this.imageView = imageView;
-            this.sourceImageList = sourceImageList;
             return create();
         }
 
@@ -642,13 +647,12 @@ public final class TransferConfig {
          */
         public TransferConfig bindImageView(ImageView imageView, String sourceUrl) {
             this.imageView = imageView;
-            this.sourceImageList = new ArrayList<>();
-            sourceImageList.add(sourceUrl);
+            this.sourceUrlList = new ArrayList<>();
+            sourceUrlList.add(sourceUrl);
             return create();
         }
 
         public TransferConfig create() {
-
             TransferConfig config = new TransferConfig();
 
             config.setNowThumbnailIndex(nowThumbnailIndex);
@@ -668,7 +672,7 @@ public final class TransferConfig {
             config.setErrorDrawable(errorDrawable);
 
 
-            config.setSourceImageList(sourceImageList);
+            config.setSourceUrlList(sourceUrlList);
             config.setSourceUriList(sourceUriList);
             config.setOriginImageList(originImageList);
 //            config.setThumbnailImageList(thumbnailImageList);

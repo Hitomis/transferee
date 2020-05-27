@@ -154,9 +154,9 @@ transferee.apply(config).show();
 # Update log
 + v1.6.0
    - 新增视频播放以及视频配套功能的支持
-   - 新增 enableDragPause 属性控制视频拖拽关闭播放的暂停
+   - 新增 enableDragPause 属性控制视频拖拽关闭时是否暂停
    - 新增 enableHideThumb 属性控制缩略图是否消失
-   - 新增 enableScrollingWithPageChange 属性控制用户的列表是否跟谁 transferee 页面切换而滚动
+   - 新增 enableScrollingWithPageChange 属性控制用户的列表是否跟随 transferee 页面切换而滚动
    - 优化下拉关闭手势的交互
    - 优化页面切换时，性能较差手机上可能出现一次闪屏的问题
    - 优化在没有网络的情况下，transferee 启动或者关闭时一些边界性质的问题

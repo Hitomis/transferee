@@ -1,5 +1,6 @@
 package com.hitomi.tilibrary.transfer;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.gyf.immersionbar.ImmersionBar;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.utils.AppManager;
@@ -70,10 +72,10 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     private void createDialog() {
-        transDialog = new AlertDialog.Builder(context, android.R.style.Theme_Translucent_NoTitleBar_Fullscreen)
+        transDialog = new AlertDialog.Builder(context,
+                android.R.style.Theme_Translucent_NoTitleBar_Fullscreen)
                 .setView(transLayout)
                 .create();
-
         transDialog.setOnShowListener(this);
         transDialog.setOnKeyListener(this);
     }
@@ -130,10 +132,13 @@ public class Transferee implements DialogInterface.OnShowListener,
      */
     public void show() {
         if (shown) return;
+        if (context instanceof Activity) {
+            ImmersionBar.with(((Activity) context), transDialog).init();
+        }
         transDialog.show();
-        if (transListener != null)
+        if (transListener != null) {
             transListener.onShow();
-
+        }
         shown = true;
     }
 

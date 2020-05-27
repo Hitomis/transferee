@@ -57,4 +57,5 @@ dependencies {
     implementation libExoExtensionRtmp
     implementation libProgresspieview
     implementation libGifDrawable
+    implementation libImmersionbar
 }

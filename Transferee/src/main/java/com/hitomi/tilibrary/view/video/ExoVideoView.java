@@ -42,6 +42,7 @@ public class ExoVideoView extends AdaptiveTextureView {
 
     public ExoVideoView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setAlpha(0); // 初始化置为透明是为了防止自适应宽高而出现的一次闪屏问题
         cacheFile = getCacheDir();
         exoSourceManager = ExoSourceManager.newInstance(context, null);
         newExoPlayer(context);
@@ -80,16 +81,21 @@ public class ExoVideoView extends AdaptiveTextureView {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (requestLayout && exoPlayer.getPlayWhenReady()) {
-            Log.e(TAG, "ExoVideoView.onVideoRendered()");
+        if (requestLayout) { // 在视频尺寸自适应确定后取消透明
             requestLayout = false;
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (videoStateChangeListener != null)
-                        videoStateChangeListener.onVideoRendered();
-                }
-            }, 15);
+            if (exoPlayer.getPlayWhenReady()) {
+                Log.e(TAG, "ExoVideoView.onVideoRendered()");
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setAlpha(1);
+                        if (videoStateChangeListener != null)
+                            videoStateChangeListener.onVideoRendered();
+                    }
+                }, 15);
+            } else {
+                setAlpha(1);
+            }
         }
     }
 

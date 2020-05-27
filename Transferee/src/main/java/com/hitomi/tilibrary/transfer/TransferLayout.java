@@ -18,8 +18,8 @@ import android.widget.ImageView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.hitomi.tilibrary.style.IIndexIndicator;
-import com.hitomi.tilibrary.view.video.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
+import com.hitomi.tilibrary.view.video.ExoVideoView;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -57,7 +57,6 @@ class TransferLayout extends FrameLayout {
      */
     TransferLayout(Context context) {
         super(context);
-
         this.context = context;
         this.loadedIndexSet = new HashSet<>();
     }

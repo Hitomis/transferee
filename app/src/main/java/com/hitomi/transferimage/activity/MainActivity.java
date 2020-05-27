@@ -1,7 +1,6 @@
 package com.hitomi.transferimage.activity;
 
 import android.content.Intent;
-import android.view.View;
 
 import com.hitomi.transferimage.R;
 import com.vansz.glideimageloader.GlideImageLoader;
@@ -16,57 +15,26 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        findViewById(R.id.btn_complex_demo).setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, ComplexDemoActivity.class))
+        );
 
-        findViewById(R.id.btn_universal_normal).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, WebPicSimpleActivity.class));
-            }
-        });
+        findViewById(R.id.btn_friends_res).setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, FriendsCircleActivity.class))
+        );
+        findViewById(R.id.btn_universal_local).setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, LocalImageActivity.class))
+        );
 
-        findViewById(R.id.btn_universal_no_thum).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, WebPicMultiActivity.class));
-            }
-        });
+        findViewById(R.id.btn_recycler).setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, HeaderRecyclerActivity.class))
+        );
 
-        findViewById(R.id.btn_universal_local).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, LocalImageActivity.class));
-            }
-        });
-
-        findViewById(R.id.btn_recycler).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, RecyclerViewActivity.class));
-            }
-        });
-
-        findViewById(R.id.btn_friends_res).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ResImageActivity.class));
-            }
-        });
-
-        findViewById(R.id.btn_none_view).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, NoneViewActivity.class));
-            }
-        });
-
-        findViewById(R.id.btn_clear_universal).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UniversalImageLoader.with(getApplicationContext()).clearCache();
-                GlideImageLoader.with(getApplicationContext()).clearCache();
-                PicassoImageLoader.with(getApplicationContext()).clearCache();
-                transferee.clear();
-            }
+        findViewById(R.id.btn_clear_universal).setOnClickListener(v -> {
+            UniversalImageLoader.with(getApplicationContext()).clearCache();
+            GlideImageLoader.with(getApplicationContext()).clearCache();
+            PicassoImageLoader.with(getApplicationContext()).clearCache();
+            transferee.clear();
         });
     }
 

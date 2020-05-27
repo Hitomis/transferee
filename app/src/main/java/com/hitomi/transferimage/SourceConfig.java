@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +17,7 @@ import java.util.List;
 
 public class SourceConfig {
 
-    public static final String WEB_URL = "http://img2.woyaogexing.com/2018/01/25/f5d815584c61d376!500x500.jpg";
-
-    public static List<String> getThumbnailPicUrlList() {
+    public static List<String> getThumbSourceGroup() {
         List<String> thumbnailImageList = new ArrayList<>();
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png@233w_160h_20q");
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png@233w_160h_20q");
@@ -29,27 +28,35 @@ public class SourceConfig {
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png@233w_160h_20q");
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png@233w_160h_20q");
         thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png@233w_160h_20q");
-
-        thumbnailImageList.add("http://jzvd.nathen.cn/video/4542c17b-170c25a8e14-0007-1823-c86-de200.mp4");
-        thumbnailImageList.add("http://jzvd.nathen.cn/f07fa9fddd1e45a6ae1570c7fe7967c1/c6db82685b894e25b523b1cb28d79f2e-5287d2089db37e62345123a1be272f8b.mp4");
-        thumbnailImageList.add("http://jzvd.nathen.cn/c494b340ff704015bb6682ffde3cd302/64929c369124497593205a4190d7d128-5287d2089db37e62345123a1be272f8b.mp4");
-        thumbnailImageList.add("http://jzvd.nathen.cn/63f3f73712544394be981d9e4f56b612/69c5767bb9e54156b5b60a1b6edeb3b5-5287d2089db37e62345123a1be272f8b.mp4");
-        thumbnailImageList.add("http://jzvd.nathen.cn/b201be3093814908bf987320361c5a73/2f6d913ea25941ffa78cc53a59025383-5287d2089db37e62345123a1be272f8b.mp4");
-        thumbnailImageList.add("http://jzvd.nathen.cn/d2438fd1c37c4618a704513ad38d68c5/68626a9d53ca421c896ac8010f172b68-5287d2089db37e62345123a1be272f8b.mp4");
-        thumbnailImageList.add("http://jzvd.nathen.cn/25a8d119cfa94b49a7a4117257d8ebd7/f733e65a22394abeab963908f3c336db-5287d2089db37e62345123a1be272f8b.mp4");
-        thumbnailImageList.add("http://jzvd.nathen.cn/7512edd1ad834d40bb5b978402274b1a/9691c7f2d7b74b5e811965350a0e5772-5287d2089db37e62345123a1be272f8b.mp4");
-        thumbnailImageList.add("http://jzvd.nathen.cn/c6e3dc12a1154626b3476d9bf3bd7266/6b56c5f0dc31428083757a45764763b0-5287d2089db37e62345123a1be272f8b.mp4");
-
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png@233w_160h_20q");
         return thumbnailImageList;
+    }
+
+    public static List<String> getOriginalSourceGroup() {
+        List<String> sourceImageList = new ArrayList<>();
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
+        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
+        return sourceImageList;
+    }
+
+    public static List<String> getMixingSourceGroup() {
+        List<String> sourceList = new ArrayList<>();
+        sourceList.add("http://img2.woyaogexing.com/2018/01/25/f5d815584c61d376!500x500.jpg");
+        sourceList.add("http://img3.duitang.com/uploads/item/201605/13/20160513144041_Ze3a4.gif");
+        sourceList.add("https://pic4.zhimg.com/80/v2-ab305465594807042787fb0dc06c423b_hd.jpg");
+        sourceList.add("http://jzvd.nathen.cn/c6e3dc12a1154626b3476d9bf3bd7266/6b56c5f0dc31428083757a45764763b0-5287d2089db37e62345123a1be272f8b.mp4");
+        sourceList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png");
+        sourceList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png");
+        sourceList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png");
+        sourceList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
+        sourceList.add("http://jzvd.nathen.cn/c494b340ff704015bb6682ffde3cd302/64929c369124497593205a4190d7d128-5287d2089db37e62345123a1be272f8b.mp4");
+        return sourceList;
     }
 
     public static List<String> getSourcePicUrlList() {
@@ -63,31 +70,6 @@ public class SourceConfig {
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
         sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
-
-        sourceImageList.add("http://jzvd.nathen.cn/video/4542c17b-170c25a8e14-0007-1823-c86-de200.mp4");
-        sourceImageList.add("http://jzvd.nathen.cn/f07fa9fddd1e45a6ae1570c7fe7967c1/c6db82685b894e25b523b1cb28d79f2e-5287d2089db37e62345123a1be272f8b.mp4");
-        sourceImageList.add("http://jzvd.nathen.cn/c494b340ff704015bb6682ffde3cd302/64929c369124497593205a4190d7d128-5287d2089db37e62345123a1be272f8b.mp4");
-        sourceImageList.add("http://jzvd.nathen.cn/63f3f73712544394be981d9e4f56b612/69c5767bb9e54156b5b60a1b6edeb3b5-5287d2089db37e62345123a1be272f8b.mp4");
-        sourceImageList.add("http://jzvd.nathen.cn/b201be3093814908bf987320361c5a73/2f6d913ea25941ffa78cc53a59025383-5287d2089db37e62345123a1be272f8b.mp4");
-        sourceImageList.add("http://jzvd.nathen.cn/d2438fd1c37c4618a704513ad38d68c5/68626a9d53ca421c896ac8010f172b68-5287d2089db37e62345123a1be272f8b.mp4");
-        sourceImageList.add("http://jzvd.nathen.cn/25a8d119cfa94b49a7a4117257d8ebd7/f733e65a22394abeab963908f3c336db-5287d2089db37e62345123a1be272f8b.mp4");
-        sourceImageList.add("http://jzvd.nathen.cn/7512edd1ad834d40bb5b978402274b1a/9691c7f2d7b74b5e811965350a0e5772-5287d2089db37e62345123a1be272f8b.mp4");
-        sourceImageList.add("http://jzvd.nathen.cn/c6e3dc12a1154626b3476d9bf3bd7266/6b56c5f0dc31428083757a45764763b0-5287d2089db37e62345123a1be272f8b.mp4");
-
-        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png");
-        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png");
-        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png");
-        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png");
-        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png");
-        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png");
-        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png");
-        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png");
-        sourceImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png");
-        return sourceImageList;
-    }
-
-    public static List<String> getWebPicUrlList() {
-        List<String> sourceImageList = new ArrayList<>();
         sourceImageList.add("http://img3.duitang.com/uploads/item/201605/13/20160513144041_Ze3a4.gif");
         sourceImageList.add("http://img2.woyaogexing.com/2018/01/25/f5d815584c61d376!500x500.jpg");
         sourceImageList.add("http://img2.woyaogexing.com/2018/01/25/f39e625574dd6169!500x500.jpg");
@@ -103,7 +85,7 @@ public class SourceConfig {
         return sourceImageList;
     }
 
-    public static List<Uri> getResUriList(Context context) {
+    public static List<String> getResUriList(Context context) {
         List<Integer> resList = new ArrayList<>();
         resList.add(R.drawable.one);
         resList.add(R.drawable.two);
@@ -115,7 +97,7 @@ public class SourceConfig {
         resList.add(R.drawable.eight);
         resList.add(R.drawable.nine);
 
-        List<Uri> resUriList = new ArrayList<>();
+        List<String> resUrlList = new ArrayList<>();
 
         Resources r = context.getResources();
         for (Integer res : resList) {
@@ -123,17 +105,45 @@ public class SourceConfig {
                     + r.getResourcePackageName(res) + "/"
                     + r.getResourceTypeName(res) + "/"
                     + r.getResourceEntryName(res));
-            resUriList.add(uri);
+            resUrlList.add(uri.toString());
         }
 
-        return resUriList;
+        return resUrlList;
+    }
+
+    public static List<Pair<String, List<String>>> getFriendsCircleList(Context context) {
+        List<Pair<String, List<String>>> friendsCircleList = new ArrayList<>();
+        friendsCircleList.add(new Pair<>("app包内资源图预览演示", getResUriList(context)));
+
+        List<String> videoList = new ArrayList<>();
+        videoList.add("http://jzvd.nathen.cn/video/2a101070-170bad88892-0007-1823-c86-de200.mp4");
+        videoList.add("http://jzvd.nathen.cn/video/1137e480-170bac9c523-0007-1823-c86-de200.mp4");
+        friendsCircleList.add(new Pair<>("视频播放演示", videoList));
+
+        List<String> gifList = new ArrayList<>();
+        gifList.add("http://img.soogif.com/AF0GgQmFKggXX9KloAQZQCqw7iVBiTdo.gif");
+        gifList.add("http://img.soogif.com/NKGXmtmwk44996y8zI1rhJUcoOYhsEv4.gif");
+        gifList.add("http://img.soogif.com/QYm5j1dq7nBGw5R0QJ8SNMTzDP25Glnf.gif");
+        friendsCircleList.add(new Pair<>("gif 图片预览演示", gifList));
+
+        List<String> largeList = new ArrayList<>();
+        largeList.add("https://ww4.sinaimg.cn/bmiddle/a716fd45ly1gf5nskmynvj20ku2q37wh.jpg");
+        largeList.add("https://ww3.sinaimg.cn/bmiddle/a716fd45ly1gf5nskwbduj20ku2ao1kx.jpg");
+        largeList.add("https://ww3.sinaimg.cn/bmiddle/a716fd45ly1gf5nsl2fvkj20ku3g3x6p.jpg");
+        largeList.add("https://ww2.sinaimg.cn/bmiddle/a716fd45ly1gf5nsl75taj20ku2pyb29.jpg");
+        largeList.add("https://ww3.sinaimg.cn/bmiddle/a716fd45ly1gf5nskqvnuj20ku2gn4qp.jpg");
+        largeList.add("https://ww2.sinaimg.cn/bmiddle/a716fd45ly1gf5nsl3d0nj20ku2yt4qp.jpg");
+        largeList.add("https://ww2.sinaimg.cn/bmiddle/a716fd45ly1gf5nslgftdj20ku2ay1kx.jpg");
+        largeList.add("https://ww1.sinaimg.cn/bmiddle/a716fd45ly1gf5nslorclj20ku2igx6p.jpg");
+        largeList.add("https://ww2.sinaimg.cn/bmiddle/a716fd45ly1gf5nslgqtsj20ku16eat4.jpg");
+        friendsCircleList.add(new Pair<>("长图预览演示", largeList));
+        return friendsCircleList;
     }
 
     /**
      * 使用ContentProvider读取SD卡最近图片
      *
      * @param maxCount 读取的最大张数
-     * @return
      */
     public static List<String> getLatestPhotoPaths(Context context, int maxCount) {
         Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -155,17 +165,13 @@ public class SourceConfig {
             //当cursor中没有数据时，cursor.moveToLast()将返回false
             if (cursor.moveToLast()) {
                 latestImagePaths = new ArrayList<String>();
-
-                while (true) {
+                do {
                     // 获取图片的路径
                     String path = cursor.getString(0);
                     if (!latestImagePaths.contains(path))
                         latestImagePaths.add(path);
 
-                    if (latestImagePaths.size() >= maxCount || !cursor.moveToPrevious()) {
-                        break;
-                    }
-                }
+                } while (latestImagePaths.size() < maxCount && cursor.moveToPrevious());
             }
             cursor.close();
         }

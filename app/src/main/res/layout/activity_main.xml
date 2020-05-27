@@ -13,17 +13,10 @@
     tools:context="com.hitomi.transferimage.activity.MainActivity">
 
     <Button
-        android:id="@+id/btn_universal_normal"
+        android:id="@+id/btn_complex_demo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="网络图一预览 - 【简单图片演示】"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/btn_universal_no_thum"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="网络图二预览 - 【大图/Gif图片/长图】"
+        android:text="transferee 所有功能综合演示"
         android:textAllCaps="false" />
 
     <Button
@@ -37,7 +30,7 @@
         android:id="@+id/btn_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="测试 recyclerView"
+        android:text="带 header footer 的 recyclerView 使用场景"
         android:textAllCaps="false" />
 
     <Button
@@ -45,13 +38,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="本地图片"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/btn_none_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="没有绑定 View，直接使用"
         android:textAllCaps="false" />
 
     <Button

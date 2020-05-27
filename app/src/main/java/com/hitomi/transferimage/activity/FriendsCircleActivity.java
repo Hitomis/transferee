@@ -2,7 +2,7 @@ package com.hitomi.transferimage.activity;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -15,8 +15,8 @@ import com.bumptech.glide.Glide;
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
-import com.hitomi.transferimage.SourceConfig;
 import com.hitomi.transferimage.R;
+import com.hitomi.transferimage.SourceConfig;
 import com.hitomi.transferimage.divider.DividerGridItemDecoration;
 import com.vansz.glideimageloader.GlideImageLoader;
 import com.zhy.adapter.recyclerview.CommonAdapter;
@@ -29,7 +29,7 @@ import java.util.List;
  * <p>
  * Created by Vans Z on 2020/4/16.
  */
-public class ResImageActivity extends BaseActivity {
+public class FriendsCircleActivity extends BaseActivity {
     private RecyclerView rvImages;
 
     @Override
@@ -51,12 +51,7 @@ public class ResImageActivity extends BaseActivity {
     /**
      * 朋友圈列表数据适配器
      */
-    private class FriendsCircleAdapter extends CommonAdapter<Uri> {
-        private PhotosAdapter photosAdapter = new PhotosAdapter(
-                ResImageActivity.this,
-                R.layout.item_image,
-                SourceConfig.getResUriList(ResImageActivity.this)
-        );
+    private class FriendsCircleAdapter extends CommonAdapter<Pair<String, List<String>>> {
         private DividerGridItemDecoration divider = new DividerGridItemDecoration(
                 Color.TRANSPARENT,
                 ConvertUtils.dp2px(8f),
@@ -64,13 +59,28 @@ public class ResImageActivity extends BaseActivity {
         );
 
         FriendsCircleAdapter() {
-            super(ResImageActivity.this, R.layout.item_friends_circle, SourceConfig.getResUriList(ResImageActivity.this));
-            // 设置朋友圈图片点击事件
+            super(FriendsCircleActivity.this, R.layout.item_friends_circle, SourceConfig.getFriendsCircleList(FriendsCircleActivity.this));
+        }
+
+        @Override
+        protected void convert(ViewHolder viewHolder, final Pair<String, List<String>> item, final int position) {
+            viewHolder.setText(R.id.tv_content, item.first);
+            final RecyclerView rvPhotos = viewHolder.getView(R.id.rv_photos);
+            // 重置 divider
+            rvPhotos.removeItemDecoration(divider);
+            rvPhotos.addItemDecoration(divider);
+            if (rvPhotos.getLayoutManager() == null)
+                rvPhotos.setLayoutManager(new GridLayoutManager(FriendsCircleActivity.this, 3));
+            PhotosAdapter photosAdapter = new PhotosAdapter(
+                    FriendsCircleActivity.this,
+                    R.layout.item_image,
+                    item.second
+            );
             photosAdapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
                     TransferConfig config = TransferConfig.build()
-                            .setSourceUriList(getDatas())
+                            .setSourceUrlList(item.second)
                             .setProgressIndicator(new ProgressBarIndicator())
                             .setIndexIndicator(new NumberIndexIndicator())
                             .setImageLoader(GlideImageLoader.with(getApplicationContext()))
@@ -84,35 +94,24 @@ public class ResImageActivity extends BaseActivity {
                     return false;
                 }
             });
-        }
-
-        @Override
-        protected void convert(ViewHolder viewHolder, Uri item, final int position) {
-            final RecyclerView rvPhotos = viewHolder.getView(R.id.rv_photos);
-            // 重置 divider
-            rvPhotos.removeItemDecoration(divider);
-            rvPhotos.addItemDecoration(divider);
-            if (rvPhotos.getLayoutManager() == null)
-                rvPhotos.setLayoutManager(new GridLayoutManager(ResImageActivity.this, 3));
-            if (rvPhotos.getAdapter() == null)
-                rvPhotos.setAdapter(photosAdapter);
+            rvPhotos.setAdapter(photosAdapter);
         }
     }
 
     /**
      * 单个 item 中照片数据适配器
      */
-    private static class PhotosAdapter extends CommonAdapter<Uri> {
+    private static class PhotosAdapter extends CommonAdapter<String> {
 
-        PhotosAdapter(Context context, int layoutId, List<Uri> datas) {
+        PhotosAdapter(Context context, int layoutId, List<String> datas) {
             super(context, layoutId, datas);
         }
 
         @Override
-        protected void convert(final ViewHolder holder, Uri uri, final int position) {
+        protected void convert(final ViewHolder holder, String url, final int position) {
             ImageView imageView = holder.getView(R.id.iv_thum);
             Glide.with(imageView)
-                    .load(uri)
+                    .load(url)
                     .placeholder(R.mipmap.ic_empty_photo)
                     .into(imageView);
         }

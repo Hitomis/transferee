@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.ComplexDemoActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="使用了 RecyclerView 作为载体，Picasso 加载图片，RecyclerView 全部展开，演示了最普遍、简单、常用的使用方式："
+            android:textColor="#888" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_transferee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="20dp"
+            android:background="#808080" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="使用了 GridView 作为载体，加载一般图片、长图、动态 gif 图、视频等资源，使用 Glide 作为图片加载器。GridView 高度80dp，并开启了跟随 transferee 滑动功能，演示了对于未完全展开的列表, transferee 个性化处理方式："
+            android:textColor="#888" />
+
+        <GridView
+            android:id="@+id/gv_transferee"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:gravity="center"
+            android:horizontalSpacing="5dp"
+            android:numColumns="3"
+            android:verticalSpacing="5dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="20dp"
+            android:background="#808080" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="演示单个 ImageView 绑定使用方式，Universal 加载图片, 自定义了 CustomView 。使用场景例如 QQ 相册、聊天界面的单张图片点击使用："
+            android:textColor="#888" />
+
+        <ImageView
+            android:id="@+id/iv_single_view"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="20dp"
+            android:background="#808080" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="无需绑定，即可使用，使用场景例如 WebView 中，无法获取缩略图的时候，或者只是单纯的想使用 transferee 去预览一组多媒体文件"
+            android:textColor="#888" />
+
+        <Button
+            android:id="@+id/btn_none_view"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/design_default_color_primary"
+            android:text="无 View 绑定"
+            android:textColor="#fff" />
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

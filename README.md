@@ -72,21 +72,22 @@ step 1: 一个页面只创建一个 transferee 示例 (建议写在 onCreate 方
 transferee = Transferee.getDefault(context);
 ```
 
-setp 2: 为 transferee 创建参数配置器，一般配置固定不变的参数
+step 2: 为 transferee 创建参数配置器
 ```
 TransferConfig config = TransferConfig.build()
-       .setSourceImageList(ImageConfig.getSourcePicUrlList()) // 图片url集合
-       .setMissPlaceHolder(R.mipmap.ic_empty_photo) // 图片加载前的占位图
-       .setErrorPlaceHolder(R.mipmap.ic_empty_photo) // 图片加载错误后的占位图
-       .setProgressIndicator(new ProgressPieIndicator()) // 图片加载进度指示器, 可以实现 IProgressIndicator 扩展
-       .setIndexIndicator(new NumberIndexIndicator()) // 图片数量索引指示器，可以实现 IIndexIndicator 扩展
+       .setSourceImageList(sourceUrlList) // 资源 url 集合, String 格式
+       .setSourceUriList(sourceUriList) // 资源 uri 集合， Uri 格式
+       .setMissPlaceHolder(R.mipmap.ic_empty_photo) // 资源加载前的占位图
+       .setErrorPlaceHolder(R.mipmap.ic_empty_photo) // 资源加载错误后的占位图
+       .setProgressIndicator(new ProgressPieIndicator()) // 资源加载进度指示器, 可以实现 IProgressIndicator 扩展
+       .setIndexIndicator(new NumberIndexIndicator()) // 资源数量索引指示器，可以实现 IIndexIndicator 扩展
        .setImageLoader(GlideImageLoader.with(getApplicationContext())) // 图片加载器，可以实现 ImageLoader 扩展
        .setBackgroundColor(Color.parseColor("#000000")) // 背景色
        .setDuration(300) // 开启、关闭、手势拖拽关闭、显示、扩散消失等动画时长
        .setOffscreenPageLimit(2) // 第一次初始化或者切换页面时预加载资源的数量，与 justLoadHitImage 属性冲突，默认为 1
        .setCustomView(customView) // 自定义视图，将放在 transferee 的面板上
-       .nowThumbnailIndex(index) // 缩略图在图组中的索引
-       .enableJustLoadHitPage(true) // 是否只加载当前显示在屏幕中的的图片，默认关闭
+       .setNowThumbnailIndex(index) // 缩略图在图组中的索引
+       .enableJustLoadHitPage(true) // 是否只加载当前显示在屏幕中的的资源，默认关闭
        .enableDragClose(true) // 是否开启下拉手势关闭，默认开启
        .enableDragHide(false) // 下拉拖拽关闭时，是否先隐藏页面上除主视图以外的其他视图，默认开启
        .enableDragPause(false) // 下拉拖拽关闭时，如果当前是视频，是否暂停播放，默认关闭
@@ -101,27 +102,25 @@ TransferConfig config = TransferConfig.build()
        .bindImageView(imageView, source) // 绑定一个 ImageView, 所有绑定方法只能调用一个
        .bindListView(listView, R.id.iv_thumb) // 绑定一个 ListView， 所有绑定方法只能调用一个
        .bindRecyclerView(recyclerView, R.id.iv_thumb)  // 绑定一个 RecyclerView， 所有绑定方法只能调用一个
-       
-TransferConfig 可以绑定 ImageView, ListView, RecyclerView, 详见下面 api 说明
-                                     
 ```
 
-setp 3: 显示 transferee
+step 3: 显示 transferee
 ```
-config.setNowThumbnailIndex(position);
 transferee.apply(config).show();
 ```
 
 # Config
 | 属性 | 说明 |
 | :--: | :--: |
+| sourceUrlList | 将要预览的资源 url 集合, String 格式 |
+| sourceUriList | 将要预览的资源 uri 集合， Uri 格式 |
 | nowThumbnailIndex | 缩略图在图组中的索引, 如果你绑定了 ListView 或者 RecyclerView，这个属性是必须的，否则可以忽略 |
-| offscreenPageLimit | 显示 transferee 时初始化加载的图片数量, 默认为1, 表示第一次加载3张(nowThumbnailIndex, nowThumbnailIndex + 1, nowThumbnailIndex - 1); 值为 2, 表示加载5张。依次类推 |
-| missPlaceHolder | 缺省的占位图，资源 id 格式。图片未加载完成时默认显示的图片 |
-| missDrawable | 缺省的占位图，Drawable 格式。图片未加载完成时默认显示的图片 |
+| offscreenPageLimit | 显示 transferee 时初始化加载的资源数量, 默认为1, 表示第一次加载3张(nowThumbnailIndex, nowThumbnailIndex + 1, nowThumbnailIndex - 1); 值为 2, 表示加载5张。依次类推 |
+| missPlaceHolder | 缺省的占位图，资源 id 格式。资源未加载完成时默认显示的图片 |
+| missDrawable | 缺省的占位图，Drawable 格式。资源未加载完成时默认显示的图片 |
 | errorPlaceHolder | 加载错误的占位图，资源 id 格式。原图加载错误时显示的图片 |
 | errorDrawable | 加载错误的占位图，Drawable 格式。原图加载错误时显示的图片 |
-| backgroundColor | transferee 显示时，图片后的背景色 |
+| backgroundColor | transferee 显示时，transferee 背景色 |
 | duration | 开启、关闭、手势拖拽关闭、透明度动画显示、扩散消失等动画的时长 |
 | justLoadHitPage | 是否只加载当前页面中的资源。如果设置为 true，那么只有当 transferee 切换到当前页面时，才会触发当前页面的加载动作，否则按 offscreenPageLimit 所设置的数值去做预加载和当前页面的加载动作，默认关闭 |
 | enableDragClose | 是否支持向下拖拽关闭，默认开启 |
@@ -129,9 +128,9 @@ transferee.apply(config).show();
 | enableDragPause | 拖拽关闭时是否暂停当前页面视频播放， 默认关闭 |
 | enableHideThumb | 是否开启当 transferee 打开时，隐藏缩略图，默认开启 |
 | enableScrollingWithPageChange | 是否启动列表随着 page 的切换而滚动，仅仅针对绑定 RecyclerView/GridView/ListView 有效, 启动之后因为列表会实时滚动，缩略图 view 将不会出现为空的现象，从而保证关闭 transferee 时为过渡关闭动画， 默认关闭 |
-| progressIndicator | 图片加载进度指示器 (默认内置 ProgressPieIndicator 和 ProgressBarIndicator)。可实现 IProgressIndicator 接口定义自己的图片加载进度指示器 |
-| indexIndicator | 图片索引指示器 (默认内置 CircleIndexIndicator 和 NumberIndexIndicator)。可实现 IIndexIndicator 接口定义自己的图片索引指示器 |
-| imageLoader | 图片加载器。可实现 ImageLoader 接口定义自己的图片加载器 |
+| progressIndicator | 资源加载进度指示器 (默认内置 ProgressPieIndicator 和 ProgressBarIndicator)。可实现 IProgressIndicator 接口定义自己的资源加载进度指示器 |
+| indexIndicator | 资源索引指示器 (默认内置 CircleIndexIndicator 和 NumberIndexIndicator)。可实现 IIndexIndicator 接口定义自己的资源索引指示器 |
+| imageLoader | 资源加载器。可实现 ImageLoader 接口定义自己的图片加载器 |
 | imageId | RecyclerView 或者 ListView 的 ItemView 中的 ImageView id|
 | customView | 用户自定义的视图，放置在 transferee 显示后的面板之上 |
 | listView | 如果你是使用的 ListView 或者 GridView 来排列显示图片，那么需要将你的 ListView 或者 GridView 传入 bindListView() 方法中 |

@@ -1,5 +1,5 @@
 # Transferee [![](https://jitpack.io/v/Hitomis/transferee.svg)](https://jitpack.io/#Hitomis/transferee)
-transferee 可以帮助你完成从缩略视图到原视图的无缝过渡转变，功能体系仿照并涵盖 ios 版本的 QQ、微信朋友圈、新浪微博的图片浏览功能。
+transferee 可以帮助你完成从缩略视图到原视图的无缝过渡转变, 优雅的浏览普通图片、长图、gif图、视频等不同格式的多媒体。
 
 支持的功能:
 
@@ -16,7 +16,7 @@ transferee 可以帮助你完成从缩略视图到原视图的无缝过渡转变
 + 支持傻瓜式绑定 RecyclerView / ListView / GridView / ImageView
 + 支持不绑定任何 View, 即可启动 transferee
 
-如有任何问题可以提 Issues
+如有任何问题欢迎提 Issues
 
 # Preview
 <img src="preview/transferee.gif" />
@@ -39,19 +39,19 @@ allprojects {
 step2.
 ```
 // 添加所有 module  [包括 Transferee、GlideImageLoader、PicassoImageLoader、UniversalImageLoader]
-implementation 'com.github.Hitomis:transferee:1.5.2'
+implementation 'com.github.Hitomis:transferee:1.6.0'
 
 // 单独添加核心 module Transferee, 之后至少还需要添加以下三种图片加载器中的一种
-implementation 'com.github.Hitomis.transferee:Transferee:1.5.2'
+implementation 'com.github.Hitomis.transferee:Transferee:1.6.0'
 
 // 添加 Glide 图片加载器
-implementation 'com.github.Hitomis.transferee:GlideImageLoader:1.5.2'
+implementation 'com.github.Hitomis.transferee:GlideImageLoader:1.6.0'
 
 // 添加 Picasso 图片加载器
-implementation 'com.github.Hitomis.transferee:PicassoImageLoader:1.5.2'
+implementation 'com.github.Hitomis.transferee:PicassoImageLoader:1.6.0'
 
 // 添加 Universal 图片加载器
-implementation 'com.github.Hitomis.transferee:UniversalImageLoader:1.5.2'
+implementation 'com.github.Hitomis.transferee:UniversalImageLoader:1.6.0'
 ```
 
 # Usage
@@ -78,18 +78,29 @@ TransferConfig config = TransferConfig.build()
        .setSourceImageList(ImageConfig.getSourcePicUrlList()) // 图片url集合
        .setMissPlaceHolder(R.mipmap.ic_empty_photo) // 图片加载前的占位图
        .setErrorPlaceHolder(R.mipmap.ic_empty_photo) // 图片加载错误后的占位图
-       .setProgressIndicator(new ProgressPieIndicator()) // 图片加载进度指示器
-       .setIndexIndicator(new NumberIndexIndicator()) // 图片数量索引指示器
-       .setImageLoader(GlideImageLoader.with(getApplicationContext())) // 设置图片加载器
-       .setJustLoadHitImage(true) // 是否只加载当前显示在屏幕中的的图片
-       .enableDragClose(true) // 开启拖拽关闭
-       .setOnLongClickListener(new Transferee.OnTransfereeLongClickListener() {
+       .setProgressIndicator(new ProgressPieIndicator()) // 图片加载进度指示器, 可以实现 IProgressIndicator 扩展
+       .setIndexIndicator(new NumberIndexIndicator()) // 图片数量索引指示器，可以实现 IIndexIndicator 扩展
+       .setImageLoader(GlideImageLoader.with(getApplicationContext())) // 图片加载器，可以实现 ImageLoader 扩展
+       .setBackgroundColor(Color.parseColor("#000000")) // 背景色
+       .setDuration(300) // 开启、关闭、手势拖拽关闭、显示、扩散消失等动画时长
+       .setOffscreenPageLimit(2) // 第一次初始化或者切换页面时预加载资源的数量，与 justLoadHitImage 属性冲突，默认为 1
+       .setCustomView(customView) // 自定义视图，将放在 transferee 的面板上
+       .nowThumbnailIndex(index) // 缩略图在图组中的索引
+       .enableJustLoadHitPage(true) // 是否只加载当前显示在屏幕中的的图片，默认关闭
+       .enableDragClose(true) // 是否开启下拉手势关闭，默认开启
+       .enableDragHide(false) // 下拉拖拽关闭时，是否先隐藏页面上除主视图以外的其他视图，默认开启
+       .enableDragPause(false) // 下拉拖拽关闭时，如果当前是视频，是否暂停播放，默认关闭
+       .enableHideThumb(false) // 是否开启当 transferee 打开时，隐藏缩略图, 默认关闭
+       .enableScrollingWithPageChange(false) // 是否启动列表随着页面的切换而滚动你的列表，默认关闭
+       .setOnLongClickListener(new Transferee.OnTransfereeLongClickListener() { // 长按当前页面监听器
             @Override
             public void onLongClick(ImageView imageView, String imageUri, int pos) {
-                saveImageFile(imageUri); // 使用 transferee.getFile(imageUri) 获取缓存文件保存
+                saveImageFile(imageUri); // 使用 transferee.getFile(imageUri) 获取缓存文件保存，视频不支持
             }
         })
-       .bindRecyclerView(gvImages, R.id.iv_thum);
+       .bindImageView(imageView, source) // 绑定一个 ImageView, 所有绑定方法只能调用一个
+       .bindListView(listView, R.id.iv_thumb) // 绑定一个 ListView， 所有绑定方法只能调用一个
+       .bindRecyclerView(recyclerView, R.id.iv_thumb)  // 绑定一个 RecyclerView， 所有绑定方法只能调用一个
        
 TransferConfig 可以绑定 ImageView, ListView, RecyclerView, 详见下面 api 说明
                                      
@@ -104,20 +115,20 @@ transferee.apply(config).show();
 # Config
 | 属性 | 说明 |
 | :--: | :--: |
-| nowThumbnailIndex | 缩略图在图组中的索引 |
+| nowThumbnailIndex | 缩略图在图组中的索引, 如果你绑定了 ListView 或者 RecyclerView，这个属性是必须的，否则可以忽略 |
 | offscreenPageLimit | 显示 transferee 时初始化加载的图片数量, 默认为1, 表示第一次加载3张(nowThumbnailIndex, nowThumbnailIndex + 1, nowThumbnailIndex - 1); 值为 2, 表示加载5张。依次类推 |
 | missPlaceHolder | 缺省的占位图，资源 id 格式。图片未加载完成时默认显示的图片 |
 | missDrawable | 缺省的占位图，Drawable 格式。图片未加载完成时默认显示的图片 |
 | errorPlaceHolder | 加载错误的占位图，资源 id 格式。原图加载错误时显示的图片 |
 | errorDrawable | 加载错误的占位图，Drawable 格式。原图加载错误时显示的图片 |
 | backgroundColor | transferee 显示时，图片后的背景色 |
-| duration | transferee 播放过渡动画的动画时长 |
-| justLoadHitPage | 是否只加载当前页面中的资源。如果设置为 true，那么只有当 transferee 切换到当前页面时，才会触发当前页面的加载动作，否则按 offscreenPageLimit 所设置的数值去做预加载和当前页面的加载动作 |
-| enableDragClose | 是否支持向下拖拽关闭 |
-| enableDragHide | 拖拽关闭时是否隐藏除主视图以外的其他 view |
-| enableDragPause | 拖拽关闭时是否暂停当前页面视频播放 |
-| enableHideThumb | 是否开启当 transferee 打开时，隐藏缩略图 |
-| enableScrollingWithPageChange | 是否启动列表随着 page 的切换而置顶滚动，仅仅针对绑定 RecyclerView/GridView/ListView 有效, 启动之后因为列表会实时滚动，缩略图 view 将不会出现为空的现象，从而保证关闭 transferee 时为过渡关闭动画 |
+| duration | 开启、关闭、手势拖拽关闭、透明度动画显示、扩散消失等动画的时长 |
+| justLoadHitPage | 是否只加载当前页面中的资源。如果设置为 true，那么只有当 transferee 切换到当前页面时，才会触发当前页面的加载动作，否则按 offscreenPageLimit 所设置的数值去做预加载和当前页面的加载动作，默认关闭 |
+| enableDragClose | 是否支持向下拖拽关闭，默认开启 |
+| enableDragHide | 拖拽关闭时是否隐藏除主视图以外的其他 view， 默认开启 |
+| enableDragPause | 拖拽关闭时是否暂停当前页面视频播放， 默认关闭 |
+| enableHideThumb | 是否开启当 transferee 打开时，隐藏缩略图，默认开启 |
+| enableScrollingWithPageChange | 是否启动列表随着 page 的切换而滚动，仅仅针对绑定 RecyclerView/GridView/ListView 有效, 启动之后因为列表会实时滚动，缩略图 view 将不会出现为空的现象，从而保证关闭 transferee 时为过渡关闭动画， 默认关闭 |
 | progressIndicator | 图片加载进度指示器 (默认内置 ProgressPieIndicator 和 ProgressBarIndicator)。可实现 IProgressIndicator 接口定义自己的图片加载进度指示器 |
 | indexIndicator | 图片索引指示器 (默认内置 CircleIndexIndicator 和 NumberIndexIndicator)。可实现 IIndexIndicator 接口定义自己的图片索引指示器 |
 | imageLoader | 图片加载器。可实现 ImageLoader 接口定义自己的图片加载器 |
@@ -137,10 +148,31 @@ transferee.apply(config).show();
 | show(listener) | 打开/显示 transferee，并监听显示/关闭状态 |
 | isShown() | transferee 是否显示 |
 | dismiss() | 关闭 transferee |
-| clear(imageLoader) | 清除 ImageLoader 中加载的缓存 |
+| clear() | 清除图片和视频等所有缓存文件 |
+| getImageFile(url) | 获取与 url 对应的缓存图片 |
 | setOnTransfereeStateChangeListener(listener) | 设置 transferee 显示/关闭状态改变的监听器 |
 
 # Update log
++ v1.6.0
+   - 新增视频播放以及视频配套功能的支持
+   - 新增 enableDragPause 属性控制视频拖拽关闭播放的暂停
+   - 新增 enableHideThumb 属性控制缩略图是否消失
+   - 新增 enableScrollingWithPageChange 属性控制用户的列表是否跟谁 transferee 页面切换而滚动
+   - 优化下拉关闭手势的交互
+   - 优化页面切换时，性能较差手机上可能出现一次闪屏的问题
+   - 优化在没有网络的情况下，transferee 启动或者关闭时一些边界性质的问题
+   - 优化图片没有加载出来的时候，手势关闭的时候动画不正常的问题
+   - 修复因为无法获取 originImage 导致的占位图为空的 bug
+   - 修复加载失败的时候，无法通过点击屏幕关闭的 bug
+   - 修复关闭时，背景色渐变算法错误的 bug
+   - 修复使用修复 bindImageView api 出现数组下标越界的 bug
+   - 修复当动画时长较长时，出现的没有打开完成之前，就能使用物理按键关闭的 bug
+   - 修复部分机型上只加载缩略图，没有加载高清图，打开后，占位图大小不一样的 bug
+   - 修复了全面屏、刘海屏 dialog 全屏适配错误的 bug
+   - 修复部分机型上 enableDragHide 功能不正常的 bug
+   - 修复弱网或者无网的情况下，被隐藏的页面占位图不显示的 bug
+   - 修复了一些代码逻辑错误
+
 + v1.5.2
    - 修改 transferee 容器 dialog 固定为全屏样式。更好的配合当前可定制化的状态栏。
    - transferee 绑定的 ListView 或者 RecyclerView 支持添加 header 或者 footer
@@ -195,7 +227,7 @@ transferee.apply(config).show();
   - 更新了部分示例代码中失效的图片地址
 
 # Licence
-    Copyright 2017 Hitomis, Inc.
+    Copyright 2017 Vans, Inc.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

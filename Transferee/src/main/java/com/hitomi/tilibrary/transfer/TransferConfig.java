@@ -358,12 +358,12 @@ public final class TransferConfig {
         private int errorPlaceHolder;
         private int backgroundColor;
         private long duration;
-        private boolean justLoadHitPage;
+        private boolean justLoadHitPage = false;
         private boolean enableDragClose = true;
         private boolean enableDragHide = true;
         private boolean enableDragPause = false;
         private boolean enableHideThumb = true;
-        private boolean enableScrollingWithPageChange;
+        private boolean enableScrollingWithPageChange = false;
 
         private Drawable missDrawable;
         private Drawable errorDrawable;

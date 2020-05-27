@@ -167,8 +167,8 @@ public class Transferee implements DialogInterface.OnShowListener,
     /**
      * 获取图片文件
      */
-    public File getImageFile(String imageUri) {
-        return transConfig.getImageLoader().getCache(imageUri);
+    public File getImageFile(String imageUrl) {
+        return transConfig.getImageLoader().getCache(imageUrl);
     }
 
     /**

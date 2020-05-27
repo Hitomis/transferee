@@ -118,6 +118,7 @@ public class SourceConfig {
         List<String> videoList = new ArrayList<>();
         videoList.add("http://jzvd.nathen.cn/video/2a101070-170bad88892-0007-1823-c86-de200.mp4");
         videoList.add("http://jzvd.nathen.cn/video/1137e480-170bac9c523-0007-1823-c86-de200.mp4");
+        videoList.add("http://jzvd.nathen.cn/22b4de0e2b1245959c5baa77fe0bf14e/896a137559084b7eb879f5441faff20d-5287d2089db37e62345123a1be272f8b.mp4");
         friendsCircleList.add(new Pair<>("视频播放演示", videoList));
 
         List<String> gifList = new ArrayList<>();
@@ -137,6 +138,32 @@ public class SourceConfig {
         largeList.add("https://ww1.sinaimg.cn/bmiddle/a716fd45ly1gf5nslorclj20ku2igx6p.jpg");
         largeList.add("https://ww2.sinaimg.cn/bmiddle/a716fd45ly1gf5nslgqtsj20ku16eat4.jpg");
         friendsCircleList.add(new Pair<>("长图预览演示", largeList));
+
+        List<String> hideThumbList = new ArrayList<>();
+        hideThumbList.add("https://c-ssl.duitang.com/uploads/item/201702/25/20170225081804_XhUeL.thumb.1000_0.jpeg");
+        hideThumbList.add("https://c-ssl.duitang.com/uploads/item/201706/29/20170629011755_LTEce.thumb.1000_0.jpeg");
+        hideThumbList.add("https://c-ssl.duitang.com/uploads/item/201706/26/20170626173433_PkTKV.thumb.700_0.jpeg");
+        hideThumbList.add("https://c-ssl.duitang.com/uploads/item/201703/25/20170325113119_EBM3n.thumb.1000_0.jpeg");
+        hideThumbList.add("https://c-ssl.duitang.com/uploads/item/201703/25/20170325113114_JZasz.thumb.700_0.jpeg");
+        hideThumbList.add("https://c-ssl.duitang.com/uploads/item/201707/16/20170716205424_ZcnXN.thumb.1000_0.jpeg");
+        friendsCircleList.add(new Pair<>("当 enableHideThumb = false 时，表示 transferee 打开或关闭不会干扰原缩略图的显示隐藏，默认开启", hideThumbList));
+
+        List<String> justLoadHitList = new ArrayList<>();
+        justLoadHitList.add("https://c-ssl.duitang.com/uploads/item/201411/10/20141110213800_Arhdr.thumb.1000_0.gif");
+        justLoadHitList.add("https://c-ssl.duitang.com/uploads/item/201411/10/20141110213256_UmSPw.thumb.1000_0.gif");
+        justLoadHitList.add("https://c-ssl.duitang.com/uploads/item/201411/10/20141110213207_VEucm.thumb.700_0.gif");
+        justLoadHitList.add("https://c-ssl.duitang.com/uploads/item/201411/14/20141114223145_Si2kF.thumb.700_0.gif");
+        justLoadHitList.add("https://c-ssl.duitang.com/uploads/item/201411/14/20141114223121_t2UcU.thumb.700_0.gif");
+        justLoadHitList.add("https://c-ssl.duitang.com/uploads/item/201411/14/20141114223053_mRzvc.thumb.700_0.gif");
+        justLoadHitList.add("https://c-ssl.duitang.com/uploads/item/201411/22/20141122002215_i48Bj.thumb.1000_0.gif");
+        justLoadHitList.add("https://c-ssl.duitang.com/uploads/item/201411/22/20141122002528_US2hX.thumb.700_0.gif");
+        justLoadHitList.add("https://c-ssl.duitang.com/uploads/item/201411/22/20141122002255_yhWxC.thumb.700_0.gif");
+        friendsCircleList.add(new Pair<>("当 justLoadHitPage = true 时，只有当前页面会进行资源加载，默认关闭", justLoadHitList));
+
+        List<String> dragPauseList = new ArrayList<>();
+        dragPauseList.add("http://jzvd.nathen.cn/video/7bf938c-170bac9c18a-0007-1823-c86-de200.mp4");
+        friendsCircleList.add(new Pair<>("当 enableDragPause = true 时，下拉拖拽关闭视频时，视频会暂停播放，默认关闭", dragPauseList));
+
         return friendsCircleList;
     }
 

@@ -30,7 +30,6 @@ import java.util.List;
  * Created by Vans Z on 2020/4/16.
  */
 public class FriendsCircleActivity extends BaseActivity {
-    private RecyclerView rvImages;
 
     @Override
     protected int getContentView() {
@@ -39,13 +38,28 @@ public class FriendsCircleActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        rvImages = findViewById(R.id.rv_images);
+        RecyclerView rvImages = findViewById(R.id.rv_images);
         rvImages.setLayoutManager(new LinearLayoutManager(this));
         rvImages.setAdapter(new FriendsCircleAdapter());
     }
 
     @Override
     protected void testTransferee() {
+    }
+
+    private TransferConfig.Builder getBuilder(int pos) {
+        TransferConfig.Builder builder = TransferConfig.build()
+                .setProgressIndicator(new ProgressBarIndicator())
+                .setIndexIndicator(new NumberIndexIndicator())
+                .setImageLoader(GlideImageLoader.with(getApplicationContext()));
+        if (pos == 4) {
+            builder.enableHideThumb(false);
+        } else if (pos == 5) {
+            builder.enableJustLoadHitPage(true);
+        } else if (pos == 6) {
+            builder.enableDragPause(true);
+        }
+        return builder;
     }
 
     /**
@@ -78,15 +92,12 @@ public class FriendsCircleActivity extends BaseActivity {
             );
             photosAdapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override
-                public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-                    TransferConfig config = TransferConfig.build()
+                public void onItemClick(View view, RecyclerView.ViewHolder holder, int pos) {
+                    transferee.apply(getBuilder(position)
+                            .setNowThumbnailIndex(pos)
                             .setSourceUrlList(item.second)
-                            .setProgressIndicator(new ProgressBarIndicator())
-                            .setIndexIndicator(new NumberIndexIndicator())
-                            .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                            .setNowThumbnailIndex(position)
-                            .bindRecyclerView(((RecyclerView) view.getParent()), R.id.iv_thum);
-                    transferee.apply(config).show();
+                            .bindRecyclerView(((RecyclerView) view.getParent()), R.id.iv_thum)
+                    ).show();
                 }
 
                 @Override

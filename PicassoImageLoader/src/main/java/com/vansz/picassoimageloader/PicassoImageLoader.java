@@ -27,6 +27,8 @@ import okhttp3.Response;
 
 /**
  * Created by Vans Z on 2020-02-28.
+ * error： Picasso.into(new Target()) 平均5次调用会出现一次不会调用
+ * onBitmapLoaded 或者 onBitmapFailed 回调方法的bug, 官方一直未修复
  * 暂不支持百分比进度指示器
  */
 public class PicassoImageLoader implements ImageLoader {

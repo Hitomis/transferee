@@ -18,9 +18,7 @@ import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.SourceConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.squareup.picasso.Picasso;
 import com.vansz.glideimageloader.GlideImageLoader;
-import com.vansz.picassoimageloader.PicassoImageLoader;
 import com.vansz.universalimageloader.UniversalImageLoader;
 import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
@@ -95,7 +93,7 @@ public class ComplexDemoActivity extends BaseActivity {
                 .setSourceUrlList(SourceConfig.getOriginalSourceGroup())
                 .setProgressIndicator(new ProgressBarIndicator())
                 .setIndexIndicator(new NumberIndexIndicator())
-                .setImageLoader(PicassoImageLoader.with(getApplicationContext()))
+                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                 .enableHideThumb(false)
                 .bindRecyclerView(recyclerView, R.id.iv_thum);
         RecyclerAdapter recyclerAdapter = new RecyclerAdapter();
@@ -123,7 +121,7 @@ public class ComplexDemoActivity extends BaseActivity {
         @Override
         protected void convert(ViewHolder viewHolder, String item, final int position) {
             final ImageView imageView = viewHolder.getView(R.id.iv_thum);
-            Picasso.get()
+            Glide.with(imageView)
                     .load(item)
                     .placeholder(R.mipmap.ic_empty_photo)
                     .into(imageView);

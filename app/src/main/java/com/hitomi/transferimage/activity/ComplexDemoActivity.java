@@ -16,6 +16,8 @@ import com.hitomi.tilibrary.transfer.TransferConfig;
 import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.SourceConfig;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.picasso.Picasso;
 import com.vansz.glideimageloader.GlideImageLoader;
 import com.vansz.picassoimageloader.PicassoImageLoader;
@@ -60,14 +62,12 @@ public class ComplexDemoActivity extends BaseActivity {
     }
 
     private void singleViewDemo() {
-        Glide.with(this)
-                .load(SourceConfig.getMixingSourceGroup().get(0))
-                .placeholder(R.mipmap.ic_empty_photo)
-                .into(imageView);
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
+        ImageLoader.getInstance().displayImage(SourceConfig.getMixingSourceGroup().get(0), imageView);
         imageView.setOnClickListener(v -> {
             Transferee.getDefault(this).apply(TransferConfig.build()
                     .setSourceUrlList(SourceConfig.getMixingSourceGroup())
-                    .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+                    .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
                     .enableJustLoadHitPage(true)
                     .setCustomView(View.inflate(getBaseContext(), R.layout.layout_custom, null))
                     .bindImageView(imageView)

@@ -1,5 +1,6 @@
 package com.hitomi.tilibrary.transfer;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.gyf.immersionbar.ImmersionBar;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
@@ -141,9 +143,11 @@ abstract class TransferState {
      * @param clipSize       裁剪的尺寸数组
      */
     void clipTargetImage(TransferImage targetImage, Drawable originDrawable, int[] clipSize) {
-        DisplayMetrics displayMetrics = transfer.getContext().getResources().getDisplayMetrics();
+        if (!(transfer.getContext() instanceof Activity)) return;
+        Activity activity = ((Activity) transfer.getContext());
+        DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
         int width = displayMetrics.widthPixels;
-        int height = displayMetrics.heightPixels;
+        int height = displayMetrics.heightPixels + ImmersionBar.getNotchHeight(activity);
 
         targetImage.setOriginalInfo(
                 originDrawable,

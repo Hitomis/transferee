@@ -38,7 +38,6 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 class TransferLayout extends FrameLayout {
     private Context context;
 
-    private TransferImage transImage;
     private TransferConfig transConfig;
     private DragCloseGesture dragCloseGesture;
 
@@ -46,9 +45,11 @@ class TransferLayout extends FrameLayout {
     private OnLayoutResetListener layoutResetListener;
     private Set<Integer> loadedIndexSet;
 
+    TransferImage transImage;
     TransferAdapter transAdapter;
     ViewPager transViewPager;
     float alpha; // [0.f , 255.f]
+    boolean isAnimationRunning;
 
     /**
      * 构造方法
@@ -119,6 +120,7 @@ class TransferLayout extends FrameLayout {
 
         @Override
         public void onTransferStart(int state, int cate, int stage) {
+            isAnimationRunning = true;
             currentAlpha = (state == TransferImage.STATE_TRANS_SPEC_OUT ? alpha : 255);
             if (state == TransferImage.STATE_TRANS_IN) {
                 if (transConfig.isEnableHideThumb()) {
@@ -217,7 +219,7 @@ class TransferLayout extends FrameLayout {
      * 加载 [position - offset] 到 [position + offset] 范围内有效索引位置的图片
      *
      * @param position 当前显示图片的索引
-     * @param offset   postion 左右便宜量
+     * @param offset   position 左右便宜量
      */
     void loadSourceViewOffset(int position, int offset) {
         int left = position - offset;
@@ -250,6 +252,7 @@ class TransferLayout extends FrameLayout {
      * 重置 TransferLayout 布局中的内容
      */
     private void resetTransfer() {
+        isAnimationRunning = false;
         loadedIndexSet.clear();
         removeIndexIndicator();
         removeAllViews();
@@ -260,6 +263,7 @@ class TransferLayout extends FrameLayout {
      * transferee STATE_TRANS_IN 动画执行完毕后，开始显示内容
      */
     private void resumeTransfer() {
+        isAnimationRunning = false;
         showIndexIndicator(true);
         showCustomView(true);
         transViewPager.setVisibility(View.VISIBLE);
@@ -372,8 +376,9 @@ class TransferLayout extends FrameLayout {
      * @return 是否关闭成功
      */
     boolean dismiss(int pos) {
-        if (transImage != null && (transImage.isAnimationRunning() // 防止打开动画还没执行完就要关闭
-                || transImage.getState() == TransferImage.STATE_TRANS_OUT)) // 防止连击
+        if (isAnimationRunning // 防止打开或者关闭动画还没执行完闭
+                || (transImage != null
+                && transImage.getState() == TransferImage.STATE_TRANS_OUT)) // 防止连击
             return false;
 
         transImage = getTransferState(pos).transferOut(pos);
@@ -399,6 +404,11 @@ class TransferLayout extends FrameLayout {
         animatorSet.setDuration(transConfig.getDuration());
         animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
         animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                isAnimationRunning = true;
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 resumeTransfer();
@@ -444,6 +454,11 @@ class TransferLayout extends FrameLayout {
             }
         });
         valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                isAnimationRunning = true;
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 resetTransfer();

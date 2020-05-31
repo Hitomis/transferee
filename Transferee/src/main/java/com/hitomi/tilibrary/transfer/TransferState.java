@@ -1,17 +1,18 @@
 package com.hitomi.tilibrary.transfer;
 
-import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.util.DisplayMetrics;
+import android.os.Build;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
-import com.gyf.immersionbar.ImmersionBar;
 import com.hitomi.tilibrary.loader.ImageLoader;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
@@ -143,11 +144,9 @@ abstract class TransferState {
      * @param clipSize       裁剪的尺寸数组
      */
     void clipTargetImage(TransferImage targetImage, Drawable originDrawable, int[] clipSize) {
-        if (!(transfer.getContext() instanceof Activity)) return;
-        Activity activity = ((Activity) transfer.getContext());
-        DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
-        int width = displayMetrics.widthPixels;
-        int height = displayMetrics.heightPixels + ImmersionBar.getNotchHeight(activity);
+        Point screenSize = getScreenSize();
+        int width = screenSize.x;
+        int height = screenSize.y;
 
         targetImage.setOriginalInfo(
                 originDrawable,
@@ -155,6 +154,7 @@ abstract class TransferState {
                 width, height);
         targetImage.transClip();
     }
+
 
     /**
      * 加载失败，显示 errorDrawable
@@ -225,6 +225,21 @@ abstract class TransferState {
             transImage.transformIn();
         else
             transImage.transformOut();
+    }
+
+    /**
+     * @return 手机屏幕宽高
+     */
+    private Point getScreenSize() {
+        WindowManager wm = (WindowManager) transfer.getContext().getSystemService(Context.WINDOW_SERVICE);
+        if (wm == null) return new Point();
+        Point point = new Point();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            wm.getDefaultDisplay().getRealSize(point);
+        } else {
+            wm.getDefaultDisplay().getSize(point);
+        }
+        return point;
     }
 
     /**

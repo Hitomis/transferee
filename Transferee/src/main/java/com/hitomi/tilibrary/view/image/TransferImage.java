@@ -51,7 +51,6 @@ public class TransferImage extends PhotoView {
     private int originalLocationY;
     private long duration = 300; // 默认动画时长
     private boolean transformStart = false; // 开始动画的标记
-    private boolean isAnimationRunning; // 动画是否正在运行中
 
     private Paint paint;
     private Matrix transMatrix;
@@ -211,13 +210,6 @@ public class TransferImage extends PhotoView {
      */
     public void setDuration(long duration) {
         this.duration = duration;
-    }
-
-    /**
-     * 当前动画是否正在运行
-     */
-    public boolean isAnimationRunning() {
-        return isAnimationRunning;
     }
 
     /**
@@ -450,14 +442,12 @@ public class TransferImage extends PhotoView {
         valueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                isAnimationRunning = true;
                 if (transformListener != null)
                     transformListener.onTransferStart(state, cate, stage);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                isAnimationRunning = false;
                 if (stage == STAGE_TRANSLATE) {
                     originalLocationX = (int) transform.endRect.left;
                     originalLocationY = (int) transform.endRect.top;
@@ -508,14 +498,12 @@ public class TransferImage extends PhotoView {
         valueAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                isAnimationRunning = true;
                 if (transformListener != null)
                     transformListener.onTransferStart(state, cate, stage);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                isAnimationRunning = false;
                 if (transformListener != null)
                     transformListener.onTransferComplete(state, cate, stage);
 

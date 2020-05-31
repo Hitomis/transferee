@@ -133,7 +133,9 @@ public class Transferee implements DialogInterface.OnShowListener,
     public void show() {
         if (shown) return;
         if (context instanceof Activity) {
-            ImmersionBar.with(((Activity) context), transDialog).init();
+            ImmersionBar.with(((Activity) context), transDialog)
+                    .transparentNavigationBar()
+                    .init();
         }
         transDialog.show();
         if (transListener != null) {

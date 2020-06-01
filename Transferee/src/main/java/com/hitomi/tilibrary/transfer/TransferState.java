@@ -86,43 +86,12 @@ abstract class TransferState {
     }
 
     /**
-     * 加载 imageUrl 所关联的图片到 TransferImage 并启动 TransferImage 中的过渡动画
-     *
-     * @param imageUrl   当前缩略图路径
-     * @param transImage {@link #createTransferImage(ImageView, boolean)} 方法创建的 TransferImage
-     * @param in         true : 从缩略图到高清图动画, false : 从高清图到缩略图动画
-     */
-    void transformThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
-        final TransferConfig config = transfer.getTransConfig();
-
-        ImageLoader imageLoader = config.getImageLoader();
-
-        if (this instanceof RemoteThumbState) { // RemoteThumbState
-
-            if (imageLoader.getCache(imageUrl) != null) { // 缩略图已加载过
-                loadThumbnail(imageUrl, transImage, in);
-            } else { // 缩略图 未加载过，则使用用户配置的缺省占位图
-                transImage.setImageDrawable(config.getMissDrawable(transfer.getContext()));
-                if (in)
-                    transImage.transformIn();
-                else
-                    transImage.transformOut();
-            }
-
-        } else { // LocalThumbState
-            loadThumbnail(imageUrl, transImage, in);
-        }
-    }
-
-    /**
      * 图片加载完毕，开启预览
      *
      * @param targetImage 预览图片
      * @param imgUrl      图片url
-     * @param pos         索引
      */
-    void startPreview(final TransferImage targetImage, final File source,
-                      final String imgUrl, final int pos) {
+    void startPreview(final TransferImage targetImage, final File source, final String imgUrl) {
         // 启用 TransferImage 的手势缩放功能
         targetImage.enableGesture();
         if (imgUrl.endsWith("gif")) {
@@ -138,6 +107,8 @@ abstract class TransferState {
         } else {
             if (transfer.getTransConfig().isAutoAdjustDirection()) {
                 targetImage.setImageBitmap(getRightOrientationBitmap(source));
+            } else {
+                targetImage.setImageBitmap(BitmapFactory.decodeFile(source.getAbsolutePath()));
             }
         }
     }
@@ -217,7 +188,7 @@ abstract class TransferState {
      * @param imageUrl 图片路径
      * @param in       true: 表示从缩略图到 Transferee, false: 从 Transferee 到缩略图
      */
-    private void loadThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
+    void loadThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
         final TransferConfig config = transfer.getTransConfig();
         ImageLoader imageLoader = config.getImageLoader();
         File thumbFile = imageLoader.getCache(imageUrl);

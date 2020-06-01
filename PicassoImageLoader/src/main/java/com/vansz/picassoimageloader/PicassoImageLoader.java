@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.ImageView;
 
 import com.blankj.utilcode.util.FileIOUtils;
 import com.blankj.utilcode.util.FileUtils;
@@ -60,23 +59,21 @@ public class PicassoImageLoader implements ImageLoader {
     }
 
     @Override
-    public void showImage(final String imageUrl, final ImageView imageView, Drawable placeholder, final SourceCallback sourceCallback) {
-        callbackMap.put(imageUrl, sourceCallback);
+    public void loadSource(final String imageUrl, final SourceCallback callback) {
+        callbackMap.put(imageUrl, callback);
         // 因为 picasso 不支持 gif 图显示，也不支持 download 或者 asFile 操作。
         // 所以如果是 gif 图片,暂时直接使用 OkHttp3 下载之后回传给 Transferee 渲染
         if (imageUrl.endsWith(".gif")) {
-            showGif(imageUrl, sourceCallback);
+            loadGif(imageUrl, callback);
         } else {
-            showImage(imageUrl, imageView, placeholder);
+            loadImage(imageUrl, callback);
         }
     }
 
-    private void showImage(final String imageUrl, final ImageView imageView, Drawable placeholder) {
-        picasso.load(imageUrl).placeholder(placeholder).into(new Target() {
+    private void loadImage(final String imageUrl, final SourceCallback callback) {
+        picasso.load(imageUrl).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                imageView.setImageBitmap(bitmap);
-                SourceCallback callback = callbackMap.get(imageUrl);
                 if (callback != null) {
                     callback.onDelivered(STATUS_DISPLAY_SUCCESS, getCache(imageUrl));
                     callbackMap.remove(imageUrl);
@@ -85,7 +82,6 @@ public class PicassoImageLoader implements ImageLoader {
 
             @Override
             public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                SourceCallback callback = callbackMap.get(imageUrl);
                 if (callback != null) {
                     callback.onDelivered(STATUS_DISPLAY_FAILED, null);
                     callbackMap.remove(imageUrl);
@@ -94,15 +90,14 @@ public class PicassoImageLoader implements ImageLoader {
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
-                SourceCallback callback = callbackMap.get(imageUrl);
                 if (callback != null)
                     callback.onStart();
             }
         });
     }
 
-    private void showGif(final String imageUrl, SourceCallback sourceCallback) {
-        if (sourceCallback != null) sourceCallback.onStart();
+    private void loadGif(final String imageUrl, final SourceCallback callback) {
+        if (callback != null) callback.onStart();
         File cacheGif = getCache(imageUrl);
         if (cacheGif == null) { // 没有缓存，使用 okhttp3 下载并保存到指定文件夹
             Request gifRequest = new Request.Builder()
@@ -113,7 +108,6 @@ public class PicassoImageLoader implements ImageLoader {
             call.enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    SourceCallback callback = callbackMap.get(imageUrl);
                     if (callback != null) {
                         callback.onDelivered(STATUS_DISPLAY_FAILED, null);
                         callbackMap.remove(imageUrl);
@@ -128,8 +122,8 @@ public class PicassoImageLoader implements ImageLoader {
                 }
             });
         } else {
-            if (sourceCallback != null)
-                sourceCallback.onDelivered(STATUS_DISPLAY_SUCCESS, cacheGif);
+            if (callback != null)
+                callback.onDelivered(STATUS_DISPLAY_SUCCESS, cacheGif);
             callbackMap.remove(imageUrl);
         }
     }
@@ -162,7 +156,7 @@ public class PicassoImageLoader implements ImageLoader {
     }
 
     @Override
-    public void loadImageAsync(final String imageUrl, final ThumbnailCallback callback) {
+    public void loadThumb(final String imageUrl, final ThumbnailCallback callback) {
         picasso.load(imageUrl).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:text="使用了 RecyclerView 作为载体，Glide 加载图片，RecyclerView 全部展开，演示了最普遍、简单、常用的使用方式："
+            android:text="使用了 RecyclerView 作为载体，Picasso 加载图片，RecyclerView 全部展开，演示了最普遍、简单、常用的使用方式："
             android:textColor="#888" />
 
         <androidx.recyclerview.widget.RecyclerView

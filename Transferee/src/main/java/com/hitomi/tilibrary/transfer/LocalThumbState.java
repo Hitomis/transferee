@@ -28,9 +28,9 @@ class LocalThumbState extends TransferState {
     @Override
     public void prepareTransfer(final TransferImage transImage, final int position) {
         final TransferConfig config = transfer.getTransConfig();
-        ImageLoader imageLoader = config.getImageLoader();
         String imgUrl = config.getSourceUrlList().get(position);
-        imageLoader.showImage(imgUrl, transImage, config.getMissDrawable(transfer.getContext()), null);
+        File cache = config.getImageLoader().getCache(imgUrl);
+        startPreview(transImage, cache, imgUrl);
     }
 
     @Override
@@ -39,7 +39,7 @@ class LocalThumbState extends TransferState {
 
         TransferImage transImage = createTransferImage(
                 config.getOriginImageList().get(position), true);
-        transformThumbnail(config.getSourceUrlList().get(position), transImage, true);
+        loadThumbnail(config.getSourceUrlList().get(position), transImage, true);
         transfer.addView(transImage, 1);
         return transImage;
     }
@@ -53,27 +53,28 @@ class LocalThumbState extends TransferState {
         if (config.isJustLoadHitPage()) {
             // 如果用户设置了 JustLoadHitImage 属性，说明在 prepareTransfer 中已经
             // 对 TransferImage 裁剪且设置了占位图， 所以这里直接加载原图即可
-            loadSourceImage(imgUrl, targetImage, targetImage.getDrawable(), position);
+            loadSourceImage(imgUrl, targetImage, position);
         } else {
-            config.getImageLoader().loadImageAsync(imgUrl, new ImageLoader.ThumbnailCallback() {
+            config.getImageLoader().loadThumb(imgUrl, new ImageLoader.ThumbnailCallback() {
                 @Override
                 public void onFinish(Bitmap bitmap) {
-                    Drawable placeholder = null;
+                    Drawable placeholder;
                     if (bitmap == null)
                         placeholder = config.getMissDrawable(transfer.getContext());
                     else
                         placeholder = new BitmapDrawable(transfer.getContext().getResources(), bitmap);
 
-                    loadSourceImage(imgUrl, targetImage, placeholder, position);
+                    targetImage.setImageDrawable(placeholder);
+                    loadSourceImage(imgUrl, targetImage, position);
                 }
             });
         }
     }
 
-    private void loadSourceImage(final String imgUrl, final TransferImage targetImage, Drawable drawable, final int position) {
+    private void loadSourceImage(final String imgUrl, final TransferImage targetImage, final int position) {
         final TransferConfig config = transfer.getTransConfig();
 
-        config.getImageLoader().showImage(imgUrl, targetImage, drawable, new ImageLoader.SourceCallback() {
+        config.getImageLoader().loadSource(imgUrl, new ImageLoader.SourceCallback() {
 
             @Override
             public void onStart() {
@@ -89,11 +90,11 @@ class LocalThumbState extends TransferState {
                     case ImageLoader.STATUS_DISPLAY_SUCCESS:
                         if (TransferImage.STATE_TRANS_CLIP == targetImage.getState())
                             targetImage.transformIn(TransferImage.STAGE_SCALE);
-                        startPreview(targetImage, source, imgUrl, position);
+                        startPreview(targetImage, source, imgUrl);
                         break;
                     case ImageLoader.STATUS_DISPLAY_CANCEL:
                         if (targetImage.getDrawable() != null) {
-                            startPreview(targetImage, source, imgUrl, position);
+                            startPreview(targetImage, source, imgUrl);
                         }
                         break;
                     case ImageLoader.STATUS_DISPLAY_FAILED: // 加载失败，显示加载错误的占位图
@@ -112,7 +113,7 @@ class LocalThumbState extends TransferState {
         List<ImageView> originImageList = config.getOriginImageList();
         if (position <= originImageList.size() - 1 && originImageList.get(position) != null) {
             transImage = createTransferImage(originImageList.get(position), true);
-            transformThumbnail(config.getSourceUrlList().get(position), transImage, false);
+            loadThumbnail(config.getSourceUrlList().get(position), transImage, false);
             transfer.addView(transImage, 1);
         }
         return transImage;

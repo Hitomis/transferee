@@ -50,7 +50,6 @@ public final class TransferConfig {
     private List<ImageView> originImageList;
     private List<String> sourceUrlList;
     private List<Uri> sourceUriList;
-    private List<String> thumbnailImageList;
 
     private IProgressIndicator progressIndicator;
     private IIndexIndicator indexIndicator;
@@ -234,14 +233,6 @@ public final class TransferConfig {
         this.sourceUriList = sourceUriList;
     }
 
-    public List<String> getThumbnailImageList() {
-        return thumbnailImageList;
-    }
-
-    public void setThumbnailImageList(List<String> thumbnailImageList) {
-        this.thumbnailImageList = thumbnailImageList;
-    }
-
     public IProgressIndicator getProgressIndicator() {
         return progressIndicator;
     }
@@ -282,15 +273,6 @@ public final class TransferConfig {
     public boolean isSourceEmpty() {
         return (sourceUrlList == null || sourceUrlList.isEmpty())
                 && (sourceUriList == null || sourceUriList.isEmpty());
-    }
-
-    /**
-     * 缩略图路径集合是否为空
-     *
-     * @return true : 空
-     */
-    public boolean isThumbnailEmpty() {
-        return thumbnailImageList == null || thumbnailImageList.isEmpty();
     }
 
     /**
@@ -689,12 +671,10 @@ public final class TransferConfig {
 
             config.setMissDrawable(missDrawable);
             config.setErrorDrawable(errorDrawable);
-
-
+            
             config.setSourceUrlList(sourceUrlList);
             config.setSourceUriList(sourceUriList);
             config.setOriginImageList(originImageList);
-//            config.setThumbnailImageList(thumbnailImageList);
 
             config.setProgressIndicator(progressIndicator);
             config.setIndexIndicator(indexIndicator);

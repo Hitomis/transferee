@@ -1,11 +1,9 @@
 package com.hitomi.tilibrary.loader;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
-import android.widget.ImageView;
 
 import java.io.File;
 
@@ -30,22 +28,20 @@ public interface ImageLoader {
     int STATUS_DISPLAY_SUCCESS = 1;
 
     /**
-     * 加载并显示原图
+     * 加载原图
      *
      * @param imageUrl       图片地址
-     * @param imageView      用于图片加载成功后显示的 ImageView
-     * @param placeholder    加载完成之前显示的占位图
-     * @param sourceCallback 图片加载过程的回调
+     * @param callback 源图加载的回调
      */
-    void showImage(String imageUrl, ImageView imageView, Drawable placeholder, @Nullable final SourceCallback sourceCallback);
+    void loadSource(String imageUrl, @Nullable final SourceCallback callback);
 
     /**
-     * 异步加载图片
+     * 加载缩略图
      *
      * @param imageUrl 图片地址
-     * @param callback 片加载完成的回调
+     * @param callback 缩略片加载的回调
      */
-    void loadImageAsync(String imageUrl, final ThumbnailCallback callback);
+    void loadThumb(String imageUrl, final ThumbnailCallback callback);
 
     /**
      * 获取 url 关联的图片缓存

@@ -353,8 +353,6 @@ class TransferLayout extends FrameLayout {
             transferState = new VideoThumbState(this);
         } else if (transConfig.getOriginImageList().isEmpty()) { // 用户没有绑定任何 View
             transferState = new NoneThumbState(this);
-        } else if (!transConfig.isThumbnailEmpty()) { // 客户端指定了缩略图路径集合
-            transferState = new RemoteThumbState(this);
         } else {
             String url = transConfig.getSourceUrlList().get(position);
 

@@ -2,9 +2,7 @@ package com.vansz.universalimageloader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.cache.memory.MemoryCache;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -70,19 +68,17 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     }
 
     @Override
-    public void showImage(final String imageUrl, final ImageView imageView, final Drawable placeholder, final SourceCallback sourceCallback) {
-        callbackMap.put(imageUrl, sourceCallback);
+    public void loadSource(final String imageUrl, final SourceCallback callback) {
+        callbackMap.put(imageUrl, callback);
         DisplayImageOptions options = new DisplayImageOptions
                 .Builder()
-                .showImageOnLoading(placeholder)
-                .showImageOnFail(placeholder)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .imageScaleType(ImageScaleType.NONE)
                 .cacheOnDisk(true)
                 .resetViewBeforeLoading(true)
                 .build();
 
-        ImageLoader.getInstance().displayImage(imageUrl, imageView, options, new ImageLoadingListener() {
+        ImageLoader.getInstance().loadImage(imageUrl, null, options, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 SourceCallback callback = callbackMap.get(imageUrl);
@@ -103,7 +99,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 SourceCallback callback = callbackMap.get(imageUrl);
                 if (callback != null) {
-                    callback.onDelivered(STATUS_DISPLAY_SUCCESS, null);
+                    callback.onDelivered(STATUS_DISPLAY_SUCCESS, getCache(imageUri));
                     callbackMap.remove(imageUrl);
                 }
             }
@@ -127,7 +123,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     }
 
     @Override
-    public void loadImageAsync(String imageUrl, final ThumbnailCallback callback) {
+    public void loadThumb(String imageUrl, final ThumbnailCallback callback) {
         ImageLoader.getInstance().loadImage(imageUrl, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {

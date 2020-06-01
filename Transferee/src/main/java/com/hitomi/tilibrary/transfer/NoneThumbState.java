@@ -49,9 +49,10 @@ public class NoneThumbState extends TransferState {
             clipTargetImage(targetImage, placeholder, clipSize);
             IProgressIndicator progressIndicator = transConfig.getProgressIndicator();
             progressIndicator.attach(position, adapter.getParentItem(position));
-            loadSourceImage(targetImage, progressIndicator, imgUrl, placeholder, position);
+            targetImage.setImageDrawable(placeholder);
+            loadSourceImage(targetImage, progressIndicator, imgUrl, position);
         } else {
-            transConfig.getImageLoader().loadImageAsync(imgUrl, new ImageLoader.ThumbnailCallback() {
+            transConfig.getImageLoader().loadThumb(imgUrl, new ImageLoader.ThumbnailCallback() {
                 @Override
                 public void onFinish(Bitmap bitmap) {
                     Drawable placeholder;
@@ -59,51 +60,51 @@ public class NoneThumbState extends TransferState {
                         placeholder = transConfig.getMissDrawable(transfer.getContext());
                     else
                         placeholder = new BitmapDrawable(transfer.getContext().getResources(), bitmap);
-                    loadSourceImage(targetImage, null, imgUrl, placeholder, position);
+                    targetImage.setImageDrawable(placeholder);
+                    loadSourceImage(targetImage, null, imgUrl, position);
                 }
             });
         }
     }
 
     private void loadSourceImage(final TransferImage targetImage, final IProgressIndicator progressIndicator,
-                                 final String imgUrl, final Drawable placeHolder, final int position) {
+                                 final String imgUrl, final int position) {
         final TransferConfig transConfig = transfer.getTransConfig();
-        transConfig.getImageLoader().showImage(imgUrl, targetImage,
-                placeHolder, new ImageLoader.SourceCallback() {
+        transConfig.getImageLoader().loadSource(imgUrl, new ImageLoader.SourceCallback() {
 
-                    @Override
-                    public void onStart() {
-                        if (progressIndicator != null)
-                            progressIndicator.onStart(position);
-                    }
+            @Override
+            public void onStart() {
+                if (progressIndicator != null)
+                    progressIndicator.onStart(position);
+            }
 
-                    @Override
-                    public void onProgress(int progress) {
-                        if (progressIndicator != null)
-                            progressIndicator.onProgress(position, progress);
-                    }
+            @Override
+            public void onProgress(int progress) {
+                if (progressIndicator != null)
+                    progressIndicator.onProgress(position, progress);
+            }
 
-                    @Override
-                    public void onDelivered(final int status, final File source) {
+            @Override
+            public void onDelivered(final int status, final File source) {
+                if (progressIndicator != null)
+                    progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
+                switch (status) {
+                    case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
                         if (progressIndicator != null)
-                            progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
-                        switch (status) {
-                            case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
-                                if (progressIndicator != null)
-                                    targetImage.transformIn();
-                                startPreview(targetImage, source, imgUrl, position);
-                                break;
-                            case ImageLoader.STATUS_DISPLAY_CANCEL:
-                                if (targetImage.getDrawable() != null) {
-                                    startPreview(targetImage, source, imgUrl, position);
-                                }
-                                break;
-                            case ImageLoader.STATUS_DISPLAY_FAILED: // 加载失败，显示加载错误的占位图
-                                loadFailedDrawable(targetImage, position);
-                                break;
+                            targetImage.transformIn();
+                        startPreview(targetImage, source, imgUrl);
+                        break;
+                    case ImageLoader.STATUS_DISPLAY_CANCEL:
+                        if (targetImage.getDrawable() != null) {
+                            startPreview(targetImage, source, imgUrl);
                         }
-                    }
-                });
+                        break;
+                    case ImageLoader.STATUS_DISPLAY_FAILED: // 加载失败，显示加载错误的占位图
+                        loadFailedDrawable(targetImage, position);
+                        break;
+                }
+            }
+        });
     }
 
     @Override

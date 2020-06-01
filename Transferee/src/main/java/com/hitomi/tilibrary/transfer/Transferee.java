@@ -133,6 +133,7 @@ public class Transferee implements DialogInterface.OnShowListener,
     public void show() {
         if (shown) return;
         if (context instanceof Activity) {
+            // 隐藏状态栏和导航栏，全屏化
             ImmersionBar.with(((Activity) context), transDialog)
                     .transparentNavigationBar()
                     .init();

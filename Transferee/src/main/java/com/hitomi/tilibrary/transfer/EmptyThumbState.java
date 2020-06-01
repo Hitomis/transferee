@@ -57,42 +57,41 @@ class EmptyThumbState extends TransferState {
         } else {
             placeHolder = clipAndGetPlaceHolder(targetImage, position);
         }
-
+        targetImage.setImageDrawable(placeHolder);
         final IProgressIndicator progressIndicator = config.getProgressIndicator();
         progressIndicator.attach(position, adapter.getParentItem(position));
 
-        config.getImageLoader().showImage(imgUrl, targetImage,
-                placeHolder, new ImageLoader.SourceCallback() {
+        config.getImageLoader().loadSource(imgUrl, new ImageLoader.SourceCallback() {
 
-                    @Override
-                    public void onStart() {
-                        progressIndicator.onStart(position);
-                    }
+            @Override
+            public void onStart() {
+                progressIndicator.onStart(position);
+            }
 
-                    @Override
-                    public void onProgress(int progress) {
-                        progressIndicator.onProgress(position, progress);
-                    }
+            @Override
+            public void onProgress(int progress) {
+                progressIndicator.onProgress(position, progress);
+            }
 
-                    @Override
-                    public void onDelivered(int status, File source) {
-                        progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
-                        switch (status) {
-                            case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
-                                targetImage.transformIn(TransferImage.STAGE_SCALE);
-                                startPreview(targetImage, source, imgUrl, position);
-                                break;
-                            case ImageLoader.STATUS_DISPLAY_CANCEL:
-                                if (targetImage.getDrawable() != null) {
-                                    startPreview(targetImage, source, imgUrl, position);
-                                }
-                                break;
-                            case ImageLoader.STATUS_DISPLAY_FAILED: // 加载失败，显示加载错误的占位图
-                                loadFailedDrawable(targetImage, position);
-                                break;
+            @Override
+            public void onDelivered(int status, File source) {
+                progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
+                switch (status) {
+                    case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
+                        targetImage.transformIn(TransferImage.STAGE_SCALE);
+                        startPreview(targetImage, source, imgUrl);
+                        break;
+                    case ImageLoader.STATUS_DISPLAY_CANCEL:
+                        if (targetImage.getDrawable() != null) {
+                            startPreview(targetImage, source, imgUrl);
                         }
-                    }
-                });
+                        break;
+                    case ImageLoader.STATUS_DISPLAY_FAILED: // 加载失败，显示加载错误的占位图
+                        loadFailedDrawable(targetImage, position);
+                        break;
+                }
+            }
+        });
     }
 
     @Override

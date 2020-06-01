@@ -3,8 +3,10 @@ package com.hitomi.tilibrary.transfer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
@@ -133,6 +135,10 @@ abstract class TransferState {
                 } catch (IOException ignored) {
                 }
             }
+        } else {
+            if (transfer.getTransConfig().isAutoAdjustDirection()) {
+                targetImage.setImageBitmap(getRightOrientationBitmap(source));
+            }
         }
     }
 
@@ -240,6 +246,58 @@ abstract class TransferState {
             wm.getDefaultDisplay().getSize(point);
         }
         return point;
+    }
+
+    /**
+     * @return 校正方向的 bitmap
+     */
+    private Bitmap getRightOrientationBitmap(File source) {
+        String sourcePath = source.getAbsolutePath();
+        Bitmap bitmap = BitmapFactory.decodeFile(sourcePath);
+        try {
+            ExifInterface exifInfo = new ExifInterface(sourcePath);
+            int orientation = exifInfo.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED
+            );
+            Matrix matrix = new Matrix();
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                    matrix.setScale(-1f, 1f);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    matrix.setRotate(180f);
+                    break;
+                case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                    matrix.setRotate(180f);
+                    matrix.postScale(-1f, 1f);
+                    break;
+                case ExifInterface.ORIENTATION_TRANSPOSE:
+                    matrix.setRotate(90f);
+                    matrix.postScale(-1f, 1f);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    matrix.setRotate(90f);
+                    break;
+                case ExifInterface.ORIENTATION_TRANSVERSE:
+                    matrix.setRotate(-90f);
+                    matrix.postScale(-1f, 1f);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    matrix.setRotate(-90f);
+                    break;
+                default:
+                    return bitmap;
+            }
+            Bitmap rotatedBitmap = Bitmap.createBitmap(
+                    bitmap, 0, 0, bitmap.getWidth(),
+                    bitmap.getHeight(), matrix, true
+            );
+            bitmap.recycle();
+            return rotatedBitmap;
+        } catch (Exception ignored) {
+            return bitmap;
+        }
     }
 
     /**

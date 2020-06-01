@@ -42,6 +42,7 @@ public final class TransferConfig {
     private boolean enableDragPause;
     private boolean enableHideThumb;
     private boolean enableScrollingWithPageChange;
+    private boolean autoAdjustDirection;
 
     private Drawable missDrawable;
     private Drawable errorDrawable;
@@ -165,6 +166,14 @@ public final class TransferConfig {
 
     public void enableScrollingWithPageChange(boolean enableScrollingWithPageChange) {
         this.enableScrollingWithPageChange = enableScrollingWithPageChange;
+    }
+
+    public void autoAdjustDirection(boolean autoAdjustDirection) {
+        this.autoAdjustDirection = autoAdjustDirection;
+    }
+
+    public boolean isAutoAdjustDirection() {
+        return autoAdjustDirection;
     }
 
     public Drawable getMissDrawable(Context context) {
@@ -364,6 +373,7 @@ public final class TransferConfig {
         private boolean enableDragPause = false;
         private boolean enableHideThumb = true;
         private boolean enableScrollingWithPageChange = false;
+        private boolean autoAdjustDirection = false;
 
         private Drawable missDrawable;
         private Drawable errorDrawable;
@@ -490,6 +500,14 @@ public final class TransferConfig {
          */
         public Builder enableScrollingWithPageChange(boolean enableScrollingWithPageChange) {
             this.enableScrollingWithPageChange = enableScrollingWithPageChange;
+            return this;
+        }
+
+        /**
+         * 是否启用图片的方向自动校正
+         */
+        public Builder autoAdjustDirection(boolean autoAdjustDirection) {
+            this.autoAdjustDirection = autoAdjustDirection;
             return this;
         }
 
@@ -667,6 +685,7 @@ public final class TransferConfig {
             config.enableDragPause(enableDragPause);
             config.enableHideThumb(enableHideThumb);
             config.enableScrollingWithPageChange(enableScrollingWithPageChange);
+            config.autoAdjustDirection(autoAdjustDirection);
 
             config.setMissDrawable(missDrawable);
             config.setErrorDrawable(errorDrawable);

@@ -7,8 +7,8 @@ import android.widget.ImageView;
 import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.utils.EncryptUtils;
 import com.hitomi.tilibrary.utils.FileUtils;
-import com.hitomi.tilibrary.view.video.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
+import com.hitomi.tilibrary.view.video.ExoVideoView;
 
 import java.io.File;
 import java.util.List;
@@ -118,8 +118,6 @@ public class VideoThumbState extends TransferState {
 
         if (position <= originImageList.size() - 1 && originImageList.get(position) != null) {
             ImageView originImage = originImageList.get(position);
-            int[] location = new int[2];
-            originImage.getLocationInWindow(location);
 
             TransferImage alphaOneImage = createTransferImage(originImage, true);
             alphaOneImage.setImageDrawable(originImage.getDrawable());

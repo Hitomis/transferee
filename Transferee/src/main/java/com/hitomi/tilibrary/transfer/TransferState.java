@@ -58,6 +58,7 @@ abstract class TransferState {
     private int[] getViewLocation(View view) {
         int[] location = new int[2];
         view.getLocationInWindow(location);
+        location[1] -= transfer.getPaddingTop();
         return location;
     }
 
@@ -121,7 +122,7 @@ abstract class TransferState {
      * @param clipSize       裁剪的尺寸数组
      */
     void clipTargetImage(TransferImage targetImage, Drawable originDrawable, int[] clipSize) {
-        Point screenSize = getScreenSize();
+        Point screenSize = getDisplaySize();
         int width = screenSize.x;
         int height = screenSize.y;
 
@@ -207,7 +208,7 @@ abstract class TransferState {
     /**
      * @return 手机屏幕宽高
      */
-    private Point getScreenSize() {
+    private Point getDisplaySize() {
         WindowManager wm = (WindowManager) transfer.getContext().getSystemService(Context.WINDOW_SERVICE);
         if (wm == null) return new Point();
         Point point = new Point();
@@ -216,6 +217,7 @@ abstract class TransferState {
         } else {
             wm.getDefaultDisplay().getSize(point);
         }
+        point.y = point.y - transfer.getPaddingTop() - transfer.getPaddingBottom();
         return point;
     }
 

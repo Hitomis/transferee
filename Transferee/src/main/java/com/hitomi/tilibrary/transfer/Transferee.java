@@ -132,12 +132,6 @@ public class Transferee implements DialogInterface.OnShowListener,
      */
     public void show() {
         if (shown) return;
-        if (context instanceof Activity) {
-            // 隐藏状态栏和导航栏，全屏化
-            ImmersionBar.with(((Activity) context), transDialog)
-                    .transparentNavigationBar()
-                    .init();
-        }
         transDialog.show();
         if (transListener != null) {
             transListener.onShow();
@@ -151,7 +145,7 @@ public class Transferee implements DialogInterface.OnShowListener,
      * @param listener {@link OnTransfereeStateChangeListener}
      */
     public void show(OnTransfereeStateChangeListener listener) {
-        if (shown) return;
+        if (shown || listener == null) return;
         transDialog.show();
         transListener = listener;
         transListener.onShow();
@@ -188,8 +182,21 @@ public class Transferee implements DialogInterface.OnShowListener,
         }
     }
 
+    /**
+     * dialog 打开时的监听器
+     */
     @Override
     public void onShow(DialogInterface dialog) {
+        if (context instanceof Activity) {
+            // 隐藏状态栏和导航栏，全屏化
+            Activity activity = (Activity) context;
+            ImmersionBar.with(activity, transDialog)
+                    .transparentNavigationBar()
+                    .init();
+            int top = ImmersionBar.getNotchHeight(activity);
+            int bottom = ImmersionBar.getNavigationBarHeight(activity);
+            transLayout.setPadding(0, top, 0, bottom);
+        }
         AppManager.getInstance().register(this);
         transLayout.show();
     }

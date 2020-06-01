@@ -671,7 +671,7 @@ public final class TransferConfig {
 
             config.setMissDrawable(missDrawable);
             config.setErrorDrawable(errorDrawable);
-            
+
             config.setSourceUrlList(sourceUrlList);
             config.setSourceUriList(sourceUriList);
             config.setOriginImageList(originImageList);
@@ -689,7 +689,6 @@ public final class TransferConfig {
             config.setFooterSize(footerSize);
 
             config.setLongClickListener(longClickListener);
-
             return config;
         }
     }

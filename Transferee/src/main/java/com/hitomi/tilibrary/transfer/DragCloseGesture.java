@@ -15,8 +15,8 @@ import android.widget.ImageView;
 
 import androidx.viewpager.widget.ViewPager;
 
-import com.hitomi.tilibrary.view.video.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
+import com.hitomi.tilibrary.view.video.ExoVideoView;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
@@ -135,7 +135,6 @@ class DragCloseGesture {
                         } else {
                             startTransformVideoAnimate(originImage);
                         }
-
                     }
                 } else {
                     startFlingAndRollbackAnimation();
@@ -161,10 +160,12 @@ class DragCloseGesture {
         transViewPagerUp.setVisibility(View.INVISIBLE);
         TransferImage currTransImage = transferLayout.getCurrentImage();
         int[] location = new int[2];
-        originImage.getLocationInWindow(location);
+        originImage.getLocationOnScreen(location);
 
+        int paddingTop = transferLayout.getPaddingTop();
+        int paddingBottom = transferLayout.getPaddingBottom();
         int x = location[0];
-        int y = location[1];
+        int y = location[1] - paddingTop;
         int width = originImage.getWidth();
         int height = originImage.getHeight();
 
@@ -188,8 +189,10 @@ class DragCloseGesture {
         }
         float realWidth = currTransWidth * scale;
         float realHeight = currTransHeight * scale;
-        float left = transViewPagerUp.getTranslationX() + (transferLayout.getWidth() - realWidth) * .5f;
-        float top = transViewPagerUp.getTranslationY() + (transferLayout.getHeight() - realHeight) * .5f;
+        float left = transViewPagerUp.getTranslationX()
+                + (transferLayout.getWidth() - realWidth) * .5f;
+        float top = transViewPagerUp.getTranslationY()
+                + (transferLayout.getHeight() - paddingTop - paddingBottom - realHeight) * .5f;
         RectF rectF = new RectF(left, top, left + realWidth, top + realHeight);
         transImage.transformSpecOut(rectF, scale);
         transferLayout.addView(transImage, 1);
@@ -204,10 +207,12 @@ class DragCloseGesture {
         ExoVideoView currVideo = transferLayout.getCurrentVideo();
         long duration = transferLayout.getTransConfig().getDuration();
         int[] location = new int[2];
-        originImage.getLocationInWindow(location);
+        originImage.getLocationOnScreen(location);
 
+        int paddingTop = transferLayout.getPaddingTop();
+        int paddingBottom = transferLayout.getPaddingBottom();
         int x = location[0];
-        int y = location[1];
+        int y = location[1] - paddingTop;
         int width = originImage.getWidth();
         int height = originImage.getHeight();
 
@@ -232,8 +237,10 @@ class DragCloseGesture {
 
         float realWidth = currVideo.getMeasuredWidth() * scale;
         float realHeight = currVideo.getMeasuredHeight() * scale;
-        float left = transViewPagerUp.getTranslationX() + (transferLayout.getWidth() - realWidth) * .5f;
-        float top = transViewPagerUp.getTranslationY() + (transferLayout.getHeight() - realHeight) * .5f;
+        float left = transViewPagerUp.getTranslationX()
+                + (transferLayout.getWidth() - realWidth) * .5f;
+        float top = transViewPagerUp.getTranslationY()
+                + (transferLayout.getHeight() - paddingTop - paddingBottom - realHeight) * .5f;
         RectF rectF = new RectF(left, top, left + realWidth, top + realHeight);
         alphaOneImage.transformSpecOut(rectF, scale);
         alphaZeroImage.transformSpecOut(rectF, scale);

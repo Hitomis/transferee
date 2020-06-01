@@ -57,7 +57,7 @@ abstract class TransferState {
      */
     private int[] getViewLocation(View view) {
         int[] location = new int[2];
-        view.getLocationInWindow(location);
+        view.getLocationOnScreen(location);
         location[1] -= transfer.getPaddingTop();
         return location;
     }

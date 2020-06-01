@@ -133,6 +133,7 @@ public class Transferee implements DialogInterface.OnShowListener,
     public void show() {
         if (shown) return;
         transDialog.show();
+        adjustTopAndBottom();
         if (transListener != null) {
             transListener.onShow();
         }
@@ -147,6 +148,7 @@ public class Transferee implements DialogInterface.OnShowListener,
     public void show(OnTransfereeStateChangeListener listener) {
         if (shown || listener == null) return;
         transDialog.show();
+        adjustTopAndBottom();
         transListener = listener;
         transListener.onShow();
         shown = true;
@@ -187,6 +189,14 @@ public class Transferee implements DialogInterface.OnShowListener,
      */
     @Override
     public void onShow(DialogInterface dialog) {
+        AppManager.getInstance().register(this);
+        transLayout.show();
+    }
+
+    /**
+     * 调整顶部和底部内边距
+     */
+    private void adjustTopAndBottom() {
         if (context instanceof Activity) {
             // 隐藏状态栏和导航栏，全屏化
             Activity activity = (Activity) context;
@@ -197,8 +207,6 @@ public class Transferee implements DialogInterface.OnShowListener,
             int bottom = ImmersionBar.getNavigationBarHeight(activity);
             transLayout.setPadding(0, top, 0, bottom);
         }
-        AppManager.getInstance().register(this);
-        transLayout.show();
     }
 
     @Override

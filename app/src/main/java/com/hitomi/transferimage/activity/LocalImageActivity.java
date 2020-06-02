@@ -44,7 +44,7 @@ public class LocalImageActivity extends BaseActivity {
                             Manifest.permission.READ_EXTERNAL_STORAGE},
                     READ_EXTERNAL_STORAGE);
         } else {
-            images = SourceConfig.getLatestPhotoPaths(this, 9);
+            images = SourceConfig.getLatestPhotoPaths(this, 99);
             if (images != null && !images.isEmpty()) {
                 initTransfereeConfig();
                 gvImages.setAdapter(new LocalImageActivity.NineGridAdapter());
@@ -67,7 +67,7 @@ public class LocalImageActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == READ_EXTERNAL_STORAGE) {
-            images = SourceConfig.getLatestPhotoPaths(this, 9);
+            images = SourceConfig.getLatestPhotoPaths(this, 99);
             if (images != null && !images.isEmpty()) {
                 initTransfereeConfig();
                 gvImages.setAdapter(new LocalImageActivity.NineGridAdapter());

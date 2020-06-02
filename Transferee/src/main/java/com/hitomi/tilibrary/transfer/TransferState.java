@@ -106,11 +106,7 @@ abstract class TransferState {
                 }
             }
         } else {
-            if (transfer.getTransConfig().isAutoAdjustDirection()) {
-                targetImage.setImageBitmap(getRightOrientationBitmap(source));
-            } else {
-                targetImage.setImageBitmap(BitmapFactory.decodeFile(source.getAbsolutePath()));
-            }
+            targetImage.setImageBitmap(BitmapFactory.decodeFile(source.getAbsolutePath()));
         }
     }
 

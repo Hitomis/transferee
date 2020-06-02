@@ -42,7 +42,6 @@ public final class TransferConfig {
     private boolean enableDragPause;
     private boolean enableHideThumb;
     private boolean enableScrollingWithPageChange;
-    private boolean autoAdjustDirection;
 
     private Drawable missDrawable;
     private Drawable errorDrawable;
@@ -165,14 +164,6 @@ public final class TransferConfig {
 
     public void enableScrollingWithPageChange(boolean enableScrollingWithPageChange) {
         this.enableScrollingWithPageChange = enableScrollingWithPageChange;
-    }
-
-    public void autoAdjustDirection(boolean autoAdjustDirection) {
-        this.autoAdjustDirection = autoAdjustDirection;
-    }
-
-    public boolean isAutoAdjustDirection() {
-        return autoAdjustDirection;
     }
 
     public Drawable getMissDrawable(Context context) {
@@ -355,14 +346,13 @@ public final class TransferConfig {
         private boolean enableDragPause = false;
         private boolean enableHideThumb = true;
         private boolean enableScrollingWithPageChange = false;
-        private boolean autoAdjustDirection = false;
+        private boolean autoAdjustDirection = true;
 
         private Drawable missDrawable;
         private Drawable errorDrawable;
 
         private List<String> sourceUrlList;
         private List<Uri> sourceUriList;
-        private List<String> thumbnailImageList;
         private List<ImageView> originImageList;
 
         private IProgressIndicator progressIndicator;
@@ -667,7 +657,6 @@ public final class TransferConfig {
             config.enableDragPause(enableDragPause);
             config.enableHideThumb(enableHideThumb);
             config.enableScrollingWithPageChange(enableScrollingWithPageChange);
-            config.autoAdjustDirection(autoAdjustDirection);
 
             config.setMissDrawable(missDrawable);
             config.setErrorDrawable(errorDrawable);

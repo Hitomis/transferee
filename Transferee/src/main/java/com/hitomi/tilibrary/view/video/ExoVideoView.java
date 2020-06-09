@@ -83,19 +83,16 @@ public class ExoVideoView extends AdaptiveTextureView {
         super.onLayout(changed, left, top, right, bottom);
         if (requestLayout) { // 在视频尺寸自适应确定后取消透明
             requestLayout = false;
-            if (exoPlayer.getPlayWhenReady()) {
-                Log.e(TAG, "ExoVideoView.onVideoRendered()");
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setAlpha(1);
-                        if (videoStateChangeListener != null)
-                            videoStateChangeListener.onVideoRendered();
-                    }
-                }, 15);
-            } else {
-                setAlpha(1);
-            }
+            Log.e(TAG, "ExoVideoView.onVideoRendered()");
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setAlpha(1);
+                    if (videoStateChangeListener != null)
+                        videoStateChangeListener.onVideoRendered();
+                }
+            }, 15);
+            setAlpha(1);
         }
     }
 

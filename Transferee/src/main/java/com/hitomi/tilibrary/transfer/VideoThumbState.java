@@ -86,14 +86,19 @@ public class VideoThumbState extends TransferState {
 
             @Override
             public void onVideoRendered() {
-                File firstFrameFile = getFirstFrameFile(videoSourceUrl);
+                final File firstFrameFile = getFirstFrameFile(videoSourceUrl);
                 if (firstFrameFile.exists()) {
                     // 首帧图片存在说明在 transferIn 方法中创建了两个 TransferImage 用来完成过渡动画
                     View alphaOneImage = transfer.getChildAt(2);
                     if (alphaOneImage instanceof TransferImage)
                         transfer.removeFromParent(alphaOneImage);
                 } else {
-                    FileUtils.save(exoVideo.getBitmap(), firstFrameFile);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            FileUtils.save(exoVideo.getBitmap(), firstFrameFile);
+                        }
+                    }).start();
                 }
                 // 最后删除 pos 1 位置的 TransferImage
                 View alphaZeroImage = transfer.getChildAt(1);

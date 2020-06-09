@@ -57,4 +57,5 @@ project.ext {
     libProgresspieview = "com.github.filippudak.progresspieview:library:1.0.4"
     libGifDrawable = "pl.droidsonroids.gif:android-gif-drawable:1.2.19"
     libImmersionbar ="com.gyf.immersionbar:immersionbar:3.0.0"
+    libLuban = "top.zibin:Luban:1.1.8"
 }

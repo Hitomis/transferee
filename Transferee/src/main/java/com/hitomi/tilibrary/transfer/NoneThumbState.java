@@ -1,7 +1,7 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
@@ -52,18 +52,13 @@ public class NoneThumbState extends TransferState {
             targetImage.setImageDrawable(placeholder);
             loadSourceImage(targetImage, progressIndicator, imgUrl, position);
         } else {
-            transConfig.getImageLoader().loadThumb(imgUrl, new ImageLoader.ThumbnailCallback() {
-                @Override
-                public void onFinish(Bitmap bitmap) {
-                    Drawable placeholder;
-                    if (bitmap == null)
-                        placeholder = transConfig.getMissDrawable(transfer.getContext());
-                    else
-                        placeholder = new BitmapDrawable(transfer.getContext().getResources(), bitmap);
-                    targetImage.setImageDrawable(placeholder);
-                    loadSourceImage(targetImage, null, imgUrl, position);
-                }
-            });
+            Bitmap bitmap = BitmapFactory.decodeFile(cache.getAbsolutePath());
+            if (bitmap == null) {
+                targetImage.setImageDrawable(transConfig.getMissDrawable(transfer.getContext()));
+            } else {
+                targetImage.setImageBitmap(bitmap);
+            }
+            loadSourceImage(targetImage, null, imgUrl, position);
         }
     }
 
@@ -86,18 +81,17 @@ public class NoneThumbState extends TransferState {
 
             @Override
             public void onDelivered(final int status, final File source) {
-                if (progressIndicator != null)
-                    progressIndicator.onFinish(position); // onFinish 只是说明下载完毕，并没更新图像
                 switch (status) {
                     case ImageLoader.STATUS_DISPLAY_SUCCESS: // 加载成功
-                        if (progressIndicator != null)
-                            targetImage.transformIn();
-                        startPreview(targetImage, source, imgUrl);
-                        break;
-                    case ImageLoader.STATUS_DISPLAY_CANCEL:
-                        if (targetImage.getDrawable() != null) {
-                            startPreview(targetImage, source, imgUrl);
-                        }
+                        startPreview(targetImage, source, imgUrl, new StartPreviewCallback() {
+                            @Override
+                            public void invoke() {
+                                if (progressIndicator != null)
+                                    progressIndicator.onFinish(position);
+                                if (progressIndicator != null)
+                                    targetImage.transformIn();
+                            }
+                        });
                         break;
                     case ImageLoader.STATUS_DISPLAY_FAILED: // 加载失败，显示加载错误的占位图
                         loadFailedDrawable(targetImage, position);

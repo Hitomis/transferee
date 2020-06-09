@@ -30,4 +30,5 @@ dependencies {
     implementation project(':Transferee')
     implementation libUtilCodex
     implementation libGlide
+    implementation 'top.zibin:Luban:1.1.8'
 }

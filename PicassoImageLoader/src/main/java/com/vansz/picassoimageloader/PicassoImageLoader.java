@@ -156,28 +156,6 @@ public class PicassoImageLoader implements ImageLoader {
     }
 
     @Override
-    public void loadThumb(final String imageUrl, final ThumbnailCallback callback) {
-        picasso.load(imageUrl).into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                if (callback != null)
-                    callback.onFinish(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                if (callback != null)
-                    callback.onFinish(null);
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        });
-    }
-
-    @Override
     public File getCache(String url) {
         // 通过分析 OkHttp3Downloader 源码可知缓存文件名是图片 url 经过 md5 加密后的小写字符串，并拼接 ".1"
         // .0 表示缓存文件的网络请求 header 描述; .1 是缓存文件本身
@@ -196,7 +174,7 @@ public class PicassoImageLoader implements ImageLoader {
         }).start();
     }
 
-    private File getCacheDir() {
+    public File getCacheDir() {
         File cacheDir = new File(context.getCacheDir(), CACHE_DIR);
         if (!cacheDir.exists()) cacheDir.mkdirs();
         return cacheDir;

@@ -108,7 +108,7 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
             public void onLoadingCancelled(String imageUri, View view) {
                 SourceCallback callback = callbackMap.get(imageUrl);
                 if (callback != null) {
-                    callback.onDelivered(STATUS_DISPLAY_CANCEL, null);
+                    callback.onDelivered(STATUS_DISPLAY_FAILED, null);
                     callbackMap.remove(imageUrl);
                 }
             }
@@ -123,33 +123,6 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     }
 
     @Override
-    public void loadThumb(String imageUrl, final ThumbnailCallback callback) {
-        ImageLoader.getInstance().loadImage(imageUrl, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-            }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                if (callback != null)
-                    callback.onFinish(null);
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                if (callback != null)
-                    callback.onFinish(loadedImage);
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-                if (callback != null)
-                    callback.onFinish(null);
-            }
-        });
-    }
-
-    @Override
     public void clearCache() {
         ImageLoader.getInstance().getMemoryCache().clear();
         ImageLoader.getInstance().getDiskCache().clear();
@@ -159,5 +132,10 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     public File getCache(String url) {
         File cache = ImageLoader.getInstance().getDiskCache().get(url);
         return (cache != null && cache.exists()) ? cache : null;
+    }
+
+    @Override
+    public File getCacheDir() {
+        return ImageLoader.getInstance().getDiskCache().getDirectory();
     }
 }

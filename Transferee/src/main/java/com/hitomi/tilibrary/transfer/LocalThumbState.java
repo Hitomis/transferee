@@ -1,15 +1,20 @@
 package com.hitomi.tilibrary.transfer;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
+import com.hitomi.tilibrary.utils.ImageUtils;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import pl.droidsonroids.gif.GifDrawable;
+
+import static com.hitomi.tilibrary.utils.ImageUtils.TYPE_GIF;
 
 /**
  * 高清图图片已经加载过了，使用高清图作为缩略图。
@@ -25,18 +30,48 @@ class LocalThumbState extends TransferState {
         super(transfer);
     }
 
+    /**
+     * 加载 imageUrl 所关联的图片到 TransferImage 中
+     *
+     * @param imageUrl 图片路径
+     * @param in       true: 表示从缩略图到 Transferee, false: 从 Transferee 到缩略图
+     */
+    private void loadThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
+        final TransferConfig config = transfer.getTransConfig();
+        ImageLoader imageLoader = config.getImageLoader();
+        File thumbFile = imageLoader.getCache(imageUrl);
+        Bitmap thumbBitmap = thumbFile != null ? BitmapFactory.decodeFile(thumbFile.getAbsolutePath()) : null;
+        if (thumbBitmap == null)
+            transImage.setImageDrawable(config.getMissDrawable(transfer.getContext()));
+        else
+            transImage.setImageBitmap(thumbBitmap);
+
+        if (in)
+            transImage.transformIn();
+        else
+            transImage.transformOut();
+    }
+
     @Override
     public void prepareTransfer(final TransferImage transImage, final int position) {
         final TransferConfig config = transfer.getTransConfig();
         String imgUrl = config.getSourceUrlList().get(position);
         File cache = config.getImageLoader().getCache(imgUrl);
-        startPreview(transImage, cache, imgUrl);
+        if (cache == null) return;
+        if (ImageUtils.getImageType(cache) == TYPE_GIF) {
+            try {
+                transImage.setImageDrawable(new GifDrawable(cache.getPath()));
+            } catch (IOException ignored) {
+            }
+        } else {
+            transImage.setImageBitmap(BitmapFactory.decodeFile(cache.getAbsolutePath()));
+        }
+        transImage.enableGesture();
     }
 
     @Override
     public TransferImage transferIn(final int position) {
         TransferConfig config = transfer.getTransConfig();
-
         TransferImage transImage = createTransferImage(
                 config.getOriginImageList().get(position), true);
         loadThumbnail(config.getSourceUrlList().get(position), transImage, true);
@@ -55,19 +90,14 @@ class LocalThumbState extends TransferState {
             // 对 TransferImage 裁剪且设置了占位图， 所以这里直接加载原图即可
             loadSourceImage(imgUrl, targetImage, position);
         } else {
-            config.getImageLoader().loadThumb(imgUrl, new ImageLoader.ThumbnailCallback() {
-                @Override
-                public void onFinish(Bitmap bitmap) {
-                    Drawable placeholder;
-                    if (bitmap == null)
-                        placeholder = config.getMissDrawable(transfer.getContext());
-                    else
-                        placeholder = new BitmapDrawable(transfer.getContext().getResources(), bitmap);
-
-                    targetImage.setImageDrawable(placeholder);
-                    loadSourceImage(imgUrl, targetImage, position);
-                }
-            });
+            String filePath = config.getImageLoader().getCache(imgUrl).getAbsolutePath();
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            if (bitmap == null) {
+                targetImage.setImageDrawable(config.getMissDrawable(transfer.getContext()));
+            } else {
+                targetImage.setImageBitmap(bitmap);
+            }
+            loadSourceImage(imgUrl, targetImage, position);
         }
     }
 
@@ -88,14 +118,13 @@ class LocalThumbState extends TransferState {
             public void onDelivered(int status, File source) {
                 switch (status) {
                     case ImageLoader.STATUS_DISPLAY_SUCCESS:
-                        if (TransferImage.STATE_TRANS_CLIP == targetImage.getState())
-                            targetImage.transformIn(TransferImage.STAGE_SCALE);
-                        startPreview(targetImage, source, imgUrl);
-                        break;
-                    case ImageLoader.STATUS_DISPLAY_CANCEL:
-                        if (targetImage.getDrawable() != null) {
-                            startPreview(targetImage, source, imgUrl);
-                        }
+                        startPreview(targetImage, source, imgUrl, new StartPreviewCallback() {
+                            @Override
+                            public void invoke() {
+                                if (TransferImage.STATE_TRANS_CLIP == targetImage.getState())
+                                    targetImage.transformIn(TransferImage.STAGE_SCALE);
+                            }
+                        });
                         break;
                     case ImageLoader.STATUS_DISPLAY_FAILED: // 加载失败，显示加载错误的占位图
                         loadFailedDrawable(targetImage, position);

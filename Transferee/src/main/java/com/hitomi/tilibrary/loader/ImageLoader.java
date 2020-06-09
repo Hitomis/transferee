@@ -1,7 +1,5 @@
 package com.hitomi.tilibrary.loader;
 
-import android.graphics.Bitmap;
-
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
@@ -14,10 +12,6 @@ import java.io.File;
  * email: 196425254@qq.com
  */
 public interface ImageLoader {
-    /**
-     * 状态码，取消加载原图
-     */
-    int STATUS_DISPLAY_CANCEL = -1;
     /**
      * 状态码，加载原图失败
      */
@@ -36,17 +30,11 @@ public interface ImageLoader {
     void loadSource(String imageUrl, @Nullable final SourceCallback callback);
 
     /**
-     * 加载缩略图
-     *
-     * @param imageUrl 图片地址
-     * @param callback 缩略片加载的回调
-     */
-    void loadThumb(String imageUrl, final ThumbnailCallback callback);
-
-    /**
      * 获取 url 关联的图片缓存
      */
     File getCache(String url);
+
+    File getCacheDir();
 
     /**
      * 清除 ImageLoader 缓存
@@ -62,10 +50,5 @@ public interface ImageLoader {
 
         @UiThread
         void onDelivered(int status, @Nullable File source);
-    }
-
-    interface ThumbnailCallback {
-        @UiThread
-        void onFinish(Bitmap bitmap);
     }
 }

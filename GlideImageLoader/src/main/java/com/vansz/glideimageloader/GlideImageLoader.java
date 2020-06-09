@@ -1,7 +1,6 @@
 package com.vansz.glideimageloader;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 
 import androidx.annotation.Nullable;
 
@@ -44,38 +43,17 @@ public class GlideImageLoader implements ImageLoader {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<File> target, boolean isFirstResource) {
                 SourceCallback callback = callbackMap.get(imageUrl);
-                if (callback != null) callback.onDelivered(STATUS_DISPLAY_FAILED, null);
+                if (callback != null)
+                    callback.onDelivered(STATUS_DISPLAY_FAILED, null);
+                callbackMap.remove(imageUrl);
                 return false;
             }
 
             @Override
-            public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
-                checkSaveFile(resource, getFileName(imageUrl));
-                SourceCallback callback = callbackMap.get(imageUrl);
-                if (callback != null) {
+            public boolean onResourceReady(final File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
+                if (callback != null)
                     callback.onDelivered(STATUS_DISPLAY_SUCCESS, resource);
-                    callbackMap.remove(imageUrl);
-                }
-                return false;
-            }
-        }).preload();
-    }
-
-    @Override
-    public void loadThumb(final String imageUrl, final ThumbnailCallback callback) {
-        Glide.with(context).download(imageUrl).listener(new RequestListener<File>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<File> target, boolean isFirstResource) {
-                if (callback != null)
-                    callback.onFinish(null);
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
-                checkSaveFile(resource, getFileName(imageUrl));
-                if (callback != null)
-                    callback.onFinish(BitmapFactory.decodeFile(resource.getAbsolutePath()));
+                callbackMap.remove(imageUrl);
                 return false;
             }
         }).preload();
@@ -99,7 +77,8 @@ public class GlideImageLoader implements ImageLoader {
         }).start();
     }
 
-    private File getCacheDir() {
+    @Override
+    public File getCacheDir() {
         File cacheDir = new File(context.getCacheDir(), CACHE_DIR);
         if (!cacheDir.exists()) cacheDir.mkdirs();
         return cacheDir;
@@ -108,19 +87,5 @@ public class GlideImageLoader implements ImageLoader {
     private String getFileName(String imageUrl) {
         String[] nameArray = imageUrl.split("/");
         return nameArray[nameArray.length - 1];
-    }
-
-    private void checkSaveFile(final File file, final String fileName) {
-        final File cacheDir = getCacheDir();
-        boolean exists = FileUtils.isFileExists(new File(cacheDir, fileName));
-        if (!exists) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    File targetFile = new File(cacheDir, fileName);
-                    FileUtils.copy(file, targetFile);
-                }
-            }).start();
-        }
     }
 }

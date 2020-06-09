@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 
 import com.hitomi.tilibrary.loader.ImageLoader;
+import com.hitomi.tilibrary.loader.ImageProcessor;
+import com.hitomi.tilibrary.utils.ImageUtils;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.io.File;
@@ -26,6 +28,7 @@ import pl.droidsonroids.gif.GifDrawable;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
+import static com.hitomi.tilibrary.utils.ImageUtils.TYPE_GIF;
 
 /**
  * 由于用户配置的参数不同 (例如图片是否加载过、当前播放的是不是视频有、没有绑定 View 等) <br/>
@@ -92,22 +95,30 @@ abstract class TransferState {
      * @param targetImage 预览图片
      * @param imgUrl      图片url
      */
-    void startPreview(final TransferImage targetImage, final File source, final String imgUrl) {
-        // 启用 TransferImage 的手势缩放功能
-        targetImage.enableGesture();
-        if (imgUrl.endsWith("gif")) {
-            File cache = source == null
-                    ? transfer.getTransConfig().getImageLoader().getCache(imgUrl)
-                    : source;
-            if (cache != null) {
-                try {
-                    targetImage.setImageDrawable(new GifDrawable(cache.getPath()));
-                } catch (IOException ignored) {
-                }
-            }
-        } else {
-            targetImage.setImageBitmap(BitmapFactory.decodeFile(source.getAbsolutePath()));
-        }
+    void startPreview(final TransferImage targetImage, final File source,
+                      final String imgUrl, final StartPreviewCallback callback) {
+        targetImage.enableGesture();// 启用 TransferImage 的手势缩放功能
+        final File cacheDir = transfer.getTransConfig().getImageLoader().getCacheDir();
+        ImageProcessor.getInstance().process(imgUrl, source, cacheDir, getDisplaySize(),
+                new ImageProcessor.ImageProcessCallback() {
+                    @Override
+                    public void onSuccess(File file) {
+                        if (ImageUtils.getImageType(file) == TYPE_GIF) {
+                            try {
+                                targetImage.setImageDrawable(new GifDrawable(file.getPath()));
+                            } catch (IOException ignored) {
+                            }
+                        } else {
+                            targetImage.setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
+                        }
+                        callback.invoke();
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        callback.invoke();
+                    }
+                });
     }
 
     /**
@@ -180,29 +191,7 @@ abstract class TransferState {
     }
 
     /**
-     * 加载 imageUrl 所关联的图片到 TransferImage 中
-     *
-     * @param imageUrl 图片路径
-     * @param in       true: 表示从缩略图到 Transferee, false: 从 Transferee 到缩略图
-     */
-    void loadThumbnail(String imageUrl, final TransferImage transImage, final boolean in) {
-        final TransferConfig config = transfer.getTransConfig();
-        ImageLoader imageLoader = config.getImageLoader();
-        File thumbFile = imageLoader.getCache(imageUrl);
-        Bitmap thumbBitmap = thumbFile != null ? BitmapFactory.decodeFile(thumbFile.getAbsolutePath()) : null;
-        if (thumbBitmap == null)
-            transImage.setImageDrawable(config.getMissDrawable(transfer.getContext()));
-        else
-            transImage.setImageBitmap(thumbBitmap);
-
-        if (in)
-            transImage.transformIn();
-        else
-            transImage.transformOut();
-    }
-
-    /**
-     * @return 手机屏幕宽高
+     * @return 可用来显示的屏幕宽高
      */
     private Point getDisplaySize() {
         WindowManager wm = (WindowManager) transfer.getContext().getSystemService(Context.WINDOW_SERVICE);
@@ -301,5 +290,9 @@ abstract class TransferState {
      * @return 创建的 TransferImage
      */
     public abstract TransferImage transferOut(final int position);
+
+    public interface StartPreviewCallback {
+        void invoke();
+    }
 
 }

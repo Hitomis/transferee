@@ -61,8 +61,7 @@ class DragCloseGesture {
                     break;
                 case MotionEvent.ACTION_MOVE:
                     float diffY = ev.getRawY() - preY;
-                    float diffX = Math.abs(ev.getRawX() - preX);
-                    if (diffX < touchSlop && diffY > touchSlop) {
+                    if (diffY > touchSlop) {
                         if (sourceType == SOURCE_IMAGE
                                 && transferLayout.getCurrentImage().isScrollTop()) {
                             // 如果是图片，需要判断是否目前是顶部对齐（针对长图判断是不是滚动到顶部）

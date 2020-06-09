@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AlertDialog;
 
 import com.gyf.immersionbar.ImmersionBar;
-import com.hitomi.tilibrary.loader.ImageProcessor;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.utils.AppManager;
@@ -57,7 +56,6 @@ public class Transferee implements DialogInterface.OnShowListener,
         createLayout();
         createDialog();
         AppManager.getInstance().init((Application) context.getApplicationContext());
-        ImageProcessor.getInstance().init(context);
     }
 
     /**

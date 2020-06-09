@@ -99,8 +99,8 @@ abstract class TransferState {
                       final String imgUrl, final StartPreviewCallback callback) {
         targetImage.enableGesture();// 启用 TransferImage 的手势缩放功能
         final File cacheDir = transfer.getTransConfig().getImageLoader().getCacheDir();
-        ImageProcessor.getInstance().process(imgUrl, source, cacheDir, getDisplaySize(),
-                new ImageProcessor.ImageProcessCallback() {
+        ImageProcessor.getInstance().process(transfer.getContext(), imgUrl, source,
+                cacheDir, getDisplaySize(), new ImageProcessor.ImageProcessCallback() {
                     @Override
                     public void onSuccess(File file) {
                         if (ImageUtils.getImageType(file) == TYPE_GIF) {

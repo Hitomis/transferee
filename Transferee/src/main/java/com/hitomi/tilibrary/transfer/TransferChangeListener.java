@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.hitomi.tilibrary.view.video.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
+import com.hitomi.tilibrary.view.video.ExoVideoView;
 
 import java.util.List;
+
+import static androidx.viewpager.widget.ViewPager.SCROLL_STATE_IDLE;
 
 /**
  * Transferee 布局中页面切换监听器，用于处理以下功能： <br/>
@@ -30,6 +32,7 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
     private static final String TAG = "TransferChangeListener";
     private TransferLayout transfer;
     private TransferConfig transConfig;
+    private int selectedPos;
 
     TransferChangeListener(TransferLayout transfer, TransferConfig transConfig) {
         this.transfer = transfer;
@@ -42,6 +45,7 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
 
     @Override
     public void onPageSelected(final int position) {
+        selectedPos = position;
         transConfig.setNowThumbnailIndex(position);
 
         if (transConfig.isJustLoadHitPage()) {
@@ -53,7 +57,6 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
         }
         bindOperationListener(position);
         controlThumbHide(position);
-        controlVideoState(position);
         if (controlScrollingWithPageChange(position)) {
             // controlScrollingWithPageChange 会异步更新 originImageList，
             // 所以这里也需要使用线程队列去保证在之后再执行一次 controlThumbHide
@@ -63,6 +66,14 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
                     controlThumbHide(position);
                 }
             });
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        super.onPageScrollStateChanged(state);
+        if (SCROLL_STATE_IDLE == state) {
+            controlViewState(selectedPos);
         }
     }
 
@@ -163,9 +174,9 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
     }
 
     /**
-     * 页面切换的时候，如果当前 position 是视频就播放，其他位置如果有视频，全部重置
+     * 页面切换的时候，控制视频播放的重置和开始，以及图片的重置
      */
-    private void controlVideoState(int position) {
+    private void controlViewState(int position) {
         SparseArray<FrameLayout> cacheItems = transfer.transAdapter.getCacheItems();
         for (int i = 0; i < cacheItems.size(); i++) {
             int key = cacheItems.keyAt(i);
@@ -177,6 +188,9 @@ public class TransferChangeListener extends ViewPager.SimpleOnPageChangeListener
                 } else {
                     videoView.reset();
                 }
+            } else if (view instanceof TransferImage) {
+                TransferImage imageView = ((TransferImage) view);
+                if (!imageView.isPhotoNotChanged()) imageView.reset();
             }
         }
     }

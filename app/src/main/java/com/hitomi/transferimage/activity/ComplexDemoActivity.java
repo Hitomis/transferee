@@ -82,7 +82,6 @@ public class ComplexDemoActivity extends BaseActivity {
                 .setIndexIndicator(new CircleIndexIndicator())
                 .setImageLoader(GlideImageLoader.with(getApplicationContext()))
                 .enableScrollingWithPageChange(true)
-                .enableJustLoadHitPage(true)
                 .bindListView(gridView, R.id.iv_thum);
         gridView.setAdapter(new GridAdapter());
         gridView.setOnItemClickListener((parent, view, position, id) -> {
@@ -98,7 +97,6 @@ public class ComplexDemoActivity extends BaseActivity {
                 .setIndexIndicator(new NumberIndexIndicator())
                 .setImageLoader(PicassoImageLoader.with(getApplicationContext()))
                 .enableHideThumb(false)
-                .enableJustLoadHitPage(true)
                 .bindRecyclerView(recyclerView, R.id.iv_thum);
         RecyclerAdapter recyclerAdapter = new RecyclerAdapter();
         recyclerAdapter.setOnItemClickListener(new MultiItemTypeAdapter.OnItemClickListener() {

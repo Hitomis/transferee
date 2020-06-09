@@ -41,19 +41,19 @@ allprojects {
 step2.
 ```
 // 添加所有 module  [包括 Transferee、GlideImageLoader、PicassoImageLoader、UniversalImageLoader]
-implementation 'com.github.Hitomis:transferee:1.6.0'
+implementation 'com.github.Hitomis:transferee:1.6.1'
 
 // 单独添加核心 module Transferee, 之后至少还需要添加以下三种图片加载器中的一种
-implementation 'com.github.Hitomis.transferee:Transferee:1.6.0'
+implementation 'com.github.Hitomis.transferee:Transferee:1.6.1'
 
 // 添加 Glide 图片加载器
-implementation 'com.github.Hitomis.transferee:GlideImageLoader:1.6.0'
+implementation 'com.github.Hitomis.transferee:GlideImageLoader:1.6.1'
 
 // 添加 Picasso 图片加载器
-implementation 'com.github.Hitomis.transferee:PicassoImageLoader:1.6.0'
+implementation 'com.github.Hitomis.transferee:PicassoImageLoader:1.6.1'
 
 // 添加 Universal 图片加载器
-implementation 'com.github.Hitomis.transferee:UniversalImageLoader:1.6.0'
+implementation 'com.github.Hitomis.transferee:UniversalImageLoader:1.6.1'
 ```
 
 # Usage
@@ -154,6 +154,17 @@ transferee.apply(config).show();
 | setOnTransfereeStateChangeListener(listener) | 设置 transferee 显示/关闭状态改变的监听器 |
 
 # Update log
++ v1.6.1
+   - 新增图片方向自动校正功能
+   - 新增图片处理，优化大图的显示
+   - ImageLoader 接口代码重构简化
+   - State 代码重构，去除了无用代码，并删除了 RemoteThumbState
+   - 修复部分机型上 stage 模式动画在阶段切换的时候抖动的 bug
+   - 修复部分机型上状态栏和导航栏显示错误的问题
+   - 修复打开和关闭的状态不能保持一致的 bug
+   - 下滑手势优化
+   - 重置不再当前显示区域的图片状态
+
 + v1.6.0
    - 新增视频播放以及视频配套功能的支持
    - 新增 enableDragPause 属性控制视频拖拽关闭时是否暂停

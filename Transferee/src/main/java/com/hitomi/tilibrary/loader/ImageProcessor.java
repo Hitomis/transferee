@@ -33,12 +33,12 @@ import static com.hitomi.tilibrary.utils.ImageUtils.TYPE_GIF;
  */
 public class ImageProcessor {
     private static final int THREAD_COUNT = 32;
-    private Context context;
     private ExecutorService execService;
     private ImageHandler handler;
     private static Map<String, ImageProcessCallback> callbackMap;
 
     private ImageProcessor() {
+        init();
     }
 
     private static class SingletonHolder {
@@ -49,14 +49,13 @@ public class ImageProcessor {
         return ImageProcessor.SingletonHolder.instance;
     }
 
-    public void init(Context context) {
-        this.context = context.getApplicationContext();
+    private void init() {
         execService = Executors.newFixedThreadPool(THREAD_COUNT);
         handler = new ImageHandler();
         callbackMap = new HashMap<>();
     }
 
-    public void process(final String key, final File sourceFile, final File savedDir,
+    public void process(Context context, final String key, final File sourceFile, final File savedDir,
                         final Point displaySize, @NonNull ImageProcessCallback callback) {
         final File targetFile = new File(savedDir, getFileName(key));
         if (!isNeedProcess(sourceFile, displaySize.x, displaySize.y)
@@ -74,7 +73,7 @@ public class ImageProcessor {
             callback.onSuccess(targetFile);
         } else {
             callbackMap.put(key, callback);
-            execService.execute(new ImageTask(key, sourceFile, savedDir));
+            execService.execute(new ImageTask(context, key, sourceFile, savedDir));
         }
     }
 
@@ -171,12 +170,14 @@ public class ImageProcessor {
     }
 
     private class ImageTask implements Runnable {
+        private Context context;
         private String key;
         private File originFile;
         private File savedDir;
 
 
-        public ImageTask(String key, File originFile, File savedDir) {
+        public ImageTask(Context context, String key, File originFile, File savedDir) {
+            this.context = context;
             this.key = key;
             this.originFile = originFile;
             this.savedDir = savedDir;

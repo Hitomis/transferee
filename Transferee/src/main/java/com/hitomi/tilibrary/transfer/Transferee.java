@@ -249,6 +249,16 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     /**
+     * 资源销毁，防止内存泄漏
+     */
+    public void destroy() {
+        if (transConfig != null) {
+            transConfig.destroy();
+            transConfig = null;
+        }
+    }
+
+    /**
      * Transferee 显示的时候调用 {@link OnTransfereeStateChangeListener#onShow()}
      * <p>
      * Transferee 关闭的时候调用 {@link OnTransfereeStateChangeListener#onDismiss()}

@@ -49,6 +49,7 @@ project.ext {
     libBaseAdapter = "com.zhy:base-adapter:3.0.3"
     libRecyclerviewAdpater = "com.zhy:base-rvadapter:3.0.3"
     libImmersionbar = "com.gyf.immersionbar:immersionbar:3.0.0"
+    libLeakcanary = "com.squareup.leakcanary:leakcanary-android:2.3"
     // Transferee 核心库所依赖项目
     libAppcompat = "androidx.appcompat:appcompat:1.1.0"
     libSupportRecyclerview = "androidx.recyclerview:recyclerview:1.0.0"
@@ -56,6 +57,6 @@ project.ext {
     libExoExtensionRtmp = "com.google.android.exoplayer:extension-rtmp:2.10.4"
     libProgresspieview = "com.github.filippudak.progresspieview:library:1.0.4"
     libGifDrawable = "pl.droidsonroids.gif:android-gif-drawable:1.2.19"
-    libImmersionbar ="com.gyf.immersionbar:immersionbar:3.0.0"
+    libImmersionbar = "com.gyf.immersionbar:immersionbar:3.0.0"
     libLuban = "top.zibin:Luban:1.1.8"
 }

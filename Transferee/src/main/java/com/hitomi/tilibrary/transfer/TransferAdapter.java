@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.hitomi.tilibrary.view.video.ExoVideoView;
 import com.hitomi.tilibrary.view.image.TransferImage;
+import com.hitomi.tilibrary.view.video.ExoVideoView;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -25,7 +25,6 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * email: 196425254@qq.com
  */
 class TransferAdapter extends PagerAdapter {
-
     private TransferLayout transfer;
     private int showIndex;
     private int imageSize;
@@ -38,8 +37,7 @@ class TransferAdapter extends PagerAdapter {
         this.imageSize = imageSize;
         this.showIndex = nowThumbnailIndex + 1 == imageSize
                 ? nowThumbnailIndex - 1 : nowThumbnailIndex + 1;
-        this.showIndex = showIndex < 0 ? 0 : showIndex;
-
+        this.showIndex = Math.max(showIndex, 0);
         containLayoutArray = new SparseArray<>();
     }
 
@@ -56,6 +54,56 @@ class TransferAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
+        containLayoutArray.remove(position);
+        transfer.loadedIndexSet.remove(position);
+    }
+
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        // ViewPager instantiateItem 顺序：按 position 递减 OffscreenPageLimit，
+        // 再从 position 递增 OffscreenPageLimit 的次序创建页面
+
+        FrameLayout parentLayout = containLayoutArray.get(position);
+        if (parentLayout == null) {
+            parentLayout = newParentLayout(container, position);
+            containLayoutArray.append(position, parentLayout);
+
+            if (position == showIndex && onInstantListener != null)
+                onInstantListener.onComplete();
+        }
+        container.addView(parentLayout);
+        return parentLayout;
+    }
+
+    @NonNull
+    private FrameLayout newParentLayout(ViewGroup container, final int pos) {
+        Context context = container.getContext();
+        TransferConfig config = transfer.getTransConfig();
+
+        View contentView;
+        if (config.isVideoSource(pos)) {
+            FrameLayout.LayoutParams centerLp = new FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+            centerLp.gravity = Gravity.CENTER;
+            contentView = new ExoVideoView(context);
+            contentView.setLayoutParams(centerLp);
+        } else {
+            // create inner ImageView
+            TransferImage imageView = new TransferImage(context);
+            imageView.setDuration(config.getDuration());
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+            if (config.isJustLoadHitPage())
+                transfer.getTransferState(pos).prepareTransfer(imageView, pos);
+            contentView = imageView;
+        }
+
+        // create outer ParentLayout
+        FrameLayout parentLayout = new FrameLayout(context);
+        parentLayout.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        parentLayout.addView(contentView);
+
+        return parentLayout;
     }
 
     /**
@@ -96,55 +144,6 @@ class TransferAdapter extends PagerAdapter {
 
     void setOnInstantListener(OnInstantiateItemListener listener) {
         this.onInstantListener = listener;
-    }
-
-    @NonNull
-    @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        // ViewPager instantiateItem 顺序：按 position 递减 OffscreenPageLimit，
-        // 再从 position 递增 OffscreenPageLimit 的次序创建页面
-        FrameLayout parentLayout = containLayoutArray.get(position);
-
-        if (parentLayout == null) {
-            parentLayout = newParentLayout(container, position);
-            containLayoutArray.put(position, parentLayout);
-
-            if (position == showIndex && onInstantListener != null)
-                onInstantListener.onComplete();
-        }
-
-        container.addView(parentLayout);
-        return parentLayout;
-    }
-
-    @NonNull
-    private FrameLayout newParentLayout(ViewGroup container, final int pos) {
-        Context context = container.getContext();
-        TransferConfig config = transfer.getTransConfig();
-
-        View contentView;
-        if (config.isVideoSource(pos)) {
-            FrameLayout.LayoutParams centerLp = new FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-            centerLp.gravity = Gravity.CENTER;
-            contentView = new ExoVideoView(context);
-            contentView.setLayoutParams(centerLp);
-        } else {
-            // create inner ImageView
-            TransferImage imageView = new TransferImage(context);
-            imageView.setDuration(config.getDuration());
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            imageView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-            if (config.isJustLoadHitPage())
-                transfer.getTransferState(pos).prepareTransfer(imageView, pos);
-            contentView = imageView;
-        }
-
-        // create outer ParentLayout
-        FrameLayout parentLayout = new FrameLayout(context);
-        parentLayout.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        parentLayout.addView(contentView);
-
-        return parentLayout;
     }
 
     interface OnInstantiateItemListener {

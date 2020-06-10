@@ -216,10 +216,6 @@ public final class TransferConfig {
         this.sourceUrlList = sourceUrlList;
     }
 
-    public List<Uri> getSourceUriList() {
-        return sourceUriList;
-    }
-
     public void setSourceUriList(List<Uri> sourceUriList) {
         this.sourceUriList = sourceUriList;
     }
@@ -331,6 +327,21 @@ public final class TransferConfig {
 
     public void setFooterSize(int footerSize) {
         this.footerSize = footerSize;
+    }
+
+    public void destroy() {
+        setImageView(null);
+        setCustomView(null);
+        setListView(null);
+        setRecyclerView(null);
+        setProgressIndicator(null);
+        setIndexIndicator(null);
+        setImageLoader(null);
+        setOriginImageList(null);
+        setSourceUrlList(null);
+        setSourceUriList(null);
+        setMissDrawable(null);
+        setErrorDrawable(null);
     }
 
     public static class Builder {
@@ -516,14 +527,6 @@ public final class TransferConfig {
             this.sourceUriList = sourceUriList;
             return this;
         }
-
-//        /**
-//         * 缩略图地址集合
-//         */
-//        public Builder setThumbnailImageList(List<String> thumbnailImageList) {
-//            this.thumbnailImageList = thumbnailImageList;
-//            return this;
-//        }
 
         /**
          * 过渡前原始的 ImageView 集合

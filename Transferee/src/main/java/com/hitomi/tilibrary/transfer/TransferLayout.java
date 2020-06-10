@@ -43,11 +43,11 @@ class TransferLayout extends FrameLayout {
 
     private TransferChangeListener transChangeListener;
     private OnLayoutResetListener layoutResetListener;
-    private Set<Integer> loadedIndexSet;
 
     TransferImage transImage;
     TransferAdapter transAdapter;
     ViewPager transViewPager;
+    Set<Integer> loadedIndexSet;
     float alpha; // [0.f , 255.f]
     boolean isAnimationRunning;
 

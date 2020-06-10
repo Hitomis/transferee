@@ -26,6 +26,8 @@ transferee 可以帮助你完成从缩略视图到原视图的无缝过渡转变
 # Sample
 [demo.apk](https://github.com/Hitomis/transferee/tree/master/preview/app-release.apk)
 
+<img src="preview/memory.png" />
+
 
 # Dependency
 step1.
@@ -111,6 +113,11 @@ step 3: 显示 transferee
 transferee.apply(config).show();
 ```
 
+step 4: 离开页面的时候需要销毁 transferee 中的资源，防止内存泄漏 (建议写在 onDestroy 方法中)
+```
+transferee.destroy()
+```
+
 # Config
 | 属性 | 说明 |
 | :--: | :--: |
@@ -150,6 +157,7 @@ transferee.apply(config).show();
 | isShown() | transferee 是否显示 |
 | dismiss() | 关闭 transferee |
 | clear() | 清除图片和视频等所有缓存文件 |
+| destroy() | 销毁 transferee 使用到的资源， 防止内存泄漏 |
 | getImageFile(url) | 获取与 url 对应的缓存图片 |
 | setOnTransfereeStateChangeListener(listener) | 设置 transferee 显示/关闭状态改变的监听器 |
 
@@ -164,6 +172,8 @@ transferee.apply(config).show();
    - 修复打开和关闭的状态不能保持一致的 bug
    - 下滑手势优化
    - 重置不再当前显示区域的图片状态
+   - 优化了内存占用，当浏览多图相册时，保证内存稳定
+   - 解决了因为 Config 资源未回收而导致的内存泄漏问题
 
 + v1.6.0
    - 新增视频播放以及视频配套功能的支持

@@ -51,4 +51,5 @@ dependencies {
     implementation libGlide
     implementation libPicasso
     implementation libImmersionbar
+    debugImplementation libLeakcanary
 }

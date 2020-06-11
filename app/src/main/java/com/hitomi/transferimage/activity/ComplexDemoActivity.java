@@ -13,7 +13,6 @@ import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.index.NumberIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.transfer.TransferConfig;
-import com.hitomi.tilibrary.transfer.Transferee;
 import com.hitomi.transferimage.R;
 import com.hitomi.transferimage.SourceConfig;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -54,18 +53,19 @@ public class ComplexDemoActivity extends BaseActivity {
     }
 
     private void noneViewDemo() {
-        button.setOnClickListener(v -> Transferee.getDefault(this).apply(TransferConfig.build()
-                .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
-                .setSourceUrlList(SourceConfig.getMixingSourceGroup())
-                .create()
-        ).show());
+        button.setOnClickListener(v ->
+                transferee.apply(TransferConfig.build()
+                        .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
+                        .setSourceUrlList(SourceConfig.getMixingSourceGroup())
+                        .create()
+                ).show());
     }
 
     private void singleViewDemo() {
         ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
         ImageLoader.getInstance().displayImage(SourceConfig.getMixingSourceGroup().get(0), imageView);
         imageView.setOnClickListener(v -> {
-            Transferee.getDefault(this).apply(TransferConfig.build()
+            transferee.apply(TransferConfig.build()
                     .setSourceUrlList(SourceConfig.getMixingSourceGroup())
                     .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
                     .enableJustLoadHitPage(true)

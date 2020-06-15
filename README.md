@@ -19,9 +19,9 @@ transferee 可以帮助你完成从缩略视图到原视图的无缝过渡转变
 如有任何问题欢迎提 Issues
 
 # Preview
-<img src="preview/preview1.gif" />
-<img src="preview/preview2.gif" />
-<img src="preview/preview3.gif" />
+<img src="https://user-gold-cdn.xitu.io/2020/6/11/172a0ffa7b5b503b?w=375&h=647&f=gif&s=2594044" />
+<img src="https://user-gold-cdn.xitu.io/2020/6/11/172a0ffa7d02ab42?w=375&h=647&f=gif&s=3151729" />
+<img src="https://user-gold-cdn.xitu.io/2020/6/11/172a0ffa7d358ecc?w=375&h=647&f=gif&s=533568" />
 
 # Sample
 [demo.apk](https://github.com/Hitomis/transferee/tree/master/preview/app-release.apk)
@@ -61,11 +61,15 @@ implementation 'com.github.Hitomis.transferee:UniversalImageLoader:1.6.1'
 # Usage
 如果针对单个 ImageView 使用，将非常简单：
 ```
-Transferee.getDefault(context)
-        .apply(TransferConfig.build()
-                .setImageLoader(GlideImageLoader.with(getApplicationContext()))
-                .bindImageView(sourceIv, imageUrl)
-        ).show();
+Transferee transfer = Transferee.getDefault(context);
+transfer.apply(TransferConfig.build()
+        .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
+        .setSourceUrlList(SourceConfig.getMixingSourceGroup())
+        .create()
+).show());
+
+// 离开页面不要忘记调用
+transfer.destroy();
 ```
 
 

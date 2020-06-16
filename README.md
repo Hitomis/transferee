@@ -19,7 +19,7 @@ transferee 可以帮助你完成从缩略视图到原视图的无缝过渡转变
 如有任何问题欢迎提 Issues
 
 # Preview
-<img src="preview/preveiw_1.gif" /><img src="preview/preveiw_2.gif" /><img src="preview/preveiw_3.gif" />
+<img src="preview/preview_1.gif" /><img src="preview/preview_2.gif" /><img src="preview/preview_3.gif" />
 
 # Sample
 [demo.apk](https://github.com/Hitomis/transferee/tree/master/preview/app-release.apk)

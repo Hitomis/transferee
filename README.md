@@ -19,8 +19,9 @@ transferee 可以帮助你完成从缩略视图到原视图的无缝过渡转变
 如有任何问题欢迎提 Issues
 
 # Preview
-<img src="https://user-gold-cdn.xitu.io/2020/6/11/172a0ffa7b5b503b?w=375&h=647&f=gif&s=2594044" />
-<img src="https://user-gold-cdn.xitu.io/2020/6/11/172a0ffa7d02ab42?w=375&h=647&f=gif&s=3151729" />
+<img src="preview/preview_1.gif" />
+<img src="preview/preview_2.gif" />
+<img src="preview/preview_3.gif" />
 
 # Sample
 [demo.apk](https://github.com/Hitomis/transferee/tree/master/preview/app-release.apk)
@@ -163,6 +164,13 @@ transferee.destroy()
 | destroy() | 销毁 transferee 使用到的资源， 防止内存泄漏 |
 | getImageFile(url) | 获取与 url 对应的缓存图片 |
 | setOnTransfereeStateChangeListener(listener) | 设置 transferee 显示/关闭状态改变的监听器 |
+
+# Thanks
+    如果你觉得这个项目帮助到了你，对你项目的用户体验有提升，或者帮你解决了一些问题，可以扫描下面支付宝二维码给个
+随意打赏或者给个 star。你的鼓励是我维护项目最大的动力。
+    另外由于平时比较忙，都是自己的休息时间更新，如果你的 issues 比较急，可以给个针对你问题觉得合适的打赏，我会
+优先解决。时间不够充裕，还请谅解。
+<img src="preview/pay.jpg" />
 
 # Update log
 + v1.6.1

@@ -35,9 +35,13 @@ public class VideoThumbState extends TransferState {
     public TransferImage transferIn(int position) {
         TransferImage transInImage = null;
         TransferConfig transConfig = transfer.getTransConfig();
-        ImageView originImage = transConfig.getOriginImageList().get(position);
+        List<ImageView> originImageList = transConfig.getOriginImageList();
+        ImageView originImage = null;
+        if (!originImageList.isEmpty() && position < originImageList.size()) {
+            originImage = originImageList.get(position);
+        }
         String videoSourceUrl = transConfig.getSourceUrlList().get(position);
-        if (originImage.getDrawable() == null) { // 没有占位图并且视频指定帧还没有加载好
+        if (originImage == null || originImage.getDrawable() == null) { // 没有占位图或者视频指定帧还没有加载好
             transfer.displayTransfer();
         } else {
             transInImage = createTransferImage(originImage, true);

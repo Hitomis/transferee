@@ -126,7 +126,7 @@ transferee.destroy()
 | :--: | :--: |
 | sourceUrlList | 将要预览的资源 url 集合, String 格式 |
 | sourceUriList | 将要预览的资源 uri 集合， Uri 格式 |
-| nowThumbnailIndex | 缩略图在图组中的索引, 如果你绑定了 ListView 或者 RecyclerView，这个属性是必须的，否则可以忽略 |
+| nowThumbnailIndex | 缩略图在图组中的索引, 如果你绑定了 ListView 或者 RecyclerView，这个属性是必须的，否则可以忽略; 亦或可以作为打开 transferee 时指定初始化显示页面的 position |
 | offscreenPageLimit | 显示 transferee 时初始化加载的资源数量, 默认为1, 表示第一次加载3张(nowThumbnailIndex, nowThumbnailIndex + 1, nowThumbnailIndex - 1); 值为 2, 表示加载5张。依次类推 |
 | missPlaceHolder | 缺省的占位图，资源 id 格式。资源未加载完成时默认显示的图片 |
 | missDrawable | 缺省的占位图，Drawable 格式。资源未加载完成时默认显示的图片 |

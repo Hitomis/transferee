@@ -57,6 +57,7 @@ public class ComplexDemoActivity extends BaseActivity {
                 transferee.apply(TransferConfig.build()
                         .setImageLoader(UniversalImageLoader.with(getApplicationContext()))
                         .setSourceUrlList(SourceConfig.getMixingSourceGroup())
+                        .setNowThumbnailIndex(3)
                         .create()
                 ).show());
     }

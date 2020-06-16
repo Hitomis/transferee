@@ -286,7 +286,6 @@ class TransferLayout extends FrameLayout {
         if (transferState instanceof NoneThumbState) {
             // 如果是 NoneThumbState 状态下，需要执行 alpha 显示动画
             transViewPager.setVisibility(View.VISIBLE);
-            setBackgroundColor(getBackgroundColorByAlpha(255));
         } else {
             // 先隐藏，待 ViewPager 下标为 config.getCurrOriginIndex() 的页面创建完毕再显示
             transViewPager.setVisibility(View.INVISIBLE);
@@ -393,6 +392,7 @@ class TransferLayout extends FrameLayout {
      * alpha 动画显示 transfer
      */
     void displayTransfer() {
+        setBackgroundColor(getBackgroundColorByAlpha(255));
         final ValueAnimator alphaAnim = ObjectAnimator.ofFloat(this, "alpha", 0.f, 1.f);
         ValueAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 1.2f, 1.0f);
         ValueAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 1.2f, 1.0f);

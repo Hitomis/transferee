@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:text="无需绑定，即可使用，使用场景例如 WebView 中，无法获取缩略图的时候，或者只是单纯的想使用 transferee 去预览一组多媒体文件"
+            android:text="无需绑定，即可使用，并指定了显示指定位置的页面参数 nowThumbnailIndex，使用场景例如 WebView 中，无法获取缩略图的时候，或者只是单纯的想使用 transferee 去预览一组多媒体文件"
             android:textColor="#888" />
 
         <Button

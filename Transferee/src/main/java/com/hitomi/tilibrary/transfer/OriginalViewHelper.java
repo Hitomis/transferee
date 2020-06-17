@@ -29,6 +29,7 @@ class OriginalViewHelper {
     }
 
     void fillOriginImages(TransferConfig config) {
+        if (config.isManualInflateOriginImage()) return;
         transConfig = config;
         List<ImageView> originImageList = new ArrayList<>();
         if (transConfig.getRecyclerView() != null) {
@@ -42,7 +43,7 @@ class OriginalViewHelper {
                 originImageList.add(null);
             }
         }
-        transConfig.setOriginImageList(originImageList);
+        transConfig.setOriginImageList(originImageList, false);
     }
 
     private void fillByRecyclerView(final List<ImageView> originImageList) {

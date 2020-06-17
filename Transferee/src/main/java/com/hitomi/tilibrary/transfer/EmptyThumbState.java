@@ -8,7 +8,6 @@ import com.hitomi.tilibrary.style.IProgressIndicator;
 import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * 高清图尚未加载，使用原 ImageView 中显示的图片作为缩略图。
@@ -32,8 +31,7 @@ class EmptyThumbState extends TransferState {
     @Override
     public TransferImage transferIn(final int position) {
         ImageView originImage = transfer.getTransConfig()
-                .getOriginImageList().get(position);
-
+                .getOriginImageByPosition(position);
         TransferImage transImage = createTransferImage(originImage, true);
         transImage.setImageDrawable(originImage.getDrawable());
         transImage.transformIn(TransferImage.STAGE_TRANSLATE);
@@ -98,10 +96,9 @@ class EmptyThumbState extends TransferState {
         TransferImage transImage = null;
 
         TransferConfig config = transfer.getTransConfig();
-        List<ImageView> originImageList = config.getOriginImageList();
-
-        if (position <= originImageList.size() - 1 && originImageList.get(position) != null) {
-            transImage = createTransferImage(originImageList.get(position), true);
+        ImageView originImage = config.getOriginImageByPosition(position);
+        if (originImage != null) {
+            transImage = createTransferImage(originImage, true);
             Drawable thumbnailDrawable = transfer.transAdapter.getImageItem(
                     config.getNowThumbnailIndex()).getDrawable();
             transImage.setImageDrawable(thumbnailDrawable);
@@ -123,7 +120,7 @@ class EmptyThumbState extends TransferState {
         Drawable placeHolder = null;
 
         TransferConfig config = transfer.getTransConfig();
-        ImageView originImage = config.getOriginImageList().get(position);
+        ImageView originImage = config.getOriginImageByPosition(position);
         if (originImage != null) {
             placeHolder = originImage.getDrawable();
         }

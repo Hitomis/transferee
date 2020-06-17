@@ -10,7 +10,6 @@ import com.hitomi.tilibrary.view.image.TransferImage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import pl.droidsonroids.gif.GifDrawable;
 
@@ -73,7 +72,7 @@ class LocalThumbState extends TransferState {
     public TransferImage transferIn(final int position) {
         TransferConfig config = transfer.getTransConfig();
         TransferImage transImage = createTransferImage(
-                config.getOriginImageList().get(position), true);
+                config.getOriginImageByPosition(position), true);
         loadThumbnail(config.getSourceUrlList().get(position), transImage, true);
         transfer.addView(transImage, 1);
         return transImage;
@@ -139,9 +138,9 @@ class LocalThumbState extends TransferState {
         TransferImage transImage = null;
 
         TransferConfig config = transfer.getTransConfig();
-        List<ImageView> originImageList = config.getOriginImageList();
-        if (position <= originImageList.size() - 1 && originImageList.get(position) != null) {
-            transImage = createTransferImage(originImageList.get(position), true);
+        ImageView originImage = config.getOriginImageByPosition(position);
+        if (originImage != null) {
+            transImage = createTransferImage(originImage, true);
             loadThumbnail(config.getSourceUrlList().get(position), transImage, false);
             transfer.addView(transImage, 1);
         }

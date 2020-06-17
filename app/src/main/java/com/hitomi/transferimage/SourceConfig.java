@@ -111,6 +111,14 @@ public class SourceConfig {
         return resUrlList;
     }
 
+    public static List<String> getStaticUrlList() {
+        List<String> sourceImageList = new ArrayList<>();
+        sourceImageList.add("https://img2.woyaogexing.com/2020/06/15/260bfca5469044579c11cfd19631db40!1242x9999.jpeg");
+        sourceImageList.add("https://img2.woyaogexing.com/2020/06/15/2277326c41ef4e2a9e95e356a058098b!1242x9999.jpeg");
+        sourceImageList.add("https://img2.woyaogexing.com/2020/06/15/6851d4d4a23d47c4a5cb0ef84af103b1!1242x9999.jpeg");
+        return sourceImageList;
+    }
+
     public static List<Pair<String, List<String>>> getFriendsCircleList(Context context) {
         List<Pair<String, List<String>>> friendsCircleList = new ArrayList<>();
         friendsCircleList.add(new Pair<>("app包内资源图预览演示", getResUriList(context)));

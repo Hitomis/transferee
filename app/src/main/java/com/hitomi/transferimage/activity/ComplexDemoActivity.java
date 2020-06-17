@@ -25,6 +25,9 @@ import com.zhy.adapter.recyclerview.CommonAdapter;
 import com.zhy.adapter.recyclerview.MultiItemTypeAdapter;
 import com.zhy.adapter.recyclerview.base.ViewHolder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ComplexDemoActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private GridView gridView;
@@ -48,6 +51,7 @@ public class ComplexDemoActivity extends BaseActivity {
     protected void testTransferee() {
         recyclerDemo();
         gridDemo();
+        staticDemo();
         singleViewDemo();
         noneViewDemo();
     }
@@ -74,6 +78,30 @@ public class ComplexDemoActivity extends BaseActivity {
                     .bindImageView(imageView)
             ).show();
         });
+    }
+
+    private void staticDemo() {
+        ImageView staticImage1 = findViewById(R.id.iv_static_1);
+        ImageView staticImage2 = findViewById(R.id.iv_static_2);
+        ImageView staticImage3 = findViewById(R.id.iv_static_3);
+        List<ImageView> originImageList = new ArrayList<>();
+        originImageList.add(findViewById(R.id.iv_static_1));
+        originImageList.add(findViewById(R.id.iv_static_2));
+        originImageList.add(findViewById(R.id.iv_static_3));
+
+        Glide.with(this).load(SourceConfig.getStaticUrlList().get(0)).into(staticImage1);
+        Glide.with(this).load(SourceConfig.getStaticUrlList().get(1)).into(staticImage2);
+        Glide.with(this).load(SourceConfig.getStaticUrlList().get(2)).into(staticImage3);
+
+        for (ImageView view : originImageList) {
+            view.setOnClickListener(v -> transferee.apply(TransferConfig.build()
+                    .setImageLoader(GlideImageLoader.with(getApplicationContext()))
+                    .setSourceUrlList(SourceConfig.getStaticUrlList())
+                    .setOriginImageList(originImageList)
+                    .setNowThumbnailIndex(originImageList.indexOf(v))
+                    .create()
+            ).show());
+        }
     }
 
     private void gridDemo() {

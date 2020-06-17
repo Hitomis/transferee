@@ -164,9 +164,9 @@ abstract class TransferState {
     int[] getPlaceholderClipSize(int position, int placeholderType) {
         int[] clipSize = new int[2];
         TransferConfig transConfig = transfer.getTransConfig();
-        List<ImageView> originImageList = transConfig.getOriginImageList();
-        ImageView originImage = originImageList.isEmpty() ? null : originImageList.get(position);
+        ImageView originImage = transConfig.getOriginImageByPosition(position);
         if (originImage == null) {
+            List<ImageView> originImageList = transConfig.getOriginImageList();
             for (ImageView imageView : originImageList) {
                 if (imageView != null) {
                     originImage = imageView;

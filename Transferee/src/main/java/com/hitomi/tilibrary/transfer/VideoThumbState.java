@@ -11,7 +11,6 @@ import com.hitomi.tilibrary.view.image.TransferImage;
 import com.hitomi.tilibrary.view.video.ExoVideoView;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * 处理视频加载播放
@@ -35,11 +34,7 @@ public class VideoThumbState extends TransferState {
     public TransferImage transferIn(int position) {
         TransferImage transInImage = null;
         TransferConfig transConfig = transfer.getTransConfig();
-        List<ImageView> originImageList = transConfig.getOriginImageList();
-        ImageView originImage = null;
-        if (!originImageList.isEmpty() && position < originImageList.size()) {
-            originImage = originImageList.get(position);
-        }
+        ImageView originImage = transConfig.getOriginImageByPosition(position);
         String videoSourceUrl = transConfig.getSourceUrlList().get(position);
         if (originImage == null || originImage.getDrawable() == null) { // 没有占位图或者视频指定帧还没有加载好
             transfer.displayTransfer();
@@ -123,11 +118,8 @@ public class VideoThumbState extends TransferState {
     public TransferImage transferOut(int position) {
         TransferImage transOutImage = null;
         TransferConfig config = transfer.getTransConfig();
-        List<ImageView> originImageList = config.getOriginImageList();
-
-        if (position <= originImageList.size() - 1 && originImageList.get(position) != null) {
-            ImageView originImage = originImageList.get(position);
-
+        ImageView originImage = config.getOriginImageByPosition(position);
+        if (originImage != null) {
             TransferImage alphaOneImage = createTransferImage(originImage, true);
             alphaOneImage.setImageDrawable(originImage.getDrawable());
             alphaOneImage.setAlpha(0f);

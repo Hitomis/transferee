@@ -36,6 +36,7 @@ public final class TransferConfig {
     private int errorPlaceHolder;
     private int backgroundColor;
     private long duration;
+    private boolean manualInflateOriginImage;
     private boolean justLoadHitPage;
     private boolean enableDragClose;
     private boolean enableDragHide;
@@ -118,6 +119,10 @@ public final class TransferConfig {
         this.duration = duration;
     }
 
+    public boolean isManualInflateOriginImage() {
+        return manualInflateOriginImage;
+    }
+
     public boolean isJustLoadHitPage() {
         return justLoadHitPage;
     }
@@ -196,8 +201,17 @@ public final class TransferConfig {
         return originImageList == null ? new ArrayList<ImageView>() : originImageList;
     }
 
-    public void setOriginImageList(List<ImageView> originImageList) {
+    ImageView getOriginImageByPosition(int position) {
+        List<ImageView> originImageList = getOriginImageList();
+        if (position >= 0 && position < originImageList.size()) {
+            return originImageList.get(position);
+        }
+        return null;
+    }
+
+    void setOriginImageList(List<ImageView> originImageList, boolean isManual) {
         this.originImageList = originImageList;
+        manualInflateOriginImage = isManual;
     }
 
     public List<String> getSourceUrlList() {
@@ -337,7 +351,7 @@ public final class TransferConfig {
         setProgressIndicator(null);
         setIndexIndicator(null);
         setImageLoader(null);
-        setOriginImageList(null);
+        setOriginImageList(null, false);
         setSourceUrlList(null);
         setSourceUriList(null);
         setMissDrawable(null);
@@ -666,7 +680,9 @@ public final class TransferConfig {
 
             config.setSourceUrlList(sourceUrlList);
             config.setSourceUriList(sourceUriList);
-            config.setOriginImageList(originImageList);
+            if (originImageList != null && !originImageList.isEmpty()) {
+                config.setOriginImageList(originImageList, true);
+            }
 
             config.setProgressIndicator(progressIndicator);
             config.setIndexIndicator(indexIndicator);

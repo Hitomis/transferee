@@ -124,8 +124,8 @@ class TransferLayout extends FrameLayout {
             currentAlpha = (state == TransferImage.STATE_TRANS_SPEC_OUT ? alpha : 255);
             if (state == TransferImage.STATE_TRANS_IN) {
                 if (transConfig.isEnableHideThumb()) {
-                    final ImageView originImage = transConfig.getOriginImageList()
-                            .get(transConfig.getNowThumbnailIndex());
+                    final ImageView originImage = transConfig
+                            .getOriginImageByPosition(transConfig.getNowThumbnailIndex());
                     if (originImage != null) {
                         // 因为可能会出现闪现的问题。故需要延迟一点点时间去隐藏 originImage
                         postDelayed(new Runnable() {
@@ -148,7 +148,7 @@ class TransferLayout extends FrameLayout {
             // 会出现闪现的问题。故需要提前一点点时间去显示 originImage
             if (transConfig.isEnableHideThumb() && fraction <= 0.05 &&
                     (state == TransferImage.STATE_TRANS_OUT || state == TransferImage.STATE_TRANS_SPEC_OUT)) {
-                ImageView originImage = transConfig.getOriginImageList().get(transConfig.getNowThumbnailIndex());
+                ImageView originImage = transConfig.getOriginImageByPosition(transConfig.getNowThumbnailIndex());
                 if (originImage != null) {
                     originImage.setVisibility(View.VISIBLE);
                 }

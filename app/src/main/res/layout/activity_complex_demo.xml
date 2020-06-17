@@ -56,6 +56,46 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
+            android:text="使用静态的 imageView(或者代码动态创建的 ImageView 集合) 作为 originImageList 的传参，不绑定任何 View:"
+            android:textColor="#888" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_static_1"
+                android:layout_width="100dp"
+                android:layout_height="80dp"
+                android:scaleType="centerCrop" />
+
+            <ImageView
+                android:id="@+id/iv_static_2"
+                android:layout_width="100dp"
+                android:layout_height="80dp"
+                android:scaleType="centerCrop" />
+
+
+            <ImageView
+                android:id="@+id/iv_static_3"
+                android:layout_width="100dp"
+                android:layout_height="80dp"
+                android:scaleType="centerCrop" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="20dp"
+            android:background="#808080" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             android:text="演示单个 ImageView 绑定使用方式，Universal 加载图片, 自定义了 CustomView 。使用场景例如 QQ 相册、聊天界面的单张图片点击使用："
             android:textColor="#888" />
 

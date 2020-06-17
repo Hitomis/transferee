@@ -122,10 +122,7 @@ class DragCloseGesture {
                 float velocityY = velocityTracker.getYVelocity();
                 if (velocityY > 100) {
                     int pos = transferLayout.getTransConfig().getNowThumbnailIndex();
-                    ImageView originImage = null;
-                    if (!transferLayout.getTransConfig().getOriginImageList().isEmpty()) {
-                        originImage = transferLayout.getTransConfig().getOriginImageList().get(pos);
-                    }
+                    ImageView originImage = transferLayout.getTransConfig().getOriginImageByPosition(pos);
                     if (originImage == null) { // 走扩散消失动画
                         transferLayout.diffusionTransfer(pos);
                     } else { // 走过渡动画

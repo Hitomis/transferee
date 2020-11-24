@@ -256,7 +256,6 @@ transferee.destroy()
   - 为 transferee 组件添加背景色自定义功能
   - 为 transferee 组件添加长按监听器，并添加了长按保存图片到相册的示例代码
   - 更新了部分示例代码中失效的图片地址
-  - 更新了部分示例代码中失效的图片地址
 
 # Licence
     Copyright 2017 Vans, Inc.

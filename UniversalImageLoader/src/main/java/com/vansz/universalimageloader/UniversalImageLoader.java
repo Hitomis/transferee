@@ -138,4 +138,10 @@ public class UniversalImageLoader implements com.hitomi.tilibrary.loader.ImageLo
     public File getCacheDir() {
         return ImageLoader.getInstance().getDiskCache().getDirectory();
     }
+
+    @Override
+    public String getCacheFileName(String url) {
+        String[] nameArray = url.split("/");
+        return nameArray[nameArray.length - 1];
+    }
 }

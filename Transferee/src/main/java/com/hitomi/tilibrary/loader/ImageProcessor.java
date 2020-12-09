@@ -56,8 +56,8 @@ public class ImageProcessor {
     }
 
     public void process(Context context, final String key, final File sourceFile, final File savedDir,
-                        final Point displaySize, @NonNull ImageProcessCallback callback) {
-        final File targetFile = new File(savedDir, getFileName(key));
+                        final Point displaySize,@NonNull String cacheFileName, @NonNull ImageProcessCallback callback) {
+        final File targetFile = new File(savedDir, cacheFileName);
         if (!isNeedProcess(sourceFile, displaySize.x, displaySize.y)
                 || ImageUtils.getImageType(sourceFile) == TYPE_GIF) {
             // 不需要处理的图片和 gif 图，直接复制到指定文件夹
@@ -73,7 +73,7 @@ public class ImageProcessor {
             callback.onSuccess(targetFile);
         } else {
             callbackMap.put(key, callback);
-            execService.execute(new ImageTask(context, key, sourceFile, savedDir));
+            execService.execute(new ImageTask(context, key, sourceFile, savedDir,cacheFileName));
         }
     }
 
@@ -90,11 +90,6 @@ public class ImageProcessor {
         boolean needAdjustOrientation = orientation != ExifInterface.ORIENTATION_UNDEFINED
                 && orientation != ExifInterface.ORIENTATION_NORMAL;
         return needAdjustOrientation || w > maxWidth || h > maxHeight;
-    }
-
-    private String getFileName(String imageUrl) {
-        String[] nameArray = imageUrl.split("/");
-        return nameArray[nameArray.length - 1];
     }
 
     private int getImageOrientation(String sourcePath) {
@@ -172,15 +167,17 @@ public class ImageProcessor {
     private class ImageTask implements Runnable {
         private Context context;
         private String key;
+        private String cacheFileName;
         private File originFile;
         private File savedDir;
 
 
-        public ImageTask(Context context, String key, File originFile, File savedDir) {
+        public ImageTask(Context context, String key, File originFile, File savedDir, String cacheFileName) {
             this.context = context;
             this.key = key;
             this.originFile = originFile;
             this.savedDir = savedDir;
+            this.cacheFileName = cacheFileName;
         }
 
         @Override
@@ -192,7 +189,7 @@ public class ImageProcessor {
                         .ignoreBy(150)
                         .setTargetDir(savedDir.getAbsolutePath())
                         .get();
-                File targetFile = new File(savedDir, getFileName(key));
+                File targetFile = new File(savedDir, cacheFileName);
                 File compressFile;
                 if (files != null && !files.isEmpty()) {
                     compressFile = files.get(0);

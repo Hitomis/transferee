@@ -157,10 +157,7 @@ public class PicassoImageLoader implements ImageLoader {
 
     @Override
     public File getCache(String url) {
-        // 通过分析 OkHttp3Downloader 源码可知缓存文件名是图片 url 经过 md5 加密后的小写字符串，并拼接 ".1"
-        // .0 表示缓存文件的网络请求 header 描述; .1 是缓存文件本身
-        String key = EncryptUtils.encryptMD5ToString(url).toLowerCase() + ".1";
-        File cacheFile = new File(getCacheDir(), key);
+        File cacheFile = new File(getCacheDir(), getCacheFileName(url));
         return cacheFile.exists() ? cacheFile : null;
     }
 
@@ -178,5 +175,12 @@ public class PicassoImageLoader implements ImageLoader {
         File cacheDir = new File(context.getCacheDir(), CACHE_DIR);
         if (!cacheDir.exists()) cacheDir.mkdirs();
         return cacheDir;
+    }
+
+    @Override
+    public String getCacheFileName(String url) {
+        // 通过分析 OkHttp3Downloader 源码可知缓存文件名是图片 url 经过 md5 加密后的小写字符串，并拼接 ".1"
+        // .0 表示缓存文件的网络请求 header 描述; .1 是缓存文件本身
+        return EncryptUtils.encryptMD5ToString(url).toLowerCase() + ".1";
     }
 }

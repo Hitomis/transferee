@@ -35,7 +35,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
  * <p>
  * email: 196425254@qq.com
  */
-class TransferLayout extends FrameLayout {
+public class TransferLayout extends FrameLayout {
     private Context context;
 
     private TransferConfig transConfig;
@@ -56,7 +56,7 @@ class TransferLayout extends FrameLayout {
      *
      * @param context 上下文环境
      */
-    TransferLayout(Context context) {
+    public TransferLayout(Context context) {
         super(context);
         this.context = context;
         this.loadedIndexSet = new HashSet<>();
@@ -332,7 +332,7 @@ class TransferLayout extends FrameLayout {
     /**
      * 初始化 TransferLayout 中的各个组件，并执行图片从缩略图到 Transferee 进入动画
      */
-    void show() {
+    public void show() {
         int nowThumbnailIndex = transConfig.getNowThumbnailIndex();
         TransferState transferState = getTransferState(nowThumbnailIndex);
         createTransferViewPager(transferState);
@@ -563,7 +563,7 @@ class TransferLayout extends FrameLayout {
     /**
      * TransferLayout 中内容重置时监听器
      */
-    interface OnLayoutResetListener {
+    public interface OnLayoutResetListener {
         /**
          * 调用于：当关闭动画执行完毕，TransferLayout 中所有内容已经重置（清空）时
          */

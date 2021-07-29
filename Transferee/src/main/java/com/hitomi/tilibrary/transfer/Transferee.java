@@ -1,20 +1,16 @@
 package com.hitomi.tilibrary.transfer;
 
-import android.app.Activity;
 import android.app.Application;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.view.KeyEvent;
 import android.widget.ImageView;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentActivity;
 
-import com.gyf.immersionbar.ImmersionBar;
 import com.hitomi.tilibrary.style.index.CircleIndexIndicator;
 import com.hitomi.tilibrary.style.progress.ProgressBarIndicator;
 import com.hitomi.tilibrary.utils.AppManager;
 import com.hitomi.tilibrary.utils.FileUtils;
+import com.hitomi.tilibrary.view.dialog.TransferDialog;
 import com.hitomi.tilibrary.view.video.ExoVideoView;
 import com.hitomi.tilibrary.view.video.source.ExoSourceManager;
 
@@ -31,14 +27,10 @@ import java.io.File;
  * <p>
  * email: 196425254@qq.com
  */
-public class Transferee implements DialogInterface.OnShowListener,
-        DialogInterface.OnKeyListener,
-        TransferLayout.OnLayoutResetListener,
-        AppManager.OnAppStateChangeListener {
+public class Transferee implements TransferLayout.OnLayoutResetListener, AppManager.OnAppStateChangeListener {
 
     private Context context;
-    private Dialog transDialog;
-
+    private TransferDialog transDialog;
     private TransferLayout transLayout;
     private TransferConfig transConfig;
     private OnTransfereeStateChangeListener transListener;
@@ -49,35 +41,26 @@ public class Transferee implements DialogInterface.OnShowListener,
     /**
      * 构造方法私有化，通过{@link #getDefault(Context)} 创建 transferee
      *
-     * @param context 上下文环境
+     * @param context FragmentActivity 实例上下文环境
      */
     private Transferee(Context context) {
         this.context = context;
-        createLayout();
-        createDialog();
         AppManager.getInstance().init((Application) context.getApplicationContext());
     }
 
     /**
-     * @param context
+     * @param context FragmentActivity 实例上下文环境
      * @return {@link Transferee}
      */
     public static Transferee getDefault(Context context) {
         return new Transferee(context);
     }
 
-    private void createLayout() {
+    private TransferLayout createLayout() {
         transLayout = new TransferLayout(context);
         transLayout.setOnLayoutResetListener(this);
-    }
-
-    private void createDialog() {
-        transDialog = new AlertDialog.Builder(context,
-                android.R.style.Theme_Translucent_NoTitleBar_Fullscreen)
-                .setView(transLayout)
-                .create();
-        transDialog.setOnShowListener(this);
-        transDialog.setOnKeyListener(this);
+        transLayout.apply(transConfig);
+        return transLayout;
     }
 
     /**
@@ -113,7 +96,6 @@ public class Transferee implements DialogInterface.OnShowListener,
             transConfig = config;
             OriginalViewHelper.getInstance().fillOriginImages(config);
             checkConfig();
-            transLayout.apply(config);
         }
         return this;
     }
@@ -131,13 +113,7 @@ public class Transferee implements DialogInterface.OnShowListener,
      * 显示 transferee
      */
     public void show() {
-        if (shown) return;
-        transDialog.show();
-        adjustTopAndBottom();
-        if (transListener != null) {
-            transListener.onShow();
-        }
-        shown = true;
+        shown();
     }
 
     /**
@@ -146,11 +122,23 @@ public class Transferee implements DialogInterface.OnShowListener,
      * @param listener {@link OnTransfereeStateChangeListener}
      */
     public void show(OnTransfereeStateChangeListener listener) {
-        if (shown || listener == null) return;
-        transDialog.show();
-        adjustTopAndBottom();
         transListener = listener;
-        transListener.onShow();
+        shown();
+    }
+
+    private void shown() {
+        if (shown || !(context instanceof FragmentActivity)) return;
+        AppManager.getInstance().register(this);
+        transDialog = new TransferDialog(createLayout(), new TransferDialog.OnKeyBackListener() {
+            @Override
+            public void onBack() {
+                dismiss();
+            }
+        });
+        transDialog.show(((FragmentActivity) context).getSupportFragmentManager(), null);
+        if (transListener != null) {
+            transListener.onShow();
+        }
         shown = true;
     }
 
@@ -158,9 +146,29 @@ public class Transferee implements DialogInterface.OnShowListener,
      * 关闭 transferee
      */
     public void dismiss() {
-        if (shown && transLayout.dismiss(transConfig.getNowThumbnailIndex())) {
-            shown = false;
+        if (shown) {
+            transLayout.dismiss(transConfig.getNowThumbnailIndex());
         }
+    }
+
+    @Override
+    public void onReset() {
+        AppManager.getInstance().unregister(this);
+        transDialog.dismiss();
+        if (transListener != null)
+            transListener.onDismiss();
+        transLayout = null;
+        shown = false;
+    }
+
+    @Override
+    public void onForeground() {
+        transLayout.pauseOrPlayVideo(false);
+    }
+
+    @Override
+    public void onBackground() {
+        transLayout.pauseOrPlayVideo(true);
     }
 
     /**
@@ -185,61 +193,6 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     /**
-     * dialog 打开时的监听器
-     */
-    @Override
-    public void onShow(DialogInterface dialog) {
-        AppManager.getInstance().register(this);
-        transLayout.show();
-    }
-
-    /**
-     * 调整顶部和底部内边距
-     */
-    private void adjustTopAndBottom() {
-        if (context instanceof Activity) {
-            // 隐藏状态栏和导航栏，全屏化
-            Activity activity = (Activity) context;
-            ImmersionBar.with(activity, transDialog)
-                    .transparentNavigationBar()
-                    .init();
-            int top = ImmersionBar.getNotchHeight(activity);
-            int bottom = ImmersionBar.getNavigationBarHeight(activity);
-            transLayout.setPadding(0, top, 0, bottom);
-        }
-    }
-
-    @Override
-    public void onReset() {
-        AppManager.getInstance().unregister(this);
-        transDialog.dismiss();
-        if (transListener != null)
-            transListener.onDismiss();
-        shown = false;
-    }
-
-    @Override
-    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK &&
-                event.getAction() == KeyEvent.ACTION_UP &&
-                !event.isCanceled()) {
-            dismiss();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void onForeground() {
-        transLayout.pauseOrPlayVideo(false);
-    }
-
-    @Override
-    public void onBackground() {
-        transLayout.pauseOrPlayVideo(true);
-    }
-
-    /**
      * 设置 Transferee 显示和关闭的监听器
      *
      * @param listener {@link OnTransfereeStateChangeListener}
@@ -256,6 +209,10 @@ public class Transferee implements DialogInterface.OnShowListener,
             transConfig.destroy();
             transConfig = null;
         }
+        context = null;
+        transLayout = null;
+        transDialog = null;
+        transListener = null;
     }
 
     /**

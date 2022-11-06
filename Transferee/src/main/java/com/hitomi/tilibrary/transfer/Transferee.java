@@ -72,8 +72,7 @@ public class Transferee implements DialogInterface.OnShowListener,
     }
 
     private void createDialog() {
-        transDialog = new AlertDialog.Builder(context,
-                android.R.style.Theme_Translucent_NoTitleBar_Fullscreen)
+        transDialog = new AlertDialog.Builder(context)
                 .setView(transLayout)
                 .create();
         transDialog.setOnShowListener(this);

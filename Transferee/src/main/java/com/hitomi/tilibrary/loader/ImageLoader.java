@@ -36,6 +36,9 @@ public interface ImageLoader {
 
     File getCacheDir();
 
+
+    String getCacheFileName(String url);
+
     /**
      * 清除 ImageLoader 缓存
      */

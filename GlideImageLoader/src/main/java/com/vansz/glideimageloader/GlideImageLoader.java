@@ -61,7 +61,7 @@ public class GlideImageLoader implements ImageLoader {
 
     @Override
     public File getCache(String url) {
-        File cacheFile = new File(getCacheDir(), getFileName(url));
+        File cacheFile = new File(getCacheDir(), getCacheFileName(url));
         return cacheFile.exists() ? cacheFile : null;
     }
 
@@ -84,8 +84,14 @@ public class GlideImageLoader implements ImageLoader {
         return cacheDir;
     }
 
-    private String getFileName(String imageUrl) {
-        String[] nameArray = imageUrl.split("/");
+    @Override
+    public String getCacheFileName(String url) {
+        int paramsStartIndex = url.indexOf("?");
+        if (paramsStartIndex!=-1){
+            url = url.substring(0,paramsStartIndex);
+        }
+        String[] nameArray = url.split("/");
         return nameArray[nameArray.length - 1];
     }
+
 }
